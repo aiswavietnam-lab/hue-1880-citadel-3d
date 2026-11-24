@@ -1,0 +1,154 @@
+{
+  "project_id": "HUE_IMPERIAL_CITY_1880",
+  "architecture": "30_DISJOINT_TILES_AND_18_PROPS",
+  "canonical_github_repo": "https://github.com/aiswavietnam-lab/hue-1880-citadel-3d.git",
+  "canonical_live_url": "https://aiswavietnam-lab.github.io/hue-1880-citadel-3d/",
+  "forbid_localhost_links": true,
+  "canonical_drive_ids": {
+    "00_HUE_1880_PIPELINE": "15CaNMLvb2w3gfFLUkHdqDSmwYm2CfhYE",
+    "01_state": "1in-xM0U0gyOE6W0OQUmltWihPWjglaOq",
+    "02_scripts": "1KOHLIBxdpdhRLRfKfHtc5hYfXv3E_uhX",
+    "03_assets_glb": "1_ZdZr8bNi3e7_y0YAkRQt85cs6NhYwy9",
+    "03_assets_glb_tiles": "1xBiXbc051Dw0A8GylSG15x4eeloQoHa6",
+    "03_assets_glb_inbox": "14CgrGAp47K76fZefMQOzquEkN5hpyb7a",
+    "05_qa_outputs": "1CO_bRVqB2QRY2KrscfRhM357Cip8cZiP",
+    "07_WEB_CONG_KHAI": "1qUu3M3-jQFw7nybcbsiv_i4-Y4jwV9vS"
+  },
+  "deprecated_duplicate_drive_roots_do_not_use": [
+    "1rupx1zq60C9Qm1QVx3GWcp6aomeqfmNl",
+    "1dPFD90OVfjqyu71nVporblAZJ64FdBM3",
+    "1ey5NPzA2_592QJ0Q3aGRfG7mU8cqN-s8"
+  ],
+  "active_modules": [
+    "app.js (Half-Life 120Hz Physics + High-Detail 1880 Character + Mobile Dual-Thumb Touch Controls)",
+    "render_culling_engine.js (Occlusion Culling + Interior Culling + 2D CSR TileSpatialCollider)",
+    "pbr_materials.js + assets/pbr/* (Poly Haven CC0 Shared PBR Material Pool + PMREM Sky Reflection)"
+  ],
+  "completed_tiles": 30,
+  "total_tiles": 30,
+  "last_sync_backend": "rclone",
+  "last_sync_applied_files": 7,
+  "last_sync_utc": "2026-11-24T14:30:41+00:00",
+  "tile_versions": {
+    "T01": {
+      "version": 12,
+      "sha256_12": "5db13080a510"
+    },
+    "T02": {
+      "version": 14,
+      "sha256_12": "4c4f6c0eb2bc"
+    },
+    "T03": {
+      "version": 11,
+      "sha256_12": "f13dbf572285"
+    },
+    "T04": {
+      "version": 14,
+      "sha256_12": "c53e8ca9bda5"
+    },
+    "T05": {
+      "version": 12,
+      "sha256_12": "e7c3e5d36599"
+    },
+    "T06": {
+      "version": 11,
+      "sha256_12": "44fc6dde18c5"
+    },
+    "T07": {
+      "version": 14,
+      "sha256_12": "747f9b4d2aec"
+    },
+    "T08": {
+      "version": 13,
+      "sha256_12": "4d5afde8e17d"
+    },
+    "T09": {
+      "version": 14,
+      "sha256_12": "bf6d39c74e15"
+    },
+    "T10": {
+      "version": 13,
+      "sha256_12": "5507ade9682f"
+    },
+    "T11": {
+      "version": 14,
+      "sha256_12": "bee0993abe9a"
+    },
+    "T12": {
+      "version": 13,
+      "sha256_12": "fe4afaed317e"
+    },
+    "T13": {
+      "version": 12,
+      "sha256_12": "f9ebb589a0d6"
+    },
+    "T14": {
+      "version": 13,
+      "sha256_12": "fe4cda1182f2"
+    },
+    "T15": {
+      "version": 11,
+      "sha256_12": "7d29f9fa7ef1"
+    },
+    "T16": {
+      "version": 10,
+      "sha256_12": "0178e52ff94b"
+    },
+    "T17": {
+      "version": 10,
+      "sha256_12": "72b080e86495"
+    },
+    "T18": {
+      "version": 11,
+      "sha256_12": "e9fc04c05e9c"
+    },
+    "T19": {
+      "version": 12,
+      "sha256_12": "00bf9638c9e4"
+    },
+    "T20": {
+      "version": 10,
+      "sha256_12": "5a3977d47ce3"
+    },
+    "T21": {
+      "version": 11,
+      "sha256_12": "c0036452cdd8"
+    },
+    "T22": {
+      "version": 11,
+      "sha256_12": "21eb08a5c3b2"
+    },
+    "T23": {
+      "version": 10,
+      "sha256_12": "f058a4ec21cd"
+    },
+    "T24": {
+      "version": 11,
+      "sha256_12": "1b2d36f311f1"
+    },
+    "T25": {
+      "version": 10,
+      "sha256_12": "19ffa089b937"
+    },
+    "T26": {
+      "version": 9,
+      "sha256_12": "c551cc855a25"
+    },
+    "T27": {
+      "version": 9,
+      "sha256_12": "99720246ac9e"
+    },
+    "T28": {
+      "version": 8,
+      "sha256_12": "c83b9f08d5d8"
+    },
+    "T29": {
+      "version": 7,
+      "sha256_12": "727009689bf1"
+    },
+    "T30": {
+      "version": 7,
+      "sha256_12": "8a713593ba89"
+    }
+  }
+}

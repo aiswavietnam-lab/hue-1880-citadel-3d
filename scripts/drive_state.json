@@ -1,15 +1,15 @@
 {
   "T01_ky_dai_quang_truong.glb": {
-    "id": "1e9iGJMJBG4_XDTM94D3MiulCP6kn3Oji",
-    "source": "tiles",
-    "name": "T01_ky_dai_quang_truong.glb",
-    "modifiedTime": "2026-11-24T02:27:04.477Z",
-    "size": "3481732"
+    "id": "1a0A9Q12gWJ-IM_NkpOG7D9Zm5lOHbtE1",
+    "source": "inbox",
+    "name": "T01__v14_20261124_212000.glb",
+    "modifiedTime": "2026-11-24T14:24:43.723Z",
+    "size": "3585340"
   },
   "T02_ngo_mon_lau_ngu_phung.glb": {
-    "id": "1io4zRM65TZFpHajgAmh5PZllSAtBwPVo",
-    "source": "inbox",
-    "name": "T02__v14_20261124_184500.glb",
+    "id": "1v_1PcqBTp6QupYfI4TvzTLiGSRbDNDge",
+    "source": "tiles",
+    "name": "T02_ngo_mon_lau_ngu_phung.glb",
     "modifiedTime": "2026-11-24T11:48:58.627Z",
     "size": "3849344"
   },
@@ -21,9 +21,9 @@
     "size": "3782852"
   },
   "T04_dien_thai_hoa.glb": {
-    "id": "1UReEy2fNs6TFFQtzq18z8eAgUaZspHU8",
-    "source": "inbox",
-    "name": "T04__v14_20261124_183200.glb",
+    "id": "1D55RG4fGvvvE11bPuFDSPCQB1CT44WZp",
+    "source": "tiles",
+    "name": "T04_dien_thai_hoa.glb",
     "modifiedTime": "2026-11-24T11:38:30.686Z",
     "size": "5671280"
   },
@@ -84,11 +84,11 @@
     "size": "6895104"
   },
   "T13_cua_chuong_duc_tay_ht.glb": {
-    "id": "10qMa8flt4Ru08nCU2cYJfQ3asXwS_o55",
-    "source": "tiles",
-    "name": "T13_cua_chuong_duc_tay_ht.glb",
-    "modifiedTime": "2026-11-24T04:18:44.141Z",
-    "size": "3723236"
+    "id": "17RLUvxErRlGhuuZ4Lt7Qa7LszIYukoQT",
+    "source": "inbox",
+    "name": "T13__v12_20261124_201200.glb",
+    "modifiedTime": "2026-11-24T13:16:36.290Z",
+    "size": "3784196"
   },
   "T14_cung_truong_sanh.glb": {
     "id": "1Ax2C0Q3cGqUoWupUdoI7jOaEIwv6bxED",
@@ -126,11 +126,11 @@
     "size": "4191336"
   },
   "T19_kim_thuy_tay_nam.glb": {
-    "id": "1G9XxlELHBA-K2n6p31LEqgj4ILMFTZfj",
-    "source": "tiles",
-    "name": "T19_kim_thuy_tay_nam.glb",
-    "modifiedTime": "2026-11-24T04:33:56.997Z",
-    "size": "1947840"
+    "id": "167-DVcrPIY8Qtg-X-5pL6hcT4wR61LV1",
+    "source": "inbox",
+    "name": "T19__v12_20261124_202200.glb",
+    "modifiedTime": "2026-11-24T13:24:49.069Z",
+    "size": "2004292"
   },
   "T20_kim_thuy_tay_bac_xa_tac.glb": {
     "id": "1uZtOmf9arGsV0M5hDAfU6ANgJRXoVqPG",
@@ -168,11 +168,11 @@
     "size": "5419584"
   },
   "T25_thanh_vauban_tay.glb": {
-    "id": "1rnFVpKLGb7yhYIlaXLKe8jumdiemjzhk",
-    "source": "tiles",
-    "name": "T25_thanh_vauban_tay.glb",
-    "modifiedTime": "2026-11-23T22:57:46.595Z",
-    "size": "3723152"
+    "id": "1OmL-Dbw7ElKa0YAfHR17ynf28brs5yXD",
+    "source": "inbox",
+    "name": "T25__v10_20261124_205500.glb",
+    "modifiedTime": "2026-11-24T13:55:13.962Z",
+    "size": "4022904"
   },
   "T26_thanh_vauban_dong.glb": {
     "id": "1coYU60d6mw7XK8NNhMP7LQ4KQ_V3fj0r",
@@ -220,8 +220,8 @@
     "id": "1cwmXlUMSCcVbggec2MMwYQ_-D4mYHjv_",
     "source": "state",
     "name": "grid_manifest.json",
-    "modifiedTime": "2026-11-24T12:59:54.014Z",
-    "size": "105578"
+    "modifiedTime": "2026-11-24T13:04:52.159Z",
+    "size": "105770"
   },
   "library_manifest.json": {
     "id": "1mwiYBQFO9b8srlEpUzd17IdFFhFfJe75",

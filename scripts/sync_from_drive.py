@@ -48,11 +48,22 @@ class DriveClient:
         self.mode = None
         self.access_token = None
         self.api_key = None
+        self.rclone_conf = None
 
-        if shutil.which("gdrive"):
-            self.mode = "cli"
-            return
+        # 1) Ưu tiên rclone nếu có sẵn cấu hình rclone.conf trên máy chủ điều phối
+        candidate_confs = [
+            os.environ.get("RCLONE_CONFIG", "").strip(),
+            "/home/antigravity/06_automation_bridge/config/rclone.conf",
+            str(ROOT.parent.parent / "06_automation_bridge" / "config" / "rclone.conf"),
+        ]
+        if shutil.which("rclone"):
+            for cp in candidate_confs:
+                if cp and pathlib.Path(cp).exists():
+                    self.rclone_conf = cp
+                    self.mode = "rclone"
+                    return
 
+        # 2) Google Drive API v3 (GitHub Actions / Môi trường tự động)
         sa_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "").strip()
         if sa_json:
             self.access_token = self._token_from_service_account(json.loads(sa_json))
@@ -73,9 +84,14 @@ class DriveClient:
             self.mode = "api"
             return
 
+        # 3) gdrive CLI (chỉ dùng khi plugin google_drive đã được kết nối)
+        if os.environ.get("ALLOW_GDRIVE_CLI") == "1" and shutil.which("gdrive"):
+            self.mode = "cli"
+            return
+
         raise RuntimeError(
-            "Không tìm thấy `gdrive` CLI hoặc Secret Google Drive "
-            "(GOOGLE_SERVICE_ACCOUNT_JSON / GDRIVE_OAUTH_REFRESH_TOKEN / GDRIVE_API_KEY)."
+            "Không tìm thấy cấu hình `rclone.conf`, Secret Google Drive "
+            "(GOOGLE_SERVICE_ACCOUNT_JSON / GDRIVE_OAUTH_REFRESH_TOKEN / GDRIVE_API_KEY) hoặc `ALLOW_GDRIVE_CLI=1`."
         )
 
     def _token_from_service_account(self, sa: dict) -> str:
@@ -143,7 +159,33 @@ class DriveClient:
         return {"Authorization": f"Bearer {self.access_token}"} if self.access_token else {}
 
     def list_folder(self, folder_id: str) -> dict:
-        if self.mode == "cli":
+        if self.mode == "rclone":
+            out = subprocess.check_output(
+                [
+                    "rclone",
+                    "lsjson",
+                    "hue_gdrive:",
+                    "--drive-root-folder-id",
+                    folder_id,
+                    "--files-only",
+                    "--config",
+                    self.rclone_conf,
+                ],
+                text=True,
+            )
+            raw_items = json.loads(out)
+            items = [
+                {
+                    "id": it["ID"],
+                    "name": it["Name"],
+                    "mimeType": it.get("MimeType", ""),
+                    "modifiedTime": it.get("ModTime", ""),
+                    "size": str(it.get("Size", 0)),
+                }
+                for it in raw_items
+                if not it.get("IsDir")
+            ]
+        elif self.mode == "cli":
             out = subprocess.check_output(["gdrive", "readonly", "ls", folder_id, "--json"], text=True)
             data = json.loads(out)
             items = data.get("files", []) if isinstance(data, dict) else data
@@ -184,7 +226,21 @@ class DriveClient:
         dest.parent.mkdir(parents=True, exist_ok=True)
         tmp = dest.with_name(dest.name + ".tmp")
         try:
-            if self.mode == "cli":
+            if self.mode == "rclone":
+                subprocess.check_call(
+                    [
+                        "rclone",
+                        "backend",
+                        "copyid",
+                        "hue_gdrive:",
+                        file_id,
+                        str(tmp),
+                        "--config",
+                        self.rclone_conf,
+                    ],
+                    stdout=subprocess.DEVNULL,
+                )
+            elif self.mode == "cli":
                 subprocess.check_call(
                     ["gdrive", "readonly", "download", file_id, "--out", str(tmp)],
                     stdout=subprocess.DEVNULL,
@@ -262,14 +318,74 @@ def find_manifest_sha256(meta: dict) -> str:
     return ""
 
 
-def normalize_grid_manifest(inbox_meta_by_tid: dict) -> None:
+def write_sync_hub_status(gm: dict, backend_mode: str, applied_count: int) -> None:
+    hub_path = ROOT / "SYNC_HUB_STATUS.json"
+    existing_modules = [
+        "app.js (Half-Life 120Hz Physics + High-Detail 1880 Character + Mobile Dual-Thumb Touch Controls)",
+        "render_culling_engine.js (Occlusion Culling + Interior Culling + 2D CSR TileSpatialCollider)",
+        "pbr_materials.js + assets/pbr/* (Poly Haven CC0 Shared PBR Material Pool + PMREM Sky Reflection)",
+    ]
+    for extra_js in sorted(ROOT.glob("*.js")):
+        if extra_js.name not in (
+            "app.js",
+            "render_culling_engine.js",
+            "pbr_materials.js",
+            "three.module.js",
+            "OrbitControls.js",
+            "GLTFLoader.js",
+            "BufferGeometryUtils.js",
+        ):
+            existing_modules.append(extra_js.name)
+
+    hub = {
+        "project_id": "HUE_IMPERIAL_CITY_1880",
+        "architecture": "30_DISJOINT_TILES_AND_18_PROPS",
+        "canonical_github_repo": "https://github.com/aiswavietnam-lab/hue-1880-citadel-3d.git",
+        "canonical_live_url": "https://aiswavietnam-lab.github.io/hue-1880-citadel-3d/",
+        "forbid_localhost_links": True,
+        "canonical_drive_ids": {
+            "00_HUE_1880_PIPELINE": "15CaNMLvb2w3gfFLUkHdqDSmwYm2CfhYE",
+            "01_state": "1in-xM0U0gyOE6W0OQUmltWihPWjglaOq",
+            "02_scripts": "1KOHLIBxdpdhRLRfKfHtc5hYfXv3E_uhX",
+            "03_assets_glb": "1_ZdZr8bNi3e7_y0YAkRQt85cs6NhYwy9",
+            "03_assets_glb_tiles": "1xBiXbc051Dw0A8GylSG15x4eeloQoHa6",
+            "03_assets_glb_inbox": "14CgrGAp47K76fZefMQOzquEkN5hpyb7a",
+            "05_qa_outputs": "1CO_bRVqB2QRY2KrscfRhM357Cip8cZiP",
+            "07_WEB_CONG_KHAI": "1qUu3M3-jQFw7nybcbsiv_i4-Y4jwV9vS",
+        },
+        "deprecated_duplicate_drive_roots_do_not_use": [
+            "1rupx1zq60C9Qm1QVx3GWcp6aomeqfmNl",
+            "1dPFD90OVfjqyu71nVporblAZJ64FdBM3",
+            "1ey5NPzA2_592QJ0Q3aGRfG7mU8cqN-s8",
+        ],
+        "active_modules": existing_modules,
+        "completed_tiles": gm.get("completed_tiles", 0),
+        "total_tiles": gm.get("total_tiles", 30),
+        "last_sync_backend": backend_mode,
+        "last_sync_applied_files": applied_count,
+        "last_sync_utc": datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat(),
+        "tile_versions": {
+            t["tile_id"]: {"version": t.get("version", 1), "sha256_12": str(t.get("sha256", ""))[:12]}
+            for t in gm.get("tiles", [])
+        },
+    }
+    hub_path.write_text(json.dumps(hub, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def normalize_grid_manifest(inbox_meta_by_tid: dict, prev_versions: dict | None = None) -> dict:
     gm_path = ROOT / "grid_manifest.json"
     if not gm_path.exists():
-        return
+        return {}
     gm = json.loads(gm_path.read_text(encoding="utf-8"))
     completed = 0
     for tile in gm.get("tiles", []):
         tid = tile.get("tile_id", "")
+        if prev_versions and tid in prev_versions:
+            old_v = prev_versions[tid].get("version", 0)
+            if isinstance(old_v, int) and old_v > int(tile.get("version") or 0):
+                tile["version"] = old_v
+                if prev_versions[tid].get("detail_stage"):
+                    tile["detail_stage"] = prev_versions[tid]["detail_stage"]
         gp = tile.get("glb_path") or ""
         base = pathlib.Path(gp).name if gp else ""
         if not base or not (ROOT / base).exists():
@@ -283,7 +399,7 @@ def normalize_grid_manifest(inbox_meta_by_tid: dict) -> None:
             meta = inbox_meta_by_tid.get(tid)
             if meta:
                 ver = parse_manifest_version(meta)
-                if ver is not None:
+                if ver is not None and ver >= int(tile.get("version") or 0):
                     tile["version"] = ver
                 if meta.get("detail_stage"):
                     tile["detail_stage"] = meta["detail_stage"]
@@ -294,7 +410,8 @@ def normalize_grid_manifest(inbox_meta_by_tid: dict) -> None:
             completed += 1
     gm["completed_tiles"] = completed
     gm["last_updated_utc"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    gm_path.write_text(json.dumps(gm, ensure_ascii=False, indent=2), encoding="utf-8")
+    gm_path.write_text(json.dumps(gm, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return gm
 
 
 def append_step_summary(lines: list[str]) -> None:
@@ -318,6 +435,18 @@ def main():
         print(msg, flush=True)
         append_step_summary(["### Hue 1880 Sync — Chưa cấu hình thông tin xác thực Google Drive", f"- {exc}"])
         return 1 if os.environ.get("REQUIRE_DRIVE_AUTH") == "1" else 0
+
+    prev_versions = {}
+    gm_existing = ROOT / "grid_manifest.json"
+    if gm_existing.exists():
+        try:
+            for t in json.loads(gm_existing.read_text(encoding="utf-8")).get("tiles", []):
+                prev_versions[t["tile_id"]] = {
+                    "version": t.get("version", 1),
+                    "detail_stage": t.get("detail_stage", ""),
+                }
+        except Exception:
+            prev_versions = {}
 
     old_state = json.loads(STATE_FILE.read_text(encoding="utf-8")) if STATE_FILE.exists() else {}
     new_state = {}
@@ -445,10 +574,14 @@ def main():
                         new_state[rel_path] = old_state[rel_path]
                     print(f"  [WARN] Skipped {rel_path}: {note}", flush=True)
 
-        normalize_grid_manifest(inbox_meta_by_tid)
+        gm_norm = normalize_grid_manifest(inbox_meta_by_tid, prev_versions)
+        write_sync_hub_status(gm_norm, client.mode, len(applied))
+    elif not args.dry_run and not (ROOT / "SYNC_HUB_STATUS.json").exists():
+        gm_norm = normalize_grid_manifest({}, prev_versions)
+        write_sync_hub_status(gm_norm, client.mode, 0)
 
     if not args.dry_run:
-        STATE_FILE.write_text(json.dumps(new_state, ensure_ascii=False, indent=2), encoding="utf-8")
+        STATE_FILE.write_text(json.dumps(new_state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     summary = [
         f"### Hue 1880 Citadel 3D — Drive Sync ({datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC')})",
@@ -466,6 +599,7 @@ def main():
                 ["git", "commit", "-m", f"chore(sync): update {len(applied)} Hue 1880 tiles/manifests from Google Drive"],
                 cwd=str(ROOT),
             )
+            subprocess.check_call(["git", "pull", "--rebase", "origin", "main"], cwd=str(ROOT))
             subprocess.check_call(["git", "push", "origin", "main"], cwd=str(ROOT))
             print("[HUE 30/30 GTA SYNC] Pushed updates to GitHub Pages.", flush=True)
         else:

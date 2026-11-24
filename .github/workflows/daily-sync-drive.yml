@@ -1,9 +1,9 @@
-name: Daily Auto-Sync Hue 1880 3D from Google Drive
+name: Auto-Sync Hue 1880 3D from Google Drive (Every 6 Hours)
 
 on:
   schedule:
-    # 06:00 sáng giờ Việt Nam (GMT+7) mỗi ngày = 23:00 UTC
-    - cron: "0 23 * * *"
+    # Tự động đồng bộ 4 lần/ngày (00:15, 06:15, 12:15, 18:15 giờ Việt Nam GMT+7) khớp sau 4 khung giờ Gemini Tasks
+    - cron: "15 17,23,5,11 * * *"
   workflow_dispatch:
     inputs:
       include_inbox:
@@ -26,7 +26,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Setup Python 3.12
         uses: actions/setup-python@v5
