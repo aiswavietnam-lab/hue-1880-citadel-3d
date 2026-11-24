@@ -316,11 +316,13 @@ export class HuePbrMaterialLibrary {
   }
 
   /**
-   * Cập nhật bản đồ phản xạ bầu trời PMREM đồng bộ theo giờ Mặt trời Huế (lưu đệm theo mốc 45 phút)
+   * Cập nhật bản đồ phản xạ bầu trời PMREM đồng bộ theo giờ Mặt trời Huế
+   * Ưu tiên dùng ảnh bầu trời 360° thực tế (Pure Sky CC0) khi đã nạp xong, tự động dự phòng gradient
    */
-  updateSkyEnvironment(topCol, midCol, horCol, sunCol, sunDir, hour) {
+  updateSkyEnvironment(topCol, midCol, horCol, sunCol, sunDir, hour, skyPhotoInfo = null) {
     if (!this.pmremGenerator || !this.scene) return;
-    const bucket = String(Math.round(hour * 1.5));
+    const hasPhoto = Boolean(skyPhotoInfo && skyPhotoInfo.texture && skyPhotoInfo.skyId);
+    const bucket = `${hasPhoto ? "photo" : "proc"}:${Math.round(hour * 1.5)}:${hasPhoto ? skyPhotoInfo.skyId : "g"}`;
     if (bucket === this.lastEnvBucket) return;
     this.lastEnvBucket = bucket;
 
@@ -331,37 +333,49 @@ export class HuePbrMaterialLibrary {
 
     try {
       const envScene = new THREE.Scene();
-      const geo = new THREE.SphereGeometry(32, 20, 14);
-      const pos = geo.attributes.position;
-      const colors = new Float32Array(pos.count * 3);
-      const gndCol = new THREE.Color(0x3b352c).lerp(horCol, 0.25);
-      const tmp = new THREE.Color();
+      let geo;
+      let domeMat;
 
-      for (let i = 0; i < pos.count; i++) {
-        const ny = pos.getY(i) / 32.0;
-        if (ny >= 0.24) {
-          tmp.copy(midCol).lerp(topCol, Math.min(1, (ny - 0.24) / 0.76));
-        } else if (ny >= 0) {
-          tmp.copy(horCol).lerp(midCol, ny / 0.24);
-        } else {
-          tmp.copy(horCol).lerp(gndCol, Math.min(1, Math.pow(-ny, 0.55) * 1.3));
+      if (hasPhoto) {
+        geo = new THREE.SphereGeometry(32, 32, 20);
+        domeMat = new THREE.MeshBasicMaterial({
+          map: skyPhotoInfo.texture,
+          color: skyPhotoInfo.tintColor ? skyPhotoInfo.tintColor.clone() : new THREE.Color(0xffffff),
+          side: THREE.BackSide,
+        });
+        const dome = new THREE.Mesh(geo, domeMat);
+        const sunAz = typeof skyPhotoInfo.sunAzimuth === "number" ? skyPhotoInfo.sunAzimuth : 0;
+        dome.rotation.y = -sunAz + Math.PI * 0.5;
+        envScene.add(dome);
+      } else {
+        geo = new THREE.SphereGeometry(32, 20, 14);
+        const pos = geo.attributes.position;
+        const colors = new Float32Array(pos.count * 3);
+        const gndCol = new THREE.Color(0x3b352c).lerp(horCol, 0.25);
+        const tmp = new THREE.Color();
+
+        for (let i = 0; i < pos.count; i++) {
+          const ny = pos.getY(i) / 32.0;
+          if (ny >= 0.24) {
+            tmp.copy(midCol).lerp(topCol, Math.min(1, (ny - 0.24) / 0.76));
+          } else if (ny >= 0) {
+            tmp.copy(horCol).lerp(midCol, ny / 0.24);
+          } else {
+            tmp.copy(horCol).lerp(gndCol, Math.min(1, Math.pow(-ny, 0.55) * 1.3));
+          }
+          colors[i * 3] = tmp.r;
+          colors[i * 3 + 1] = tmp.g;
+          colors[i * 3 + 2] = tmp.b;
         }
-        colors[i * 3] = tmp.r;
-        colors[i * 3 + 1] = tmp.g;
-        colors[i * 3 + 2] = tmp.b;
+        geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+        domeMat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide });
+        envScene.add(new THREE.Mesh(geo, domeMat));
       }
-      geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-      const dome = new THREE.Mesh(
-        geo,
-        new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide })
-      );
-      envScene.add(dome);
 
       if (sunDir && sunDir.y > -0.08) {
         const sunMesh = new THREE.Mesh(
-          new THREE.SphereGeometry(2.8, 10, 8),
-          new THREE.MeshBasicMaterial({ color: sunCol.clone().multiplyScalar(2.0) })
+          new THREE.SphereGeometry(2.6, 10, 8),
+          new THREE.MeshBasicMaterial({ color: sunCol.clone().multiplyScalar(hasPhoto ? 1.65 : 2.0) })
         );
         sunMesh.position.copy(sunDir).multiplyScalar(26);
         envScene.add(sunMesh);
@@ -369,7 +383,7 @@ export class HuePbrMaterialLibrary {
         sunMesh.geometry.dispose();
         sunMesh.material.dispose();
         geo.dispose();
-        dome.material.dispose();
+        domeMat.dispose();
         if (rt && rt.texture) {
           this.envBucketCache.set(bucket, rt.texture);
           this.scene.environment = rt.texture;
@@ -377,7 +391,7 @@ export class HuePbrMaterialLibrary {
       } else {
         const rt = this.pmremGenerator.fromScene(envScene, 0.04);
         geo.dispose();
-        dome.material.dispose();
+        domeMat.dispose();
         if (rt && rt.texture) {
           this.envBucketCache.set(bucket, rt.texture);
           this.scene.environment = rt.texture;

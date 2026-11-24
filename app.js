@@ -187,7 +187,7 @@ const huePbr = new HuePbrMaterialLibrary(renderer, scene, ".");
 huePbr.applyQualityPreset(STATE.quality);
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 6500);
-camera.position.set(280, 215, 485);
+camera.position.set(265, 142, 485);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -195,7 +195,7 @@ controls.dampingFactor = 0.07;
 controls.maxPolarAngle = Math.PI * 0.488;
 controls.minDistance = 8;
 controls.maxDistance = 2400;
-controls.target.set(0, 4, -30);
+controls.target.set(0, 14, -35);
 controls.update();
 
 // --- Nhóm đối tượng trong Scene ---
@@ -235,18 +235,158 @@ function requestShadowUpdate(immediate = false) {
   }, 240);
 }
 
-// --- Bầu trời Khí quyển Shader (Bình minh -> Chính ngọ -> Hoàng hôn tím Huế) ---
+// --- Bầu trời 360° Đại Cảnh (Ảnh Pure Sky CC0 + Mây trôi + Rặng núi xa + Chu kỳ Mặt trời Huế 16.47°N) ---
+const HUE_SKY_BASE = `${ASSET_ROOT || "."}/assets/sky`;
+const HUE_SKY_FILES = {
+  morning: "sky_morning.jpg",
+  day: "sky_day.jpg",
+  sunset: "sky_sunset.jpg",
+  dusk: "sky_dusk.jpg",
+  night: "sky_night.jpg",
+};
+const skyTexLoader = new THREE.TextureLoader();
+const skyTextures = new Map();
+const skyLoadedSet = new Set();
+let pendingSkyLoads = 0;
+
+const skyPlaceholderTex = new THREE.DataTexture(new Uint8Array([140, 176, 214, 255]), 1, 1, THREE.RGBAFormat);
+skyPlaceholderTex.colorSpace = THREE.SRGBColorSpace;
+skyPlaceholderTex.needsUpdate = true;
+
 const skyUniforms = {
+  tSkyA: { value: skyPlaceholderTex },
+  tSkyB: { value: skyPlaceholderTex },
+  uSkyReadyA: { value: 0.0 },
+  uSkyReadyB: { value: 0.0 },
+  uSkyMix: { value: 0.0 },
+  uSunAzimuth: { value: 0.8 },
+  uSkyTint: { value: new THREE.Color(0xffffff) },
+  uSkyExposure: { value: 1.05 },
   topColor: { value: new THREE.Color(0x285a8f) },
   midColor: { value: new THREE.Color(0x7ea7c9) },
   horizonColor: { value: new THREE.Color(0xe9d6ba) },
+  fogColor: { value: new THREE.Color(0xcbd5df) },
+  mountainColor: { value: new THREE.Color(0x4b6478) },
   sunDir: { value: new THREE.Vector3(0.4, 0.7, 0.5).normalize() },
   sunColor: { value: new THREE.Color(0xfff1cc) },
   sunGlow: { value: 0.35 },
+  cloudColor: { value: new THREE.Color(0xffffff) },
+  cloudOpacity: { value: 0.18 },
+  starIntensity: { value: 0.0 },
+  uTime: { value: 0.0 },
 };
 
+function preloadHueSkyTextures() {
+  Object.entries(HUE_SKY_FILES).forEach(([id, filename]) => {
+    pendingSkyLoads += 1;
+    const tex = skyTexLoader.load(
+      `${HUE_SKY_BASE}/${filename}`,
+      (loadedTex) => {
+        pendingSkyLoads = Math.max(0, pendingSkyLoads - 1);
+        skyLoadedSet.add(id);
+        loadedTex.needsUpdate = true;
+        if (typeof updateTimeOfDay === "function") {
+          updateTimeOfDay(STATE.hour);
+        }
+        if (IS_QA_MODE) {
+          renderer.render(scene, camera);
+        }
+      },
+      undefined,
+      () => {
+        pendingSkyLoads = Math.max(0, pendingSkyLoads - 1);
+      }
+    );
+    // Tắt mipmap tránh đường ghép dọc tại kinh độ atan2(0 <-> 2PI)
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.generateMipmaps = false;
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    skyTextures.set(id, tex);
+  });
+}
+
+function getHueSkyBlendForHour(h) {
+  if (h < 8.4) {
+    const t = THREE.MathUtils.clamp((h - 6.1) / 2.3, 0, 1);
+    return {
+      idA: "morning",
+      idB: "day",
+      mix: t,
+      tint: lerpColorTriple(0xffe9d4, 0xf6fbff, t),
+      exposure: THREE.MathUtils.lerp(1.06, 1.04, t),
+      cloudCol: lerpColorTriple(0xffebd4, 0xffffff, t),
+      cloudOp: THREE.MathUtils.lerp(0.22, 0.16, t),
+      starInt: 0.0,
+    };
+  }
+  if (h < 15.0) {
+    return {
+      idA: "day",
+      idB: "day",
+      mix: 0.0,
+      tint: new THREE.Color(0xf6fbff),
+      exposure: 1.04,
+      cloudCol: new THREE.Color(0xffffff),
+      cloudOp: 0.15,
+      starInt: 0.0,
+    };
+  }
+  if (h < 17.0) {
+    const t = THREE.MathUtils.clamp((h - 15.0) / 2.0, 0, 1);
+    return {
+      idA: "day",
+      idB: "sunset",
+      mix: t,
+      tint: lerpColorTriple(0xf8fbff, 0xffe0c4, t),
+      exposure: THREE.MathUtils.lerp(1.04, 1.02, t),
+      cloudCol: lerpColorTriple(0xffffff, 0xffc899, t),
+      cloudOp: THREE.MathUtils.lerp(0.16, 0.22, t),
+      starInt: 0.0,
+    };
+  }
+  if (h < 18.25) {
+    const t = THREE.MathUtils.clamp((h - 17.0) / 1.25, 0, 1);
+    return {
+      idA: "sunset",
+      idB: "dusk",
+      mix: t,
+      tint: lerpColorTriple(0xffdfc2, 0xe8b6dc, t),
+      exposure: THREE.MathUtils.lerp(1.02, 0.92, t),
+      cloudCol: lerpColorTriple(0xffc38e, 0xd892bc, t),
+      cloudOp: THREE.MathUtils.lerp(0.22, 0.2, t),
+      starInt: THREE.MathUtils.lerp(0.0, 0.28, t),
+    };
+  }
+  if (h < 19.65) {
+    const t = THREE.MathUtils.clamp((h - 18.25) / 1.4, 0, 1);
+    return {
+      idA: "dusk",
+      idB: "night",
+      mix: t,
+      tint: lerpColorTriple(0xd9a2ce, 0x7c9ad4, t),
+      exposure: THREE.MathUtils.lerp(0.9, 0.48, t),
+      cloudCol: lerpColorTriple(0xc286b0, 0x33476b, t),
+      cloudOp: THREE.MathUtils.lerp(0.18, 0.06, t),
+      starInt: THREE.MathUtils.lerp(0.3, 0.95, t),
+    };
+  }
+  return {
+    idA: "night",
+    idB: "night",
+    mix: 0.0,
+    tint: new THREE.Color(0x7c9ad4),
+    exposure: 0.48,
+    cloudCol: new THREE.Color(0x33476b),
+    cloudOp: 0.06,
+    starInt: 1.0,
+  };
+}
+
 const skyDome = new THREE.Mesh(
-  new THREE.SphereGeometry(50, 28, 16),
+  new THREE.SphereGeometry(50, 40, 24),
   new THREE.ShaderMaterial({
     side: THREE.BackSide,
     depthWrite: false,
@@ -261,22 +401,142 @@ const skyDome = new THREE.Mesh(
       }
     `,
     fragmentShader: `
+      uniform sampler2D tSkyA;
+      uniform sampler2D tSkyB;
+      uniform float uSkyReadyA;
+      uniform float uSkyReadyB;
+      uniform float uSkyMix;
+      uniform float uSunAzimuth;
+      uniform vec3 uSkyTint;
+      uniform float uSkyExposure;
       uniform vec3 topColor;
       uniform vec3 midColor;
       uniform vec3 horizonColor;
+      uniform vec3 fogColor;
+      uniform vec3 mountainColor;
       uniform vec3 sunDir;
       uniform vec3 sunColor;
       uniform float sunGlow;
+      uniform vec3 cloudColor;
+      uniform float cloudOpacity;
+      uniform float starIntensity;
+      uniform float uTime;
       varying vec3 vDir;
+
+      const float PI = 3.14159265359;
+      const float TWO_PI = 6.28318530718;
+
+      float hash31(vec3 p) {
+        p = fract(p * 0.1031);
+        p += dot(p, p.yzx + 33.33);
+        return fract((p.x + p.y) * p.z);
+      }
+
+      float hash21(vec2 p) {
+        p = fract(p * vec2(123.34, 456.21));
+        p += dot(p, p + 45.32);
+        return fract(p.x * p.y);
+      }
+
+      float vnoise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        return mix(
+          mix(hash21(i), hash21(i + vec2(1.0, 0.0)), u.x),
+          mix(hash21(i + vec2(0.0, 1.0)), hash21(i + vec2(1.0, 1.0)), u.x),
+          u.y
+        );
+      }
+
+      float cloudFbm(vec2 p) {
+        float v = 0.0;
+        float a = 0.52;
+        mat2 rot = mat2(0.80, -0.60, 0.60, 0.80);
+        for (int i = 0; i < 3; i++) {
+          v += a * vnoise(p);
+          p = rot * p * 2.05 + vec2(11.3, 6.9);
+          a *= 0.48;
+        }
+        return v;
+      }
+
       void main() {
         vec3 dir = normalize(vDir);
-        float h = clamp(dir.y, 0.0, 1.0);
-        vec3 col = mix(horizonColor, midColor, smoothstep(0.0, 0.24, h));
-        col = mix(col, topColor, smoothstep(0.22, 0.85, h));
-        float sunAmt = max(dot(dir, normalize(sunDir)), 0.0);
-        col += sunColor * pow(sunAmt, 14.0) * sunGlow;
-        col += sunColor * pow(sunAmt, 240.0) * (sunGlow * 2.4);
+        float y = dir.y;
+        float h = clamp(y, 0.0, 1.0);
+
+        // 1. Nền khí quyển dự phòng khi ảnh 360° đang nạp
+        vec3 procCol = mix(horizonColor, midColor, smoothstep(0.0, 0.24, h));
+        procCol = mix(procCol, topColor, smoothstep(0.22, 0.85, h));
+
+        // 2. Lấy mẫu bầu trời ảnh thực tế 360° đồng bộ hướng Mặt trời Huế
+        float az = atan(dir.x, -dir.z);
+        float relAz = az - uSunAzimuth + uTime * 0.0010;
+        float eqU = fract(relAz / TWO_PI + 0.5);
+        float elev = asin(clamp(y, -1.0, 1.0));
+        float eqV = clamp(elev / PI + 0.504, 0.002, 0.998);
+        vec2 eqUv = vec2(eqU, eqV);
+
+        vec3 sampleA = texture2D(tSkyA, eqUv).rgb * uSkyTint * uSkyExposure;
+        vec3 sampleB = texture2D(tSkyB, eqUv).rgb * uSkyTint * uSkyExposure;
+        vec3 colA = mix(procCol, sampleA, clamp(uSkyReadyA, 0.0, 1.0));
+        vec3 colB = mix(procCol, sampleB, clamp(uSkyReadyB, 0.0, 1.0));
+        float hasPhoto = max(uSkyReadyA * (1.0 - uSkyMix), uSkyReadyB * uSkyMix);
+        vec3 col = mix(colA, colB, clamp(uSkyMix, 0.0, 1.0));
+
+        // 3. Mây tầng cao trôi nhẹ thời gian thực trên bầu trời Cố đô
+        vec3 sDir = normalize(sunDir);
+        float sunAmt = max(dot(dir, sDir), 0.0);
+        if (cloudOpacity > 0.01 && y > 0.012) {
+          vec2 cPlane = dir.xz / (y + 0.25);
+          float c1 = cloudFbm(cPlane * 0.45 + vec2(uTime * 0.007, uTime * 0.0028));
+          float c2 = cloudFbm(cPlane * 0.88 - vec2(uTime * 0.004, -uTime * 0.005));
+          float wisps = smoothstep(0.50, 0.82, c1 * 0.65 + c2 * 0.35);
+          float cMask = smoothstep(0.012, 0.16, y) * (1.0 - smoothstep(0.75, 0.98, y) * 0.35);
+          float sunLit = 0.78 + 0.40 * pow(sunAmt, 3.0);
+          col = mix(col, cloudColor * sunLit, clamp(wisps * cMask * cloudOpacity, 0.0, 0.38));
+        }
+
+        // 4. Quầng nắng tán xạ Mie & đĩa Mặt trời (hòa mượt cùng ảnh 360°)
+        float haloFactor = mix(1.0, 0.42, clamp(hasPhoto, 0.0, 1.0));
+        float aboveH = smoothstep(-0.03, 0.05, y);
+        col += sunColor * pow(sunAmt, 12.0) * sunGlow * haloFactor * aboveH;
+        col += sunColor * pow(sunAmt, 220.0) * (sunGlow * 2.1 * mix(1.0, 0.6, clamp(hasPhoto, 0.0, 1.0))) * aboveH;
+
+        // 5. Sao đêm dạng điểm tròn sắc nét trên Hoàng Thành khi về khuya
+        if (starIntensity > 0.01 && y > 0.04) {
+          vec3 sGrid = dir * 210.0;
+          vec3 cell = floor(sGrid);
+          vec3 local = fract(sGrid) - 0.5;
+          float r = hash31(cell);
+          if (r > 0.991) {
+            float core = smoothstep(0.22, 0.03, length(local));
+            float tw = 0.6 + 0.4 * sin(uTime * 2.3 + r * 92.0);
+            float sf = smoothstep(0.04, 0.28, y);
+            col += vec3(0.88, 0.94, 1.0) * core * ((r - 0.991) * 115.0) * tw * starIntensity * sf;
+          }
+        }
+
+        // 6. Rặng núi xa Trường Sơn / Ngự Bình mờ sương & hòa dải chân trời liền mạch với FogExp2
+        float ridge1 = 0.018 + 0.011 * sin(az * 3.0 + 0.6) + 0.005 * sin(az * 7.0 - 1.1) + 0.0025 * sin(az * 17.0 + 2.3);
+        float ridge2 = 0.009 + 0.006 * sin(az * 4.0 + 2.2) + 0.003 * sin(az * 11.0 + 0.4);
+        float farPeak = smoothstep(ridge1 + 0.004, ridge1 - 0.002, y) * step(-0.01, y);
+        float nearPeak = smoothstep(ridge2 + 0.003, ridge2 - 0.0015, y) * step(-0.01, y);
+        vec3 farRidgeCol = mix(mountainColor, fogColor, 0.65);
+        vec3 nearRidgeCol = mix(mountainColor * 0.78, fogColor, 0.48);
+        col = mix(col, farRidgeCol, farPeak * 0.74);
+        col = mix(col, nearRidgeCol, nearPeak * 0.86);
+
+        float hazeBand = exp(-max(y, 0.0) * 32.0) * 0.56;
+        if (y < 0.0) {
+          hazeBand = max(hazeBand, smoothstep(0.0, -0.04, y) * 0.96);
+        }
+        col = mix(col, fogColor, clamp(hazeBand, 0.0, 0.96));
+
         gl_FragColor = vec4(col, 1.0);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
       }
     `,
   })
@@ -364,12 +624,12 @@ function applyQualityPreset(key, notifyUser = false) {
 
 // --- Dựng nền địa hình tổng thể Tam Trùng Thành Quách (PBR Thực Tế) ---
 function buildMasterTerrainGuide() {
-  const groundMat = huePbr.createTiledSurfaceMaterial("lush_grass", 0x6b7c59, 840, 920, {
+  const groundMat = huePbr.createTiledSurfaceMaterial("lush_grass", 0x6b7c59, 2320, 2320, {
     roughness: 0.92,
     normalScale: 0.75,
   });
 
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(4200, 4600), groundMat);
+  const ground = new THREE.Mesh(new THREE.CircleGeometry(5800, 64), groundMat);
   ground.rotation.x = -Math.PI / 2;
   ground.position.set(0, -0.08, 120);
   ground.receiveShadow = true;
@@ -1434,8 +1694,27 @@ function updateTimeOfDay(hour) {
   skyUniforms.topColor.value.copy(topCol);
   skyUniforms.midColor.value.copy(midCol);
   skyUniforms.horizonColor.value.copy(horCol);
+  skyUniforms.fogColor.value.copy(fogCol);
+  skyUniforms.mountainColor.value.copy(midCol).lerp(new THREE.Color(0x2d3f4d), 0.55);
   skyUniforms.sunColor.value.copy(sunCol);
   skyUniforms.sunGlow.value = h >= 18.8 ? 0.06 : h >= 16.8 || h <= 6.8 ? 0.62 : 0.32;
+
+  const skyBlend = getHueSkyBlendForHour(h);
+  const readyA = skyLoadedSet.has(skyBlend.idA);
+  const readyB = skyLoadedSet.has(skyBlend.idB);
+  const sunAz = Math.atan2(currentSunDir.x, -currentSunDir.z);
+
+  skyUniforms.tSkyA.value = readyA ? skyTextures.get(skyBlend.idA) : skyPlaceholderTex;
+  skyUniforms.tSkyB.value = readyB ? skyTextures.get(skyBlend.idB) : skyPlaceholderTex;
+  skyUniforms.uSkyReadyA.value = readyA ? 1.0 : 0.0;
+  skyUniforms.uSkyReadyB.value = readyB ? 1.0 : 0.0;
+  skyUniforms.uSkyMix.value = skyBlend.mix;
+  skyUniforms.uSunAzimuth.value = sunAz;
+  skyUniforms.uSkyTint.value.copy(skyBlend.tint);
+  skyUniforms.uSkyExposure.value = skyBlend.exposure;
+  skyUniforms.cloudColor.value.copy(skyBlend.cloudCol);
+  skyUniforms.cloudOpacity.value = skyBlend.cloudOp;
+  skyUniforms.starIntensity.value = skyBlend.starInt;
 
   scene.fog.color.copy(fogCol);
   const inPlayerMode = STATE.cameraMode === "gta" || STATE.cameraMode === "walk";
@@ -1450,6 +1729,16 @@ function updateTimeOfDay(hour) {
   if (riverMaterial) {
     riverMaterial.color.copy(lerpColorTriple(0x274f57, midCol.getHex(), h >= 17.0 ? 0.45 : 0.16));
   }
+  const domSkyId = skyBlend.mix >= 0.5 ? skyBlend.idB : skyBlend.idA;
+  const skyPhotoInfo = skyLoadedSet.has(domSkyId)
+    ? {
+        skyId: domSkyId,
+        texture: skyTextures.get(domSkyId),
+        tintColor: skyBlend.tint,
+        sunAzimuth: sunAz,
+      }
+    : null;
+  huePbr.updateSkyEnvironment(topCol, midCol, horCol, sunCol, currentSunDir, h, skyPhotoInfo);
 
   if (h >= 17.2) {
     currentLanternPower = THREE.MathUtils.clamp((h - 17.2) / 0.55, 0, 1);
@@ -4838,18 +5127,20 @@ function bindUiEvents() {
 
 // --- API điều khiển cho Playwright Headless QA (`ingest_and_audit.py`) ---
 window.__HUE_VIEWER__ = {
-  isReady: () => STATE.ready && STATE.pendingLoads === 0,
+  isReady: () => STATE.ready && STATE.pendingLoads === 0 && pendingSkyLoads === 0,
   waitForAssets: async (timeoutMs = 25000) => {
     await engineReadyPromise;
     const start = Date.now();
-    while ((!STATE.ready || STATE.pendingLoads > 0) && Date.now() - start < timeoutMs) {
+    while ((!STATE.ready || STATE.pendingLoads > 0 || pendingSkyLoads > 0) && Date.now() - start < timeoutMs) {
       await new Promise((r) => setTimeout(r, 100));
     }
+    updateTimeOfDay(STATE.hour);
     updateTileCulling(true);
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
     return {
       ready: STATE.ready,
       pendingLoads: STATE.pendingLoads,
+      pendingSkyLoads,
       rawNodes: STATE.totalRawNodes,
       optNodes: STATE.totalOptNodes,
       drawCalls: renderer.info.render.calls,
@@ -5103,6 +5394,7 @@ function animate(now) {
     updatePlayerSimulation(dt);
   }
 
+  skyUniforms.uTime.value = now * 0.001;
   huePbr.update(dt);
   updateTileCulling(false);
   renderEngine.updateCsmAndShadowTrigger(now, IS_QA_MODE, requestShadowUpdate);
@@ -5121,5 +5413,6 @@ applyGtaOutfit(0);
 applyGtaCamPreset(0, false);
 bindUiEvents();
 updateTimeOfDay(9.5);
+preloadHueSkyTextures();
 loadPipelineState(false);
 requestAnimationFrame(animate);

@@ -1,0 +1,42 @@
+{
+  "version": "1.0.0",
+  "license": "CC0 1.0 Universal (Poly Haven Pure Skies)",
+  "resolution": "2048x1024 Equirectangular 360° (sun/moon azimuth calibrated to u=0.5)",
+  "skies": [
+    {
+      "id": "morning",
+      "file": "sky_morning.jpg",
+      "source": "Poly Haven CC0 (citrus_orchard_road_puresky)",
+      "label_vi": "Bình minh sương sớm",
+      "sun_u": 0.5
+    },
+    {
+      "id": "day",
+      "file": "sky_day.jpg",
+      "source": "Poly Haven CC0 (kloofendal_48d_partly_cloudy_puresky)",
+      "label_vi": "Trời xanh mây trắng",
+      "sun_u": 0.5
+    },
+    {
+      "id": "sunset",
+      "file": "sky_sunset.jpg",
+      "source": "Poly Haven CC0 (kloppenheim_06_puresky)",
+      "label_vi": "Hoàng hôn nắng vàng",
+      "sun_u": 0.5
+    },
+    {
+      "id": "dusk",
+      "file": "sky_dusk.jpg",
+      "source": "Poly Haven CC0 (belfast_sunset_puresky)",
+      "label_vi": "Chạng vạng tím hoàng hôn",
+      "sun_u": 0.5
+    },
+    {
+      "id": "night",
+      "file": "sky_night.jpg",
+      "source": "Poly Haven CC0 (qwantani_moonrise_puresky)",
+      "label_vi": "Đêm trăng sao",
+      "sun_u": 0.5
+    }
+  ]
+}
