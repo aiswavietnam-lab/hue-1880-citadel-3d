@@ -261,6 +261,7 @@ export class HuePbrMaterialLibrary {
       tex.wrapT = THREE.RepeatWrapping;
       tex.anisotropy = this.currentAniso;
       tex.colorSpace = isSrgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+      tex.userData = { ...(tex.userData || {}), shared: true };
       if (!customRepeat) this.textureCache.set(baseKey, tex);
     }
 
@@ -269,6 +270,7 @@ export class HuePbrMaterialLibrary {
       tex.wrapS = THREE.RepeatWrapping;
       tex.wrapT = THREE.RepeatWrapping;
       tex.colorSpace = isSrgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+      tex.userData = { ...(tex.userData || {}), shared: true };
       this.textureCache.set(key, tex);
     }
     return tex;
@@ -676,6 +678,7 @@ export class HuePbrMaterialLibrary {
       envMapIntensity: spec.envIntensity,
     });
     pbrMat.userData.baseNormalScale = spec.normalScale;
+    pbrMat.userData.shared = true;
 
     this.materialPool.set(poolKey, pbrMat);
     this.upgradedMaterials.push(pbrMat);

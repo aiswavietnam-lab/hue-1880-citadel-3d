@@ -3,6 +3,13 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { HuePbrMaterialLibrary } from "./pbr_materials.js";
+import {
+  HueRenderCullingEngine,
+  classifyMeshInterior,
+  disposeObject3D,
+  buildTileOccluderAndZones,
+  buildTileSpatialCollider,
+} from "./render_culling_engine.js";
 
 /* =========================================================================
  * TRÌNH XEM QUY HOẠCH WEBGL & NHẬP VAI GTA — KINH THÀNH HUẾ 1880
@@ -27,7 +34,15 @@ const QUALITY_PRESETS = {
     label: "Siêu mượt",
     dprMax: 1.0,
     shadows: false,
+    csmCascades: 0,
     shadowSize: 1024,
+    shadowFarGta: 280,
+    shadowFarBird: 600,
+    bloom: false,
+    sao: false,
+    iblIntensity: 0.35,
+    interiorDistGta: 75,
+    interiorDistBird: 140,
     gtaCullDist: 280,
     birdCullDist: 2000,
     farGta: 650,
@@ -38,8 +53,16 @@ const QUALITY_PRESETS = {
     label: "Cân bằng",
     dprMax: 1.25,
     shadows: true,
+    csmCascades: 3,
     shadowSize: 1024,
-    gtaCullDist: 440,
+    shadowFarGta: 440,
+    shadowFarBird: 1200,
+    bloom: false,
+    sao: false,
+    iblIntensity: 0.45,
+    interiorDistGta: 110,
+    interiorDistBird: 200,
+    gtaCullDist: 460,
     birdCullDist: 3200,
     farGta: 980,
     farBird: 6200,
@@ -47,14 +70,41 @@ const QUALITY_PRESETS = {
   },
   high: {
     label: "Cao",
-    dprMax: 2.0,
+    dprMax: 1.5,
     shadows: true,
-    shadowSize: 2048,
+    csmCascades: 3,
+    shadowSize: 1536,
+    shadowFarGta: 560,
+    shadowFarBird: 1350,
+    bloom: true,
+    sao: false,
+    iblIntensity: 0.58,
+    interiorDistGta: 165,
+    interiorDistBird: 280,
     gtaCullDist: 920,
     birdCullDist: 5000,
     farGta: 1850,
     farBird: 7500,
-    maxPointLights: 4,
+    maxPointLights: 6,
+  },
+  cinematic: {
+    label: "Điện ảnh",
+    dprMax: 1.5,
+    shadows: true,
+    csmCascades: 3,
+    shadowSize: 2048,
+    shadowFarGta: 650,
+    shadowFarBird: 1600,
+    bloom: true,
+    sao: true,
+    iblIntensity: 0.72,
+    interiorDistGta: 200,
+    interiorDistBird: 340,
+    gtaCullDist: 1050,
+    birdCullDist: 5600,
+    farGta: 2100,
+    farBird: 7800,
+    maxPointLights: 8,
   },
 };
 
@@ -70,6 +120,7 @@ const STATE = {
   showGrid: true,
   showLabels: true,
   showHumans: true,
+  smartCulling: true,
   autoPollTimer: null,
   ready: false,
   pendingLoads: 0,
@@ -117,7 +168,7 @@ const renderer = new THREE.WebGLRenderer({
   canvas,
   antialias: !IS_QA_MODE,
   powerPreference: "high-performance",
-  preserveDrawingBuffer: IS_QA_MODE, // Chỉ giữ buffer khi Playwright QA chụp ảnh
+  preserveDrawingBuffer: IS_QA_MODE || URL_PARAMS.get("preserve") === "1", // Chỉ giữ buffer khi Playwright QA hoặc ?preserve=1 chụp ảnh
 });
 renderer.setPixelRatio(IS_QA_MODE ? 1 : Math.min(window.devicePixelRatio || 1, QUALITY_PRESETS[STATE.quality].dprMax));
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -132,7 +183,7 @@ renderer.shadowMap.needsUpdate = true;
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0xcbd5df, 0.00028);
-const huePbr = new HuePbrMaterialLibrary(renderer, scene, ASSET_ROOT || ".");
+const huePbr = new HuePbrMaterialLibrary(renderer, scene, ".");
 huePbr.applyQualityPreset(STATE.quality);
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 6500);
@@ -256,28 +307,40 @@ scene.add(sunLight.target);
 const ambientFill = new THREE.AmbientLight(0x403835, 0.3);
 scene.add(ambientFill);
 
+const renderEngine = new HueRenderCullingEngine({ renderer, scene, camera, sunLight });
+renderEngine.setSkyDome(skyDome);
+
 // --- Áp dụng cấu hình Đồ họa / Hiệu năng ---
 function applyQualityPreset(key, notifyUser = false) {
   const preset = QUALITY_PRESETS[key] || QUALITY_PRESETS.balanced;
   STATE.quality = key;
   huePbr.applyQualityPreset(key);
 
-  renderer.setPixelRatio(IS_QA_MODE ? 1 : Math.min(window.devicePixelRatio || 1, preset.dprMax));
+  const dpr = IS_QA_MODE ? 1 : Math.min(window.devicePixelRatio || 1, preset.dprMax);
+  renderer.setPixelRatio(dpr);
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const wantShadows = !IS_QA_MODE && preset.shadows;
   renderer.shadowMap.enabled = wantShadows;
-  sunLight.castShadow = wantShadows;
-  if (wantShadows && sunLight.shadow.mapSize.x !== preset.shadowSize) {
+  const isGroundMode = STATE.cameraMode === "gta" || STATE.cameraMode === "walk";
+  camera.far = isGroundMode ? preset.farGta : preset.farBird;
+  camera.updateProjectionMatrix();
+
+  renderEngine.configureShadowsForPreset(preset, isGroundMode, IS_QA_MODE);
+  if (!renderEngine.stats.csmActive && wantShadows && sunLight.shadow.mapSize.x !== preset.shadowSize) {
     sunLight.shadow.mapSize.set(preset.shadowSize, preset.shadowSize);
     if (sunLight.shadow.map) {
       sunLight.shadow.map.dispose();
       sunLight.shadow.map = null;
     }
   }
-
-  camera.far = STATE.cameraMode === "gta" || STATE.cameraMode === "walk" ? preset.farGta : preset.farBird;
-  camera.updateProjectionMatrix();
+  if (!IS_QA_MODE) {
+    renderEngine.ensureIBL(preset.iblIntensity ?? 0.45);
+  }
+  renderEngine.ensurePostProcessing(preset, IS_QA_MODE);
+  renderEngine.resizePostProcessing(window.innerWidth, window.innerHeight, dpr);
+  renderEngine.onCameraProjectionChanged();
+  renderEngine.invalidateOcclusion();
 
   // Cập nhật lại shader shadow nếu thay đổi bật/tắt bóng
   scene.traverse((obj) => {
@@ -289,40 +352,14 @@ function applyQualityPreset(key, notifyUser = false) {
     }
   });
   applyLanternPowerOnly();
+  if (typeof updateTimeOfDay === "function" && STATE.ready) {
+    updateTimeOfDay(STATE.hour);
+  }
   if (wantShadows) requestShadowUpdate(true);
 
   const sel = document.getElementById("quality-select");
   if (sel && sel.value !== key) sel.value = key;
   if (notifyUser) showToast(`Đã chuyển mức đồ họa: ${preset.label}`);
-}
-
-// --- Tạo kết cấu bề mặt địa hình nhẹ bằng Canvas ---
-function createGroundTexture() {
-  const c = document.createElement("canvas");
-  c.width = 512;
-  c.height = 512;
-  const ctx = c.getContext("2d");
-  ctx.fillStyle = "#5c684f";
-  ctx.fillRect(0, 0, 512, 512);
-
-  for (let i = 0; i < 6500; i++) {
-    const x = Math.random() * 512;
-    const y = Math.random() * 512;
-    const r = 1 + Math.random() * 3.5;
-    ctx.fillStyle =
-      i % 3 === 0
-        ? "rgba(74, 88, 60, 0.35)"
-        : i % 3 === 1
-          ? "rgba(112, 108, 84, 0.24)"
-          : "rgba(56, 68, 48, 0.28)";
-    ctx.fillRect(x, y, r, r);
-  }
-  const tex = new THREE.CanvasTexture(c);
-  tex.wrapS = THREE.RepeatWrapping;
-  tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(26, 30);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
 }
 
 // --- Dựng nền địa hình tổng thể Tam Trùng Thành Quách (PBR Thực Tế) ---
@@ -753,6 +790,28 @@ function registerLanternMaterial(mat) {
   }
 }
 
+function sanitizeGeometryAttributes(geom) {
+  if (!geom || !geom.attributes) return;
+  const norm = geom.attributes.normal;
+  if (norm && norm.array) {
+    const arr = norm.array;
+    let fixed = false;
+    for (let i = 0; i + 2 < arr.length; i += 3) {
+      const nx = arr[i];
+      const ny = arr[i + 1];
+      const nz = arr[i + 2];
+      const lenSq = nx * nx + ny * ny + nz * nz;
+      if (!Number.isFinite(lenSq) || lenSq < 1e-8) {
+        arr[i] = 0;
+        arr[i + 1] = 1;
+        arr[i + 2] = 0;
+        fixed = true;
+      }
+    }
+    if (fixed) norm.needsUpdate = true;
+  }
+}
+
 function cloneNormalizedGeometry(src, matrix, wantUv, flipWinding) {
   const posSrc = src.attributes.position;
   if (!posSrc) return null;
@@ -786,6 +845,7 @@ function cloneNormalizedGeometry(src, matrix, wantUv, flipWinding) {
   g.setIndex(new THREE.BufferAttribute(idxArr, 1));
   g.applyMatrix4(matrix);
   if (!g.attributes.normal) g.computeVertexNormals();
+  sanitizeGeometryAttributes(g);
   return g;
 }
 
@@ -797,32 +857,61 @@ function optimizeTileRoot(rawRoot, tile) {
   rawRoot.rotation.set(0, 0, 0);
   rawRoot.scale.set(1, 1, 1);
   rawRoot.updateWorldMatrix(true, true);
+
+  const tileWorldPos = planToThree(tile.center.x, tile.center.y, tile.elevation_z);
+
+  // Lưới va chạm không gian 2D CSR chuẩn Half-Life (chạy TRƯỚC khi gộp vật liệu PBR để giữ nguyên 100% nhãn vật liệu gốc)
+  const spatialCollider = buildTileSpatialCollider(tile, tileWorldPos, rawRoot);
+
+  // Ghi nhận phân loại Nội thất / Đèn lồng theo tên vật liệu gốc trước khi nâng cấp sang bể PBR dùng chung
+  rawRoot.traverse((obj) => {
+    if (!obj.isMesh || !obj.geometry || !obj.material) return;
+    sanitizeGeometryAttributes(obj.geometry);
+    const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+    mats.forEach(registerLanternMaterial);
+    obj.userData._preClassifiedInterior = classifyMeshInterior(obj, rawRoot);
+  });
+
+  // Nâng cấp toàn bộ bề mặt cung điện sang vật liệu PBR quét thật (Poly Haven CC0) dùng chung
   huePbr.upgradeTileHierarchy(rawRoot);
 
   const instGroups = new Map();
   const passthrough = [];
+  const exteriorMeshesForOccluder = [];
+  const interiorMeshBoxes = [];
   let rawCount = 0;
 
   rawRoot.traverse((obj) => {
     if (!obj.isMesh || !obj.geometry || !obj.material) return;
     rawCount += 1;
-    const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
-    mats.forEach(registerLanternMaterial);
+
+    const isInterior = Boolean(obj.userData?._preClassifiedInterior);
+    if (!obj.geometry.boundingBox) obj.geometry.computeBoundingBox();
+
+    if (isInterior) {
+      if (obj.geometry.boundingBox) {
+        const localBox = obj.geometry.boundingBox.clone().applyMatrix4(obj.matrixWorld);
+        interiorMeshBoxes.push(localBox);
+      }
+    } else {
+      exteriorMeshesForOccluder.push(obj);
+    }
 
     if (obj.isSkinnedMesh || Array.isArray(obj.material) || obj.geometry.morphAttributes?.position) {
-      passthrough.push({ obj, matrix: obj.matrixWorld.clone() });
+      passthrough.push({ obj, matrix: obj.matrixWorld.clone(), isInterior });
       return;
     }
 
     const det = obj.matrixWorld.determinant();
     const negFlag = det < 0 ? "N" : "P";
-    const key = `${obj.geometry.uuid}|${obj.material.uuid}|${negFlag}`;
+    const key = `${isInterior ? "INT" : "EXT"}|${obj.geometry.uuid}|${obj.material.uuid}|${negFlag}`;
     let bucket = instGroups.get(key);
     if (!bucket) {
       bucket = {
         geometry: obj.geometry,
         material: obj.material,
         neg: det < 0,
+        isInterior,
         matrices: [],
       };
       instGroups.set(key, bucket);
@@ -832,35 +921,29 @@ function optimizeTileRoot(rawRoot, tile) {
 
   const optGroup = new THREE.Group();
   optGroup.name = `OPT_${tile.tile_id}`;
-  const matMergeBuckets = new Map(); // material.uuid -> { material, wantUv, geos: [] }
-  const colliderGeos = [];
-  let colliderTriCount = 0;
+  const exteriorGroup = new THREE.Group();
+  exteriorGroup.name = `${tile.tile_id}_EXT`;
+  const interiorGroup = new THREE.Group();
+  interiorGroup.name = `${tile.tile_id}_INT`;
+  optGroup.add(exteriorGroup, interiorGroup);
+  optGroup.userData.exteriorGroup = exteriorGroup;
+  optGroup.userData.interiorGroup = interiorGroup;
+
+  const matMergeBuckets = new Map(); // role|material.uuid -> { material, wantUv, isInterior, geos: [] }
   let optCount = 0;
 
   for (const group of instGroups.values()) {
-    const { geometry, material, neg, matrices } = group;
+    const { geometry, material, neg, isInterior, matrices } = group;
     const posAttr = geometry.attributes.position;
     if (!posAttr) continue;
     const vertCount = posAttr.count;
-    const triCount = geometry.index ? geometry.index.count / 3 : vertCount / 3;
     const expandedVerts = vertCount * matrices.length;
-
-    // Thu thập hình học tầng thấp (sân, bậc thềm, cầu, tường) cho va chạm GTA siêu nhanh
-    if (!geometry.boundingBox) geometry.computeBoundingBox();
-    if (triCount <= 3500 && colliderTriCount < 14000) {
-      for (let i = 0; i < matrices.length && colliderTriCount < 14000; i++) {
-        _tmpBox3.copy(geometry.boundingBox).applyMatrix4(matrices[i]);
-        if (_tmpBox3.min.y < 3.6 && _tmpBox3.max.y > -2.5) {
-          const cg = cloneNormalizedGeometry(geometry, matrices[i], false, neg);
-          if (cg) {
-            colliderGeos.push(cg);
-            colliderTriCount += triCount;
-          }
-        }
-      }
-    }
+    const targetParent = isInterior ? interiorGroup : exteriorGroup;
 
     // Chỉ giữ InstancedMesh cho nhóm lặp cực nặng (>60k đỉnh khi nhân bản) để tiết kiệm RAM
+    const matNameLow = String(material?.name || "").toLowerCase();
+    const isFlatMat = /(co_?xanh|nuoc|water|song_?huong|gach_?bat_?trang|ground)/.test(matNameLow);
+
     if (!neg && matrices.length >= 24 && expandedVerts > 60000) {
       const inst = new THREE.InstancedMesh(geometry, material, matrices.length);
       for (let i = 0; i < matrices.length; i++) {
@@ -869,16 +952,16 @@ function optimizeTileRoot(rawRoot, tile) {
       inst.instanceMatrix.needsUpdate = true;
       if (typeof inst.computeBoundingSphere === "function") inst.computeBoundingSphere();
       if (typeof inst.computeBoundingBox === "function") inst.computeBoundingBox();
-      inst.castShadow = true;
+      inst.castShadow = !isInterior && !isFlatMat;
       inst.receiveShadow = true;
       inst.frustumCulled = true;
       freezeStaticObject(inst);
-      optGroup.add(inst);
+      targetParent.add(inst);
       optCount += 1;
       continue;
     }
 
-    // Gộp toàn bộ các khối còn lại theo từng Vật liệu -> chỉ còn ~15–20 draw call / ô!
+    // Gộp các khối còn lại theo từng Vật liệu & vai trò Ngoại thất/Nội thất
     const wantUv = Boolean(
       material.map ||
         material.normalMap ||
@@ -888,10 +971,11 @@ function optimizeTileRoot(rawRoot, tile) {
         material.aoMap ||
         material.alphaMap
     );
-    let mb = matMergeBuckets.get(material.uuid);
+    const mbKey = `${isInterior ? "INT" : "EXT"}|${material.uuid}`;
+    let mb = matMergeBuckets.get(mbKey);
     if (!mb) {
-      mb = { material, wantUv, geos: [] };
-      matMergeBuckets.set(material.uuid, mb);
+      mb = { material, wantUv, isInterior, geos: [] };
+      matMergeBuckets.set(mbKey, mb);
     }
     for (let i = 0; i < matrices.length; i++) {
       const ng = cloneNormalizedGeometry(geometry, matrices[i], mb.wantUv, neg);
@@ -916,11 +1000,16 @@ function optimizeTileRoot(rawRoot, tile) {
       merged.computeBoundingBox();
       merged.computeBoundingSphere();
       const mesh = new THREE.Mesh(merged, mb.material);
-      mesh.castShadow = true;
+      const matNameLow = String(mb.material?.name || "").toLowerCase();
+      const isFlatSurface =
+        /(co_?xanh|nuoc|water|song_?huong|gach_?bat_?trang|ground)/.test(matNameLow) &&
+        merged.boundingBox &&
+        merged.boundingBox.max.y - merged.boundingBox.min.y < 1.35;
+      mesh.castShadow = !mb.isInterior && !isFlatSurface;
       mesh.receiveShadow = true;
       mesh.frustumCulled = true;
       freezeStaticObject(mesh);
-      optGroup.add(mesh);
+      (mb.isInterior ? interiorGroup : exteriorGroup).add(mesh);
       optCount += 1;
     }
   }
@@ -928,47 +1017,60 @@ function optimizeTileRoot(rawRoot, tile) {
   for (const p of passthrough) {
     const mesh = p.obj.clone();
     p.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
-    mesh.castShadow = true;
+    mesh.castShadow = !p.isInterior;
     mesh.receiveShadow = true;
     freezeStaticObject(mesh);
-    optGroup.add(mesh);
+    (p.isInterior ? interiorGroup : exteriorGroup).add(mesh);
     optCount += 1;
   }
 
-  const tileWorldPos = planToThree(tile.center.x, tile.center.y, tile.elevation_z);
   optGroup.position.copy(tileWorldPos);
   freezeStaticObject(optGroup);
   optGroup.updateMatrixWorld(true);
 
-  // Đóng gói 1 colliderMesh nhẹ nằm ngoài scene đồ họa (0 chi phí vẽ, raycast < 0.05ms)
-  const colliderMeshes = [];
-  if (colliderGeos.length > 0) {
-    let colMerged = null;
-    if (colliderGeos.length === 1) {
-      colMerged = colliderGeos[0];
-    } else {
-      try {
-        colMerged = mergeGeometries(colliderGeos, false);
-      } catch {
-        colMerged = null;
-      }
-      colliderGeos.forEach((g) => g.dispose());
-    }
-    if (colMerged) {
-      colMerged.computeBoundingBox();
-      colMerged.computeBoundingSphere();
-      const colMesh = new THREE.Mesh(colMerged, _colliderDummyMat);
-      colMesh.position.copy(tileWorldPos);
-      colMesh.updateMatrixWorld(true);
-      colliderMeshes.push(colMesh);
-    }
-  }
+  const { occluderMesh, elevatedBox, indoorZones } = buildTileOccluderAndZones(
+    tile,
+    tileWorldPos,
+    rawRoot,
+    exteriorMeshesForOccluder,
+    interiorMeshBoxes,
+    mergeGeometries
+  );
 
-  return { optGroup, colliderMeshes, rawCount, optCount };
+  return {
+    optGroup,
+    exteriorGroup,
+    interiorGroup,
+    occluderMesh,
+    elevatedBox,
+    indoorZones,
+    spatialCollider,
+    rawCount,
+    optCount,
+  };
 }
 
-// --- Hàng đợi nạp GLB ưu tiên từ trung tâm ra ngoại vi (tránh đứng trình duyệt) ---
+// --- Hàng đợi nạp GLB ưu tiên từ trung tâm ra ngoại vi (kèm bộ giải mã Draco/Meshopt/KTX2) ---
 const gltfLoader = new GLTFLoader();
+const engineReadyPromise = renderEngine
+  .initAddons(IS_FLAT_PUBLIC)
+  .then(() => {
+    renderEngine.configureGltfLoader(gltfLoader);
+    if (!IS_QA_MODE) {
+      const curPreset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
+      renderEngine.ensureIBL(curPreset.iblIntensity ?? 0.45);
+      renderEngine.configureShadowsForPreset(
+        curPreset,
+        STATE.cameraMode === "gta" || STATE.cameraMode === "walk",
+        IS_QA_MODE
+      );
+      renderEngine.ensurePostProcessing(curPreset, IS_QA_MODE);
+      renderEngine.setupObjectForCsm(scene);
+      updateTimeOfDay(STATE.hour);
+    }
+  })
+  .catch(() => {});
+
 const glbLoadQueue = [];
 let activeGlbLoads = 0;
 const MAX_CONCURRENT_GLB = IS_QA_MODE ? 6 : 2;
@@ -995,7 +1097,13 @@ function pumpGlbQueue() {
   }
 }
 
-function loadTileGlbNow(entry, versionKey) {
+async function loadTileGlbNow(entry, versionKey) {
+  try {
+    await engineReadyPromise;
+  } catch {
+    // ignore addon preload failure
+  }
+
   const { tile } = entry;
   const url = `${ASSET_ROOT}/${tile.glb_path}?v=${encodeURIComponent(versionKey)}`;
 
@@ -1004,14 +1112,37 @@ function loadTileGlbNow(entry, versionKey) {
     (gltf) => {
       if (entry.glbGroup) {
         loadedTilesGroup.remove(entry.glbGroup);
+        disposeObject3D(entry.glbGroup, renderEngine.csm);
         STATE.totalRawNodes = Math.max(0, STATE.totalRawNodes - (entry.rawCount || 0));
         STATE.totalOptNodes = Math.max(0, STATE.totalOptNodes - (entry.optCount || 0));
       }
+      if (entry.occluderMesh) {
+        disposeObject3D(entry.occluderMesh);
+        entry.occluderMesh = null;
+      }
+      entry.spatialCollider = null;
 
-      const { optGroup, colliderMeshes, rawCount, optCount } = optimizeTileRoot(gltf.scene, tile);
+      const {
+        optGroup,
+        exteriorGroup,
+        interiorGroup,
+        occluderMesh,
+        elevatedBox,
+        indoorZones,
+        spatialCollider,
+        rawCount,
+        optCount,
+      } = optimizeTileRoot(gltf.scene, tile);
       loadedTilesGroup.add(optGroup);
+      renderEngine.setupObjectForCsm(optGroup);
       entry.glbGroup = optGroup;
-      entry.colliderMeshes = colliderMeshes;
+      entry.exteriorGroup = exteriorGroup;
+      entry.interiorGroup = interiorGroup;
+      entry.occluderMesh = occluderMesh;
+      entry.elevatedBox = elevatedBox;
+      entry.indoorZones = indoorZones;
+      entry.isOccluded = false;
+      entry.spatialCollider = spatialCollider;
       entry.loadedSha = versionKey;
       entry.rawCount = rawCount;
       entry.optCount = optCount;
@@ -1020,6 +1151,10 @@ function loadTileGlbNow(entry, versionKey) {
 
       entry.boxMesh.visible = false;
       entry.edgeLine.material.opacity = 0.22;
+      if (typeof resnapPlayerToLoadedTileFloor === "function") {
+        resnapPlayerToLoadedTileFloor(tile);
+      }
+      renderEngine.invalidateOcclusion();
       applyLanternPowerOnly();
       requestShadowUpdate(false);
 
@@ -1100,6 +1235,11 @@ function rebuildGridFromManifest(manifest) {
         planToThree(tile.center.x, tile.center.y, tile.elevation_z + Math.min(tile.dimensions.max_height_m * 0.4, 14)),
         Math.hypot(w * 0.5, d * 0.5, Math.min(tile.dimensions.max_height_m, 35)) + 12
       );
+      const maxH = Math.max(tile.dimensions.max_height_m || 12, 8);
+      const worldBox = new THREE.Box3().setFromCenterAndSize(
+        planToThree(tile.center.x, tile.center.y, tile.elevation_z + maxH * 0.5),
+        new THREE.Vector3(w, maxH, d)
+      );
 
       tileObjects.set(tile.tile_id, {
         tile,
@@ -1110,9 +1250,16 @@ function rebuildGridFromManifest(manifest) {
         labelEl,
         labelVisible: false,
         glbGroup: null,
-        colliderMeshes: [],
+        exteriorGroup: null,
+        interiorGroup: null,
+        occluderMesh: null,
+        elevatedBox: null,
+        indoorZones: [],
+        isOccluded: false,
+        spatialCollider: null,
         loadedSha: null,
         worldSphere,
+        worldBox,
         rawCount: 0,
         optCount: 0,
       });
@@ -1132,8 +1279,16 @@ function rebuildGridFromManifest(manifest) {
       entry.labelEl.classList.remove("completed");
       if (entry.glbGroup) {
         loadedTilesGroup.remove(entry.glbGroup);
+        disposeObject3D(entry.glbGroup, renderEngine.csm);
+        if (entry.occluderMesh) disposeObject3D(entry.occluderMesh);
         entry.glbGroup = null;
-        entry.colliderMeshes = [];
+        entry.exteriorGroup = null;
+        entry.interiorGroup = null;
+        entry.occluderMesh = null;
+        entry.elevatedBox = null;
+        entry.indoorZones = [];
+        entry.isOccluded = false;
+        entry.spatialCollider = null;
         entry.loadedSha = null;
         entry.boxMesh.visible = true;
       }
@@ -1283,15 +1438,18 @@ function updateTimeOfDay(hour) {
   skyUniforms.sunGlow.value = h >= 18.8 ? 0.06 : h >= 16.8 || h <= 6.8 ? 0.62 : 0.32;
 
   scene.fog.color.copy(fogCol);
-  scene.fog.density = STATE.cameraMode === "gta" ? Math.max(fogDensity, 0.00062) : fogDensity;
+  const inPlayerMode = STATE.cameraMode === "gta" || STATE.cameraMode === "walk";
+  scene.fog.density = inPlayerMode ? Math.max(fogDensity, 0.00058) : fogDensity;
   sunLight.color.copy(sunCol);
   sunLight.intensity = sunInt;
   hemiLight.intensity = hemiInt;
+  const activePreset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
+  renderEngine.syncSunLightState(sunCol, sunInt);
+  renderEngine.updateIblForSunElevation(activePreset.iblIntensity ?? 0.45, THREE.MathUtils.radToDeg(alt));
 
   if (riverMaterial) {
     riverMaterial.color.copy(lerpColorTriple(0x274f57, midCol.getHex(), h >= 17.0 ? 0.45 : 0.16));
   }
-  huePbr.updateSkyEnvironment(topCol, midCol, horCol, sunCol, currentSunDir, h);
 
   if (h >= 17.2) {
     currentLanternPower = THREE.MathUtils.clamp((h - 17.2) / 0.55, 0, 1);
@@ -1301,6 +1459,9 @@ function updateTimeOfDay(hour) {
     currentLanternPower = 0.0;
   }
   applyLanternPowerOnly();
+  if (renderEngine.csm && renderEngine.stats.csmActive) {
+    renderEngine.csm.update();
+  }
   requestShadowUpdate(true);
 
   const hrs = Math.floor(h);
@@ -1321,34 +1482,133 @@ function updateTimeOfDay(hour) {
 }
 
 /* =========================================================================
- * CHẾ ĐỘ MÔ PHỎNG NHÂN VẬT NHẬP VAI GÓC NHÌN THỨ 3 KIỂU GTA (1.70m)
+ * HỆ THỐNG CHUYỂN ĐỘNG CHUẨN HALF-LIFE (GOLDSRC FPS 1.70M & GÓC NHÌN THỨ 3)
  * ========================================================================= */
+const MOVE_SETTINGS_STORAGE_KEY = "hue1880_hl_movement_v1";
+
+const DEFAULT_MOVE_SETTINGS = {
+  shiftMode: "hl2", // "hl2": Mặc định Đi bộ, giữ Shift Chạy | "hl1": Luôn Chạy, giữ Shift Đi bộ
+  walkSpeed: 4.2,
+  runSpeed: 8.6,
+  crouchSpeed: 2.2,
+  turboSpeed: 18.5,
+  jumpImpulse: 6.8,
+  gravity: 19.2,
+  mouseSens: 1.0,
+  viewBob: true,
+  invertY: false,
+};
+
+const moveSettings = { ...DEFAULT_MOVE_SETTINGS };
+
+function loadSavedMoveSettings() {
+  try {
+    const raw = window.localStorage?.getItem(MOVE_SETTINGS_STORAGE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return;
+    if (parsed.shiftMode === "hl1" || parsed.shiftMode === "hl2") {
+      moveSettings.shiftMode = parsed.shiftMode;
+    }
+    if (Number.isFinite(Number(parsed.walkSpeed))) {
+      moveSettings.walkSpeed = THREE.MathUtils.clamp(Number(parsed.walkSpeed), 2.4, 7.0);
+    }
+    if (Number.isFinite(Number(parsed.runSpeed))) {
+      moveSettings.runSpeed = THREE.MathUtils.clamp(Number(parsed.runSpeed), 6.0, 15.0);
+    }
+    if (Number.isFinite(Number(parsed.jumpImpulse))) {
+      moveSettings.jumpImpulse = THREE.MathUtils.clamp(Number(parsed.jumpImpulse), 4.8, 9.6);
+    }
+    if (Number.isFinite(Number(parsed.mouseSens))) {
+      moveSettings.mouseSens = THREE.MathUtils.clamp(Number(parsed.mouseSens), 0.35, 2.4);
+    }
+    if (typeof parsed.viewBob === "boolean") moveSettings.viewBob = parsed.viewBob;
+    if (typeof parsed.invertY === "boolean") moveSettings.invertY = parsed.invertY;
+  } catch {
+    // ignore storage errors in private/sandboxed mode
+  }
+}
+
+function saveMoveSettings() {
+  try {
+    window.localStorage?.setItem(MOVE_SETTINGS_STORAGE_KEY, JSON.stringify(moveSettings));
+  } catch {
+    // ignore storage errors
+  }
+}
+
 const GTA_CAM_PRESETS = [
-  { name: "Chuẩn GTA", dist: 5.2, shoulder: 0.46, height: 1.56, fov: 56 },
-  { name: "Toàn cảnh", dist: 9.6, shoulder: 0.0, height: 1.85, fov: 58 },
-  { name: "Gần vai", dist: 2.9, shoulder: 0.56, height: 1.54, fov: 54 },
+  { name: "Chuẩn", dist: 4.35, shoulder: 0.34, height: 1.30, fov: 56 },
+  { name: "Gần vai", dist: 2.45, shoulder: 0.42, height: 1.44, fov: 53 },
+  { name: "Toàn cảnh", dist: 7.8, shoulder: 0.0, height: 1.72, fov: 60 },
 ];
 
 const GTA_OUTFITS = [
   {
-    name: "Thị Vệ",
-    robe: 0x8c1d18, // Sơn son Cẩm Y Thị Vệ
-    skirt: 0x6f1512,
-    sash: 0x1f6b5c, // Thanh lưu ly
-    trim: 0xd9ae3a, // Thếp vàng
-    pants: 0x26211e,
+    name: "Cẩm Y Thị Vệ",
+    robe: 0x8f1d18, // Sơn son Cẩm Y Thị Vệ
+    skirt: 0x7a1713,
+    sash: 0x1b6b5a, // Đai lục bảo
+    trim: 0xdfb444, // Thếp vàng
+    pants: 0x231e1b,
+    collar: 0xf4eee1,
     hatMode: "guard",
+    badgeMode: "guard",
+    hasSaber: true,
+    hasJadePendant: false,
+    hasWraps: true,
   },
   {
     name: "Quan Văn",
-    robe: 0x1d4758, // Áo chàm xanh Triều Nguyễn
-    skirt: 0x163846,
-    sash: 0xd4a017, // Đai vàng
-    trim: 0xe6c052,
-    pants: 0x25282c,
+    robe: 0x1a4659, // Áo gấm Thanh lam Đại Triều
+    skirt: 0x153a4a,
+    sash: 0xcf9b22, // Đai kim tuyến
+    trim: 0xe6c35c,
+    pants: 0xf0eadc, // Quần lụa trắng cung đình
+    collar: 0xf7f2e7,
     hatMode: "mandarin",
+    badgeMode: "mandarin",
+    hasSaber: false,
+    hasJadePendant: true,
+    hasWraps: false,
+  },
+  {
+    name: "Hoàng Thân",
+    robe: 0xb67c1e, // Áo Ngũ Thân gấm Hoàng kim trầm
+    skirt: 0x9e6916,
+    sash: 0x8e1e1a, // Đai điều đỏ thẫm
+    trim: 0xf0cf6e,
+    pants: 0xf2ece0,
+    collar: 0xfaf5eb,
+    hatMode: "turban",
+    badgeMode: "noble",
+    hasSaber: false,
+    hasJadePendant: true,
+    hasWraps: false,
   },
 ];
+
+const PLAYER_RADIUS = 0.33;
+const PLAYER_STAND_HEIGHT = 1.70;
+const PLAYER_CROUCH_HEIGHT = 1.08;
+const PLAYER_STAND_EYE = 1.60;
+const PLAYER_CROUCH_EYE = 0.98;
+const PLAYER_MAX_STEP = 0.48;
+const SV_FRICTION = 8.2;
+const SV_STOPSPEED = 1.9;
+const SV_ACCELERATE = 11.8;
+const SV_AIRACCELERATE = 10.2;
+
+function normalizeAngleSigned(rad) {
+  let a = rad % (Math.PI * 2);
+  if (a > Math.PI) a -= Math.PI * 2;
+  if (a <= -Math.PI) a += Math.PI * 2;
+  return a;
+}
+
+function shortestAngleDiff(fromRad, toRad) {
+  return normalizeAngleSigned(toRad - fromRad);
+}
 
 const gtaState = {
   pos: planToThree(0, -95, 0), // Mặc định đứng trên Cầu Trung Đạo nhìn thẳng Điện Thái Hòa
@@ -1356,12 +1616,21 @@ const gtaState = {
   velY: 0,
   velZ: 0,
   grounded: true,
-  charYaw: 0, // 0 = nhìn thẳng hướng -Z (Điện Thái Hòa)
+  crouched: false,
+  currentEyeH: PLAYER_STAND_EYE,
+  stepEyeOffset: 0,
+  landDip: 0,
+  coyoteTimer: 0,
+  jumpBufferTimer: 0,
+  bobPhase: 0,
+  currentRoll: 0,
+  charYaw: 0, // 0 = mặt trước nhân vật (-Z) nhìn thẳng về Điện Thái Hòa
   camYaw: 0,
-  camPitch: 0.22,
+  fpsPitch: 0.04,
+  camPitch: 0.15,
   camPresetIdx: 0,
-  camDist: 5.2,
-  targetCamDist: 5.2,
+  camDist: 4.35,
+  targetCamDist: 4.35,
   camCurrentPos: new THREE.Vector3(0, 3.2, 100),
   camCurrentLook: new THREE.Vector3(0, 1.5, 90),
   animPhase: 0,
@@ -1373,21 +1642,378 @@ const gtaState = {
   lastY: 0,
   lastRadarDraw: 0,
   lastGroundY: 0,
+  lastCeilingY: Infinity,
+  lastCrosshairGap: 5,
+  initializedOnce: false,
   cachedSidebarWasCollapsed: false,
   rig: null,
 };
 
 function createSoftShadowTexture() {
   const c = document.createElement("canvas");
-  c.width = 64;
-  c.height = 64;
+  c.width = 128;
+  c.height = 128;
   const ctx = c.getContext("2d");
-  const grad = ctx.createRadialGradient(32, 32, 4, 32, 32, 30);
-  grad.addColorStop(0, "rgba(0, 0, 0, 0.56)");
-  grad.addColorStop(0.55, "rgba(0, 0, 0, 0.24)");
+  const grad = ctx.createRadialGradient(64, 64, 6, 64, 64, 60);
+  grad.addColorStop(0, "rgba(0, 0, 0, 0.64)");
+  grad.addColorStop(0.45, "rgba(0, 0, 0, 0.32)");
+  grad.addColorStop(0.8, "rgba(0, 0, 0, 0.10)");
   grad.addColorStop(1, "rgba(0, 0, 0, 0.0)");
   ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 64, 64);
+  ctx.fillRect(0, 0, 128, 128);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function createSilkBrocadeTextures() {
+  const cCol = document.createElement("canvas");
+  cCol.width = 256;
+  cCol.height = 256;
+  const ctx = cCol.getContext("2d");
+  ctx.fillStyle = "#e6e6e6";
+  ctx.fillRect(0, 0, 256, 256);
+
+  // Sợi dệt lụa ngang dọc tinh tế
+  ctx.strokeStyle = "rgba(255,255,255,0.22)";
+  ctx.lineWidth = 1;
+  for (let i = 0; i < 256; i += 4) {
+    ctx.beginPath();
+    ctx.moveTo(0, i);
+    ctx.lineTo(256, i);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(0,0,0,0.07)";
+  for (let i = 2; i < 256; i += 6) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i, 256);
+    ctx.stroke();
+  }
+
+  // Họa tiết gấm Đoàn Thọ & Vân Mây chìm chuẩn cung đình Huế
+  const cBump = document.createElement("canvas");
+  cBump.width = 256;
+  cBump.height = 256;
+  const bctx = cBump.getContext("2d");
+  bctx.fillStyle = "#808080";
+  bctx.fillRect(0, 0, 256, 256);
+
+  const drawMedallion = ( targetCtx, cx, cy, r, strokeCol, lw ) => {
+    targetCtx.save();
+    targetCtx.translate(cx, cy);
+    targetCtx.strokeStyle = strokeCol;
+    targetCtx.lineWidth = lw;
+    targetCtx.beginPath();
+    targetCtx.arc(0, 0, r, 0, Math.PI * 2);
+    targetCtx.stroke();
+    targetCtx.beginPath();
+    targetCtx.arc(0, 0, r * 0.68, 0, Math.PI * 2);
+    targetCtx.stroke();
+    for (let k = 0; k < 8; k++) {
+      const a = (k * Math.PI) / 4;
+      targetCtx.beginPath();
+      targetCtx.arc(Math.cos(a) * r * 0.42, Math.sin(a) * r * 0.42, r * 0.22, a - 1.1, a + 1.1);
+      targetCtx.stroke();
+    }
+    // Chữ Thọ cách điệu ở tâm
+    targetCtx.beginPath();
+    targetCtx.moveTo(-r * 0.28, 0);
+    targetCtx.lineTo(r * 0.28, 0);
+    targetCtx.moveTo(0, -r * 0.28);
+    targetCtx.lineTo(0, r * 0.28);
+    targetCtx.stroke();
+    targetCtx.restore();
+  };
+
+  const centers = [
+    [64, 64],
+    [192, 64],
+    [128, 128],
+    [64, 192],
+    [192, 192],
+    [0, 128],
+    [256, 128],
+    [128, 0],
+    [128, 256],
+  ];
+  for (const [cx, cy] of centers) {
+    drawMedallion(ctx, cx, cy, 26, "rgba(255, 248, 220, 0.34)", 2.0);
+    drawMedallion(bctx, cx, cy, 26, "#c8c8c8", 2.6);
+  }
+
+  const colorMap = new THREE.CanvasTexture(cCol);
+  colorMap.wrapS = THREE.RepeatWrapping;
+  colorMap.wrapT = THREE.RepeatWrapping;
+  colorMap.repeat.set(2.4, 2.4);
+  colorMap.colorSpace = THREE.SRGBColorSpace;
+
+  const bumpMap = new THREE.CanvasTexture(cBump);
+  bumpMap.wrapS = THREE.RepeatWrapping;
+  bumpMap.wrapT = THREE.RepeatWrapping;
+  bumpMap.repeat.set(2.4, 2.4);
+
+  return { colorMap, bumpMap };
+}
+
+function createRankBadgeTexture(mode = "guard") {
+  const c = document.createElement("canvas");
+  c.width = 256;
+  c.height = 256;
+  const ctx = c.getContext("2d");
+
+  // Nền gấm sẫm thêu kim tuyến của Bổ Tử Triều Nguyễn
+  ctx.fillStyle = mode === "guard" ? "#261210" : mode === "mandarin" ? "#10212e" : "#2b1b0e";
+  ctx.fillRect(0, 0, 256, 256);
+
+  // Khung diềm hồi văn chữ Vạn thếp vàng
+  ctx.strokeStyle = "#ecc556";
+  ctx.lineWidth = 10;
+  ctx.strokeRect(10, 10, 236, 236);
+  ctx.strokeStyle = "#9c741c";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(22, 22, 212, 212);
+
+  // Sóng thủy ba dưới đáy Bổ Tử
+  ctx.strokeStyle = "#4fa49a";
+  ctx.lineWidth = 4;
+  for (let row = 0; row < 3; row++) {
+    const y = 216 - row * 14;
+    ctx.beginPath();
+    for (let x = 26; x <= 230; x += 34) {
+      ctx.arc(x + 17, y, 17, Math.PI, 0, false);
+    }
+    ctx.stroke();
+  }
+
+  // Nhật nguyệt đỏ son phía trên
+  ctx.fillStyle = "#d93b2b";
+  ctx.beginPath();
+  ctx.arc(128, 54, 16, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "#f7dc7c";
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  // Mây ngũ sắc hai bên
+  ctx.strokeStyle = "#e6be53";
+  ctx.lineWidth = 4;
+  [
+    [62, 68],
+    [194, 68],
+    [54, 140],
+    [202, 140],
+  ].forEach(([mx, my]) => {
+    ctx.beginPath();
+    ctx.arc(mx, my, 14, 0.2, Math.PI * 1.4);
+    ctx.arc(mx + 12, my + 3, 10, Math.PI * 0.9, Math.PI * 2.1);
+    ctx.stroke();
+  });
+
+  // Linh thú trung tâm: Kỳ Lân/Hổ Phù (Thị Vệ) | Tiên Hạc (Quan Văn) | Đoàn Long (Hoàng Thân)
+  ctx.save();
+  ctx.translate(128, 132);
+  if (mode === "mandarin") {
+    // Tiên Hạc tung cánh trắng ngà viền vàng
+    ctx.fillStyle = "#f7f3e6";
+    ctx.strokeStyle = "#e4b949";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(0, 4, 24, 16, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // Đôi cánh xòe rộng
+    ctx.beginPath();
+    ctx.moveTo(-8, -2);
+    ctx.quadraticCurveTo(-58, -42, -66, 6);
+    ctx.quadraticCurveTo(-36, 14, -8, 6);
+    ctx.moveTo(8, -2);
+    ctx.quadraticCurveTo(58, -42, 66, 6);
+    ctx.quadraticCurveTo(36, 14, 8, 6);
+    ctx.fill();
+    ctx.stroke();
+    // Cổ hạc vươn cao
+    ctx.beginPath();
+    ctx.moveTo(10, -8);
+    ctx.quadraticCurveTo(28, -36, 14, -50);
+    ctx.lineWidth = 7;
+    ctx.strokeStyle = "#f7f3e6";
+    ctx.stroke();
+  } else {
+    // Kỳ Lân / Đoàn Long kim tuyến uy nghi
+    ctx.fillStyle = "#efc75e";
+    ctx.strokeStyle = "#916311";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, 38, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#261210";
+    ctx.beginPath();
+    ctx.arc(-13, -8, 5, 0, Math.PI * 2);
+    ctx.arc(13, -8, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#261210";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(0, 12, 16, 0.15 * Math.PI, 0.85 * Math.PI);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function createGuardHatTexture() {
+  const c = document.createElement("canvas");
+  c.width = 256;
+  c.height = 256;
+  const ctx = c.getContext("2d");
+  ctx.fillStyle = "#231a15";
+  ctx.fillRect(0, 0, 256, 256);
+
+  // Vòng nan tre đồng tâm & nan dọc của Nón Dấu lính Thị Vệ sơn then
+  ctx.strokeStyle = "rgba(88, 62, 42, 0.55)";
+  ctx.lineWidth = 2;
+  for (let r = 14; r < 126; r += 9) {
+    ctx.beginPath();
+    ctx.arc(128, 128, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(218, 174, 68, 0.22)";
+  ctx.lineWidth = 1.5;
+  for (let k = 0; k < 24; k++) {
+    const a = (k * Math.PI * 2) / 24;
+    ctx.beginPath();
+    ctx.moveTo(128 + Math.cos(a) * 14, 128 + Math.sin(a) * 14);
+    ctx.lineTo(128 + Math.cos(a) * 126, 128 + Math.sin(a) * 126);
+    ctx.stroke();
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+function createFacePortraitTexture() {
+  const c = document.createElement("canvas");
+  c.width = 512;
+  c.height = 256;
+  const ctx = c.getContext("2d");
+
+  // Sắc da Á Đông ấm áp có chuyển khối sáng tối tự nhiên quanh gò má, sống mũi & hàm
+  const baseGrad = ctx.createLinearGradient(0, 0, 0, 256);
+  baseGrad.addColorStop(0, "#d2a27d");
+  baseGrad.addColorStop(0.45, "#e0b693");
+  baseGrad.addColorStop(0.78, "#d8aa86");
+  baseGrad.addColorStop(1, "#c4936e");
+  ctx.fillStyle = baseGrad;
+  ctx.fillRect(0, 0, 512, 256);
+
+  // Tóc phủ sau gáy (u gần 0 và 1) & đỉnh sọ (v gần 0), chừa gương mặt thanh tú ở trung tâm (x = 256)
+  ctx.fillStyle = "#181310";
+  ctx.fillRect(0, 0, 512, 62);
+  ctx.fillRect(0, 0, 152, 196);
+  ctx.fillRect(360, 0, 152, 196);
+
+  // Đường chân tóc & Tóc mai hai bên thái dương
+  ctx.beginPath();
+  ctx.moveTo(148, 60);
+  ctx.quadraticCurveTo(256, 78, 364, 60);
+  ctx.lineTo(364, 0);
+  ctx.lineTo(148, 0);
+  ctx.closePath();
+  ctx.fill();
+
+  [-1, 1].forEach((s) => {
+    ctx.beginPath();
+    ctx.moveTo(256 + s * 98, 62);
+    ctx.quadraticCurveTo(256 + s * 106, 118, 256 + s * 96, 156);
+    ctx.lineTo(256 + s * 114, 150);
+    ctx.lineTo(256 + s * 114, 60);
+    ctx.closePath();
+    ctx.fill();
+  });
+
+  // Hồng hào nhẹ hai bên gò má & bóng sống mũi
+  [-1, 1].forEach((s) => {
+    const cheek = ctx.createRadialGradient(256 + s * 42, 144, 2, 256 + s * 42, 144, 26);
+    cheek.addColorStop(0, "rgba(198, 112, 88, 0.22)");
+    cheek.addColorStop(1, "rgba(198, 112, 88, 0)");
+    ctx.fillStyle = cheek;
+    ctx.fillRect(256 + s * 14, 116, 56, 56);
+  });
+
+  // Đôi chân mày kiếm sắc nét, điềm tĩnh
+  ctx.strokeStyle = "#1d1612";
+  ctx.lineCap = "round";
+  [-1, 1].forEach((s) => {
+    ctx.lineWidth = 4.5;
+    ctx.beginPath();
+    ctx.moveTo(256 + s * 14, 106);
+    ctx.quadraticCurveTo(256 + s * 32, 99, 256 + s * 52, 105);
+    ctx.stroke();
+
+    // Hốc mắt & tròng trắng hạnh nhân
+    ctx.fillStyle = "#f7f4ed";
+    ctx.beginPath();
+    ctx.ellipse(256 + s * 32, 121, 14, 6.8, s * 0.05, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Con ngươi nâu thẫm có đốm sáng long lanh (Catchlight)
+    ctx.fillStyle = "#2b1b12";
+    ctx.beginPath();
+    ctx.arc(256 + s * 31, 121, 5.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#110c09";
+    ctx.beginPath();
+    ctx.arc(256 + s * 31, 121, 3.1, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(256 + s * 29, 119, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Mí mắt trên sắc sảo
+    ctx.strokeStyle = "#1b1410";
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    ctx.moveTo(256 + s * 17, 121);
+    ctx.quadraticCurveTo(256 + s * 32, 112, 256 + s * 47, 121);
+    ctx.stroke();
+  });
+
+  // Bóng chân mũi & nhân trung tinh tế
+  ctx.strokeStyle = "rgba(138, 88, 58, 0.48)";
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.arc(256, 151, 8, 0.15 * Math.PI, 0.85 * Math.PI);
+  ctx.stroke();
+
+  // Ria mép thanh nhã & đôi môi tự nhiên trầm ấm
+  ctx.strokeStyle = "#241b16";
+  ctx.lineWidth = 2.6;
+  [-1, 1].forEach((s) => {
+    ctx.beginPath();
+    ctx.moveTo(256 + s * 2, 165);
+    ctx.quadraticCurveTo(256 + s * 15, 163, 256 + s * 24, 169);
+    ctx.stroke();
+  });
+
+  ctx.fillStyle = "#b56c58";
+  ctx.beginPath();
+  ctx.ellipse(256, 174, 15, 4.2, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "#7d4335";
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(241, 174);
+  ctx.quadraticCurveTo(256, 176, 271, 174);
+  ctx.stroke();
+
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   return tex;
@@ -1398,21 +2024,118 @@ function buildGtaCharacter() {
   root.name = "GTA_PLAYER_170M";
   root.visible = false;
 
+  const brocade = createSilkBrocadeTextures();
+  const badgeTextures = {
+    guard: createRankBadgeTexture("guard"),
+    mandarin: createRankBadgeTexture("mandarin"),
+    noble: createRankBadgeTexture("noble"),
+  };
+  const guardHatTex = createGuardHatTexture();
+  const facePortraitTex = createFacePortraitTexture();
+
   const mats = {
-    robe: new THREE.MeshStandardMaterial({ color: GTA_OUTFITS[0].robe, roughness: 0.52, metalness: 0.05 }),
-    skirt: new THREE.MeshStandardMaterial({ color: GTA_OUTFITS[0].skirt, roughness: 0.58 }),
-    sash: new THREE.MeshStandardMaterial({ color: GTA_OUTFITS[0].sash, roughness: 0.44 }),
-    trim: new THREE.MeshStandardMaterial({ color: GTA_OUTFITS[0].trim, roughness: 0.3, metalness: 0.72 }),
-    pants: new THREE.MeshStandardMaterial({ color: GTA_OUTFITS[0].pants, roughness: 0.72 }),
-    boots: new THREE.MeshStandardMaterial({ color: 0x161311, roughness: 0.6 }),
-    skin: new THREE.MeshStandardMaterial({ color: 0xdcb492, roughness: 0.62 }),
-    hair: new THREE.MeshStandardMaterial({ color: 0x1c1714, roughness: 0.7 }),
-    hatDark: new THREE.MeshStandardMaterial({ color: 0x1d1714, roughness: 0.42 }),
+    robe: new THREE.MeshStandardMaterial({
+      color: GTA_OUTFITS[0].robe,
+      map: brocade.colorMap,
+      bumpMap: brocade.bumpMap,
+      bumpScale: 0.011,
+      roughness: 0.48,
+      metalness: 0.04,
+    }),
+    skirt: new THREE.MeshStandardMaterial({
+      color: GTA_OUTFITS[0].skirt,
+      map: brocade.colorMap,
+      bumpMap: brocade.bumpMap,
+      bumpScale: 0.009,
+      roughness: 0.56,
+      metalness: 0.03,
+      side: THREE.DoubleSide,
+    }),
+    sash: new THREE.MeshStandardMaterial({
+      color: GTA_OUTFITS[0].sash,
+      roughness: 0.38,
+      metalness: 0.1,
+    }),
+    trim: new THREE.MeshStandardMaterial({
+      color: GTA_OUTFITS[0].trim,
+      roughness: 0.25,
+      metalness: 0.76,
+    }),
+    badge: new THREE.MeshStandardMaterial({
+      map: badgeTextures.guard,
+      roughness: 0.36,
+      metalness: 0.24,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+    }),
+    collar: new THREE.MeshStandardMaterial({
+      color: GTA_OUTFITS[0].collar,
+      roughness: 0.55,
+      metalness: 0.02,
+    }),
+    pants: new THREE.MeshStandardMaterial({
+      color: GTA_OUTFITS[0].pants,
+      roughness: 0.64,
+    }),
+    boots: new THREE.MeshStandardMaterial({
+      color: 0x171412,
+      roughness: 0.38,
+      metalness: 0.08,
+    }),
+    bootSole: new THREE.MeshStandardMaterial({
+      color: 0xebe4d5,
+      roughness: 0.72,
+    }),
+    skin: new THREE.MeshStandardMaterial({
+      color: 0xdab08c,
+      roughness: 0.58,
+      metalness: 0.02,
+    }),
+    facePortrait: new THREE.MeshStandardMaterial({
+      map: facePortraitTex,
+      roughness: 0.56,
+      metalness: 0.02,
+    }),
+    skinShade: new THREE.MeshStandardMaterial({
+      color: 0xc89975,
+      roughness: 0.6,
+    }),
+    hair: new THREE.MeshStandardMaterial({
+      color: 0x181310,
+      roughness: 0.52,
+    }),
+    hatLacquer: new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      map: guardHatTex,
+      roughness: 0.3,
+      metalness: 0.14,
+      side: THREE.DoubleSide,
+    }),
+    hatDark: new THREE.MeshStandardMaterial({
+      color: 0x1b1614,
+      roughness: 0.38,
+      metalness: 0.08,
+    }),
+    jade: new THREE.MeshStandardMaterial({
+      color: 0x2ca582,
+      roughness: 0.2,
+      metalness: 0.15,
+    }),
+    steel: new THREE.MeshStandardMaterial({
+      color: 0xd5dce2,
+      roughness: 0.22,
+      metalness: 0.86,
+    }),
+    scabbard: new THREE.MeshStandardMaterial({
+      color: 0x1a1310,
+      roughness: 0.26,
+      metalness: 0.2,
+    }),
   };
 
-  // Bóng tiếp đất mềm dưới chân nhân vật (0 chi phí shadow map)
+  // Bóng tiếp đất mềm dưới chân nhân vật kết hợp cùng bóng đổ thật (Directional Shadow)
   const blobShadow = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.15, 1.15),
+    new THREE.PlaneGeometry(1.18, 1.18),
     new THREE.MeshBasicMaterial({
       map: createSoftShadowTexture(),
       transparent: true,
@@ -1422,199 +2145,520 @@ function buildGtaCharacter() {
     })
   );
   blobShadow.rotation.x = -Math.PI / 2;
-  blobShadow.position.y = 0.03;
+  blobShadow.position.y = 0.025;
   root.add(blobShadow);
 
-  // Hông (tâm xoay cơ thể cao 0.88m)
+  // Đèn điểm dịu đi theo nhân vật giúp nổi khối gấm vóc & khuôn mặt cả khi vào nội thất hoặc hoàng hôn
+  const charFillLight = new THREE.PointLight(0xffe8c2, 0.38, 4.4, 1.6);
+  charFillLight.position.set(0.28, 1.48, -0.55);
+  root.add(charFillLight);
+
+  // Hông (tâm cơ thể cao 0.86m, quy ước chuẩn: Mặt trước nhân vật = -Z, Lưng = +Z, Phải = +X)
   const hips = new THREE.Group();
-  hips.position.y = 0.88;
+  hips.position.y = 0.86;
   root.add(hips);
 
-  // Thân trên (từ 0.88m lên 1.44m)
+  // Khối khung chậu nối kín thân áo và hai đùi
+  const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.156, 0.148, 0.14, 20), mats.skirt);
+  pelvis.position.y = -0.02;
+  pelvis.scale.set(1.14, 1.0, 0.82);
+  hips.add(pelvis);
+
+  // Thân trên tạo dáng giải phẫu bằng LatheGeometry 24 phân đoạn (eo thon, ngực nở, vai vững)
   const torso = new THREE.Group();
   hips.add(torso);
 
-  const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.155, 0.54, 12), mats.robe);
-  chest.position.y = 0.28;
-  chest.scale.set(1.16, 1.0, 0.78);
+  const torsoProfile = [
+    new THREE.Vector2(0.01, 0.0),
+    new THREE.Vector2(0.154, 0.02),
+    new THREE.Vector2(0.148, 0.14),
+    new THREE.Vector2(0.168, 0.30),
+    new THREE.Vector2(0.192, 0.45),
+    new THREE.Vector2(0.165, 0.53),
+    new THREE.Vector2(0.072, 0.565),
+  ];
+  const chest = new THREE.Mesh(new THREE.LatheGeometry(torsoProfile, 24), mats.robe);
+  chest.scale.set(1.14, 1.0, 0.77);
   torso.add(chest);
 
-  // Tấm bổ tử / hoa văn vàng trước ngực & lưng
-  const rankBadge = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.27), mats.trim);
-  rankBadge.position.set(0, 0.34, 0);
-  torso.add(rankBadge);
+  // Cổ áo lót lụa trắng Giao Lĩnh / Ngũ Thân & viền cổ gấm vàng phía trước (-Z)
+  const innerCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.073, 0.084, 0.068, 20), mats.collar);
+  innerCollar.position.set(0, 0.568, -0.004);
+  innerCollar.scale.set(0.98, 1.0, 0.94);
+  torso.add(innerCollar);
 
-  // Vai áo rộng cung đình
-  const shoulders = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.19, 0.11, 12), mats.robe);
-  shoulders.position.y = 0.50;
-  shoulders.scale.set(1.18, 1.0, 0.72);
-  torso.add(shoulders);
+  const outerCollar = new THREE.Mesh(new THREE.CylinderGeometry(0.082, 0.094, 0.052, 20, 1, true, -Math.PI * 0.82, Math.PI * 1.64), mats.robe);
+  outerCollar.position.set(0, 0.556, 0);
+  outerCollar.rotation.y = Math.PI; // Hở khe chữ V phía trước (-Z) để lộ cổ lụa trắng
+  torso.add(outerCollar);
 
-  // Đai lưng ngọc & khóa vàng
-  const belt = new THREE.Mesh(new THREE.CylinderGeometry(0.168, 0.175, 0.075, 12), mats.sash);
-  belt.position.y = 0.04;
-  belt.scale.set(1.14, 1.0, 0.82);
+  const collarGoldTrim = new THREE.Mesh(new THREE.TorusGeometry(0.082, 0.006, 8, 20), mats.trim);
+  collarGoldTrim.rotation.x = Math.PI / 2;
+  collarGoldTrim.position.set(0, 0.578, 0);
+  torso.add(collarGoldTrim);
+
+  // Nẹp tà áo chéo bên phải & 5 khuy đồng áo Ngũ Thân đặc trưng mặt trước (-Z)
+  const lapelPositions = [
+    [0.018, 0.525, -0.106],
+    [0.068, 0.468, -0.132],
+    [0.114, 0.405, -0.142],
+    [0.130, 0.305, -0.136],
+    [0.130, 0.195, -0.126],
+  ];
+  lapelPositions.forEach(([bx, by, bz]) => {
+    const btn = new THREE.Mesh(new THREE.SphereGeometry(0.009, 10, 8), mats.trim);
+    btn.position.set(bx, by, bz);
+    torso.add(btn);
+  });
+
+  // Bổ Tử thêu kim tuyến uốn cong ôm khít lồng ngực (-Z) và lưng (+Z) — hiển thị xuôi chiều chuẩn xác, không cắt lưới
+  const frontBadge = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.191, 0.168, 0.156, 18, 1, true, Math.PI - 0.40, 0.80),
+    mats.badge
+  );
+  frontBadge.position.set(0, 0.365, 0);
+  frontBadge.scale.set(1.16, 1.0, 0.80);
+  torso.add(frontBadge);
+
+  const backBadge = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.191, 0.168, 0.152, 18, 1, true, -0.38, 0.76),
+    mats.badge
+  );
+  backBadge.position.set(0, 0.368, 0);
+  backBadge.scale.set(1.16, 1.0, 0.80);
+  torso.add(backBadge);
+
+  // Cầu vai dệt kim tuyến
+  [-1, 1].forEach((side) => {
+    const pad = new THREE.Mesh(new THREE.SphereGeometry(0.076, 16, 12), mats.robe);
+    pad.position.set(side * 0.205, 0.495, 0);
+    pad.scale.set(1.15, 0.56, 0.92);
+    torso.add(pad);
+    const padTrim = new THREE.Mesh(new THREE.TorusGeometry(0.068, 0.0055, 8, 18), mats.trim);
+    padTrim.position.set(side * 0.215, 0.482, 0);
+    padTrim.rotation.z = side * 0.42;
+    padTrim.rotation.y = Math.PI / 2;
+    torso.add(padTrim);
+  });
+
+  // Đai lưng lụa bản lớn + Mặt ngọc bích khảm vàng phía trước (-Z) + Nút thắt đai phía sau (+Z)
+  const belt = new THREE.Mesh(new THREE.CylinderGeometry(0.162, 0.168, 0.078, 24), mats.sash);
+  belt.position.y = 0.055;
+  belt.scale.set(1.15, 1.0, 0.81);
   torso.add(belt);
 
-  const buckle = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.04), mats.trim);
-  buckle.position.set(0, 0.04, -0.145);
-  torso.add(buckle);
+  const beltGoldUpper = new THREE.Mesh(new THREE.TorusGeometry(0.164, 0.005, 8, 24), mats.trim);
+  beltGoldUpper.rotation.x = Math.PI / 2;
+  beltGoldUpper.scale.set(1.15, 0.81, 1.0);
+  beltGoldUpper.position.y = 0.092;
+  torso.add(beltGoldUpper);
 
-  // Vạt áo dài sau đung đưa khi chạy
+  const buckleFrame = new THREE.Mesh(new THREE.BoxGeometry(0.082, 0.058, 0.022), mats.trim);
+  buckleFrame.position.set(0, 0.055, -0.138);
+  torso.add(buckleFrame);
+
+  const buckleJade = new THREE.Mesh(new THREE.SphereGeometry(0.022, 14, 12), mats.jade);
+  buckleJade.position.set(0, 0.055, -0.148);
+  buckleJade.scale.set(1.25, 0.95, 0.45);
+  torso.add(buckleJade);
+
+  const backSashKnot = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.062, 0.032), mats.sash);
+  backSashKnot.position.set(0, 0.052, 0.142);
+  torso.add(backSashKnot);
+
+  [-1, 1].forEach((side) => {
+    const ribbon = new THREE.Mesh(new THREE.BoxGeometry(0.034, 0.22, 0.012), mats.sash);
+    ribbon.position.set(side * 0.032, -0.065, 0.152);
+    ribbon.rotation.z = side * 0.12;
+    torso.add(ribbon);
+  });
+
+  // 2 Vạt áo gấm phía trước uốn cong mềm mại (trái & phải) nâng theo từng đùi khi bước tới (-Z)
+  const makeFrontFlap = (side) => {
+    const pivot = new THREE.Group();
+    pivot.position.set(0, 0.025, 0);
+    torso.add(pivot);
+
+    const thetaStart = side < 0 ? Math.PI + 0.03 : Math.PI - 0.88;
+    const panel = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.164, 0.198, 0.36, 14, 1, true, thetaStart, 0.85),
+      mats.skirt
+    );
+    panel.position.set(0, -0.18, 0);
+    panel.scale.set(1.16, 1.0, 0.84);
+    pivot.add(panel);
+
+    const hem = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.199, 0.203, 0.026, 14, 1, true, thetaStart, 0.85),
+      mats.trim
+    );
+    hem.position.set(0, -0.352, 0);
+    hem.scale.set(1.16, 1.0, 0.845);
+    pivot.add(hem);
+    return pivot;
+  };
+  const frontFlapL = makeFrontFlap(-1);
+  const frontFlapR = makeFrontFlap(1);
+
+  // Vạt hông hai bên nối mượt tà trước & tà sau
+  [-1, 1].forEach((side) => {
+    const sideStart = side > 0 ? Math.PI * 0.30 : -Math.PI * 0.68;
+    const sidePanel = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.164, 0.196, 0.35, 10, 1, true, sideStart, 0.60),
+      mats.skirt
+    );
+    sidePanel.position.set(0, -0.155, 0);
+    sidePanel.scale.set(1.16, 1.0, 0.84);
+    torso.add(sidePanel);
+  });
+
+  // Vạt áo dài phía sau (+Z) uốn vòm lụa mềm, tung bay ra sau khi chạy tới
   const coatTailPivot = new THREE.Group();
-  coatTailPivot.position.set(0, 0.02, 0.11);
+  coatTailPivot.position.set(0, 0.025, 0.02);
   torso.add(coatTailPivot);
 
-  const coatTail = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.44, 0.045), mats.skirt);
-  coatTail.position.set(0, -0.22, 0.01);
-  coatTailPivot.add(coatTail);
+  [-1, 1].forEach((side) => {
+    const backStart = side > 0 ? 0.025 : -0.885;
+    const backPanel = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.164, 0.208, 0.44, 14, 1, true, backStart, 0.86),
+      mats.skirt
+    );
+    backPanel.position.set(0, -0.22, -0.02);
+    backPanel.scale.set(1.16, 1.0, 0.84);
+    coatTailPivot.add(backPanel);
 
-  const coatTrim = new THREE.Mesh(new THREE.BoxGeometry(0.33, 0.035, 0.05), mats.trim);
-  coatTrim.position.set(0, -0.43, 0.01);
-  coatTailPivot.add(coatTrim);
+    const backHem = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.209, 0.213, 0.028, 14, 1, true, backStart, 0.86),
+      mats.trim
+    );
+    backHem.position.set(0, -0.432, -0.02);
+    backHem.scale.set(1.16, 1.0, 0.845);
+    coatTailPivot.add(backHem);
+  });
 
-  // Vạt trước ngắn hơn để chân bước không xuyên lưới
-  const frontFlap = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.28, 0.035), mats.skirt);
-  frontFlap.position.set(0, -0.14, -0.125);
-  torso.add(frontFlap);
+  // Đao Thị Vệ vỏ sơn then bịt đồng vàng đeo bên hông trái (mũi vỏ chúc xuống phía sau +Z, chuôi hướng trước -Z)
+  const saberPivot = new THREE.Group();
+  saberPivot.position.set(-0.202, 0.03, -0.02);
+  saberPivot.rotation.z = 0.14;
+  saberPivot.rotation.x = -0.58; // Chuôi đao nhô ra trước (-Z/+Y), đuôi vỏ xuôi ra sau (+Z/-Y)
+  torso.add(saberPivot);
 
-  // Cổ & Đầu (đỉnh đầu đúng 1.70m!)
+  const scabbardBody = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.017, 0.56, 14), mats.scabbard);
+  scabbardBody.position.set(0, -0.18, 0);
+  scabbardBody.scale.set(0.65, 1.0, 1.35);
+  saberPivot.add(scabbardBody);
+
+  [-0.02, -0.20, -0.44].forEach((sy) => {
+    const band = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.023, 0.028, 14), mats.trim);
+    band.position.set(0, sy, 0);
+    band.scale.set(0.7, 1.0, 1.4);
+    saberPivot.add(band);
+  });
+
+  const handGuard = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.014, 18), mats.trim);
+  handGuard.position.set(0, 0.105, 0);
+  handGuard.scale.set(0.78, 1.0, 1.15);
+  saberPivot.add(handGuard);
+
+  const saberGrip = new THREE.Mesh(new THREE.CylinderGeometry(0.017, 0.019, 0.135, 12), mats.sash);
+  saberGrip.position.set(0, 0.178, -0.006);
+  saberGrip.rotation.x = 0.08;
+  saberPivot.add(saberGrip);
+
+  const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.022, 12, 10), mats.trim);
+  pommel.position.set(0, 0.248, -0.012);
+  saberPivot.add(pommel);
+
+  // Thẻ Bội Ngọc & Tua lụa bên hông phải cho Quan Văn / Hoàng Thân
+  const jadePendantPivot = new THREE.Group();
+  jadePendantPivot.position.set(0.186, 0.02, -0.03);
+  jadePendantPivot.visible = false;
+  torso.add(jadePendantPivot);
+
+  const jadeDisc = new THREE.Mesh(new THREE.TorusGeometry(0.028, 0.008, 10, 20), mats.jade);
+  jadeDisc.rotation.y = Math.PI / 2;
+  jadeDisc.position.set(0, -0.09, 0);
+  jadePendantPivot.add(jadeDisc);
+
+  const silkTassel = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.12, 12), mats.trim);
+  silkTassel.position.set(0, -0.18, 0);
+  jadePendantPivot.add(silkTassel);
+
+  // Cổ, Khuôn mặt họa chân dung tinh tế phía trước (-Z) & Búi tóc cài trâm phía sau (+Z)
   const headGroup = new THREE.Group();
-  headGroup.position.set(0, 0.56, 0);
+  headGroup.position.set(0, 0.575, 0);
   torso.add(headGroup);
 
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.065, 0.09, 10), mats.skin);
-  neck.position.y = 0.03;
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.062, 0.085, 18), mats.skin);
+  neck.position.y = 0.032;
   headGroup.add(neck);
 
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.112, 14, 12), mats.skin);
-  head.position.y = 0.148;
-  head.scale.set(0.92, 1.04, 0.96);
-  headGroup.add(head);
+  // Khối đầu liền lạc phủ Texture chân dung độ nét cao (xoay +PI/2 để tâm UV u=0.5 nhìn thẳng về -Z)
+  const cranium = new THREE.Mesh(new THREE.SphereGeometry(0.109, 32, 24), mats.facePortrait);
+  cranium.position.set(0, 0.144, 0);
+  cranium.rotation.y = Math.PI / 2;
+  cranium.scale.set(0.98, 1.07, 0.90);
+  headGroup.add(cranium);
 
-  // Búi tóc cổ truyền phía sau gáy
-  const bun = new THREE.Mesh(new THREE.SphereGeometry(0.065, 10, 8), mats.hair);
-  bun.position.set(0, 0.14, 0.105);
-  headGroup.add(bun);
+  // Búi tóc củ hành & Trâm vàng phía sau gáy (+Z)
+  const hairBun = new THREE.Mesh(new THREE.SphereGeometry(0.055, 18, 14), mats.hair);
+  hairBun.position.set(0, 0.145, 0.106);
+  headGroup.add(hairBun);
 
-  // 1) Nón lính Thị Vệ Triều Nguyễn (nón chóp sơn đen viền & chóp đồng vàng)
+  const hairPin = new THREE.Mesh(new THREE.CylinderGeometry(0.0045, 0.0045, 0.135, 10), mats.trim);
+  hairPin.rotation.z = Math.PI / 2;
+  hairPin.position.set(0, 0.148, 0.120);
+  headGroup.add(hairPin);
+
+  // Đôi tai 3D & sống mũi thanh tú ở MẶT TRƯỚC (-Z)
+  [-1, 1].forEach((side) => {
+    const ear = new THREE.Mesh(new THREE.SphereGeometry(0.023, 12, 10), mats.skinShade);
+    ear.position.set(side * 0.096, 0.138, -0.004);
+    ear.scale.set(0.42, 0.95, 0.65);
+    headGroup.add(ear);
+  });
+
+  const noseBridge = new THREE.Mesh(new THREE.ConeGeometry(0.012, 0.038, 12), mats.skinShade);
+  noseBridge.position.set(0, 0.138, -0.105);
+  noseBridge.rotation.x = -0.36;
+  noseBridge.scale.set(0.75, 1.0, 0.85);
+  headGroup.add(noseBridge);
+
+  // 1) Nón Dấu Cẩm Y Thị Vệ (sơn mài nan tre, viền đồng & chóp hồ lô vàng + quai lụa dưới cằm)
   const guardHat = new THREE.Group();
-  guardHat.position.set(0, 0.21, 0);
-  const cone = new THREE.Mesh(new THREE.ConeGeometry(0.23, 0.14, 18), mats.hatDark);
-  cone.position.y = 0.06;
-  guardHat.add(cone);
-  const hatRim = new THREE.Mesh(new THREE.TorusGeometry(0.228, 0.01, 6, 18), mats.trim);
+  guardHat.position.set(0, 0.195, 0);
+  const hatCone = new THREE.Mesh(new THREE.ConeGeometry(0.238, 0.142, 32, 2, true), mats.hatLacquer);
+  hatCone.position.y = 0.066;
+  guardHat.add(hatCone);
+
+  const hatRim = new THREE.Mesh(new THREE.TorusGeometry(0.238, 0.009, 10, 32), mats.trim);
   hatRim.rotation.x = Math.PI / 2;
-  hatRim.position.y = -0.005;
+  hatRim.position.y = -0.004;
   guardHat.add(hatRim);
-  const hatFinial = new THREE.Mesh(new THREE.ConeGeometry(0.025, 0.07, 8), mats.trim);
-  hatFinial.position.y = 0.155;
-  guardHat.add(hatFinial);
+
+  const hatBoss = new THREE.Mesh(new THREE.ConeGeometry(0.048, 0.036, 18), mats.trim);
+  hatBoss.position.y = 0.128;
+  guardHat.add(hatBoss);
+
+  const hatGourd = new THREE.Mesh(new THREE.SphereGeometry(0.018, 14, 12), mats.trim);
+  hatGourd.position.y = 0.152;
+  guardHat.add(hatGourd);
+
+  const hatSpire = new THREE.Mesh(new THREE.ConeGeometry(0.011, 0.045, 12), mats.trim);
+  hatSpire.position.y = 0.18;
+  guardHat.add(hatSpire);
+
+  // Huy hiệu mặt nhật vàng gắn chính giữa MẶT TRƯỚC nón (-Z)
+  const hatFrontMedallion = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.008, 16), mats.trim);
+  hatFrontMedallion.rotation.x = Math.PI / 2 - 0.54;
+  hatFrontMedallion.position.set(0, 0.042, -0.168);
+  guardHat.add(hatFrontMedallion);
   headGroup.add(guardHat);
 
-  // 2) Mũ Cánh Chuồn Quan Văn Triều Nguyễn
+  // 2) Mũ Cánh Chuồn Quan Văn Đại Triều (bác sơn hai cấp + ngọc trán phía trước -Z + cánh chuồn cong thanh thoát)
   const mandarinHat = new THREE.Group();
-  mandarinHat.position.set(0, 0.20, 0);
+  mandarinHat.position.set(0, 0.192, 0);
   mandarinHat.visible = false;
-  const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.115, 0.14, 12), mats.hatDark);
-  crown.position.y = 0.06;
-  mandarinHat.add(crown);
-  const capBand = new THREE.Mesh(new THREE.CylinderGeometry(0.118, 0.118, 0.025, 12), mats.trim);
-  capBand.position.y = 0.01;
-  mandarinHat.add(capBand);
+
+  const frontCapTier = new THREE.Mesh(new THREE.CylinderGeometry(0.104, 0.112, 0.075, 22), mats.hatDark);
+  frontCapTier.position.set(0, 0.032, -0.006);
+  mandarinHat.add(frontCapTier);
+
+  const rearCapTier = new THREE.Mesh(new THREE.CylinderGeometry(0.092, 0.102, 0.135, 22), mats.hatDark);
+  rearCapTier.position.set(0, 0.072, 0.026);
+  mandarinHat.add(rearCapTier);
+
+  const capGoldBand = new THREE.Mesh(new THREE.CylinderGeometry(0.114, 0.114, 0.022, 24), mats.trim);
+  capGoldBand.position.set(0, 0.006, -0.004);
+  mandarinHat.add(capGoldBand);
+
+  const foreheadJade = new THREE.Mesh(new THREE.SphereGeometry(0.016, 14, 12), mats.jade);
+  foreheadJade.position.set(0, 0.024, -0.118);
+  foreheadJade.scale.set(1.2, 0.9, 0.5);
+  mandarinHat.add(foreheadJade);
+
   [-1, 1].forEach((side) => {
-    const wing = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.055, 0.015), mats.hatDark);
-    wing.position.set(side * 0.19, 0.035, 0.03);
-    wing.rotation.y = side * -0.14;
+    const wing = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.052, 0.01), mats.hatDark);
+    wing.position.set(side * 0.195, 0.048, 0.042);
+    wing.rotation.y = side * -0.16;
+    wing.rotation.z = side * 0.05;
     mandarinHat.add(wing);
-    const wingEdge = new THREE.Mesh(new THREE.BoxGeometry(0.245, 0.012, 0.018), mats.trim);
-    wingEdge.position.set(side * 0.19, 0.062, 0.03);
-    wingEdge.rotation.y = side * -0.14;
-    mandarinHat.add(wingEdge);
+
+    const wingTip = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.01, 16), mats.hatDark);
+    wingTip.rotation.x = Math.PI / 2;
+    wingTip.position.set(side * 0.312, 0.054, 0.061);
+    mandarinHat.add(wingTip);
+
+    const wingGold = new THREE.Mesh(new THREE.BoxGeometry(0.242, 0.009, 0.013), mats.trim);
+    wingGold.position.set(side * 0.195, 0.074, 0.042);
+    wingGold.rotation.y = side * -0.16;
+    wingGold.rotation.z = side * 0.05;
+    mandarinHat.add(wingGold);
   });
   headGroup.add(mandarinHat);
 
-  // Tay trái & Tay phải (khớp vai + khuỷu tay)
+  // 3) Khăn Đống 7 nếp truyền thống Huế (nếp chữ Nhân phía trước -Z)
+  const turbanHat = new THREE.Group();
+  turbanHat.position.set(0, 0.172, 0);
+  turbanHat.visible = false;
+  for (let ring = 0; ring < 5; ring++) {
+    const tRing = new THREE.Mesh(
+      new THREE.TorusGeometry(0.104 + ring * 0.003, 0.016, 10, 26),
+      ring === 2 ? mats.trim : mats.hatDark
+    );
+    tRing.rotation.x = Math.PI / 2 + 0.08;
+    tRing.position.set(0, ring * 0.016, 0.004);
+    tRing.scale.set(0.95, 1.04, 1.0);
+    turbanHat.add(tRing);
+  }
+  headGroup.add(turbanHat);
+
+  // Tay trái & Tay phải (khớp vai -> bắp tay -> khuỷu tay gập về phía trước -Z -> xà cạp cổ tay -> bàn tay & ngón cái)
+  const wrappings = [];
   const makeArm = (side) => {
     const shoulder = new THREE.Group();
-    shoulder.position.set(side * 0.235, 0.48, 0);
+    shoulder.position.set(side * 0.228, 0.482, 0);
+    shoulder.rotation.z = side * 0.08;
     torso.add(shoulder);
 
-    const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.048, 0.30, 8), mats.robe);
-    upper.position.y = -0.14;
+    const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.050, 0.29, 16), mats.robe);
+    upper.position.y = -0.135;
     shoulder.add(upper);
 
     const elbow = new THREE.Group();
-    elbow.position.set(0, -0.28, 0);
+    elbow.position.set(0, -0.275, 0);
     shoulder.add(elbow);
 
-    const sleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.068, 0.25, 8), mats.robe);
-    sleeve.position.y = -0.12;
+    const sleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.051, 0.064, 0.24, 16), mats.robe);
+    sleeve.position.y = -0.115;
     elbow.add(sleeve);
 
-    const cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.069, 0.072, 0.03, 8), mats.trim);
-    cuff.position.y = -0.235;
+    const bracer = new THREE.Mesh(new THREE.CylinderGeometry(0.053, 0.048, 0.13, 16), mats.sash);
+    bracer.position.y = -0.165;
+    elbow.add(bracer);
+    wrappings.push(bracer);
+
+    const cuff = new THREE.Mesh(new THREE.TorusGeometry(0.056, 0.008, 8, 18), mats.trim);
+    cuff.rotation.x = Math.PI / 2;
+    cuff.position.y = -0.232;
     elbow.add(cuff);
 
-    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.042, 8, 8), mats.skin);
-    hand.position.y = -0.275;
-    elbow.add(hand);
+    const palm = new THREE.Mesh(new THREE.SphereGeometry(0.036, 14, 12), mats.skin);
+    palm.position.set(0, -0.268, -0.006);
+    palm.scale.set(0.78, 1.18, 0.96);
+    elbow.add(palm);
 
-    return { shoulder, elbow };
+    const fingers = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.020, 0.042, 12), mats.skinShade);
+    fingers.position.set(0, -0.302, -0.012);
+    fingers.rotation.x = 0.28;
+    fingers.scale.set(0.72, 1.0, 1.15);
+    elbow.add(fingers);
+
+    const thumb = new THREE.Mesh(new THREE.CapsuleGeometry(0.009, 0.022, 4, 8), mats.skin);
+    thumb.position.set(-side * 0.024, -0.268, -0.026);
+    thumb.rotation.x = 0.55;
+    elbow.add(thumb);
+
+    return { shoulder, elbow, sleeve };
   };
 
   const leftArm = makeArm(-1);
   const rightArm = makeArm(1);
 
-  // Chân trái & Chân phải (khớp hông + đầu gối + hài cung đình)
+  // Chân trái & Chân phải (hông -> đùi -> gối gập về phía sau +Z -> bắp chân/xà cạp -> cổ chân -> hài mũi hếch hướng -Z)
   const makeLeg = (side) => {
     const hip = new THREE.Group();
-    hip.position.set(side * 0.105, -0.02, 0);
+    hip.position.set(side * 0.104, -0.02, 0);
     hips.add(hip);
 
-    const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.072, 0.06, 0.42, 8), mats.pants);
+    const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.078, 0.064, 0.41, 16), mats.pants);
     thigh.position.y = -0.20;
     hip.add(thigh);
+
+    const kneeCap = new THREE.Mesh(new THREE.SphereGeometry(0.062, 14, 12), mats.pants);
+    kneeCap.position.set(0, -0.405, -0.006);
+    hip.add(kneeCap);
 
     const knee = new THREE.Group();
     knee.position.set(0, -0.41, 0);
     hip.add(knee);
 
-    const calf = new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.048, 0.39, 8), mats.pants);
+    const calf = new THREE.Mesh(new THREE.CylinderGeometry(0.062, 0.046, 0.38, 16), mats.pants);
     calf.position.y = -0.19;
     knee.add(calf);
 
-    const boot = new THREE.Mesh(new THREE.BoxGeometry(0.095, 0.09, 0.22), mats.boots);
-    boot.position.set(0, -0.405, -0.035);
-    knee.add(boot);
+    const legWrap = new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.048, 0.24, 16), mats.sash);
+    legWrap.position.y = -0.24;
+    knee.add(legWrap);
+    wrappings.push(legWrap);
 
-    return { hip, knee };
+    const ankle = new THREE.Group();
+    ankle.position.set(0, -0.39, 0);
+    knee.add(ankle);
+
+    // Đế hài trắng dày cung đình (cao độ đáy đúng -0.04m => chạm đúng sàn y=0.00m)
+    const sole = new THREE.Mesh(new THREE.BoxGeometry(0.094, 0.024, 0.235), mats.bootSole);
+    sole.position.set(0, -0.028, -0.044);
+    ankle.add(sole);
+
+    // Thân hài satin đen + Mũi hài hếch cong duyên dáng ở MẶT TRƯỚC (-Z)
+    const bootUpper = new THREE.Mesh(new THREE.BoxGeometry(0.090, 0.054, 0.22), mats.boots);
+    bootUpper.position.set(0, 0.006, -0.038);
+    ankle.add(bootUpper);
+
+    const upturnedToe = new THREE.Mesh(new THREE.ConeGeometry(0.044, 0.068, 14), mats.boots);
+    upturnedToe.position.set(0, 0.022, -0.158);
+    upturnedToe.rotation.x = -Math.PI * 0.34; // Mũi hài hướng ra phía trước (-Z) và cong lên (+Y)
+    upturnedToe.scale.set(0.95, 1.0, 0.78);
+    ankle.add(upturnedToe);
+
+    const toeGoldTrim = new THREE.Mesh(new THREE.SphereGeometry(0.013, 10, 8), mats.trim);
+    toeGoldTrim.position.set(0, 0.042, -0.178);
+    ankle.add(toeGoldTrim);
+
+    return { hip, knee, ankle };
   };
 
   const leftLeg = makeLeg(-1);
   const rightLeg = makeLeg(1);
+
+  // Bật đổ bóng động sắc nét cho toàn bộ chi tiết hình học của nhân vật (trừ bóng mềm dưới chân)
+  root.traverse((obj) => {
+    if (obj.isMesh && obj !== blobShadow) {
+      obj.castShadow = true;
+      obj.receiveShadow = true;
+    }
+  });
 
   scene.add(root);
 
   gtaState.rig = {
     root,
     blobShadow,
+    charFillLight,
     hips,
     torso,
     headGroup,
+    frontFlapL,
+    frontFlapR,
     coatTailPivot,
+    saberPivot,
+    jadePendantPivot,
     guardHat,
     mandarinHat,
+    turbanHat,
+    wrappings,
     leftArm,
     rightArm,
     leftLeg,
     rightLeg,
     mats,
+    badgeTextures,
   };
 }
 
 function applyGtaOutfit(idx) {
-  gtaState.outfitIdx = idx % GTA_OUTFITS.length;
+  gtaState.outfitIdx = ((idx % GTA_OUTFITS.length) + GTA_OUTFITS.length) % GTA_OUTFITS.length;
   const o = GTA_OUTFITS[gtaState.outfitIdx];
   const rig = gtaState.rig;
   if (!rig) return;
@@ -1623,87 +2667,70 @@ function applyGtaOutfit(idx) {
   rig.mats.sash.color.setHex(o.sash);
   rig.mats.trim.color.setHex(o.trim);
   rig.mats.pants.color.setHex(o.pants);
+  rig.mats.collar.color.setHex(o.collar);
+  rig.mats.badge.map = rig.badgeTextures[o.badgeMode] || rig.badgeTextures.guard;
+  rig.mats.badge.needsUpdate = true;
+
   rig.guardHat.visible = o.hatMode === "guard";
   rig.mandarinHat.visible = o.hatMode === "mandarin";
+  rig.turbanHat.visible = o.hatMode === "turban";
+  rig.saberPivot.visible = Boolean(o.hasSaber);
+  rig.jadePendantPivot.visible = Boolean(o.hasJadePendant);
+  rig.wrappings.forEach((w) => {
+    w.visible = Boolean(o.hasWraps);
+  });
+  const sleeveScaleXZ = o.hatMode === "mandarin" ? 1.24 : 1.0;
+  rig.leftArm.sleeve.scale.set(sleeveScaleXZ, 1.0, sleeveScaleXZ);
+  rig.rightArm.sleeve.scale.set(sleeveScaleXZ, 1.0, sleeveScaleXZ);
 
   const btn = document.getElementById("btn-gta-outfit");
   if (btn) btn.textContent = `Trang phục: ${o.name} (C)`;
 }
 
 function applyGtaCamPreset(idx, notify = false) {
-  gtaState.camPresetIdx = idx % GTA_CAM_PRESETS.length;
+  gtaState.camPresetIdx = ((idx % GTA_CAM_PRESETS.length) + GTA_CAM_PRESETS.length) % GTA_CAM_PRESETS.length;
   const p = GTA_CAM_PRESETS[gtaState.camPresetIdx];
   gtaState.targetCamDist = p.dist;
   const btn = document.getElementById("btn-gta-cam");
-  if (btn) btn.textContent = `Góc máy: ${p.name} (V)`;
-  if (notify) showToast(`Góc camera GTA: ${p.name}`);
+  if (btn) btn.textContent = `Cự ly cam: ${p.name} (B)`;
+  if (notify) showToast(`Cự ly camera góc thứ 3: ${p.name}`);
 }
 
-function teleportGtaToPlan(planX, planY, planZ = 0, facingYaw = 0, label = "") {
-  const p3 = planToThree(planX, planY, planZ);
-  gtaState.pos.copy(p3);
-  gtaState.velX = 0;
-  gtaState.velY = 0;
-  gtaState.velZ = 0;
-  gtaState.grounded = true;
-  gtaState.charYaw = facingYaw;
-  gtaState.camYaw = facingYaw;
-  gtaState.camPitch = 0.22;
-
-  // Dò cao độ mặt nền ngay tại điểm đáp
-  const groundY = probeGtaGroundY(gtaState.pos.x, gtaState.pos.z, Math.max(planZ, 0) + 3.0);
-  gtaState.pos.y = groundY;
-  gtaState.lastGroundY = groundY;
-
-  const preset = GTA_CAM_PRESETS[gtaState.camPresetIdx];
-  const fwdX = -Math.sin(gtaState.camYaw);
-  const fwdZ = -Math.cos(gtaState.camYaw);
-  const rgtX = Math.cos(gtaState.camYaw);
-  const rgtZ = -Math.sin(gtaState.camYaw);
-  const distH = gtaState.camDist * Math.cos(gtaState.camPitch);
-  const distV = gtaState.camDist * Math.sin(gtaState.camPitch);
-
-  gtaState.camCurrentLook.set(
-    gtaState.pos.x + rgtX * preset.shoulder + fwdX * 4.0,
-    gtaState.pos.y + preset.height,
-    gtaState.pos.z + rgtZ * preset.shoulder + fwdZ * 4.0
-  );
-  gtaState.camCurrentPos.set(
-    gtaState.pos.x + rgtX * preset.shoulder - fwdX * distH,
-    gtaState.pos.y + preset.height + distV,
-    gtaState.pos.z + rgtZ * preset.shoulder - fwdZ * distH
-  );
-  camera.position.copy(gtaState.camCurrentPos);
-  camera.lookAt(gtaState.camCurrentLook);
-  syncSunShadowAnchor(gtaState.pos.x, gtaState.pos.z, true);
-  if (label) showToast(`Dịch chuyển tới: ${label}`);
-}
-
-// --- Dò mặt nền & va chạm tường siêu nhẹ (chỉ kiểm tra đúng 1–2 ô đang đứng) ---
-const gtaRaycaster = new THREE.Raycaster();
-const _rayOrigin = new THREE.Vector3();
-const _rayDir = new THREE.Vector3();
-const _downVec = new THREE.Vector3(0, -1, 0);
-
-function getNearbyTileColliders(threeX, threeZ, margin = 4.0) {
+function sampleBaseTerrainGroundY(threeX, threeZ) {
   const planX = threeX;
   const planY = -threeZ;
-  const list = [];
+  if (planY <= -784 && planY >= -1056) return -1.8;
+  if (Math.abs(planX) <= 8.0 && planY >= -780 && planY <= 394) return 0.02;
+  if (Math.abs(planX) <= 162 && planY >= 40 && planY <= 330) return -0.02;
+  if (Math.abs(planX) <= 311 && planY >= -220 && planY <= 394) return -0.04;
+  return -0.08;
+}
+
+const _nearbyColliderList = [];
+function getNearbySpatialColliders(threeX, threeZ, margin = 3.0) {
+  const planX = threeX;
+  const planY = -threeZ;
+  _nearbyColliderList.length = 0;
   for (const entry of tileObjects.values()) {
-    if (!entry.glbGroup || !entry.glbGroup.visible || entry.colliderMeshes.length === 0) continue;
+    // Không bao giờ phụ thuộc vào glbGroup.visible để đi lùi/nghiêng không lọt sàn khi ô sau lưng bị Frustum Cull
+    const col = entry.spatialCollider;
+    if (!col) continue;
     const b = entry.tile.bounds;
-    if (
+    const inPlanBounds =
       planX >= b.x_min - margin &&
       planX <= b.x_max + margin &&
       planY >= b.y_min - margin &&
-      planY <= b.y_max + margin
-    ) {
-      for (let i = 0; i < entry.colliderMeshes.length; i++) {
-        list.push(entry.colliderMeshes[i]);
-      }
+      planY <= b.y_max + margin;
+    const inColBounds =
+      threeX >= col.minX - margin &&
+      threeX <= col.maxX + margin &&
+      threeZ >= col.minZ - margin &&
+      threeZ <= col.maxZ + margin;
+    if (inPlanBounds || inColBounds) {
+      _nearbyColliderList.push(col);
     }
   }
-  return list;
+  return _nearbyColliderList;
 }
 
 function getCurrentTileAt(threeX, threeZ) {
@@ -1718,336 +2745,703 @@ function getCurrentTileAt(threeX, threeZ) {
   return null;
 }
 
-function probeGtaGroundY(threeX, threeZ, startY) {
-  const localCols = getNearbyTileColliders(threeX, threeZ, 2.0);
-  _rayOrigin.set(threeX, startY, threeZ);
-  gtaRaycaster.set(_rayOrigin, _downVec);
-  gtaRaycaster.near = 0.05;
-  gtaRaycaster.far = 14.0;
+const _footOffsets = [
+  [0, 0],
+  [0.18, 0],
+  [-0.18, 0],
+  [0, 0.18],
+  [0, -0.18],
+];
+const _probeOut = { floorY: -Infinity, ceilY: Infinity };
 
-  let bestY = -Infinity;
-  if (localCols.length > 0) {
-    const hits = gtaRaycaster.intersectObjects(localCols, false);
-    for (let i = 0; i < hits.length; i++) {
-      const h = hits[i];
-      // Chỉ bám mặt sàn hướng lên trên (tránh bám cạnh tường thẳng đứng)
-      if (!h.face || h.face.normal.y > 0.45) {
-        if (h.point.y <= startY - 0.15 && h.point.y > bestY) {
-          bestY = h.point.y;
-          break;
-        }
+function probePlayerFloorAndCeiling(threeX, threeZ, minSearchY, maxFloorY, minCeilY, useFootDisc = true) {
+  const cols = getNearbySpatialColliders(threeX, threeZ, 2.5);
+  _probeOut.floorY = -Infinity;
+  _probeOut.ceilY = Infinity;
+
+  if (cols.length > 0) {
+    const sampleCount = useFootDisc ? _footOffsets.length : 1;
+    for (let s = 0; s < sampleCount; s++) {
+      const sx = threeX + _footOffsets[s][0];
+      const sz = threeZ + _footOffsets[s][1];
+      const pointCeilMin = s === 0 ? minCeilY : Infinity;
+      for (let i = 0; i < cols.length; i++) {
+        cols[i].queryColumnFloorAndCeiling(sx, sz, minSearchY, maxFloorY, pointCeilMin, _probeOut);
       }
     }
   }
 
-  if (bestY === -Infinity) {
-    const gHits = gtaRaycaster.intersectObjects(terrainGroundMeshes, false);
-    if (gHits.length > 0) {
-      bestY = gHits[0].point.y;
-    } else {
-      bestY = 0.0;
-    }
+  const baseTerrainY = sampleBaseTerrainGroundY(threeX, threeZ);
+  if (baseTerrainY <= maxFloorY && baseTerrainY >= minSearchY && baseTerrainY > _probeOut.floorY) {
+    _probeOut.floorY = baseTerrainY;
   }
-  return Math.max(bestY, -1.8);
+  if (_probeOut.floorY === -Infinity) {
+    _probeOut.floorY = Math.max(baseTerrainY, -1.8);
+  }
+  return _probeOut;
 }
 
-// --- Cập nhật mô phỏng nhân vật + Camera lò xo GTA mỗi khung hình ---
+function findSafeSpawnFloor(threeX, threeZ, targetY = 0) {
+  const baseCap = Math.max(targetY, 0) + 3.1;
+  const candidateCaps = [baseCap, baseCap + 3.5];
+
+  for (let c = 0; c < candidateCaps.length; c++) {
+    let searchMax = candidateCaps[c];
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const p1 = probePlayerFloorAndCeiling(threeX, threeZ, -3.2, searchMax, 999, true);
+      const fy = p1.floorY;
+      const p2 = probePlayerFloorAndCeiling(threeX, threeZ, fy - 0.1, fy + 0.05, fy + 0.85, false);
+      if (p2.ceilY - fy >= PLAYER_STAND_HEIGHT + 0.08) {
+        return { floorY: fy, ceilY: p2.ceilY };
+      }
+      searchMax = fy - 0.12;
+      if (searchMax < -3.0) break;
+    }
+  }
+
+  const fallback = probePlayerFloorAndCeiling(threeX, threeZ, -3.2, baseCap, baseCap + 10, true);
+  return { floorY: fallback.floorY, ceilY: fallback.ceilY };
+}
+
+function resnapPlayerToLoadedTileFloor(tile) {
+  if (STATE.cameraMode !== "walk" && STATE.cameraMode !== "gta") return;
+  const b = tile.bounds;
+  const planX = gtaState.pos.x;
+  const planY = -gtaState.pos.z;
+  if (planX < b.x_min - 4 || planX > b.x_max + 4 || planY < b.y_min - 4 || planY > b.y_max + 4) {
+    return;
+  }
+  const safe = findSafeSpawnFloor(gtaState.pos.x, gtaState.pos.z, gtaState.pos.y);
+  if (safe.floorY > gtaState.pos.y - 0.1) {
+    gtaState.pos.y = safe.floorY;
+    gtaState.lastGroundY = safe.floorY;
+    gtaState.lastCeilingY = safe.ceilY;
+    gtaState.velY = 0;
+    gtaState.grounded = true;
+    gtaState.stepEyeOffset = 0;
+    syncCameraToPlayerImmediate();
+  }
+}
+
+const _fpsEuler = new THREE.Euler(0, 0, 0, "YXZ");
 const _fwd = new THREE.Vector3();
 const _rgt = new THREE.Vector3();
-const _move = new THREE.Vector3();
 const _pivot = new THREE.Vector3();
 const _desiredCam = new THREE.Vector3();
 const _desiredLook = new THREE.Vector3();
+const _rayDir = new THREE.Vector3();
 
-function updateGtaSimulation(dt) {
-  if (STATE.cameraMode !== "gta" || !gtaState.rig) return;
+function syncCameraToPlayerImmediate() {
+  if (STATE.cameraMode === "walk") {
+    if (gtaState.rig) gtaState.rig.root.visible = false;
+    camera.position.set(
+      gtaState.pos.x,
+      gtaState.pos.y + gtaState.currentEyeH + gtaState.stepEyeOffset - gtaState.landDip,
+      gtaState.pos.z
+    );
+    _fpsEuler.set(gtaState.fpsPitch, gtaState.camYaw, gtaState.currentRoll, "YXZ");
+    camera.quaternion.setFromEuler(_fpsEuler);
+  } else if (STATE.cameraMode === "gta") {
+    if (gtaState.rig) {
+      gtaState.rig.root.visible = true;
+      gtaState.rig.root.position.copy(gtaState.pos);
+      gtaState.rig.root.rotation.y = gtaState.charYaw;
+    }
+    const preset = GTA_CAM_PRESETS[gtaState.camPresetIdx];
+    const fwdX = -Math.sin(gtaState.camYaw);
+    const fwdZ = -Math.cos(gtaState.camYaw);
+    const rgtX = Math.cos(gtaState.camYaw);
+    const rgtZ = -Math.sin(gtaState.camYaw);
+    const distH = gtaState.camDist * Math.cos(gtaState.camPitch);
+    const distV = gtaState.camDist * Math.sin(gtaState.camPitch);
 
-  const rig = gtaState.rig;
-  const preset = GTA_CAM_PRESETS[gtaState.camPresetIdx];
-
-  // 1. Tính vector di chuyển tương đối theo góc nhìn camera (chuẩn GTA)
-  _fwd.set(-Math.sin(gtaState.camYaw), 0, -Math.cos(gtaState.camYaw));
-  _rgt.set(Math.cos(gtaState.camYaw), 0, -Math.sin(gtaState.camYaw));
-  _move.set(0, 0, 0);
-
-  const hasKeyMove =
-    walkState.keys.has("KeyW") ||
-    walkState.keys.has("ArrowUp") ||
-    walkState.keys.has("KeyS") ||
-    walkState.keys.has("ArrowDown") ||
-    walkState.keys.has("KeyD") ||
-    walkState.keys.has("ArrowRight") ||
-    walkState.keys.has("KeyA") ||
-    walkState.keys.has("ArrowLeft");
-
-  if (walkState.keys.has("KeyW") || walkState.keys.has("ArrowUp")) _move.add(_fwd);
-  if (walkState.keys.has("KeyS") || walkState.keys.has("ArrowDown")) _move.sub(_fwd);
-  if (walkState.keys.has("KeyD") || walkState.keys.has("ArrowRight")) _move.add(_rgt);
-  if (walkState.keys.has("KeyA") || walkState.keys.has("ArrowLeft")) _move.sub(_rgt);
-
-  const joyMag = Math.min(1, Math.hypot(touchControlState.joyX, touchControlState.joyY));
-  if (joyMag > 0.05) {
-    _move.addScaledVector(_fwd, -touchControlState.joyY);
-    _move.addScaledVector(_rgt, touchControlState.joyX);
+    gtaState.camCurrentLook.set(
+      gtaState.pos.x + rgtX * preset.shoulder + fwdX * 4.5,
+      gtaState.pos.y + preset.height - Math.sin(gtaState.camPitch) * 1.4,
+      gtaState.pos.z + rgtZ * preset.shoulder + fwdZ * 4.5
+    );
+    gtaState.camCurrentPos.set(
+      gtaState.pos.x + rgtX * preset.shoulder - fwdX * distH,
+      Math.max(gtaState.pos.y + preset.height + distV, gtaState.pos.y + 0.55),
+      gtaState.pos.z + rgtZ * preset.shoulder - fwdZ * distH
+    );
+    camera.position.copy(gtaState.camCurrentPos);
+    camera.lookAt(gtaState.camCurrentLook);
   }
+}
 
-  const isMoving = _move.lengthSq() > 0.0001;
-  const isSprinting =
-    walkState.keys.has("ShiftLeft") ||
-    walkState.keys.has("ShiftRight") ||
-    touchControlState.sprint ||
-    joyMag > 0.84;
-  const joyScale = !hasKeyMove && joyMag > 0.05 ? Math.max(0.35, joyMag) : 1.0;
-  const maxSpeed = (gtaState.turbo ? (isSprinting ? 26.0 : 16.5) : isSprinting ? 9.2 : 3.5) * joyScale;
+function teleportGtaToPlan(planX, planY, planZ = 0, facingYaw = 0, label = "") {
+  const p3 = planToThree(planX, planY, planZ);
+  const normYaw = normalizeAngleSigned(facingYaw);
+  gtaState.pos.copy(p3);
+  gtaState.velX = 0;
+  gtaState.velY = 0;
+  gtaState.velZ = 0;
+  gtaState.grounded = true;
+  gtaState.crouched = false;
+  gtaState.currentEyeH = PLAYER_STAND_EYE;
+  gtaState.stepEyeOffset = 0;
+  gtaState.landDip = 0;
+  gtaState.coyoteTimer = 0;
+  gtaState.jumpBufferTimer = 0;
+  gtaState.currentRoll = 0;
+  gtaState.charYaw = normYaw;
+  gtaState.camYaw = normYaw;
+  gtaState.fpsPitch = 0.03;
+  gtaState.camPitch = 0.18;
+  gtaState.initializedOnce = true;
 
-  let targetVx = 0;
-  let targetVz = 0;
-  if (isMoving) {
-    _move.normalize();
-    targetVx = _move.x * maxSpeed;
-    targetVz = _move.z * maxSpeed;
+  const safe = findSafeSpawnFloor(gtaState.pos.x, gtaState.pos.z, Math.max(planZ, 0));
+  gtaState.pos.y = safe.floorY;
+  gtaState.lastGroundY = safe.floorY;
+  gtaState.lastCeilingY = safe.ceilY;
 
-    // Xoay thân nhân vật mượt về hướng chạy
-    const targetYaw = Math.atan2(-_move.x, -_move.z);
-    const diff = ((targetYaw - gtaState.charYaw + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
-    gtaState.charYaw += diff * (1 - Math.exp(-13.0 * dt));
-  }
+  syncCameraToPlayerImmediate();
+  syncSunShadowAnchor(gtaState.pos.x, gtaState.pos.z, true);
+  renderEngine.invalidateOcclusion();
+  if (label) showToast(`Dịch chuyển tới: ${label}`);
+}
 
-  const accel = isMoving ? 11.5 : 14.0;
-  const blend = 1 - Math.exp(-accel * dt);
-  gtaState.velX += (targetVx - gtaState.velX) * blend;
-  gtaState.velZ += (targetVz - gtaState.velZ) * blend;
+function unstuckPlayerToSafeGround() {
+  const safe = findSafeSpawnFloor(gtaState.pos.x, gtaState.pos.z, 0);
+  gtaState.pos.y = safe.floorY;
+  gtaState.lastGroundY = safe.floorY;
+  gtaState.lastCeilingY = safe.ceilY;
+  gtaState.velX = 0;
+  gtaState.velY = 0;
+  gtaState.velZ = 0;
+  gtaState.grounded = true;
+  gtaState.crouched = false;
+  gtaState.stepEyeOffset = 0;
+  syncCameraToPlayerImmediate();
+  showToast(`Đã đặt lại vị trí trên mặt sàn (cao độ ${safe.floorY.toFixed(2)}m)`);
+}
 
-  const horizSpeed = Math.hypot(gtaState.velX, gtaState.velZ);
-  gtaState.speedSmoothed += (horizSpeed - gtaState.speedSmoothed) * (1 - Math.exp(-10 * dt));
+const _colSweepState = { x: 0, z: 0, vx: 0, vz: 0 };
 
-  // 2. Va chạm tường phía trước (trượt mượt dọc tường)
-  let stepX = gtaState.velX * dt;
-  let stepZ = gtaState.velZ * dt;
-  const localCols = horizSpeed > 0.08 || !gtaState.grounded ? getNearbyTileColliders(gtaState.pos.x, gtaState.pos.z, 4.5) : [];
+function stepSinglePhysicsSubstep(subDt, wishDirX, wishDirZ, hasMoveInput, wishSpeed, wantCrouch, wantJump) {
+  gtaState.coyoteTimer = Math.max(0, gtaState.coyoteTimer - subDt);
+  gtaState.jumpBufferTimer = Math.max(0, gtaState.jumpBufferTimer - subDt);
 
-  if (horizSpeed > 0.15 && localCols.length > 0 && !gtaState.turbo) {
-    _rayOrigin.set(gtaState.pos.x, gtaState.pos.y + 1.05, gtaState.pos.z);
-    _rayDir.set(gtaState.velX / horizSpeed, 0, gtaState.velZ / horizSpeed);
-    gtaRaycaster.set(_rayOrigin, _rayDir);
-    gtaRaycaster.near = 0.05;
-    gtaRaycaster.far = 0.65 + horizSpeed * dt;
-    const wallHits = gtaRaycaster.intersectObjects(localCols, false);
-    if (wallHits.length > 0 && wallHits[0].face && Math.abs(wallHits[0].face.normal.y) < 0.45) {
-      // Trượt theo phương vuông góc pháp tuyến tường
-      const n = wallHits[0].face.normal;
-      const dot = stepX * n.x + stepZ * n.z;
-      if (dot < 0) {
-        stepX -= n.x * dot;
-        stepZ -= n.z * dot;
-      }
+  // 1. Kiểm tra trần trước khi đứng dậy từ tư thế ngồi (chuẩn Half-Life Crouch)
+  if (wantCrouch) {
+    gtaState.crouched = true;
+  } else if (gtaState.crouched) {
+    const headCheck = probePlayerFloorAndCeiling(
+      gtaState.pos.x,
+      gtaState.pos.z,
+      gtaState.pos.y - 0.5,
+      gtaState.pos.y + 0.4,
+      gtaState.pos.y + 0.9,
+      false
+    );
+    if (headCheck.ceilY - gtaState.pos.y >= PLAYER_STAND_HEIGHT + 0.04) {
+      gtaState.crouched = false;
     }
   }
 
-  // Giới hạn biên Kinh Thành & Sông Hương
-  gtaState.pos.x = THREE.MathUtils.clamp(gtaState.pos.x + stepX, -820, 820);
-  gtaState.pos.z = THREE.MathUtils.clamp(gtaState.pos.z + stepZ, -820, 1080);
-
-  // 3. Nhảy & Bám cao độ bậc thềm / cầu / sân cung điện
-  const wantJump = walkState.keys.has("Space") || touchControlState.jumpQueued;
-  touchControlState.jumpQueued = false;
-  if (gtaState.grounded && wantJump) {
-    gtaState.velY = 7.4;
+  // 2. Bật nhảy chuẩn GoldSrc (kèm Coyote Time + Jump Buffer + Crouch-Jump)
+  const canJumpNow = gtaState.grounded || gtaState.coyoteTimer > 0;
+  if ((wantJump || gtaState.jumpBufferTimer > 0) && canJumpNow) {
+    const crouchBoost = wantCrouch ? 1.05 : 1.0;
+    gtaState.velY = moveSettings.jumpImpulse * crouchBoost;
     gtaState.grounded = false;
+    gtaState.coyoteTimer = 0;
+    gtaState.jumpBufferTimer = 0;
   }
 
-  let groundY = gtaState.lastGroundY;
-  if (horizSpeed > 0.05 || !gtaState.grounded) {
-    groundY = probeGtaGroundY(gtaState.pos.x, gtaState.pos.z, gtaState.pos.y + 1.25);
-    gtaState.lastGroundY = groundY;
+  // 3. Ma sát mặt đất & Gia tốc GoldSrc (PM_Friction + PM_Accelerate + PM_AirAccelerate)
+  if (gtaState.grounded) {
+    const speed = Math.hypot(gtaState.velX, gtaState.velZ);
+    if (speed > 0.0005) {
+      const control = Math.max(speed, SV_STOPSPEED);
+      const drop = control * SV_FRICTION * subDt;
+      const newSpeedScale = Math.max(0, speed - drop) / speed;
+      gtaState.velX *= newSpeedScale;
+      gtaState.velZ *= newSpeedScale;
+    }
+
+    if (hasMoveInput && wishSpeed > 0) {
+      const currentSpeed = gtaState.velX * wishDirX + gtaState.velZ * wishDirZ;
+      const addSpeed = wishSpeed - currentSpeed;
+      if (addSpeed > 0) {
+        const accelSpeed = Math.min(SV_ACCELERATE * subDt * wishSpeed, addSpeed);
+        gtaState.velX += accelSpeed * wishDirX;
+        gtaState.velZ += accelSpeed * wishDirZ;
+      }
+    }
+  } else if (hasMoveInput && wishSpeed > 0) {
+    // Điều hướng trên không mượt mà kiểu Half-Life (Air Control / Air Strafe)
+    const airCap = gtaState.turbo ? wishSpeed : Math.min(wishSpeed, Math.max(2.6, wishSpeed * 0.42));
+    const currentSpeed = gtaState.velX * wishDirX + gtaState.velZ * wishDirZ;
+    const addSpeed = airCap - currentSpeed;
+    if (addSpeed > 0) {
+      const accelSpeed = Math.min(SV_AIRACCELERATE * subDt * wishSpeed, addSpeed);
+      gtaState.velX += accelSpeed * wishDirX;
+      gtaState.velZ += accelSpeed * wishDirZ;
+    }
+  }
+
+  // 4. Di chuyển ngang + Trượt dọc tường hình trụ 4 lượt (Collide-and-Slide chống xuyên tường/kẹt góc)
+  const bodyHeight = gtaState.crouched ? PLAYER_CROUCH_HEIGHT : PLAYER_STAND_HEIGHT;
+  const stepUpMax = gtaState.grounded ? PLAYER_MAX_STEP : gtaState.velY <= 0.2 ? 0.22 : 0.06;
+
+  let nextX = THREE.MathUtils.clamp(gtaState.pos.x + gtaState.velX * subDt, -820, 820);
+  let nextZ = THREE.MathUtils.clamp(gtaState.pos.z + gtaState.velZ * subDt, -820, 1080);
+
+  if (!gtaState.turbo) {
+    const localCols = getNearbySpatialColliders(nextX, nextZ, 3.5);
+    if (localCols.length > 0) {
+      _colSweepState.x = nextX;
+      _colSweepState.z = nextZ;
+      _colSweepState.vx = gtaState.velX;
+      _colSweepState.vz = gtaState.velZ;
+      const minWallY = gtaState.pos.y + stepUpMax;
+      const maxWallY = gtaState.pos.y + bodyHeight - 0.04;
+
+      for (let iter = 0; iter < 4; iter++) {
+        let anyHit = false;
+        for (let c = 0; c < localCols.length; c++) {
+          if (localCols[c].resolveCylinderHorizontal(_colSweepState, PLAYER_RADIUS, minWallY, maxWallY)) {
+            anyHit = true;
+          }
+        }
+        if (!anyHit) break;
+      }
+
+      nextX = THREE.MathUtils.clamp(_colSweepState.x, -820, 820);
+      nextZ = THREE.MathUtils.clamp(_colSweepState.z, -820, 1080);
+      gtaState.velX = _colSweepState.vx;
+      gtaState.velZ = _colSweepState.vz;
+    }
+  }
+
+  gtaState.pos.x = nextX;
+  gtaState.pos.z = nextZ;
+
+  // 5. Trọng lực, Bám bậc thềm cầu/điện chống âm sàn & Chống xuyên trần vòm cửa
+  const prevFeetY = gtaState.pos.y;
+  if (!gtaState.grounded) {
+    gtaState.velY -= moveSettings.gravity * subDt;
+    gtaState.pos.y += gtaState.velY * subDt;
+  }
+
+  const maxFloorProbeY = gtaState.grounded
+    ? prevFeetY + PLAYER_MAX_STEP
+    : gtaState.velY > 0.15
+      ? prevFeetY + 0.08
+      : Math.max(prevFeetY, gtaState.pos.y) + 0.28;
+
+  const probe = probePlayerFloorAndCeiling(
+    gtaState.pos.x,
+    gtaState.pos.z,
+    -3.2,
+    maxFloorProbeY,
+    Math.min(prevFeetY, gtaState.pos.y) + 0.92,
+    true
+  );
+  gtaState.lastGroundY = probe.floorY;
+  gtaState.lastCeilingY = probe.ceilY;
+
+  // Đụng trần nhà / vòm cửa Ngọ Môn khi nhảy
+  if (!gtaState.turbo && gtaState.pos.y + bodyHeight > probe.ceilY - 0.04) {
+    gtaState.pos.y = Math.max(probe.floorY, probe.ceilY - bodyHeight - 0.04);
+    if (gtaState.velY > 0) {
+      gtaState.velY = 0;
+    }
   }
 
   if (!gtaState.grounded) {
-    gtaState.velY -= 20.5 * dt;
-    gtaState.pos.y += gtaState.velY * dt;
-    if (gtaState.pos.y <= groundY) {
-      gtaState.pos.y = groundY;
+    if (gtaState.velY <= 0 && gtaState.pos.y <= probe.floorY + 0.03) {
+      const impact = Math.min(0.13, Math.max(0, -gtaState.velY - 2.3) * 0.015);
+      gtaState.landDip = Math.max(gtaState.landDip, impact);
+      gtaState.pos.y = probe.floorY;
       gtaState.velY = 0;
       gtaState.grounded = true;
     }
   } else {
-    const dy = groundY - gtaState.pos.y;
-    if (dy > -1.3 && dy < 1.25) {
-      gtaState.pos.y += dy * (1 - Math.exp(-18 * dt));
-    } else if (dy <= -1.3) {
-      gtaState.grounded = false;
-    } else {
-      gtaState.pos.y = groundY;
-    }
-  }
-
-  // 4. Hoạt ảnh cơ thể nhân vật (Đứng thở / Đi bộ / Chạy nhanh / Nhảy)
-  rig.root.position.copy(gtaState.pos);
-  rig.root.rotation.y = gtaState.charYaw;
-
-  const normSpeed = THREE.MathUtils.clamp(gtaState.speedSmoothed / 9.2, 0, 1.35);
-  if (gtaState.grounded && gtaState.speedSmoothed > 0.2) {
-    const freq = 6.2 + normSpeed * 5.2;
-    gtaState.animPhase += dt * freq;
-    const s = Math.sin(gtaState.animPhase);
-    const c = Math.cos(gtaState.animPhase);
-    const stride = THREE.MathUtils.clamp(0.45 + normSpeed * 0.55, 0.3, 1.05);
-
-    rig.leftLeg.hip.rotation.x = s * stride;
-    rig.rightLeg.hip.rotation.x = -s * stride;
-    rig.leftLeg.knee.rotation.x = Math.max(0, -c) * stride * 0.9;
-    rig.rightLeg.knee.rotation.x = Math.max(0, c) * stride * 0.9;
-
-    rig.leftArm.shoulder.rotation.x = -s * stride * 0.85;
-    rig.rightArm.shoulder.rotation.x = s * stride * 0.85;
-    rig.leftArm.elbow.rotation.x = -(0.2 + normSpeed * 0.55 + Math.max(0, s) * 0.35);
-    rig.rightArm.elbow.rotation.x = -(0.2 + normSpeed * 0.55 + Math.max(0, -s) * 0.35);
-
-    rig.hips.position.y = 0.88 + Math.abs(c) * 0.055 * Math.min(normSpeed + 0.3, 1.0);
-    rig.torso.rotation.x = -(0.05 + normSpeed * 0.16);
-    rig.torso.rotation.y = -s * 0.08 * stride;
-    rig.coatTailPivot.rotation.x = 0.12 + normSpeed * 0.42 + Math.abs(s) * 0.14;
-  } else if (!gtaState.grounded) {
-    rig.leftLeg.hip.rotation.x = 0.55;
-    rig.rightLeg.hip.rotation.x = -0.25;
-    rig.leftLeg.knee.rotation.x = 0.65;
-    rig.rightLeg.knee.rotation.x = 0.45;
-    rig.leftArm.shoulder.rotation.x = -0.6;
-    rig.rightArm.shoulder.rotation.x = -0.45;
-    rig.leftArm.elbow.rotation.x = -0.5;
-    rig.rightArm.elbow.rotation.x = -0.5;
-    rig.torso.rotation.x = -0.1;
-    rig.coatTailPivot.rotation.x = 0.48;
-  } else {
-    // Tư thế đứng thở tự nhiên
-    gtaState.animPhase += dt * 1.9;
-    const breath = Math.sin(gtaState.animPhase);
-    const relax = 1 - Math.exp(-10 * dt);
-    rig.leftLeg.hip.rotation.x *= 1 - relax;
-    rig.rightLeg.hip.rotation.x *= 1 - relax;
-    rig.leftLeg.knee.rotation.x *= 1 - relax;
-    rig.rightLeg.knee.rotation.x *= 1 - relax;
-    rig.leftArm.shoulder.rotation.x += (0.04 * breath - rig.leftArm.shoulder.rotation.x) * relax;
-    rig.rightArm.shoulder.rotation.x += (-0.04 * breath - rig.rightArm.shoulder.rotation.x) * relax;
-    rig.leftArm.elbow.rotation.x += (-0.12 - rig.leftArm.elbow.rotation.x) * relax;
-    rig.rightArm.elbow.rotation.x += (-0.12 - rig.rightArm.elbow.rotation.x) * relax;
-    rig.hips.position.y = 0.88 + breath * 0.008;
-    rig.torso.rotation.x *= 1 - relax;
-    rig.torso.rotation.y *= 1 - relax;
-    rig.coatTailPivot.rotation.x += (0.04 - rig.coatTailPivot.rotation.x) * relax;
-  }
-
-  // Bóng tiếp đất co giãn nhẹ theo độ cao nhảy
-  const jumpHeight = Math.max(0, gtaState.pos.y - gtaState.lastGroundY);
-  const shScale = THREE.MathUtils.clamp(1.0 - jumpHeight * 0.22, 0.45, 1.0);
-  rig.blobShadow.scale.set(shScale, shScale, 1);
-  rig.blobShadow.position.y = 0.03 - jumpHeight;
-
-  // 5. Camera lò xo qua vai kiểu GTA + tránh đâm xuyên tường
-  gtaState.camDist += (gtaState.targetCamDist - gtaState.camDist) * (1 - Math.exp(-9 * dt));
-  const targetFov = preset.fov + (isSprinting && isMoving ? 7.0 : gtaState.turbo && isMoving ? 10.0 : 0.0);
-  if (Math.abs(camera.fov - targetFov) > 0.05) {
-    camera.fov += (targetFov - camera.fov) * (1 - Math.exp(-7 * dt));
-    camera.updateProjectionMatrix();
-  }
-
-  _pivot.set(
-    gtaState.pos.x + _rgt.x * preset.shoulder,
-    gtaState.pos.y + preset.height,
-    gtaState.pos.z + _rgt.z * preset.shoulder
-  );
-
-  const distH = gtaState.camDist * Math.cos(gtaState.camPitch);
-  const distV = gtaState.camDist * Math.sin(gtaState.camPitch);
-  _desiredCam.set(
-    _pivot.x - _fwd.x * distH,
-    Math.max(_pivot.y + distV, gtaState.pos.y + 0.55),
-    _pivot.z - _fwd.z * distH
-  );
-
-  // Kéo camera lại gần nếu sau lưng vướng tường cung điện
-  if (localCols.length > 0) {
-    _rayDir.subVectors(_desiredCam, _pivot);
-    const armLen = _rayDir.length();
-    if (armLen > 0.5) {
-      _rayDir.divideScalar(armLen);
-      gtaRaycaster.set(_pivot, _rayDir);
-      gtaRaycaster.near = 0.25;
-      gtaRaycaster.far = armLen;
-      const camHits = gtaRaycaster.intersectObjects(localCols, false);
-      if (camHits.length > 0) {
-        const safeDist = Math.max(1.35, camHits[0].distance - 0.38);
-        _desiredCam.copy(_pivot).addScaledVector(_rayDir, safeDist);
+    const dy = probe.floorY - prevFeetY;
+    if (dy >= -0.55 && dy <= PLAYER_MAX_STEP + 0.03) {
+      gtaState.pos.y = probe.floorY;
+      if (Math.abs(dy) > 0.015) {
+        gtaState.stepEyeOffset = THREE.MathUtils.clamp(
+          gtaState.stepEyeOffset - dy,
+          -PLAYER_MAX_STEP,
+          PLAYER_MAX_STEP
+        );
       }
+    } else if (dy < -0.55) {
+      gtaState.grounded = false;
+      gtaState.coyoteTimer = 0.09;
+    } else if (gtaState.pos.y < probe.floorY) {
+      gtaState.pos.y = probe.floorY;
     }
-  }
-
-  _desiredLook.set(
-    _pivot.x + _fwd.x * 4.5,
-    _pivot.y - Math.sin(gtaState.camPitch) * 1.4,
-    _pivot.z + _fwd.z * 4.5
-  );
-
-  const camSpring = 1 - Math.exp(-14.0 * dt);
-  gtaState.camCurrentPos.lerp(_desiredCam, camSpring);
-  gtaState.camCurrentLook.lerp(_desiredLook, camSpring);
-
-  camera.position.copy(gtaState.camCurrentPos);
-  camera.lookAt(gtaState.camCurrentLook);
-
-  // Giữ lưới bóng mặt trời bám theo khu vực nhân vật đang đi (mỗi 120m mới cập nhật 1 lần)
-  syncSunShadowAnchor(gtaState.pos.x, gtaState.pos.z, false);
-
-  // 6. Vẽ Mini-Map Radar kiểu GTA (~15 Hz để 0% tốn CPU)
-  const now = performance.now();
-  if (now - gtaState.lastRadarDraw > 65) {
-    gtaState.lastRadarDraw = now;
-    renderGtaRadar(isMoving, isSprinting);
   }
 }
 
-// --- Mini-Map Radar Xoay Theo Hướng Nhìn (Chuẩn GTA) ---
-function renderGtaRadar(isMoving, isSprinting) {
+function updatePlayerSimulation(dt) {
+  const isFps = STATE.cameraMode === "walk";
+  const isTps = STATE.cameraMode === "gta";
+  if (!isFps && !isTps) return;
+
+  // 1. Đọc tổ hợp phím chuẩn Half-Life (W A S D, Shift, Space, Ctrl) + Joystick cảm ứng điện thoại
+  _fwd.set(-Math.sin(gtaState.camYaw), 0, -Math.cos(gtaState.camYaw));
+  _rgt.set(Math.cos(gtaState.camYaw), 0, -Math.sin(gtaState.camYaw));
+
+  let fwdInput = 0;
+  let strafeInput = 0;
+  if (walkState.keys.has("KeyW") || walkState.keys.has("ArrowUp")) fwdInput += 1;
+  if (walkState.keys.has("KeyS") || walkState.keys.has("ArrowDown")) fwdInput -= 1;
+  if (walkState.keys.has("KeyD") || walkState.keys.has("ArrowRight")) strafeInput += 1;
+  if (walkState.keys.has("KeyA") || walkState.keys.has("ArrowLeft")) strafeInput -= 1;
+
+  const hasKeyMove = fwdInput !== 0 || strafeInput !== 0;
+  const joyMag = Math.min(1, Math.hypot(touchControlState.joyX, touchControlState.joyY));
+  if (joyMag > 0.05) {
+    fwdInput += -touchControlState.joyY;
+    strafeInput += touchControlState.joyX;
+  }
+
+  let wishDirX = _fwd.x * fwdInput + _rgt.x * strafeInput;
+  let wishDirZ = _fwd.z * fwdInput + _rgt.z * strafeInput;
+  const wishLen = Math.hypot(wishDirX, wishDirZ);
+  const hasMoveInput = wishLen > 0.001;
+  if (hasMoveInput) {
+    wishDirX /= wishLen;
+    wishDirZ /= wishLen;
+  }
+
+  const shiftHeld = walkState.keys.has("ShiftLeft") || walkState.keys.has("ShiftRight");
+  const isRunning =
+    (moveSettings.shiftMode === "hl1" ? !shiftHeld : shiftHeld) ||
+    touchControlState.sprint ||
+    (!hasKeyMove && joyMag > 0.84);
+  const ctrlHeld =
+    walkState.keys.has("ControlLeft") ||
+    walkState.keys.has("ControlRight") ||
+    (isFps && walkState.keys.has("KeyC")) ||
+    touchControlState.crouch;
+  const spaceHeld = walkState.keys.has("Space") || touchControlState.jumpQueued;
+  touchControlState.jumpQueued = false;
+
+  const joySpeedScale = !hasKeyMove && joyMag > 0.05 ? Math.max(0.38, joyMag) : 1.0;
+  let wishSpeed = 0;
+  if (hasMoveInput) {
+    if (gtaState.turbo) {
+      wishSpeed = (isRunning ? moveSettings.turboSpeed * 1.35 : moveSettings.turboSpeed) * joySpeedScale;
+    } else if (ctrlHeld || gtaState.crouched) {
+      wishSpeed = moveSettings.crouchSpeed * joySpeedScale;
+    } else if (isRunning) {
+      wishSpeed = moveSettings.runSpeed * joySpeedScale;
+    } else {
+      wishSpeed = moveSettings.walkSpeed * joySpeedScale;
+    }
+  }
+
+  // 2. Chia nhỏ bước thời gian (Sub-stepping ~120Hz) để nhảy chuẩn & không xuyên tường mỏng ở mọi FPS
+  const clampedDt = Math.min(Math.max(dt, 0.0005), 0.09);
+  const subSteps = Math.min(8, Math.max(1, Math.ceil(clampedDt / 0.0083)));
+  const subDt = clampedDt / subSteps;
+  for (let s = 0; s < subSteps; s++) {
+    stepSinglePhysicsSubstep(subDt, wishDirX, wishDirZ, hasMoveInput, wishSpeed, ctrlHeld, spaceHeld && s === 0);
+  }
+
+  const horizSpeed = Math.hypot(gtaState.velX, gtaState.velZ);
+  gtaState.speedSmoothed += (horizSpeed - gtaState.speedSmoothed) * (1 - Math.exp(-12 * clampedDt));
+
+  // Làm mượt cao độ mắt khi ngồi cúi, leo bậc cấp và tiếp đất
+  const targetEyeH = gtaState.crouched ? PLAYER_CROUCH_EYE : PLAYER_STAND_EYE;
+  gtaState.currentEyeH += (targetEyeH - gtaState.currentEyeH) * (1 - Math.exp(-15 * clampedDt));
+  gtaState.stepEyeOffset *= Math.exp(-20 * clampedDt);
+  if (Math.abs(gtaState.stepEyeOffset) < 0.001) gtaState.stepEyeOffset = 0;
+  gtaState.landDip *= Math.exp(-13 * clampedDt);
+  if (gtaState.landDip < 0.001) gtaState.landDip = 0;
+
+  if (isFps) {
+    gtaState.charYaw = gtaState.camYaw;
+  } else if (hasMoveInput) {
+    const targetYaw = Math.atan2(-wishDirX, -wishDirZ);
+    let diff = shortestAngleDiff(gtaState.charYaw, targetYaw);
+    if (Math.abs(diff) > 2.96) {
+      diff = Math.abs(diff);
+    }
+    gtaState.charYaw = normalizeAngleSigned(gtaState.charYaw + diff * (1 - Math.exp(-16.0 * clampedDt)));
+  }
+
+  // 3. Cập nhật Camera theo Góc nhìn Thứ nhất Half-Life (FPS) hoặc Góc nhìn Thứ ba (TPS)
+  if (isFps) {
+    if (gtaState.rig) gtaState.rig.root.visible = false;
+
+    const baseFov = 68;
+    const sprintAdd = isRunning && horizSpeed > moveSettings.walkSpeed * 1.15 ? 4.5 : gtaState.turbo && horizSpeed > 8 ? 7.5 : 0;
+    const targetFov = baseFov + sprintAdd;
+    if (Math.abs(camera.fov - targetFov) > 0.05) {
+      camera.fov += (targetFov - camera.fov) * (1 - Math.exp(-8 * clampedDt));
+      camera.updateProjectionMatrix();
+    }
+
+    let bobY = 0;
+    let bobSide = 0;
+    if (moveSettings.viewBob && gtaState.grounded && horizSpeed > 0.35) {
+      const normSpd = THREE.MathUtils.clamp(horizSpeed / Math.max(moveSettings.runSpeed, 6.0), 0, 1.35);
+      gtaState.bobPhase += clampedDt * (7.2 + normSpd * 4.4);
+      const bobAmp = Math.min(1.0, horizSpeed / 7.2) * (gtaState.crouched ? 0.42 : 1.0);
+      bobY = Math.sin(gtaState.bobPhase * 2.0) * 0.022 * bobAmp;
+      bobSide = Math.cos(gtaState.bobPhase) * 0.012 * bobAmp;
+    }
+
+    const targetRoll =
+      moveSettings.viewBob && horizSpeed > 0.4
+        ? -strafeInput * 0.017 * Math.min(1.0, horizSpeed / 5.5)
+        : 0;
+    gtaState.currentRoll += (targetRoll - gtaState.currentRoll) * (1 - Math.exp(-12 * clampedDt));
+
+    camera.position.set(
+      gtaState.pos.x + _rgt.x * bobSide,
+      gtaState.pos.y + gtaState.currentEyeH + gtaState.stepEyeOffset - gtaState.landDip + bobY,
+      gtaState.pos.z + _rgt.z * bobSide
+    );
+    _fpsEuler.set(gtaState.fpsPitch, gtaState.camYaw, gtaState.currentRoll, "YXZ");
+    camera.quaternion.setFromEuler(_fpsEuler);
+
+    // Co giãn tâm ngắm chữ thập kiểu Half-Life / Counter-Strike
+    const chEl = document.getElementById("hl-crosshair");
+    if (chEl) {
+      const targetGap = !gtaState.grounded
+        ? 14
+        : horizSpeed > moveSettings.walkSpeed * 1.2
+          ? 11
+          : horizSpeed > 0.45
+            ? 8
+            : gtaState.crouched
+              ? 4
+              : 5;
+      if (targetGap !== gtaState.lastCrosshairGap) {
+        gtaState.lastCrosshairGap = targetGap;
+        chEl.style.setProperty("--ch-gap", `${targetGap}px`);
+      }
+    }
+  } else if (isTps && gtaState.rig) {
+    const rig = gtaState.rig;
+    const preset = GTA_CAM_PRESETS[gtaState.camPresetIdx];
+    rig.root.visible = true;
+    rig.root.position.copy(gtaState.pos);
+    rig.root.rotation.y = gtaState.charYaw;
+
+    // Đèn điểm nhân vật tự tăng nhẹ lúc hoàng hôn / ban đêm hoặc khi bước vào nội thất cung điện
+    if (rig.charFillLight) {
+      const isDimHour = STATE.hour < 6.8 || STATE.hour > 17.0;
+      const inInterior = Boolean(renderEngine.stats.activeIndoorTileId);
+      rig.charFillLight.intensity = inInterior ? 0.82 : isDimHour ? 0.68 : 0.36;
+    }
+
+    // Quy ước giải phẫu chuẩn: Mặt trước = -Z, Lưng = +Z, Chi buông xuống -Y:
+    // +rotation.x đưa chi về phía TRƯỚC (-Z); -rotation.x gập gối/vạt sau về phía SAU (+Z)
+    const crouchDrop = gtaState.crouched ? -0.17 : 0;
+    const crouchHipAdd = gtaState.crouched ? 0.60 : 0;
+    const crouchKneeAdd = gtaState.crouched ? -1.14 : 0;
+    const crouchAnkleAdd = gtaState.crouched ? 0.54 : 0;
+    const normSpeed = THREE.MathUtils.clamp(gtaState.speedSmoothed / Math.max(moveSettings.runSpeed, 6.0), 0, 1.35);
+
+    if (gtaState.grounded && gtaState.speedSmoothed > 0.2) {
+      const freq = 6.0 + normSpeed * 5.0;
+      gtaState.animPhase += clampedDt * freq;
+      const s = Math.sin(gtaState.animPhase);
+      const c = Math.cos(gtaState.animPhase);
+      const stride = THREE.MathUtils.clamp(0.42 + normSpeed * 0.52, 0.28, 0.98) * (gtaState.crouched ? 0.62 : 1.0);
+
+      // Chân bước tiến về phía trước (-Z): khi chân vung tới (c > 0 với chân trái, -c > 0 với chân phải) đầu gối gập ra sau (< 0)
+      rig.leftLeg.hip.rotation.x = s * stride + crouchHipAdd;
+      rig.rightLeg.hip.rotation.x = -s * stride + crouchHipAdd;
+      rig.leftLeg.knee.rotation.x = -(Math.max(0, c) * stride * 1.04 + Math.max(0, -c) * 0.07) + crouchKneeAdd;
+      rig.rightLeg.knee.rotation.x = -(Math.max(0, -c) * stride * 1.04 + Math.max(0, c) * 0.07) + crouchKneeAdd;
+      rig.leftLeg.ankle.rotation.x = s * 0.24 * stride + crouchAnkleAdd;
+      rig.rightLeg.ankle.rotation.x = -s * 0.24 * stride + crouchAnkleAdd;
+
+      // Tay đánh đối xứng chân, khuỷu tay LUÔN gập tự nhiên về phía trước (> 0)
+      rig.leftArm.shoulder.rotation.x = -s * stride * 0.80;
+      rig.rightArm.shoulder.rotation.x = s * stride * 0.80;
+      rig.leftArm.elbow.rotation.x = 0.22 + normSpeed * 0.50 + Math.max(0, -s) * 0.28;
+      rig.rightArm.elbow.rotation.x = 0.22 + normSpeed * 0.50 + Math.max(0, s) * 0.28;
+
+      rig.hips.position.y = 0.86 + crouchDrop + Math.abs(c) * 0.048 * Math.min(normSpeed + 0.25, 1.0);
+      rig.torso.rotation.x = -(0.04 + normSpeed * 0.14 + (gtaState.crouched ? 0.20 : 0));
+      rig.torso.rotation.y = s * 0.09 * stride;
+      rig.headGroup.rotation.x = 0.03 + normSpeed * 0.10 + (gtaState.crouched ? 0.16 : 0);
+      rig.headGroup.rotation.y = -s * 0.06 * stride;
+
+      // Vạt trước nâng theo đùi (> 0), vạt sau tung bay ra phía sau (< 0)
+      rig.frontFlapL.rotation.x = Math.max(0, rig.leftLeg.hip.rotation.x) * 0.92 + 0.05;
+      rig.frontFlapR.rotation.x = Math.max(0, rig.rightLeg.hip.rotation.x) * 0.92 + 0.05;
+      rig.coatTailPivot.rotation.x = -(0.08 + normSpeed * 0.38 + Math.abs(s) * 0.12);
+      rig.saberPivot.rotation.x = -0.58 - s * 0.08 * stride - normSpeed * 0.08;
+      rig.jadePendantPivot.rotation.x = -(0.05 + normSpeed * 0.24 + Math.abs(c) * 0.08);
+    } else if (!gtaState.grounded) {
+      rig.leftLeg.hip.rotation.x = 0.48;
+      rig.rightLeg.hip.rotation.x = -0.22;
+      rig.leftLeg.knee.rotation.x = -0.84;
+      rig.rightLeg.knee.rotation.x = -0.56;
+      rig.leftLeg.ankle.rotation.x = -0.18;
+      rig.rightLeg.ankle.rotation.x = -0.28;
+
+      rig.leftArm.shoulder.rotation.x = 0.36;
+      rig.rightArm.shoulder.rotation.x = -0.24;
+      rig.leftArm.elbow.rotation.x = 0.66;
+      rig.rightArm.elbow.rotation.x = 0.56;
+
+      rig.hips.position.y = 0.86 + crouchDrop * 0.5;
+      rig.torso.rotation.x = -0.09;
+      rig.torso.rotation.y = 0;
+      rig.headGroup.rotation.x = 0.06;
+      rig.headGroup.rotation.y = 0;
+      rig.frontFlapL.rotation.x = 0.46;
+      rig.frontFlapR.rotation.x = 0.12;
+      rig.coatTailPivot.rotation.x = -0.44;
+      rig.saberPivot.rotation.x = -0.72;
+      rig.jadePendantPivot.rotation.x = -0.32;
+    } else {
+      gtaState.animPhase += clampedDt * 1.85;
+      const breath = Math.sin(gtaState.animPhase);
+      const relax = 1 - Math.exp(-11 * clampedDt);
+      const torsoLean = gtaState.crouched ? -0.22 : 0;
+      const headComp = gtaState.crouched ? 0.18 : 0;
+
+      rig.leftLeg.hip.rotation.x += (crouchHipAdd - rig.leftLeg.hip.rotation.x) * relax;
+      rig.rightLeg.hip.rotation.x += (crouchHipAdd - rig.rightLeg.hip.rotation.x) * relax;
+      rig.leftLeg.knee.rotation.x += (crouchKneeAdd - rig.leftLeg.knee.rotation.x) * relax;
+      rig.rightLeg.knee.rotation.x += (crouchKneeAdd - rig.rightLeg.knee.rotation.x) * relax;
+      rig.leftLeg.ankle.rotation.x += (crouchAnkleAdd - rig.leftLeg.ankle.rotation.x) * relax;
+      rig.rightLeg.ankle.rotation.x += (crouchAnkleAdd - rig.rightLeg.ankle.rotation.x) * relax;
+
+      rig.leftArm.shoulder.rotation.x += (0.03 * breath - rig.leftArm.shoulder.rotation.x) * relax;
+      rig.rightArm.shoulder.rotation.x += (-0.03 * breath - rig.rightArm.shoulder.rotation.x) * relax;
+      rig.leftArm.elbow.rotation.x += (0.16 - rig.leftArm.elbow.rotation.x) * relax;
+      rig.rightArm.elbow.rotation.x += (0.16 - rig.rightArm.elbow.rotation.x) * relax;
+
+      rig.hips.position.y += (0.86 + crouchDrop + breath * 0.007 - rig.hips.position.y) * relax;
+      rig.torso.rotation.x += (torsoLean - rig.torso.rotation.x) * relax;
+      rig.torso.rotation.y *= 1 - relax;
+      rig.headGroup.rotation.x += (headComp - rig.headGroup.rotation.x) * relax;
+      rig.headGroup.rotation.y *= 1 - relax;
+
+      const flapIdle = gtaState.crouched ? 0.56 : 0.03;
+      rig.frontFlapL.rotation.x += (flapIdle - rig.frontFlapL.rotation.x) * relax;
+      rig.frontFlapR.rotation.x += (flapIdle - rig.frontFlapR.rotation.x) * relax;
+      rig.coatTailPivot.rotation.x += (-0.04 - rig.coatTailPivot.rotation.x) * relax;
+      rig.saberPivot.rotation.x += (-0.58 - rig.saberPivot.rotation.x) * relax;
+      rig.jadePendantPivot.rotation.x += (-0.03 - rig.jadePendantPivot.rotation.x) * relax;
+    }
+
+    const jumpHeight = Math.max(0, gtaState.pos.y - gtaState.lastGroundY);
+    const shScale = THREE.MathUtils.clamp(1.0 - jumpHeight * 0.22, 0.45, 1.0);
+    rig.blobShadow.scale.set(shScale, shScale, 1);
+    rig.blobShadow.position.y = 0.025 - jumpHeight;
+
+    gtaState.camDist += (gtaState.targetCamDist - gtaState.camDist) * (1 - Math.exp(-9 * clampedDt));
+    const targetFov = preset.fov + (isRunning && horizSpeed > moveSettings.walkSpeed * 1.15 ? 6.0 : gtaState.turbo && horizSpeed > 8 ? 9.0 : 0.0);
+    if (Math.abs(camera.fov - targetFov) > 0.05) {
+      camera.fov += (targetFov - camera.fov) * (1 - Math.exp(-7 * clampedDt));
+      camera.updateProjectionMatrix();
+    }
+
+    _pivot.set(
+      gtaState.pos.x + _rgt.x * preset.shoulder,
+      gtaState.pos.y + preset.height + (gtaState.crouched ? -0.35 : 0) + gtaState.stepEyeOffset * 0.6,
+      gtaState.pos.z + _rgt.z * preset.shoulder
+    );
+
+    const distH = gtaState.camDist * Math.cos(gtaState.camPitch);
+    const distV = gtaState.camDist * Math.sin(gtaState.camPitch);
+    _desiredCam.set(
+      _pivot.x - _fwd.x * distH,
+      Math.max(_pivot.y + distV, gtaState.pos.y + 0.45),
+      _pivot.z - _fwd.z * distH
+    );
+
+    const camCols = getNearbySpatialColliders(_pivot.x, _pivot.z, gtaState.camDist + 2.0);
+    if (camCols.length > 0) {
+      _rayDir.subVectors(_desiredCam, _pivot);
+      const armLen = _rayDir.length();
+      if (armLen > 0.45) {
+        _rayDir.divideScalar(armLen);
+        let minHit = armLen;
+        for (let c = 0; c < camCols.length; c++) {
+          const d = camCols[c].raycastSegment(
+            _pivot.x,
+            _pivot.y,
+            _pivot.z,
+            _rayDir.x,
+            _rayDir.y,
+            _rayDir.z,
+            minHit
+          );
+          if (d < minHit) minHit = d;
+        }
+        if (minHit < armLen) {
+          const safeDist = Math.max(1.15, minHit - 0.35);
+          _desiredCam.copy(_pivot).addScaledVector(_rayDir, safeDist);
+        }
+      }
+    }
+
+    _desiredLook.set(
+      _pivot.x + _fwd.x * 4.5,
+      _pivot.y - Math.sin(gtaState.camPitch) * 1.6,
+      _pivot.z + _fwd.z * 4.5
+    );
+
+    const camSpring = 1 - Math.exp(-15.0 * clampedDt);
+    gtaState.camCurrentPos.lerp(_desiredCam, camSpring);
+    gtaState.camCurrentLook.lerp(_desiredLook, camSpring);
+    camera.position.copy(gtaState.camCurrentPos);
+    camera.lookAt(gtaState.camCurrentLook);
+  }
+
+  syncSunShadowAnchor(gtaState.pos.x, gtaState.pos.z, false);
+
+  const now = performance.now();
+  if (now - gtaState.lastRadarDraw > 65) {
+    gtaState.lastRadarDraw = now;
+    renderGtaRadar(horizSpeed > 0.25, isRunning && horizSpeed > moveSettings.walkSpeed * 1.15, horizSpeed);
+  }
+}
+
+// --- Mini-Map Radar Xoay Theo Hướng Nhìn (Hỗ trợ cả Half-Life FPS & Góc thứ 3) ---
+function renderGtaRadar(isMoving, isSprinting, horizSpeed = 0) {
   const radarCanvas = document.getElementById("gta-radar");
   if (!radarCanvas) return;
   const ctx = radarCanvas.getContext("2d");
   const size = radarCanvas.width;
   const cx = size / 2;
   const cy = size / 2;
-  const scale = 0.24; // 1m = 0.24px -> bán kính radar nhìn ~360m xung quanh
+  const scale = 0.24;
 
   const pPlan = threeToPlan(gtaState.pos);
   ctx.clearRect(0, 0, size, size);
 
-  // Nền radar tối Huế
   ctx.fillStyle = "#121715";
   ctx.fillRect(0, 0, size, size);
 
   ctx.save();
   ctx.translate(cx, cy);
-  // Xoay ngược góc camera sao cho hướng nhìn luôn ở phía TRÊN của radar
   ctx.rotate(gtaState.camYaw);
 
   const toRadar = (wx, wy) => [(wx - pPlan.x) * scale, -(wy - pPlan.y) * scale];
 
-  // Sông Hương (phía Nam)
   const [rx1, ry1] = toRadar(-1200, -780);
   ctx.fillStyle = "#1d444d";
   ctx.fillRect(rx1, ry1, 2400 * scale, 280 * scale);
 
-  // Hộ Thành Hào & Hào Kim Thủy
   ctx.strokeStyle = "#20515a";
   ctx.lineWidth = 4;
   const [hx, hy] = toRadar(-332, 416);
   ctx.strokeRect(hx, hy, 664 * scale, 658 * scale);
 
-  // Khung Thành Vauban
   ctx.strokeStyle = "rgba(183, 167, 142, 0.45)";
   ctx.lineWidth = 2;
   const [vx, vy] = toRadar(-740, 790);
   ctx.strokeRect(vx, vy, 1480 * scale, 1375 * scale);
 
-  // Hoàng Thành & Tử Cấm Thành
   ctx.strokeStyle = "rgba(38, 138, 119, 0.72)";
   ctx.lineWidth = 1.6;
   const [htx, hty] = toRadar(-311, 394);
@@ -2058,7 +3452,6 @@ function renderGtaRadar(isMoving, isSprinting) {
   const [tcx, tcy] = toRadar(-162, 330);
   ctx.strokeRect(tcx, tcy, 324 * scale, 290 * scale);
 
-  // Trục Thần Đạo vàng
   ctx.strokeStyle = "rgba(212, 160, 23, 0.8)";
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -2068,7 +3461,6 @@ function renderGtaRadar(isMoving, isSprinting) {
   ctx.lineTo(ax2, ay2);
   ctx.stroke();
 
-  // 30 ô cung điện
   if (STATE.gridManifest) {
     STATE.gridManifest.tiles.forEach((t) => {
       const b = t.bounds;
@@ -2084,14 +3476,12 @@ function renderGtaRadar(isMoving, isSprinting) {
   }
   ctx.restore();
 
-  // Vòng tròn chia tầm nhìn radar
   ctx.strokeStyle = "rgba(218, 198, 162, 0.16)";
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.arc(cx, cy, 44, 0, Math.PI * 2);
   ctx.stroke();
 
-  // Chữ B (Hướng Bắc thực tế lệch 32° so với trục -Z)
   const northAng = gtaState.camYaw + THREE.MathUtils.degToRad(32);
   const nx = cx + Math.sin(northAng) * (cx - 12);
   const ny = cy - Math.cos(northAng) * (cy - 12);
@@ -2108,10 +3498,10 @@ function renderGtaRadar(isMoving, isSprinting) {
   ctx.textBaseline = "middle";
   ctx.fillText("B", nx, ny + 0.5);
 
-  // Mũi tên vàng định vị nhân vật ở chính giữa radar
   ctx.save();
   ctx.translate(cx, cy);
-  ctx.rotate(gtaState.camYaw - gtaState.charYaw);
+  const arrowRot = STATE.cameraMode === "walk" ? 0 : gtaState.camYaw - gtaState.charYaw;
+  ctx.rotate(arrowRot);
   ctx.fillStyle = "#ffd86b";
   ctx.strokeStyle = "#14100c";
   ctx.lineWidth = 1.6;
@@ -2125,7 +3515,6 @@ function renderGtaRadar(isMoving, isSprinting) {
   ctx.stroke();
   ctx.restore();
 
-  // Cập nhật tên khu vực & trạng thái di chuyển
   const curTile = getCurrentTileAt(gtaState.pos.x, gtaState.pos.z);
   const locEl = document.getElementById("gta-location-name");
   if (locEl) {
@@ -2135,13 +3524,21 @@ function renderGtaRadar(isMoving, isSprinting) {
   if (stanceEl) {
     stanceEl.textContent = !gtaState.grounded
       ? "Đang nhảy"
-      : !isMoving
-        ? "Đứng yên"
-        : gtaState.turbo
-          ? "Phi tốc độ cao"
-          : isSprinting
-            ? "Chạy nhanh"
-            : "Đi bộ";
+      : gtaState.crouched
+        ? isMoving
+          ? "Đang đi cúi"
+          : "Đang ngồi"
+        : !isMoving
+          ? "Đứng yên"
+          : gtaState.turbo
+            ? "Lướt nhanh"
+            : isSprinting
+              ? "Đang chạy"
+              : "Đi bộ";
+  }
+  const speedEl = document.getElementById("gta-speed-mini");
+  if (speedEl) {
+    speedEl.textContent = `${horizSpeed.toFixed(1)} m/s`;
   }
   const coordsEl = document.getElementById("gta-coords-mini");
   if (coordsEl) {
@@ -2149,20 +3546,16 @@ function renderGtaRadar(isMoving, isSprinting) {
   }
 }
 
-// --- Chế độ Camera: Quy hoạch | Nhập vai GTA | Mắt 1.70m | Time-lapse ---
+// --- Chế độ Camera: Quy hoạch | Half-Life (FPS) | Góc nhìn thứ 3 | Time-lapse ---
 const walkState = {
-  yaw: 0,
-  pitch: 0,
   keys: new Set(),
-  dragging: false,
-  lastX: 0,
-  lastY: 0,
 };
 
 const touchControlState = {
   joyX: 0,
   joyY: 0,
   sprint: false,
+  crouch: false,
   jumpQueued: false,
   lookPointers: new Map(),
   pinchDist: null,
@@ -2176,6 +3569,7 @@ function resetTouchInputs() {
   touchControlState.joyX = 0;
   touchControlState.joyY = 0;
   touchControlState.sprint = false;
+  touchControlState.crouch = false;
   touchControlState.jumpQueued = false;
   touchControlState.lookPointers.clear();
   touchControlState.pinchDist = null;
@@ -2195,22 +3589,22 @@ function syncMobileHudState() {
 
   const mobilePad = document.getElementById("hue-mobile-pad");
   const btnJump = document.getElementById("hue-touch-jump");
+  const btnCrouch = document.getElementById("hue-touch-crouch");
   const btnTurbo = document.getElementById("hue-touch-turbo");
   const isTouchMode = (STATE.cameraMode === "gta" || STATE.cameraMode === "walk") && isHueMobileUi();
   if (mobilePad) {
     mobilePad.classList.toggle("hidden", !isTouchMode);
   }
   if (btnJump) {
-    btnJump.classList.toggle("hidden", STATE.cameraMode !== "gta");
+    btnJump.classList.remove("hidden");
+  }
+  if (btnCrouch) {
+    btnCrouch.textContent = touchControlState.crouch ? "Đang ngồi" : "Ngồi";
+    btnCrouch.classList.toggle("active", Boolean(touchControlState.crouch));
   }
   if (btnTurbo) {
-    if (STATE.cameraMode === "walk") {
-      btnTurbo.textContent = touchControlState.sprint ? "⚡ Đang chạy" : "⚡ Chạy";
-      btnTurbo.classList.toggle("active", touchControlState.sprint);
-    } else {
-      btnTurbo.textContent = gtaState.turbo ? "🚀 Turbo ON" : "🚀 Turbo";
-      btnTurbo.classList.toggle("active", Boolean(gtaState.turbo));
-    }
+    btnTurbo.textContent = touchControlState.sprint ? "Đang chạy" : "Chạy";
+    btnTurbo.classList.toggle("active", Boolean(touchControlState.sprint));
   }
 
   const narrow = window.innerWidth <= 640;
@@ -2236,14 +3630,88 @@ function syncMobileHudState() {
   });
 }
 
+function isTextEntryElement(el) {
+  if (!el) return false;
+  if (el.isContentEditable) return true;
+  const tag = (el.tagName || "").toLowerCase();
+  if (tag === "textarea") return true;
+  if (tag === "input") {
+    const type = (el.type || "text").toLowerCase();
+    return !["range", "checkbox", "radio", "button", "submit", "reset", "color"].includes(type);
+  }
+  return false;
+}
+
+function focusViewportCanvas() {
+  const active = document.activeElement;
+  if (active && active !== renderer.domElement && !isTextEntryElement(active)) {
+    if (typeof active.blur === "function") active.blur();
+  }
+  try {
+    window.focus();
+  } catch {
+    // ignore cross-origin window focus restrictions
+  }
+  if (renderer.domElement && typeof renderer.domElement.focus === "function") {
+    renderer.domElement.focus({ preventScroll: true });
+  }
+}
+
 function exitPointerLockSafe() {
   if (document.pointerLockElement === renderer.domElement && document.exitPointerLock) {
     document.exitPointerLock();
   }
 }
 
+function updatePointerLockStatusUi() {
+  const locked = document.pointerLockElement === renderer.domElement;
+  const statusEl = document.getElementById("move-lock-status");
+  if (statusEl) {
+    statusEl.textContent = locked
+      ? "Chuột: Đang khóa tâm ngắm 360° (Esc mở)"
+      : "Chuột: Bấm cảnh 3D để xoay 360° (hoặc giữ chuột kéo)";
+  }
+}
+
+function syncMovementHudForMode(mode) {
+  const isFps = mode === "walk";
+  const isTps = mode === "gta";
+  const tagEl = document.getElementById("gta-mode-tag");
+  const hintEl = document.getElementById("gta-keys-hint");
+  const chEl = document.getElementById("hl-crosshair");
+  const btnView = document.getElementById("btn-gta-view");
+  const btnCam = document.getElementById("btn-gta-cam");
+  const btnOutfit = document.getElementById("btn-gta-outfit");
+
+  if (tagEl) {
+    tagEl.textContent = isFps ? "HALF-LIFE FPS · 1.70M" : "GÓC NHÌN THỨ 3 · 1.70M";
+  }
+  if (hintEl) {
+    const shiftHint =
+      moveSettings.shiftMode === "hl1"
+        ? "<code>W A S D</code> chạy · <code>Shift</code> đi bộ chậm"
+        : "<code>W A S D</code> đi bộ · <code>Shift</code> chạy nhanh";
+    hintEl.innerHTML = `${shiftHint} · <code>Space</code> nhảy · <code>Ctrl</code> ngồi · <strong>Bấm cảnh</strong> xoay chuột 360° · <code>V</code> đổi góc nhìn · <code>M</code> cài đặt · <code>Esc</code> mở chuột`;
+  }
+  if (chEl) {
+    chEl.classList.toggle("hidden", !isFps);
+  }
+  if (btnView) {
+    btnView.textContent = isFps ? "Đổi sang Góc thứ 3 (V)" : "Đổi sang Half-Life FPS (V)";
+  }
+  if (btnCam) {
+    btnCam.classList.toggle("hidden", !isTps);
+  }
+  if (btnOutfit) {
+    btnOutfit.classList.toggle("hidden", !isTps);
+  }
+  updatePointerLockStatusUi();
+}
+
 function setCameraMode(mode, startPlan = null) {
   const prevMode = STATE.cameraMode;
+  const wasGround = prevMode === "gta" || prevMode === "walk";
+  const isGround = mode === "gta" || mode === "walk";
   STATE.cameraMode = mode;
   if (prevMode !== mode) resetTouchInputs();
 
@@ -2253,198 +3721,336 @@ function setCameraMode(mode, startPlan = null) {
 
   const walkHint = document.getElementById("walk-hint");
   const gtaHud = document.getElementById("gta-hud");
+  const settingsPanel = document.getElementById("move-settings-panel");
   const sidebar = document.getElementById("hud-sidebar");
   const inspector = document.getElementById("tile-inspector");
   const preset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
 
-  if (prevMode === "gta" && mode !== "gta") {
+  if (wasGround && !isGround) {
     exitPointerLockSafe();
+    walkState.keys.clear();
+    gtaState.dragging = false;
     document.body.classList.remove("gta-active");
     if (gtaHud) gtaHud.classList.add("hidden");
+    if (settingsPanel) settingsPanel.classList.add("hidden");
     if (gtaState.rig) gtaState.rig.root.visible = false;
     if (!gtaState.cachedSidebarWasCollapsed && sidebar && window.innerWidth > 900) {
       sidebar.classList.remove("collapsed");
     }
+    camera.near = 0.25;
     syncSunShadowAnchor(0, 0, true);
   }
 
   if (mode === "bird") {
     controls.enabled = true;
+    camera.near = 0.25;
     camera.fov = 45;
     camera.far = preset.farBird;
     camera.updateProjectionMatrix();
-    walkHint.classList.add("hidden");
-    updateTimeOfDay(STATE.hour);
-  } else if (mode === "gta") {
+    if (walkHint) walkHint.classList.add("hidden");
+  } else if (isGround) {
     controls.enabled = false;
-    walkHint.classList.add("hidden");
+    if (walkHint) walkHint.classList.add("hidden");
     document.body.classList.add("gta-active");
     if (gtaHud) gtaHud.classList.remove("hidden");
-    if (gtaState.rig) gtaState.rig.root.visible = true;
 
-    if (sidebar) {
+    if (!wasGround && sidebar) {
       gtaState.cachedSidebarWasCollapsed = sidebar.classList.contains("collapsed");
       sidebar.classList.add("collapsed");
     }
     if (inspector) inspector.classList.add("hidden");
 
-    const camP = GTA_CAM_PRESETS[gtaState.camPresetIdx];
-    camera.fov = camP.fov;
+    camera.near = 0.12;
+    camera.fov = mode === "walk" ? 68 : GTA_CAM_PRESETS[gtaState.camPresetIdx].fov;
     camera.far = preset.farGta;
     camera.updateProjectionMatrix();
 
     if (startPlan) {
-      teleportGtaToPlan(startPlan.x, startPlan.y, startPlan.z || 0, 0);
-    } else if (prevMode !== "gta") {
+      teleportGtaToPlan(startPlan.x, startPlan.y, startPlan.z || 0, startPlan.yaw || 0);
+    } else if (!gtaState.initializedOnce) {
       teleportGtaToPlan(0, -95, 0, 0);
+    } else {
+      if (prevMode === "walk" && mode === "gta") {
+        gtaState.charYaw = gtaState.camYaw;
+        gtaState.camPitch = THREE.MathUtils.clamp(-gtaState.fpsPitch * 0.65 + 0.16, -0.45, 0.85);
+      } else if (prevMode === "gta" && mode === "walk") {
+        gtaState.fpsPitch = THREE.MathUtils.clamp(-gtaState.camPitch * 0.7 + 0.08, -1.2, 1.2);
+      }
+      syncCameraToPlayerImmediate();
+      syncSunShadowAnchor(gtaState.pos.x, gtaState.pos.z, true);
     }
-    updateTimeOfDay(STATE.hour);
-    renderGtaRadar(false, false);
-    showToast(
-      isHueMobileUi()
-        ? "Nhập vai GTA · Cần trái để chạy, vuốt màn hình xoay 360°, 2 ngón thu phóng"
-        : "Đã bật Nhập vai GTA · Bấm vào cảnh để xoay chuột 360° hoặc dùng W A S D"
-    );
-  } else if (mode === "walk") {
-    controls.enabled = false;
-    if (window.innerWidth <= 900) {
-      if (sidebar) sidebar.classList.add("collapsed");
-      if (inspector) inspector.classList.add("hidden");
+
+    syncMovementHudForMode(mode);
+    renderGtaRadar(false, false, 0);
+    focusViewportCanvas();
+    if (prevMode !== mode) {
+      if (isHueMobileUi()) {
+        showToast(
+          mode === "walk"
+            ? "Half-Life FPS · Cần trái di chuyển, vuốt màn hình xoay 360°, nút Nhảy/Ngồi/Chạy"
+            : "Góc nhìn thứ 3 · Cần trái di chuyển, vuốt xoay 360°, 2 ngón thu phóng"
+        );
+      } else {
+        showToast(
+          mode === "walk"
+            ? "Chế độ Half-Life FPS · W A S D đi bộ, Shift chạy, Space nhảy, Ctrl ngồi, bấm cảnh xoay chuột 360°"
+            : "Chế độ Góc nhìn thứ 3 · W A S D đi bộ, Shift chạy, Space nhảy, V về lại Half-Life FPS"
+        );
+      }
     }
-    camera.fov = 58;
-    camera.far = preset.farGta;
-    camera.updateProjectionMatrix();
-    const start = startPlan
-      ? planToThree(startPlan.x, startPlan.y, (startPlan.z || 0) + 1.7)
-      : planToThree(0, -82, 1.7);
-    camera.position.copy(start);
-    walkState.yaw = 0;
-    walkState.pitch = 0.03;
-    applyWalkOrientation();
-    walkHint.classList.remove("hidden");
   } else if (mode === "timelapse") {
     controls.enabled = false;
+    camera.near = 0.25;
     camera.fov = MASTER_TIMELAPSE_CAM.fov;
     camera.far = preset.farBird;
     camera.updateProjectionMatrix();
     camera.position.copy(MASTER_TIMELAPSE_CAM.pos);
     camera.lookAt(MASTER_TIMELAPSE_CAM.target);
-    walkHint.classList.add("hidden");
+    if (walkHint) walkHint.classList.add("hidden");
   }
 
   syncMobileHudState();
+  renderEngine.configureShadowsForPreset(preset, isGround, IS_QA_MODE);
+  renderEngine.onCameraProjectionChanged();
+  renderEngine.invalidateOcclusion();
+  updateTimeOfDay(STATE.hour);
+  updateLabelsAndCompass(true);
 }
 
-function applyWalkOrientation() {
-  const euler = new THREE.Euler(walkState.pitch, walkState.yaw, 0, "YXZ");
-  camera.quaternion.setFromEuler(euler);
+// --- Chuẩn hóa mã phím (Hỗ trợ cả QWERTY, Phím mũi tên & Bộ gõ Tiếng Việt Telex/VNI) ---
+function resolveMovementCode(e) {
+  const code = e.code || "";
+  if (
+    code === "KeyW" ||
+    code === "KeyA" ||
+    code === "KeyS" ||
+    code === "KeyD" ||
+    code === "ArrowUp" ||
+    code === "ArrowDown" ||
+    code === "ArrowLeft" ||
+    code === "ArrowRight" ||
+    code === "Space" ||
+    code === "ShiftLeft" ||
+    code === "ShiftRight" ||
+    code === "ControlLeft" ||
+    code === "ControlRight" ||
+    code === "KeyC" ||
+    code === "KeyV" ||
+    code === "KeyB" ||
+    code === "KeyF" ||
+    code === "KeyM" ||
+    code === "KeyR"
+  ) {
+    return code;
+  }
+  const k = String(e.key || "").toLowerCase();
+  if (k === "w" || k === "ư" || k === "ứ" || k === "ừ" || k === "ử" || k === "ữ" || k === "ự") return "KeyW";
+  if (k === "a" || k === "ă" || k === "â" || k === "á" || k === "à" || k === "ả" || k === "ã" || k === "ạ") return "KeyA";
+  if (k === "s") return "KeyS";
+  if (k === "d" || k === "đ") return "KeyD";
+  if (k === " ") return "Space";
+  if (k === "shift") return "ShiftLeft";
+  if (k === "control") return "ControlLeft";
+  if (k === "c") return "KeyC";
+  if (k === "v") return "KeyV";
+  if (k === "b") return "KeyB";
+  if (k === "f") return "KeyF";
+  if (k === "m") return "KeyM";
+  if (k === "r") return "KeyR";
+  return code;
 }
 
-function isTypingTarget(el) {
-  if (!el) return false;
-  const tag = (el.tagName || "").toLowerCase();
-  return tag === "input" || tag === "textarea" || tag === "select" || el.isContentEditable;
+function syncModifierFlagsFromEvent(e) {
+  if (e.shiftKey === false && e.code !== "ShiftLeft" && e.code !== "ShiftRight") {
+    walkState.keys.delete("ShiftLeft");
+    walkState.keys.delete("ShiftRight");
+  }
+  if (e.ctrlKey === false && e.code !== "ControlLeft" && e.code !== "ControlRight") {
+    walkState.keys.delete("ControlLeft");
+    walkState.keys.delete("ControlRight");
+  }
 }
 
-// --- Sự kiện bàn phím & chuột (GTA + Mắt 1.70m) ---
+const PREVENT_DEFAULT_MOVE_CODES = new Set([
+  "KeyW",
+  "KeyA",
+  "KeyS",
+  "KeyD",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "Space",
+]);
+
 window.addEventListener("keydown", (e) => {
-  if (isTypingTarget(document.activeElement)) return;
+  if (isTextEntryElement(document.activeElement)) return;
   const orchOpen = !document.getElementById("orchestrator-modal").classList.contains("hidden");
   const promptOpen = !document.getElementById("prompt-modal").classList.contains("hidden");
   if (orchOpen || promptOpen) return;
 
+  const isGround = STATE.cameraMode === "walk" || STATE.cameraMode === "gta";
   if (e.key === "Escape") {
-    if (STATE.cameraMode === "walk") {
-      setCameraMode("bird");
+    const settingsPanel = document.getElementById("move-settings-panel");
+    if (settingsPanel && !settingsPanel.classList.contains("hidden")) {
+      settingsPanel.classList.add("hidden");
+      focusViewportCanvas();
       return;
     }
-    if (STATE.cameraMode === "gta" && document.pointerLockElement !== renderer.domElement) {
+    if (isGround && document.pointerLockElement !== renderer.domElement) {
       setCameraMode("bird");
       return;
     }
   }
 
-  if (STATE.cameraMode === "gta") {
-    if (e.code === "Space") e.preventDefault();
-    if (!e.repeat) {
-      if (e.code === "KeyV") {
-        applyGtaCamPreset(gtaState.camPresetIdx + 1, true);
-        return;
-      }
-      if (e.code === "KeyC") {
-        applyGtaOutfit(gtaState.outfitIdx + 1);
-        showToast(`Đã đổi trang phục: ${GTA_OUTFITS[gtaState.outfitIdx].name}`);
-        return;
-      }
-      if (e.code === "KeyF") {
-        gtaState.turbo = !gtaState.turbo;
-        syncMobileHudState();
-        showToast(gtaState.turbo ? "Bật Phi tốc độ cao (16–26 m/s)" : "Tắt tốc độ cao · Về tốc độ đi bộ/chạy thực 1:1");
-        return;
-      }
+  if (!isGround) return;
+
+  const normCode = resolveMovementCode(e);
+  syncModifierFlagsFromEvent(e);
+
+  if (PREVENT_DEFAULT_MOVE_CODES.has(normCode) || e.key === "Enter") {
+    // Chặn phím Space / Enter / Mũi tên kích hoạt lại các nút HUD hoặc cuộn trang
+    if (document.activeElement && document.activeElement !== renderer.domElement) {
+      focusViewportCanvas();
+    }
+    if (normCode !== "Enter") {
+      e.preventDefault();
+    } else if (document.activeElement?.tagName === "BUTTON") {
+      e.preventDefault();
+      return;
     }
   }
-  walkState.keys.add(e.code);
+
+  if (normCode === "Space") {
+    gtaState.jumpBufferTimer = 0.11;
+  }
+
+  if (!e.repeat) {
+    if (normCode === "KeyV") {
+      setCameraMode(STATE.cameraMode === "walk" ? "gta" : "walk");
+      return;
+    }
+    if (normCode === "KeyB" && STATE.cameraMode === "gta") {
+      applyGtaCamPreset(gtaState.camPresetIdx + 1, true);
+      return;
+    }
+    if (normCode === "KeyC" && STATE.cameraMode === "gta") {
+      applyGtaOutfit(gtaState.outfitIdx + 1);
+      showToast(`Đã đổi trang phục: ${GTA_OUTFITS[gtaState.outfitIdx].name}`);
+      return;
+    }
+    if (normCode === "KeyF") {
+      gtaState.turbo = !gtaState.turbo;
+      syncMobileHudState();
+      showToast(
+        gtaState.turbo
+          ? `Đã bật Lướt nhanh (${moveSettings.turboSpeed.toFixed(1)} m/s)`
+          : "Đã tắt Lướt nhanh · Về tốc độ Đi bộ & Chạy chuẩn Half-Life"
+      );
+      return;
+    }
+    if (normCode === "KeyM") {
+      const panel = document.getElementById("move-settings-panel");
+      if (panel) {
+        const hidden = panel.classList.toggle("hidden");
+        if (!hidden) exitPointerLockSafe();
+        else focusViewportCanvas();
+      }
+      return;
+    }
+    if (normCode === "KeyR") {
+      unstuckPlayerToSafeGround();
+      return;
+    }
+  }
+
+  if (normCode) {
+    walkState.keys.add(normCode);
+  }
 });
 
 window.addEventListener("keyup", (e) => {
-  walkState.keys.delete(e.code);
+  const normCode = resolveMovementCode(e);
+  if (normCode) walkState.keys.delete(normCode);
+  if (e.code) walkState.keys.delete(e.code);
+  if ((STATE.cameraMode === "walk" || STATE.cameraMode === "gta") && normCode === "Space") {
+    e.preventDefault();
+  }
+  syncModifierFlagsFromEvent(e);
 });
 
 window.addEventListener("blur", () => {
   walkState.keys.clear();
-  walkState.dragging = false;
   gtaState.dragging = false;
   resetTouchInputs();
 });
 
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    walkState.keys.clear();
+    gtaState.dragging = false;
+    resetTouchInputs();
+  }
+});
+
+document.addEventListener("pointerlockchange", () => {
+  updatePointerLockStatusUi();
+  if (document.pointerLockElement !== renderer.domElement) {
+    gtaState.dragging = false;
+  }
+});
+
 renderer.domElement.addEventListener("mousedown", (e) => {
   if (e.button !== 0) return;
-  if (STATE.cameraMode === "walk") {
-    walkState.dragging = true;
-    walkState.lastX = e.clientX;
-    walkState.lastY = e.clientY;
-  } else if (STATE.cameraMode === "gta") {
+  focusViewportCanvas();
+  if (STATE.cameraMode === "walk" || STATE.cameraMode === "gta") {
+    const settingsPanel = document.getElementById("move-settings-panel");
+    if (settingsPanel && !settingsPanel.classList.contains("hidden")) {
+      settingsPanel.classList.add("hidden");
+    }
     gtaState.dragging = true;
     gtaState.lastX = e.clientX;
     gtaState.lastY = e.clientY;
-    // Bấm vào khung 3D thử bật Pointer Lock (nếu trình duyệt hỗ trợ); nếu không vẫn xoay kéo mượt
     if (document.pointerLockElement !== renderer.domElement && renderer.domElement.requestPointerLock) {
       try {
         const p = renderer.domElement.requestPointerLock();
         if (p && typeof p.catch === "function") p.catch(() => {});
       } catch {
-        // Fallback giữ chuột kéo vẫn hoạt động
+        // Fallback giữ chuột kéo vẫn xoay mượt trong iframe giới hạn
       }
     }
   }
 });
 
 window.addEventListener("mousemove", (e) => {
-  if (STATE.cameraMode === "walk" && walkState.dragging) {
-    const dx = e.clientX - walkState.lastX;
-    const dy = e.clientY - walkState.lastY;
-    walkState.lastX = e.clientX;
-    walkState.lastY = e.clientY;
-    walkState.yaw -= dx * 0.0042;
-    walkState.pitch = THREE.MathUtils.clamp(walkState.pitch - dy * 0.0038, -1.2, 1.2);
-    applyWalkOrientation();
-  } else if (STATE.cameraMode === "gta") {
-    const locked = document.pointerLockElement === renderer.domElement;
-    if (locked || gtaState.dragging) {
-      const dx = locked ? e.movementX : e.clientX - gtaState.lastX;
-      const dy = locked ? e.movementY : e.clientY - gtaState.lastY;
-      gtaState.lastX = e.clientX;
-      gtaState.lastY = e.clientY;
-      const sens = locked ? 0.0026 : 0.0046;
-      gtaState.camYaw -= dx * sens;
-      gtaState.camPitch = THREE.MathUtils.clamp(gtaState.camPitch + dy * sens, -0.18, 1.08);
-    }
+  const isFps = STATE.cameraMode === "walk";
+  const isTps = STATE.cameraMode === "gta";
+  if (!isFps && !isTps) return;
+
+  const locked = document.pointerLockElement === renderer.domElement;
+  if (!locked && !gtaState.dragging) return;
+
+  let dx = locked ? e.movementX : e.clientX - gtaState.lastX;
+  let dy = locked ? e.movementY : e.clientY - gtaState.lastY;
+  gtaState.lastX = e.clientX;
+  gtaState.lastY = e.clientY;
+
+  // Chặn xung nhảy chuột bất thường của Pointer Lock trên một số trình duyệt
+  if (Math.abs(dx) > 220 || Math.abs(dy) > 220) return;
+
+  const baseSens = (locked ? 0.0023 : 0.0042) * moveSettings.mouseSens;
+  const ySign = moveSettings.invertY ? -1 : 1;
+  gtaState.camYaw = normalizeAngleSigned(gtaState.camYaw - dx * baseSens);
+
+  if (isFps) {
+    gtaState.charYaw = gtaState.camYaw;
+    gtaState.fpsPitch = THREE.MathUtils.clamp(gtaState.fpsPitch - dy * baseSens * ySign, -1.48, 1.48);
+  } else {
+    gtaState.camPitch = THREE.MathUtils.clamp(gtaState.camPitch + dy * baseSens * ySign, -0.62, 1.12);
   }
 });
 
 window.addEventListener("mouseup", () => {
-  walkState.dragging = false;
   gtaState.dragging = false;
 });
 
@@ -2454,7 +4060,7 @@ renderer.domElement.addEventListener("pointerdown", (e) => {
   try {
     renderer.domElement.setPointerCapture(e.pointerId);
   } catch {
-    // Ignore pointer capture restriction
+    // ignore pointer capture restriction
   }
   touchControlState.lookPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (touchControlState.lookPointers.size === 2) {
@@ -2473,21 +4079,22 @@ renderer.domElement.addEventListener("pointermove", (e) => {
   prev.x = e.clientX;
   prev.y = e.clientY;
 
+  const sens = moveSettings.mouseSens || 1.0;
+  const ySign = moveSettings.invertY ? -1 : 1;
   if (touchControlState.lookPointers.size === 1) {
+    gtaState.camYaw = normalizeAngleSigned(gtaState.camYaw - dx * 0.0052 * sens);
     if (STATE.cameraMode === "walk") {
-      walkState.yaw -= dx * 0.0052;
-      walkState.pitch = THREE.MathUtils.clamp(walkState.pitch - dy * 0.0044, -1.2, 1.2);
-      applyWalkOrientation();
+      gtaState.charYaw = gtaState.camYaw;
+      gtaState.fpsPitch = THREE.MathUtils.clamp(gtaState.fpsPitch - dy * 0.0044 * sens * ySign, -1.42, 1.42);
     } else if (STATE.cameraMode === "gta") {
-      gtaState.camYaw -= dx * 0.0056;
-      gtaState.camPitch = THREE.MathUtils.clamp(gtaState.camPitch + dy * 0.0048, -0.18, 1.08);
+      gtaState.camPitch = THREE.MathUtils.clamp(gtaState.camPitch + dy * 0.0048 * sens * ySign, -0.45, 1.08);
     }
   } else if (touchControlState.lookPointers.size >= 2 && STATE.cameraMode === "gta") {
     const pts = Array.from(touchControlState.lookPointers.values());
     const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
     if (touchControlState.pinchDist !== null) {
       const delta = dist - touchControlState.pinchDist;
-      gtaState.targetCamDist = THREE.MathUtils.clamp(gtaState.targetCamDist - delta * 0.025, 2.3, 14.5);
+      gtaState.targetCamDist = THREE.MathUtils.clamp(gtaState.targetCamDist - delta * 0.025, 1.8, 14.5);
     }
     touchControlState.pinchDist = dist;
   }
@@ -2509,49 +4116,10 @@ renderer.domElement.addEventListener(
   (e) => {
     if (STATE.cameraMode !== "gta") return;
     e.preventDefault();
-    gtaState.targetCamDist = THREE.MathUtils.clamp(gtaState.targetCamDist + e.deltaY * 0.004, 2.3, 14.5);
+    gtaState.targetCamDist = THREE.MathUtils.clamp(gtaState.targetCamDist + e.deltaY * 0.004, 1.8, 14.5);
   },
   { passive: false }
 );
-
-function updateWalkMovement(dt) {
-  if (STATE.cameraMode !== "walk") return;
-  const joyMag = Math.min(1, Math.hypot(touchControlState.joyX, touchControlState.joyY));
-  const isSprinting =
-    walkState.keys.has("ShiftLeft") ||
-    walkState.keys.has("ShiftRight") ||
-    touchControlState.sprint ||
-    joyMag > 0.84;
-  const speed = isSprinting ? 18.0 : 5.5;
-  _fwd.set(-Math.sin(walkState.yaw), 0, -Math.cos(walkState.yaw));
-  _rgt.set(Math.cos(walkState.yaw), 0, -Math.sin(walkState.yaw));
-  _move.set(0, 0, 0);
-
-  if (walkState.keys.has("KeyW") || walkState.keys.has("ArrowUp")) _move.add(_fwd);
-  if (walkState.keys.has("KeyS") || walkState.keys.has("ArrowDown")) _move.sub(_fwd);
-  if (walkState.keys.has("KeyD") || walkState.keys.has("ArrowRight")) _move.add(_rgt);
-  if (walkState.keys.has("KeyA") || walkState.keys.has("ArrowLeft")) _move.sub(_rgt);
-  if (joyMag > 0.05) {
-    _move.addScaledVector(_fwd, -touchControlState.joyY);
-    _move.addScaledVector(_rgt, touchControlState.joyX);
-  }
-
-  if (_move.lengthSq() > 0) {
-    const hasKeyMove =
-      walkState.keys.has("KeyW") ||
-      walkState.keys.has("ArrowUp") ||
-      walkState.keys.has("KeyS") ||
-      walkState.keys.has("ArrowDown") ||
-      walkState.keys.has("KeyD") ||
-      walkState.keys.has("ArrowRight") ||
-      walkState.keys.has("KeyA") ||
-      walkState.keys.has("ArrowLeft");
-    const scale = !hasKeyMove && joyMag > 0.05 ? Math.max(0.38, joyMag) : 1.0;
-    _move.normalize().multiplyScalar(speed * scale * dt);
-    camera.position.add(_move);
-    camera.position.y = 1.7;
-  }
-}
 
 // --- Raycast chọn ô trên 3D (chế độ Quy hoạch) ---
 const raycaster = new THREE.Raycaster();
@@ -2608,42 +4176,28 @@ function flyToTile(tileId) {
   camera.position.set(target.x + dist * 0.55, target.y + dist * 0.62, target.z + dist * 0.75);
   controls.target.copy(target);
   controls.update();
+  renderEngine.invalidateOcclusion();
 }
 
-// --- Culling Thông Minh Theo Khoảng Cách & Vùng Nhìn (Frustum + Distance Culling) ---
-const cullFrustum = new THREE.Frustum();
-const cullProjMatrix = new THREE.Matrix4();
+// --- Culling Thông Minh: Frustum + Khoảng cách + Khuất tầm nhìn & Ẩn nội thất công trình khác ---
+const _indoorProbeVec = new THREE.Vector3();
 
-function updateTileCulling() {
+function updateTileCulling(forceOcclusion = false) {
   const preset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
-  const isGroundMode = STATE.cameraMode === "gta" || STATE.cameraMode === "walk";
-  const maxDist = isGroundMode ? preset.gtaCullDist : preset.birdCullDist;
-
-  // Khi đang xây lại shadow map, giữ các ô trong bán kính bóng hiển thị đầy đủ
-  const rebuildingShadow = renderer.shadowMap.enabled && renderer.shadowMap.needsUpdate;
-
-  camera.updateMatrixWorld();
-  cullProjMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
-  cullFrustum.setFromProjectionMatrix(cullProjMatrix);
-
-  const camPos = camera.position;
-  for (const entry of tileObjects.values()) {
-    if (!entry.glbGroup) continue;
-    if (rebuildingShadow) {
-      entry.glbGroup.visible = true;
-      continue;
-    }
-    const sphere = entry.worldSphere;
-    const dx = camPos.x - sphere.center.x;
-    const dy = camPos.y - sphere.center.y;
-    const dz = camPos.z - sphere.center.z;
-    const limit = maxDist + sphere.radius;
-    if (dx * dx + dy * dy + dz * dz > limit * limit) {
-      entry.glbGroup.visible = false;
-      continue;
-    }
-    entry.glbGroup.visible = cullFrustum.intersectsSphere(sphere);
+  if (STATE.cameraMode === "gta" || STATE.cameraMode === "walk") {
+    _indoorProbeVec.set(gtaState.pos.x, gtaState.pos.y + 1.15, gtaState.pos.z);
+  } else {
+    _indoorProbeVec.copy(camera.position);
   }
+  return renderEngine.updateVisibility({
+    tileObjects,
+    preset,
+    cameraMode: STATE.cameraMode,
+    smartCulling: STATE.smartCulling,
+    indoorProbePos: _indoorProbeVec,
+    nowMs: performance.now(),
+    forceOcclusion,
+  });
 }
 
 // --- Cập nhật HUD, Danh sách 30 Ô & Inspector ---
@@ -2735,14 +4289,15 @@ let lastCompassUpdate = 0;
 function updateLabelsAndCompass(force = false) {
   const w = window.innerWidth;
   const h = window.innerHeight;
+  const isGround = STATE.cameraMode === "gta" || STATE.cameraMode === "walk";
   const hideLabels =
     !STATE.showLabels ||
-    STATE.cameraMode === "gta" ||
+    isGround ||
     document.body.classList.contains("hud-hidden");
 
   for (const entry of tileObjects.values()) {
     const el = entry.labelEl;
-    if (hideLabels) {
+    if (hideLabels || (STATE.smartCulling && entry.glbGroup && !entry.glbGroup.visible)) {
       if (entry.labelVisible) {
         el.style.display = "none";
         entry.labelVisible = false;
@@ -2781,7 +4336,7 @@ function updateLabelsAndCompass(force = false) {
     el.style.transform = `translate3d(${sx.toFixed(1)}px, ${sy.toFixed(1)}px, 0) translate(-50%, -100%)`;
   }
 
-  if (STATE.cameraMode === "gta") return;
+  if (isGround) return;
   const now = performance.now();
   if (!force && now - lastCompassUpdate < 80) return;
   lastCompassUpdate = now;
@@ -2854,16 +4409,75 @@ async function loadPipelineState(isHotReload = false) {
   }
 }
 
+function syncMoveSettingsUi() {
+  const selShift = document.getElementById("sel-shift-mode");
+  const rngWalk = document.getElementById("rng-walk-speed");
+  const valWalk = document.getElementById("val-walk-speed");
+  const rngRun = document.getElementById("rng-run-speed");
+  const valRun = document.getElementById("val-run-speed");
+  const rngJump = document.getElementById("rng-jump-impulse");
+  const valJump = document.getElementById("val-jump-impulse");
+  const rngSens = document.getElementById("rng-mouse-sens");
+  const valSens = document.getElementById("val-mouse-sens");
+  const chkBob = document.getElementById("chk-view-bob");
+  const chkInv = document.getElementById("chk-invert-y");
+
+  if (selShift) selShift.value = moveSettings.shiftMode;
+  if (rngWalk) rngWalk.value = String(moveSettings.walkSpeed);
+  if (valWalk) valWalk.textContent = `${moveSettings.walkSpeed.toFixed(1)} m/s`;
+  if (rngRun) rngRun.value = String(moveSettings.runSpeed);
+  if (valRun) valRun.textContent = `${moveSettings.runSpeed.toFixed(1)} m/s`;
+  if (rngJump) rngJump.value = String(moveSettings.jumpImpulse);
+  if (valJump) valJump.textContent = `${moveSettings.jumpImpulse.toFixed(1)} m/s`;
+  if (rngSens) rngSens.value = String(moveSettings.mouseSens);
+  if (valSens) valSens.textContent = `${moveSettings.mouseSens.toFixed(2)}x`;
+  if (chkBob) chkBob.checked = Boolean(moveSettings.viewBob);
+  if (chkInv) chkInv.checked = Boolean(moveSettings.invertY);
+
+  if (STATE.cameraMode === "walk" || STATE.cameraMode === "gta") {
+    syncMovementHudForMode(STATE.cameraMode);
+  }
+}
+
+function applyMoveSettingsPatch(patch, notify = false) {
+  if (!patch || typeof patch !== "object") return;
+  if (patch.shiftMode === "hl1" || patch.shiftMode === "hl2") {
+    moveSettings.shiftMode = patch.shiftMode;
+  }
+  if (Number.isFinite(Number(patch.walkSpeed))) {
+    moveSettings.walkSpeed = THREE.MathUtils.clamp(Number(patch.walkSpeed), 2.4, 7.0);
+  }
+  if (Number.isFinite(Number(patch.runSpeed))) {
+    moveSettings.runSpeed = THREE.MathUtils.clamp(Number(patch.runSpeed), 6.0, 15.0);
+  }
+  if (Number.isFinite(Number(patch.jumpImpulse))) {
+    moveSettings.jumpImpulse = THREE.MathUtils.clamp(Number(patch.jumpImpulse), 4.8, 9.6);
+  }
+  if (Number.isFinite(Number(patch.mouseSens))) {
+    moveSettings.mouseSens = THREE.MathUtils.clamp(Number(patch.mouseSens), 0.35, 2.4);
+  }
+  if (typeof patch.viewBob === "boolean") moveSettings.viewBob = patch.viewBob;
+  if (typeof patch.invertY === "boolean") moveSettings.invertY = patch.invertY;
+
+  saveMoveSettings();
+  syncMoveSettingsUi();
+  if (notify) showToast("Đã cập nhật cài đặt chuyển động Half-Life");
+}
+
 // --- Gắn sự kiện UI ---
 function bindUiEvents() {
   document.getElementById("btn-hot-reload").addEventListener("click", () => {
     loadPipelineState(true);
+    focusViewportCanvas();
   });
 
   const qualitySel = document.getElementById("quality-select");
   if (qualitySel) {
     qualitySel.value = STATE.quality;
-    qualitySel.addEventListener("change", (e) => applyQualityPreset(e.target.value, true));
+    qualitySel.addEventListener("change", (e) => {
+      applyQualityPreset(e.target.value, true);
+      focusViewportCanvas();
+    });
   }
 
   const sidebarEl = document.getElementById("hud-sidebar");
@@ -2877,6 +4491,7 @@ function bindUiEvents() {
     const collapsed = sidebarEl.classList.toggle("collapsed");
     e.currentTarget.setAttribute("aria-expanded", String(!collapsed));
     syncMobileHudState();
+    focusViewportCanvas();
   });
 
   document.querySelectorAll(".filter-chip[data-zone]").forEach((chip) => {
@@ -2891,16 +4506,35 @@ function bindUiEvents() {
   document.getElementById("chk-show-grid").addEventListener("change", (e) => {
     STATE.showGrid = e.target.checked;
     gridOverlayGroup.visible = STATE.showGrid;
+    focusViewportCanvas();
   });
 
   document.getElementById("chk-show-labels").addEventListener("change", (e) => {
     STATE.showLabels = e.target.checked;
+    focusViewportCanvas();
   });
 
   document.getElementById("chk-show-humans").addEventListener("change", (e) => {
     STATE.showHumans = e.target.checked;
     humanScaleGroup.visible = STATE.showHumans;
+    focusViewportCanvas();
   });
+
+  const smartCullChk = document.getElementById("chk-smart-culling");
+  if (smartCullChk) {
+    smartCullChk.checked = STATE.smartCulling;
+    smartCullChk.addEventListener("change", (e) => {
+      STATE.smartCulling = e.target.checked;
+      renderEngine.invalidateOcclusion();
+      const s = updateTileCulling(true);
+      showToast(
+        STATE.smartCulling
+          ? `Đã bật tự ẩn khuất cảnh (đang ẩn ${s.occludedTiles} khuất · ${s.interiorHiddenTiles} nội thất khác)`
+          : "Đã tắt tự ẩn khuất tầm nhìn (hiển thị mọi ô trong khung hình)"
+      );
+      focusViewportCanvas();
+    });
+  }
 
   const autoPollChk = document.getElementById("chk-auto-poll");
   const syncAutoPoll = (notify) => {
@@ -2911,7 +4545,10 @@ function bindUiEvents() {
     }
   };
   if (autoPollChk) {
-    autoPollChk.addEventListener("change", () => syncAutoPoll(true));
+    autoPollChk.addEventListener("change", () => {
+      syncAutoPoll(true);
+      focusViewportCanvas();
+    });
     syncAutoPoll(false);
   }
 
@@ -2939,7 +4576,7 @@ function bindUiEvents() {
       sidebarEl.classList.add("collapsed");
       if (toggleSidebarBtn) toggleSidebarBtn.setAttribute("aria-expanded", "false");
     }
-    setCameraMode("gta", {
+    setCameraMode("walk", {
       x: t.center.x,
       y: t.center.y - Math.min(t.dimensions.depth * 0.38, 36),
       z: t.elevation_z,
@@ -2947,29 +4584,132 @@ function bindUiEvents() {
   });
 
   document.querySelectorAll(".seg-btn").forEach((btn) => {
-    btn.addEventListener("click", () => setCameraMode(btn.dataset.mode));
+    btn.addEventListener("click", () => {
+      setCameraMode(btn.dataset.mode);
+      focusViewportCanvas();
+    });
   });
 
-  // Sự kiện nút dịch chuyển nhanh & điều khiển GTA
+  // Sự kiện nút dịch chuyển nhanh & điều khiển Half-Life / Góc thứ 3
   document.querySelectorAll(".gta-tp-btn[data-tp]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const [x, y, z] = btn.dataset.tp.split(",").map(Number);
-      if (STATE.cameraMode !== "gta") setCameraMode("gta");
+      if (STATE.cameraMode !== "walk" && STATE.cameraMode !== "gta") {
+        setCameraMode("walk");
+      }
       teleportGtaToPlan(x, y, z || 0, 0, btn.textContent.trim());
+      focusViewportCanvas();
     });
   });
+
+  const btnView = document.getElementById("btn-gta-view");
+  if (btnView) {
+    btnView.addEventListener("click", () => {
+      setCameraMode(STATE.cameraMode === "walk" ? "gta" : "walk");
+      focusViewportCanvas();
+    });
+  }
 
   const btnOutfit = document.getElementById("btn-gta-outfit");
   if (btnOutfit) {
     btnOutfit.addEventListener("click", () => {
       applyGtaOutfit(gtaState.outfitIdx + 1);
       showToast(`Đã đổi trang phục: ${GTA_OUTFITS[gtaState.outfitIdx].name}`);
+      focusViewportCanvas();
     });
   }
 
   const btnCam = document.getElementById("btn-gta-cam");
   if (btnCam) {
-    btnCam.addEventListener("click", () => applyGtaCamPreset(gtaState.camPresetIdx + 1, true));
+    btnCam.addEventListener("click", () => {
+      applyGtaCamPreset(gtaState.camPresetIdx + 1, true);
+      focusViewportCanvas();
+    });
+  }
+
+  const btnUnstuck = document.getElementById("btn-gta-unstuck");
+  if (btnUnstuck) {
+    btnUnstuck.addEventListener("click", () => {
+      unstuckPlayerToSafeGround();
+      focusViewportCanvas();
+    });
+  }
+
+  const settingsPanel = document.getElementById("move-settings-panel");
+  const btnMoveSettings = document.getElementById("btn-move-settings");
+  if (btnMoveSettings && settingsPanel) {
+    btnMoveSettings.addEventListener("click", () => {
+      const hidden = settingsPanel.classList.toggle("hidden");
+      if (!hidden) exitPointerLockSafe();
+      else focusViewportCanvas();
+    });
+  }
+
+  const btnCloseMoveSettings = document.getElementById("btn-close-move-settings");
+  if (btnCloseMoveSettings && settingsPanel) {
+    btnCloseMoveSettings.addEventListener("click", () => {
+      settingsPanel.classList.add("hidden");
+      focusViewportCanvas();
+    });
+  }
+
+  const btnResetMoveSettings = document.getElementById("btn-reset-move-settings");
+  if (btnResetMoveSettings) {
+    btnResetMoveSettings.addEventListener("click", () => {
+      applyMoveSettingsPatch({ ...DEFAULT_MOVE_SETTINGS }, false);
+      gtaState.turbo = false;
+      syncMobileHudState();
+      showToast("Đã khôi phục cài đặt chuyển động chuẩn Half-Life");
+      focusViewportCanvas();
+    });
+  }
+
+  const selShift = document.getElementById("sel-shift-mode");
+  if (selShift) {
+    selShift.addEventListener("change", (e) => {
+      applyMoveSettingsPatch({ shiftMode: e.target.value }, true);
+      focusViewportCanvas();
+    });
+  }
+
+  const rngWalk = document.getElementById("rng-walk-speed");
+  if (rngWalk) {
+    rngWalk.addEventListener("input", (e) => applyMoveSettingsPatch({ walkSpeed: parseFloat(e.target.value) }));
+    rngWalk.addEventListener("change", () => focusViewportCanvas());
+  }
+
+  const rngRun = document.getElementById("rng-run-speed");
+  if (rngRun) {
+    rngRun.addEventListener("input", (e) => applyMoveSettingsPatch({ runSpeed: parseFloat(e.target.value) }));
+    rngRun.addEventListener("change", () => focusViewportCanvas());
+  }
+
+  const rngJump = document.getElementById("rng-jump-impulse");
+  if (rngJump) {
+    rngJump.addEventListener("input", (e) => applyMoveSettingsPatch({ jumpImpulse: parseFloat(e.target.value) }));
+    rngJump.addEventListener("change", () => focusViewportCanvas());
+  }
+
+  const rngSens = document.getElementById("rng-mouse-sens");
+  if (rngSens) {
+    rngSens.addEventListener("input", (e) => applyMoveSettingsPatch({ mouseSens: parseFloat(e.target.value) }));
+    rngSens.addEventListener("change", () => focusViewportCanvas());
+  }
+
+  const chkBob = document.getElementById("chk-view-bob");
+  if (chkBob) {
+    chkBob.addEventListener("change", (e) => {
+      applyMoveSettingsPatch({ viewBob: e.target.checked });
+      focusViewportCanvas();
+    });
+  }
+
+  const chkInv = document.getElementById("chk-invert-y");
+  if (chkInv) {
+    chkInv.addEventListener("change", (e) => {
+      applyMoveSettingsPatch({ invertY: e.target.checked });
+      focusViewportCanvas();
+    });
   }
 
   const btnExit = document.getElementById("btn-gta-exit");
@@ -2977,7 +4717,7 @@ function bindUiEvents() {
     btnExit.addEventListener("click", () => setCameraMode("bird"));
   }
 
-  // Điều khiển cảm ứng ảo cho điện thoại / máy tính bảng (GTA & Đi bộ 1.70m)
+  // Điều khiển cảm ứng ảo cho điện thoại / máy tính bảng (Half-Life FPS & Góc nhìn thứ 3)
   const joyBase = document.getElementById("hue-joy-base");
   const joyKnob = document.getElementById("hue-joy-knob");
   if (joyBase && joyKnob) {
@@ -3014,7 +4754,7 @@ function bindUiEvents() {
       try {
         joyBase.setPointerCapture(e.pointerId);
       } catch {
-        // Ignore pointer capture restriction
+        // ignore pointer capture restriction
       }
       updateJoyStick(e.clientX, e.clientY);
     });
@@ -3034,6 +4774,16 @@ function bindUiEvents() {
       e.preventDefault();
       e.stopPropagation();
       touchControlState.jumpQueued = true;
+      gtaState.jumpBufferTimer = 0.12;
+    });
+  }
+
+  const btnTouchCrouch = document.getElementById("hue-touch-crouch");
+  if (btnTouchCrouch) {
+    btnTouchCrouch.addEventListener("click", (e) => {
+      e.stopPropagation();
+      touchControlState.crouch = !touchControlState.crouch;
+      syncMobileHudState();
     });
   }
 
@@ -3041,13 +4791,12 @@ function bindUiEvents() {
   if (btnTouchTurbo) {
     btnTouchTurbo.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (STATE.cameraMode === "walk") {
-        touchControlState.sprint = !touchControlState.sprint;
-        showToast(touchControlState.sprint ? "Đã bật Chạy nhanh 18 m/s" : "Về tốc độ đi bộ 5.5 m/s");
-      } else {
-        gtaState.turbo = !gtaState.turbo;
-        showToast(gtaState.turbo ? "Bật Phi tốc độ cao (16–26 m/s)" : "Tắt tốc độ cao · Về tốc độ đi bộ/chạy thực 1:1");
-      }
+      touchControlState.sprint = !touchControlState.sprint;
+      showToast(
+        touchControlState.sprint
+          ? `Đã bật Chạy nhanh (${moveSettings.runSpeed.toFixed(1)} m/s)`
+          : `Về tốc độ Đi bộ (${moveSettings.walkSpeed.toFixed(1)} m/s)`
+      );
       syncMobileHudState();
     });
   }
@@ -3062,18 +4811,28 @@ function bindUiEvents() {
 
   const slider = document.getElementById("time-slider");
   slider.addEventListener("input", (e) => updateTimeOfDay(parseFloat(e.target.value)));
+  slider.addEventListener("change", () => focusViewportCanvas());
 
   document.querySelectorAll(".preset-btn").forEach((btn) => {
-    btn.addEventListener("click", () => updateTimeOfDay(parseFloat(btn.dataset.hour)));
+    btn.addEventListener("click", () => {
+      updateTimeOfDay(parseFloat(btn.dataset.hour));
+      focusViewportCanvas();
+    });
   });
 
   window.addEventListener("resize", () => {
+    const preset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
+    const dpr = IS_QA_MODE ? 1 : Math.min(window.devicePixelRatio || 1, preset.dprMax);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
+    renderer.setPixelRatio(dpr);
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderEngine.onCameraProjectionChanged();
+    renderEngine.resizePostProcessing(window.innerWidth, window.innerHeight, dpr);
     syncMobileHudState();
   });
 
+  syncMoveSettingsUi();
   syncMobileHudState();
 }
 
@@ -3081,12 +4840,13 @@ function bindUiEvents() {
 window.__HUE_VIEWER__ = {
   isReady: () => STATE.ready && STATE.pendingLoads === 0,
   waitForAssets: async (timeoutMs = 25000) => {
+    await engineReadyPromise;
     const start = Date.now();
     while ((!STATE.ready || STATE.pendingLoads > 0) && Date.now() - start < timeoutMs) {
       await new Promise((r) => setTimeout(r, 100));
     }
-    updateTileCulling();
-    renderer.render(scene, camera);
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
     return {
       ready: STATE.ready,
       pendingLoads: STATE.pendingLoads,
@@ -3098,27 +4858,149 @@ window.__HUE_VIEWER__ = {
   setHudVisible: (visible) => {
     document.body.classList.toggle("hud-hidden", !visible);
     updateLabelsAndCompass(true);
-    updateTileCulling();
-    renderer.render(scene, camera);
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
   setTimeOfDay: (hour) => {
     updateTimeOfDay(hour);
-    updateTileCulling();
-    renderer.render(scene, camera);
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+  },
+  setQualityPreset: (key) => {
+    applyQualityPreset(key, false);
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+  },
+  setSmartCulling: (enabled) => {
+    STATE.smartCulling = Boolean(enabled);
+    const chk = document.getElementById("chk-smart-culling");
+    if (chk) chk.checked = STATE.smartCulling;
+    renderEngine.invalidateOcclusion();
+    const s = updateTileCulling(true);
+    updateLabelsAndCompass(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return s;
+  },
+  teleportGtaToPlan: (planX, planY, planZ = 0, yaw = 0) => {
+    if (STATE.cameraMode !== "gta" && STATE.cameraMode !== "walk") {
+      setCameraMode("gta", { x: planX, y: planY, z: planZ, yaw });
+    } else {
+      teleportGtaToPlan(planX, planY, planZ, yaw);
+    }
+    renderEngine.invalidateOcclusion();
+    const s = updateTileCulling(true);
+    updateLabelsAndCompass(true);
+    renderGtaRadar(false, false, 0);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return s;
+  },
+  teleportHalfLifeToPlan: (planX, planY, planZ = 0, yaw = 0) => {
+    if (STATE.cameraMode !== "walk") {
+      setCameraMode("walk", { x: planX, y: planY, z: planZ, yaw });
+    } else {
+      teleportGtaToPlan(planX, planY, planZ, yaw);
+    }
+    renderEngine.invalidateOcclusion();
+    const s = updateTileCulling(true);
+    updateLabelsAndCompass(true);
+    renderGtaRadar(false, false, 0);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return s;
+  },
+  stepPlayer: (dt = 1 / 60, steps = 1) => {
+    const n = Math.max(1, Math.min(600, Math.floor(steps)));
+    for (let i = 0; i < n; i++) {
+      updatePlayerSimulation(dt);
+    }
+    updateTileCulling(true);
+    renderGtaRadar(
+      Math.hypot(gtaState.velX, gtaState.velZ) > 0.25,
+      Math.hypot(gtaState.velX, gtaState.velZ) > moveSettings.walkSpeed * 1.15,
+      Math.hypot(gtaState.velX, gtaState.velZ)
+    );
+    return window.__HUE_VIEWER__.getPlayerState();
+  },
+  setTouchJoystick: (joyX = 0, joyY = 0, sprint = false, crouch = false) => {
+    touchControlState.joyX = THREE.MathUtils.clamp(Number(joyX) || 0, -1, 1);
+    touchControlState.joyY = THREE.MathUtils.clamp(Number(joyY) || 0, -1, 1);
+    touchControlState.sprint = Boolean(sprint);
+    touchControlState.crouch = Boolean(crouch);
+    syncMobileHudState();
+  },
+  getPlayerState: () => {
+    const plan = threeToPlan(gtaState.pos);
+    const rig = gtaState.rig;
+    return {
+      cameraMode: STATE.cameraMode,
+      planX: Number(plan.x.toFixed(3)),
+      planY: Number(plan.y.toFixed(3)),
+      feetY: Number(gtaState.pos.y.toFixed(3)),
+      eyeWorldY: Number(camera.position.y.toFixed(3)),
+      velX: Number(gtaState.velX.toFixed(3)),
+      velY: Number(gtaState.velY.toFixed(3)),
+      velZ: Number(gtaState.velZ.toFixed(3)),
+      horizSpeed: Number(Math.hypot(gtaState.velX, gtaState.velZ).toFixed(3)),
+      grounded: gtaState.grounded,
+      crouched: gtaState.crouched,
+      turbo: gtaState.turbo,
+      charYaw: Number(gtaState.charYaw.toFixed(4)),
+      camYaw: Number(gtaState.camYaw.toFixed(4)),
+      fpsPitch: Number(gtaState.fpsPitch.toFixed(4)),
+      camPitch: Number(gtaState.camPitch.toFixed(4)),
+      outfitIdx: gtaState.outfitIdx,
+      outfitName: GTA_OUTFITS[gtaState.outfitIdx]?.name || "",
+      rigJoints: rig
+        ? {
+            leftHipX: Number(rig.leftLeg.hip.rotation.x.toFixed(4)),
+            rightHipX: Number(rig.rightLeg.hip.rotation.x.toFixed(4)),
+            leftKneeX: Number(rig.leftLeg.knee.rotation.x.toFixed(4)),
+            rightKneeX: Number(rig.rightLeg.knee.rotation.x.toFixed(4)),
+            leftElbowX: Number(rig.leftArm.elbow.rotation.x.toFixed(4)),
+            rightElbowX: Number(rig.rightArm.elbow.rotation.x.toFixed(4)),
+            coatTailX: Number(rig.coatTailPivot.rotation.x.toFixed(4)),
+            frontFlapLX: Number(rig.frontFlapL.rotation.x.toFixed(4)),
+          }
+        : null,
+      lastGroundY: Number(gtaState.lastGroundY.toFixed(3)),
+      lastCeilingY: Number.isFinite(gtaState.lastCeilingY) ? Number(gtaState.lastCeilingY.toFixed(3)) : null,
+      moveSettings: { ...moveSettings },
+      activeKeys: Array.from(walkState.keys),
+    };
+  },
+  setOutfit: (idx) => {
+    applyGtaOutfit(idx);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return GTA_OUTFITS[gtaState.outfitIdx]?.name || "";
+  },
+  setOrbitAroundPlayer: (camYaw, camPitch = 0.14, camDist = 2.4) => {
+    gtaState.camYaw = normalizeAngleSigned(camYaw);
+    gtaState.camPitch = camPitch;
+    gtaState.camDist = camDist;
+    gtaState.targetCamDist = camDist;
+    syncCameraToPlayerImmediate();
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+  },
+  setMoveSettings: (patch) => {
+    applyMoveSettingsPatch(patch, false);
+    return { ...moveSettings };
   },
   setCameraMode: (mode, startPlan = null) => {
     setCameraMode(mode, startPlan);
-    if (mode === "gta") updateGtaSimulation(0.016);
+    if (mode === "gta" || mode === "walk") updatePlayerSimulation(0.016);
     updateLabelsAndCompass(true);
-    updateTileCulling();
-    renderer.render(scene, camera);
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
   setCameraPreset: (preset) => {
     if (preset === "timelapse") {
       setCameraMode("timelapse");
     } else if (preset === "gta") {
       setCameraMode("gta", { x: 0, y: -62, z: 0 });
-      updateGtaSimulation(0.016);
+      updatePlayerSimulation(0.016);
+    } else if (preset === "half_life" || preset === "walk") {
+      setCameraMode("walk", { x: 0, y: -95, z: 0 });
+      updatePlayerSimulation(0.016);
     } else if (preset === "bird_se") {
       setCameraMode("bird");
       camera.position.set(270, 195, 470);
@@ -3140,19 +5022,21 @@ window.__HUE_VIEWER__ = {
       controls.target.set(0, 0, -40);
       controls.update();
     }
-    updateTileCulling();
-    renderer.render(scene, camera);
+    renderEngine.invalidateOcclusion();
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
   focusTile: (tileId) => {
     selectTile(tileId, true);
-    updateTileCulling();
-    renderer.render(scene, camera);
+    renderEngine.invalidateOcclusion();
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
   reloadManifest: () => loadPipelineState(false),
   renderNow: () => {
     updateLabelsAndCompass(true);
-    updateTileCulling();
-    renderer.render(scene, camera);
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
   pauseLoop: (paused) => {
     STATE.loopPaused = Boolean(paused);
@@ -3168,14 +5052,18 @@ window.__HUE_VIEWER__ = {
     hour: STATE.hour,
     cameraMode: STATE.cameraMode,
     quality: STATE.quality,
+    smartCulling: STATE.smartCulling,
     rawNodes: STATE.totalRawNodes,
     optNodes: STATE.totalOptNodes,
     drawCalls: renderer.info.render.calls,
     triangles: renderer.info.render.triangles,
+    pbrMaterials: huePbr.upgradedMaterials.length,
+    pbrPendingTextures: huePbr.pendingTextures,
+    ...renderEngine.stats,
   }),
 };
 
-// --- Bộ đo FPS & Draw Calls trực tiếp ---
+// --- Bộ đo FPS, Draw Calls & Trạng thái Tự ẩn khuất cảnh ---
 let fpsFrames = 0;
 let fpsWindowStart = performance.now();
 
@@ -3187,14 +5075,21 @@ function updateFpsHud(now) {
   const calls = renderer.info.render.calls;
   const el = document.getElementById("stat-fps");
   if (el) {
-    el.textContent = `${fps} FPS · ${calls} draws`;
+    const rs = renderEngine.stats;
+    const extras = [];
+    if (rs.occludedTiles > 0) extras.push(`ẩn ${rs.occludedTiles} khuất`);
+    if (rs.activeIndoorTileId) extras.push(`nội thất ${rs.activeIndoorTileId}`);
+    el.textContent = extras.length
+      ? `${fps} FPS · ${calls} draws · ${extras.join(" · ")}`
+      : `${fps} FPS · ${calls} draws`;
+    el.title = `Hiển thị ${rs.visibleTiles} ô · Ngoài góc ${rs.frustumCulledTiles} · Khuất tầm nhìn ${rs.occludedTiles} · Nội thất bật ${rs.interiorVisibleTiles}/ẩn ${rs.interiorHiddenTiles} · CSM ${rs.csmActive ? rs.csmCascades + " tầng" : "tắt"} · Hậu kỳ ${rs.postProcessingActive ? "bật" : "tắt"}`;
     el.style.color = fps >= 45 ? "#6CE0C6" : fps >= 25 ? "#FCE29C" : "#FF8B7B";
   }
   fpsFrames = 0;
   fpsWindowStart = now;
 }
 
-// --- Vòng lặp render siêu gọn (không cấp phát bộ nhớ thừa) ---
+// --- Vòng lặp render siêu gọn ---
 let lastTime = performance.now();
 function animate(now) {
   requestAnimationFrame(animate);
@@ -3204,20 +5099,20 @@ function animate(now) {
 
   if (STATE.cameraMode === "bird") {
     controls.update();
-  } else if (STATE.cameraMode === "gta") {
-    updateGtaSimulation(dt);
-  } else if (STATE.cameraMode === "walk") {
-    updateWalkMovement(dt);
+  } else if (STATE.cameraMode === "gta" || STATE.cameraMode === "walk") {
+    updatePlayerSimulation(dt);
   }
 
   huePbr.update(dt);
-  updateTileCulling();
+  updateTileCulling(false);
+  renderEngine.updateCsmAndShadowTrigger(now, IS_QA_MODE, requestShadowUpdate);
   updateLabelsAndCompass(false);
-  renderer.render(scene, camera);
+  renderEngine.renderSceneFrame(now, IS_QA_MODE, false);
   updateFpsHud(now);
 }
 
 // --- Khởi chạy toàn bộ trình xem ---
+loadSavedMoveSettings();
 buildMasterTerrainGuide();
 buildHumanScaleCheckpoints();
 buildImperialLanternNetwork();

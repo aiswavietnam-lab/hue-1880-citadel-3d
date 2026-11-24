@@ -23,7 +23,7 @@
 </head>
 <body>
   <div id="viewport-root" aria-label="Khung nhìn 3D Kinh Thành Huế 1880">
-    <canvas id="webgl-canvas"></canvas>
+    <canvas id="webgl-canvas" tabindex="0"></canvas>
     <div id="label-layer" aria-hidden="true"></div>
   </div>
 
@@ -64,8 +64,9 @@
     <div class="topbar-actions">
       <select id="quality-select" class="quality-select" aria-label="Mức đồ họa tối ưu hiệu năng" title="Chọn mức đồ họa phù hợp cấu hình máy">
         <option value="fast">Đồ họa: Siêu mượt</option>
-        <option value="balanced" selected>Đồ họa: Cân bằng</option>
-        <option value="high">Đồ họa: Cao</option>
+        <option value="balanced" selected>Đồ họa: Cân bằng (CSM 3 tầng)</option>
+        <option value="high">Đồ họa: Cao (CSM 1.5K · Bloom)</option>
+        <option value="cinematic">Đồ họa: Điện ảnh (CSM 2K · AO · Bloom)</option>
       </select>
       <button id="btn-open-orchestrator" class="btn-accent" type="button" title="Mở Bảng Điều Phối (Orchestrator), Lịch Khung Giờ & Đối Chiếu 1-1">
         <svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true">
@@ -120,6 +121,10 @@
         <input id="chk-show-humans" type="checkbox" checked />
         <span>Mốc đối chiếu người (1.70m)</span>
       </label>
+      <label class="toggle-row" title="Tự động ẩn công trình khuất sau các khối kiến trúc lớn và ẩn nội thất của công trình khác khi đang ở bên trong">
+        <input id="chk-smart-culling" type="checkbox" checked />
+        <span>Tự ẩn khuất cảnh &amp; nội thất khác</span>
+      </label>
       <label id="row-auto-poll" class="toggle-row">
         <input id="chk-auto-poll" type="checkbox" checked />
         <span>Tự kiểm tra tệp mới (10 giây)</span>
@@ -163,12 +168,12 @@
         </svg>
         <span>Bay tới ô</span>
       </button>
-      <button id="btn-walk-tile" class="btn-ghost" type="button" title="Thả nhân vật nhập vai góc nhìn thứ 3 ngay trước công trình này">
+      <button id="btn-walk-tile" class="btn-ghost" type="button" title="Đặt người chơi góc nhìn thứ nhất Half-Life ngay trước công trình này">
         <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
           <circle cx="10" cy="4.5" r="2" stroke="currentColor" stroke-width="1.5"/>
           <path d="M7 17L9 11.5L11.5 13L13 17M6.5 9L10 7.5L13.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <span>Nhập vai tại ô</span>
+        <span>Đi bộ Half-Life</span>
       </button>
     </div>
     <div class="inspector-actions inspector-orch-row">
@@ -218,20 +223,20 @@
           </svg>
           <span>Quy hoạch</span>
         </button>
-        <button id="mode-gta" class="seg-btn" type="button" data-mode="gta" title="Nhập vai nhân vật góc nhìn thứ 3 kiểu GTA">
+        <button id="mode-walk" class="seg-btn" type="button" data-mode="walk" title="Di chuyển góc nhìn thứ nhất kiểu Half-Life (Đi bộ, Chạy nhanh, Nhảy, Ngồi cúi)">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
+            <circle cx="10" cy="10" r="6.2" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M10 2V6M10 14V18M2 10H6M14 10H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="10" cy="10" r="1.4" fill="currentColor"/>
+          </svg>
+          <span>Half-Life (FPS)</span>
+        </button>
+        <button id="mode-gta" class="seg-btn" type="button" data-mode="gta" title="Di chuyển góc nhìn thứ ba qua vai nhân vật 1.70m">
           <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
             <circle cx="10" cy="4.2" r="2.1" stroke="currentColor" stroke-width="1.5"/>
             <path d="M6.8 17.2L8.8 11.6L11.2 12.8L13.2 17.2M5.5 10.2L10 7.6L14.5 10.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M3 5.5C4.2 3.8 5.8 3 7.4 3M17 5.5C15.8 3.8 14.2 3 12.6 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.75"/>
           </svg>
-          <span>Nhập vai GTA</span>
-        </button>
-        <button id="mode-walk" class="seg-btn" type="button" data-mode="walk">
-          <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
-            <path d="M2.5 10C4.6 6.8 7.2 5.4 10 5.4C12.8 5.4 15.4 6.8 17.5 10C15.4 13.2 12.8 14.6 10 14.6C7.2 14.6 4.6 13.2 2.5 10Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-            <circle cx="10" cy="10" r="2.2" stroke="currentColor" stroke-width="1.5"/>
-          </svg>
-          <span>Mắt 1.70m</span>
+          <span>Góc nhìn thứ 3</span>
         </button>
         <button id="mode-timelapse" class="seg-btn" type="button" data-mode="timelapse">
           <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
@@ -342,6 +347,10 @@
             <h3>Ảnh Tư Liệu Thực Tế Đã Thu Thập Từ Internet</h3>
             <div id="orch-references-grid" class="media-grid"></div>
           </div>
+          <div class="qa-section">
+            <h3>Phim Giới Thiệu Điện Ảnh 30 Giây Từ Mô Hình 3D (HUE_1880_CINEMATIC_30S_LATEST.mp4)</h3>
+            <div id="orch-showcase-wrap" class="qa-media-box"></div>
+          </div>
           <div class="qa-split">
             <div class="qa-card">
               <h3>Contact Sheet Tổng Hợp Mới Nhất (JPG Q95)</h3>
@@ -379,15 +388,23 @@
     </div>
   </div>
 
-  <!-- Giao diện Chế độ Nhập vai GTA (Góc nhìn Thứ 3) -->
-  <div id="gta-hud" class="gta-hud hidden" aria-label="Giao diện chế độ nhập vai GTA">
+  <!-- Giao diện Di chuyển Half-Life (FPS 1.70m) & Góc nhìn Thứ 3 -->
+  <div id="gta-hud" class="gta-hud hidden" aria-label="Giao diện điều khiển di chuyển Half-Life">
+    <div id="hl-crosshair" class="hl-crosshair hidden" aria-hidden="true">
+      <span class="hl-ch-line top"></span>
+      <span class="hl-ch-line right"></span>
+      <span class="hl-ch-line bottom"></span>
+      <span class="hl-ch-line left"></span>
+      <span class="hl-ch-dot"></span>
+    </div>
+
     <div id="gta-topbar" class="hud-panel gta-topbar">
       <div class="gta-keys-line">
-        <strong class="gta-tag">NHẬP VAI GTA · 1.70M</strong>
-        <span><code>W A S D</code> di chuyển · <code>Shift</code> chạy nhanh · <code>F</code> phi tốc độ cao · <code>Space</code> nhảy · <strong>Bấm cảnh</strong> xoay chuột 360° (hoặc giữ kéo chuột) · <code>V</code> góc camera · <code>C</code> đổi trang phục · <code>Esc</code> thả chuột</span>
+        <strong id="gta-mode-tag" class="gta-tag">HALF-LIFE FPS · 1.70M</strong>
+        <span id="gta-keys-hint"><code>W A S D</code> đi bộ · <code>Shift</code> chạy · <code>Space</code> nhảy · <code>Ctrl</code> ngồi · <strong>Bấm cảnh</strong> xoay chuột 360° · <code>V</code> góc nhìn 1/3 · <code>F</code> lướt nhanh · <code>M</code> cài đặt · <code>Esc</code> mở chuột</span>
       </div>
       <div class="gta-tp-row">
-        <span class="gta-tp-label">Dịch chuyển nhanh:</span>
+        <span class="gta-tp-label">Dịch chuyển:</span>
         <button class="gta-tp-btn" type="button" data-tp="0,-165,0">Ngọ Môn</button>
         <button class="gta-tp-btn" type="button" data-tp="0,-95,0">Cầu Trung Đạo</button>
         <button class="gta-tp-btn" type="button" data-tp="0,-32,0">Điện Thái Hòa</button>
@@ -395,11 +412,82 @@
         <button class="gta-tp-btn" type="button" data-tp="0,-420,0">Kỳ Đài</button>
         <button class="gta-tp-btn" type="button" data-tp="0,-735,0">Bờ Sông Hương</button>
         <span class="gta-tp-sep" aria-hidden="true"></span>
-        <button id="btn-gta-outfit" class="gta-tp-btn accent" type="button">Trang phục: Thị Vệ (C)</button>
-        <button id="btn-gta-cam" class="gta-tp-btn" type="button">Góc máy: Chuẩn GTA (V)</button>
+        <button id="btn-gta-view" class="gta-tp-btn accent" type="button">Đổi sang Góc thứ 3 (V)</button>
+        <button id="btn-gta-cam" class="gta-tp-btn hidden" type="button">Cự ly cam: Chuẩn (B)</button>
+        <button id="btn-gta-outfit" class="gta-tp-btn hidden" type="button">Trang phục: Cẩm Y Thị Vệ (C)</button>
+        <button id="btn-move-settings" class="gta-tp-btn" type="button">Cài đặt chuyển động (M)</button>
+        <button id="btn-gta-unstuck" class="gta-tp-btn" type="button" title="Đặt lại vị trí đứng trên mặt sàn an toàn gần nhất">Đặt lại (R)</button>
         <button id="btn-gta-exit" class="gta-tp-btn danger" type="button">Thoát</button>
       </div>
     </div>
+
+    <!-- Bảng Cài đặt Chuyển động kiểu Half-Life -->
+    <section id="move-settings-panel" class="hud-panel move-settings-panel hidden" aria-label="Cài đặt chuyển động Half-Life">
+      <div class="move-settings-head">
+        <strong>Cài đặt Chuyển động Half-Life</strong>
+        <button id="btn-close-move-settings" class="icon-btn" type="button" aria-label="Đóng cài đặt chuyển động">
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+            <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="move-setting-row">
+        <label for="sel-shift-mode">Cơ chế Đi / Chạy (Shift)</label>
+        <select id="sel-shift-mode" class="quality-select move-select">
+          <option value="hl2">Mặc định Đi bộ · Giữ Shift để Chạy</option>
+          <option value="hl1">Luôn Chạy (HL1) · Giữ Shift để Đi bộ</option>
+        </select>
+      </div>
+
+      <div class="move-setting-row">
+        <div class="move-setting-label">
+          <label for="rng-walk-speed">Tốc độ đi bộ</label>
+          <strong id="val-walk-speed" class="mono">4.2 m/s</strong>
+        </div>
+        <input id="rng-walk-speed" type="range" min="2.4" max="7.0" step="0.2" value="4.2" />
+      </div>
+
+      <div class="move-setting-row">
+        <div class="move-setting-label">
+          <label for="rng-run-speed">Tốc độ chạy</label>
+          <strong id="val-run-speed" class="mono">8.6 m/s</strong>
+        </div>
+        <input id="rng-run-speed" type="range" min="6.0" max="15.0" step="0.2" value="8.6" />
+      </div>
+
+      <div class="move-setting-row">
+        <div class="move-setting-label">
+          <label for="rng-jump-impulse">Lực bật nhảy (Space)</label>
+          <strong id="val-jump-impulse" class="mono">6.8 m/s</strong>
+        </div>
+        <input id="rng-jump-impulse" type="range" min="4.8" max="9.6" step="0.2" value="6.8" />
+      </div>
+
+      <div class="move-setting-row">
+        <div class="move-setting-label">
+          <label for="rng-mouse-sens">Độ nhạy chuột</label>
+          <strong id="val-mouse-sens" class="mono">1.00x</strong>
+        </div>
+        <input id="rng-mouse-sens" type="range" min="0.35" max="2.40" step="0.05" value="1.00" />
+      </div>
+
+      <div class="move-setting-checks">
+        <label class="toggle-row">
+          <input id="chk-view-bob" type="checkbox" checked />
+          <span>Nhịp bước chân &amp; nghiêng vai Half-Life</span>
+        </label>
+        <label class="toggle-row">
+          <input id="chk-invert-y" type="checkbox" />
+          <span>Đảo trục dọc chuột (Invert Y)</span>
+        </label>
+      </div>
+
+      <div class="move-setting-foot">
+        <span id="move-lock-status" class="mono">Chuột: Bấm vào cảnh 3D để xoay 360°</span>
+        <button id="btn-reset-move-settings" class="gta-tp-btn" type="button">Mặc định</button>
+      </div>
+    </section>
 
     <div id="gta-radar-card" class="hud-panel gta-radar-card">
       <div class="gta-radar-frame">
@@ -409,27 +497,27 @@
         <div id="gta-location-name" class="gta-loc-title">Cầu Trung Đạo · Trục Thần Đạo</div>
         <div class="gta-loc-meta">
           <span id="gta-stance-pill" class="gta-stance">Đứng yên</span>
+          <span id="gta-speed-mini" class="mono">0.0 m/s</span>
           <span id="gta-coords-mini" class="mono">X 0 · Y -95 · H 0.0m</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Ghi chú điều khiển đi bộ 1.70m -->
-  <div id="walk-hint" class="walk-hint hidden" role="status">
-    <strong>Chế độ tầm mắt thứ nhất 1.70m:</strong> Giữ chuột trái kéo để xoay góc nhìn · Phím <code>W A S D</code> hoặc mũi tên để di chuyển · <code>Shift</code> đi nhanh · <code>Esc</code> thoát.
-  </div>
+  <!-- Ghi chú điều khiển dự phòng (ẩn mặc định do đã tích hợp vào HUD Half-Life) -->
+  <div id="walk-hint" class="walk-hint hidden" role="status"></div>
 
-  <!-- Cần điều khiển cảm ứng cho Chế độ GTA & Mắt 1.70m trên điện thoại -->
+  <!-- Cần điều khiển cảm ứng cho Chế độ Nhập vai Góc thứ 1 / Góc thứ 3 trên điện thoại & máy tính bảng -->
   <div id="hue-mobile-pad" class="hue-mobile-pad hidden" aria-label="Điều khiển nhân vật cảm ứng">
     <div id="hue-joy-base" class="hue-joy-base" role="application" aria-label="Joystick di chuyển nhân vật">
       <div class="hue-joy-ring"></div>
       <div id="hue-joy-knob" class="hue-joy-knob"></div>
     </div>
     <div class="hue-touch-actions">
-      <button id="hue-touch-turbo" class="hue-touch-btn" type="button">⚡ Phi</button>
-      <button id="hue-touch-jump" class="hue-touch-btn primary" type="button">⬆ Nhảy</button>
-      <button id="hue-touch-exit" class="hue-touch-btn danger" type="button">✕ Thoát</button>
+      <button id="hue-touch-turbo" class="hue-touch-btn" type="button">Chạy</button>
+      <button id="hue-touch-crouch" class="hue-touch-btn" type="button">Ngồi</button>
+      <button id="hue-touch-jump" class="hue-touch-btn primary" type="button">Nhảy</button>
+      <button id="hue-touch-exit" class="hue-touch-btn danger" type="button">Thoát</button>
     </div>
   </div>
 
@@ -447,7 +535,7 @@
         banner.style.cssText = "position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:99;padding:10px 16px;border-radius:8px;background:#3a1714;border:1px solid #d4a017;color:#fff2d6;font:13px/1.4 sans-serif;max-width:90vw;";
         document.body.appendChild(banner);
       }
-      banner.textContent = "Thieu tep khi tai canh 3D: " + (ev.message || "Vui long kiem tra da upload du 43 tep trong thu muc goc.");
+      banner.textContent = "Thieu tep khi tai canh 3D: " + (ev.message || "Vui long kiem tra da upload du cac tep va thu muc assets/pbr.");
     });
   </script>
   <script type="module" src="./app.js"></script>
