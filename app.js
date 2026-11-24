@@ -3,6 +3,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import { HuePbrMaterialLibrary } from "./pbr_materials.js";
+import { computeArchitecturalVertexOcclusion } from "./hue_realism_shaders.js";
 import {
   HueRenderCullingEngine,
   classifyMeshInterior,
@@ -1072,7 +1073,7 @@ function sanitizeGeometryAttributes(geom) {
   }
 }
 
-function cloneNormalizedGeometry(src, matrix, wantUv, flipWinding) {
+function cloneNormalizedGeometry(src, matrix, wantUv, flipWinding, isInterior = false) {
   const posSrc = src.attributes.position;
   if (!posSrc) return null;
   const g = new THREE.BufferGeometry();
@@ -1106,6 +1107,7 @@ function cloneNormalizedGeometry(src, matrix, wantUv, flipWinding) {
   g.applyMatrix4(matrix);
   if (!g.attributes.normal) g.computeVertexNormals();
   sanitizeGeometryAttributes(g);
+  computeArchitecturalVertexOcclusion(g, isInterior, src.attributes.color || null);
   return g;
 }
 
@@ -1190,6 +1192,7 @@ function optimizeTileRoot(rawRoot, tile) {
   optGroup.userData.interiorGroup = interiorGroup;
 
   const matMergeBuckets = new Map(); // role|material.uuid -> { material, wantUv, isInterior, geos: [] }
+  const fineDetailMeshes = [];
   let optCount = 0;
 
   for (const group of instGroups.values()) {
@@ -1215,6 +1218,17 @@ function optimizeTileRoot(rawRoot, tile) {
       inst.castShadow = !isInterior && !isFlatMat;
       inst.receiveShadow = true;
       inst.frustumCulled = true;
+      if (!isInterior) {
+        const srcBb = geometry.boundingBox;
+        const srcMaxDim = srcBb
+          ? Math.max(srcBb.max.x - srcBb.min.x, srcBb.max.y - srcBb.min.y, srcBb.max.z - srcBb.min.z)
+          : 4.0;
+        inst.userData._baseCastShadow = inst.castShadow;
+        inst.userData._isMajorCaster = Boolean(inst.castShadow && srcMaxDim >= 2.2);
+        if (srcMaxDim < 1.85 && !/(ngoi|roof|luu_ly|tuong|wall|cay|foliage)/.test(matNameLow)) {
+          fineDetailMeshes.push(inst);
+        }
+      }
       freezeStaticObject(inst);
       targetParent.add(inst);
       optCount += 1;
@@ -1238,7 +1252,7 @@ function optimizeTileRoot(rawRoot, tile) {
       matMergeBuckets.set(mbKey, mb);
     }
     for (let i = 0; i < matrices.length; i++) {
-      const ng = cloneNormalizedGeometry(geometry, matrices[i], mb.wantUv, neg);
+      const ng = cloneNormalizedGeometry(geometry, matrices[i], mb.wantUv, neg, mb.isInterior);
       if (ng) mb.geos.push(ng);
     }
   }
@@ -1261,13 +1275,23 @@ function optimizeTileRoot(rawRoot, tile) {
       merged.computeBoundingSphere();
       const mesh = new THREE.Mesh(merged, mb.material);
       const matNameLow = String(mb.material?.name || "").toLowerCase();
+      const bb = merged.boundingBox;
+      const spanY = bb ? bb.max.y - bb.min.y : 10;
+      const spanXZ = bb ? Math.hypot(bb.max.x - bb.min.x, bb.max.z - bb.min.z) : 20;
       const isFlatSurface =
-        /(co_?xanh|nuoc|water|song_?huong|gach_?bat_?trang|ground)/.test(matNameLow) &&
-        merged.boundingBox &&
-        merged.boundingBox.max.y - merged.boundingBox.min.y < 1.35;
+        /(co_?xanh|nuoc|water|song_?huong|gach_?bat_?trang|ground)/.test(matNameLow) && spanY < 1.35;
       mesh.castShadow = !mb.isInterior && !isFlatSurface;
       mesh.receiveShadow = true;
       mesh.frustumCulled = true;
+      if (!mb.isInterior) {
+        mesh.userData._baseCastShadow = mesh.castShadow;
+        mesh.userData._isMajorCaster = Boolean(mesh.castShadow && (spanXZ >= 12.0 || spanY >= 3.8));
+        const triCount = merged.index ? merged.index.count / 3 : merged.attributes.position.count / 3;
+        const isOrnateMat = /(gilded_gold|patina_bronze|glazed_porcelain|thep_vang|dong_co|phap_lam)/.test(matNameLow);
+        if (isOrnateMat && spanY < 2.8 && spanXZ < 16.0 && (bb ? bb.min.y : 0) > 0.2 && triCount > 450) {
+          fineDetailMeshes.push(mesh);
+        }
+      }
       freezeStaticObject(mesh);
       (mb.isInterior ? interiorGroup : exteriorGroup).add(mesh);
       optCount += 1;
@@ -1279,6 +1303,10 @@ function optimizeTileRoot(rawRoot, tile) {
     p.matrix.decompose(mesh.position, mesh.quaternion, mesh.scale);
     mesh.castShadow = !p.isInterior;
     mesh.receiveShadow = true;
+    if (!p.isInterior) {
+      mesh.userData._baseCastShadow = mesh.castShadow;
+      mesh.userData._isMajorCaster = true;
+    }
     freezeStaticObject(mesh);
     (p.isInterior ? interiorGroup : exteriorGroup).add(mesh);
     optCount += 1;
@@ -1301,6 +1329,7 @@ function optimizeTileRoot(rawRoot, tile) {
     optGroup,
     exteriorGroup,
     interiorGroup,
+    fineDetailMeshes,
     occluderMesh,
     elevatedBox,
     indoorZones,
@@ -1386,6 +1415,7 @@ async function loadTileGlbNow(entry, versionKey) {
         optGroup,
         exteriorGroup,
         interiorGroup,
+        fineDetailMeshes,
         occluderMesh,
         elevatedBox,
         indoorZones,
@@ -1398,6 +1428,9 @@ async function loadTileGlbNow(entry, versionKey) {
       entry.glbGroup = optGroup;
       entry.exteriorGroup = exteriorGroup;
       entry.interiorGroup = interiorGroup;
+      entry.fineDetailMeshes = fineDetailMeshes;
+      entry._lastFineVis = undefined;
+      entry._lastFullShadow = undefined;
       entry.occluderMesh = occluderMesh;
       entry.elevatedBox = elevatedBox;
       entry.indoorZones = indoorZones;

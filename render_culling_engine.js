@@ -1088,20 +1088,21 @@ export class HueRenderCullingEngine {
   async initAddons(isFlatPublic = false) {
     if (this.addons.loaded) return this.addons;
     this.addons.loaded = true;
-    if (isFlatPublic) return this.addons;
 
-    const specs = [
-      ["CSM", "three/addons/csm/CSM.js", "CSM"],
-      ["RoomEnvironment", "three/addons/environments/RoomEnvironment.js", "RoomEnvironment"],
-      ["DRACOLoader", "three/addons/loaders/DRACOLoader.js", "DRACOLoader"],
-      ["KTX2Loader", "three/addons/loaders/KTX2Loader.js", "KTX2Loader"],
-      ["MeshoptDecoder", "three/addons/libs/meshopt_decoder.module.js", "MeshoptDecoder"],
-      ["EffectComposer", "three/addons/postprocessing/EffectComposer.js", "EffectComposer"],
-      ["RenderPass", "three/addons/postprocessing/RenderPass.js", "RenderPass"],
-      ["GTAOPass", "three/addons/postprocessing/GTAOPass.js", "GTAOPass"],
-      ["UnrealBloomPass", "three/addons/postprocessing/UnrealBloomPass.js", "UnrealBloomPass"],
-      ["OutputPass", "three/addons/postprocessing/OutputPass.js", "OutputPass"],
-    ];
+    const specs = isFlatPublic
+      ? [["CSM", "three/addons/csm/CSM.js", "CSM"]]
+      : [
+          ["CSM", "three/addons/csm/CSM.js", "CSM"],
+          ["RoomEnvironment", "three/addons/environments/RoomEnvironment.js", "RoomEnvironment"],
+          ["DRACOLoader", "three/addons/loaders/DRACOLoader.js", "DRACOLoader"],
+          ["KTX2Loader", "three/addons/loaders/KTX2Loader.js", "KTX2Loader"],
+          ["MeshoptDecoder", "three/addons/libs/meshopt_decoder.module.js", "MeshoptDecoder"],
+          ["EffectComposer", "three/addons/postprocessing/EffectComposer.js", "EffectComposer"],
+          ["RenderPass", "three/addons/postprocessing/RenderPass.js", "RenderPass"],
+          ["GTAOPass", "three/addons/postprocessing/GTAOPass.js", "GTAOPass"],
+          ["UnrealBloomPass", "three/addons/postprocessing/UnrealBloomPass.js", "UnrealBloomPass"],
+          ["OutputPass", "three/addons/postprocessing/OutputPass.js", "OutputPass"],
+        ];
 
     const settled = await Promise.allSettled(specs.map(([, path]) => import(path)));
     settled.forEach((res, idx) => {
@@ -1192,7 +1193,15 @@ export class HueRenderCullingEngine {
     mat.userData = mat.userData || {};
     mat.userData.__hueCsmSetup = true;
     try {
+      const customApply = mat.userData.__hueRealismApplyFn;
       this.csm.setupMaterial(mat);
+      if (typeof customApply === "function") {
+        const csmBeforeCompile = mat.onBeforeCompile;
+        mat.onBeforeCompile = function (shader, renderer) {
+          if (csmBeforeCompile) csmBeforeCompile.call(this, shader, renderer);
+          customApply(shader);
+        };
+      }
       mat.needsUpdate = true;
     } catch {
       // ignore unsupported custom material
@@ -1669,12 +1678,15 @@ export class HueRenderCullingEngine {
       }
     }
 
-    // 4. Apply final visibility for tiles + exterior + interior context culling
+    // 4. Apply final visibility for tiles + exterior + interior context culling + Multi-tier Sub-mesh Distance LOD
     let visibleCount = 0;
     let occludedCount = 0;
     let interiorVisibleCount = 0;
     let interiorHiddenCount = 0;
+    let fineDetailHiddenCount = 0;
     const shadowKeepDist = isGroundMode ? 320 : 620;
+    const fineDetailCutoff = isGroundMode ? 195 : 540;
+    const fullShadowCutoff = isGroundMode ? 215 : 520;
 
     for (const entry of tileObjects.values()) {
       if (!entry.glbGroup) continue;
@@ -1703,6 +1715,37 @@ export class HueRenderCullingEngine {
 
       entry.glbGroup.visible = tileVisible;
       if (tileVisible) visibleCount++;
+
+      // Distance LOD cho nhóm chi tiết điêu khắc nhỏ ngoại thất & đổ bóng vật phụ ở xa (giữ 100% mái/tường/cổng/cây)
+      if (tileVisible) {
+        const fineList = entry.fineDetailMeshes;
+        if (fineList && fineList.length > 0) {
+          const showFine = !smartCulling || minSurfaceDist <= fineDetailCutoff;
+          if (!showFine) fineDetailHiddenCount++;
+          if (entry._lastFineVis !== showFine) {
+            entry._lastFineVis = showFine;
+            for (let i = 0; i < fineList.length; i++) {
+              fineList[i].visible = showFine;
+            }
+          }
+        }
+        const extGrp = entry.exteriorGroup || entry.glbGroup.userData?.exteriorGroup;
+        if (extGrp && extGrp.children.length > 0) {
+          const fullShadow = !smartCulling || minSurfaceDist <= fullShadowCutoff;
+          if (entry._lastFullShadow !== fullShadow) {
+            entry._lastFullShadow = fullShadow;
+            const ch = extGrp.children;
+            for (let i = 0; i < ch.length; i++) {
+              const m = ch[i];
+              if (m.userData && "_baseCastShadow" in m.userData) {
+                m.castShadow = fullShadow
+                  ? m.userData._baseCastShadow
+                  : Boolean(m.userData._isMajorCaster);
+              }
+            }
+          }
+        }
+      }
 
       // Context-aware interior visibility
       const interiorGrp = entry.interiorGroup || entry.glbGroup.userData?.interiorGroup;
@@ -1735,6 +1778,7 @@ export class HueRenderCullingEngine {
     this.stats.occludedTiles = occludedCount;
     this.stats.interiorVisibleTiles = interiorVisibleCount;
     this.stats.interiorHiddenTiles = interiorHiddenCount;
+    this.stats.fineDetailHiddenTiles = fineDetailHiddenCount;
     this.stats.activeIndoorTileId = activeIndoorTileId;
     this.stats.smartCullingEnabled = Boolean(smartCulling);
     return this.stats;

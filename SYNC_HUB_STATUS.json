@@ -20,15 +20,16 @@
     "1ey5NPzA2_592QJ0Q3aGRfG7mU8cqN-s8"
   ],
   "active_modules": [
-    "app.js (Half-Life 120Hz Physics + High-Detail 1880 Character + Mobile Dual-Thumb Touch Controls)",
-    "render_culling_engine.js (Occlusion Culling + Interior Culling + 2D CSR TileSpatialCollider)",
-    "pbr_materials.js + assets/pbr/* (Poly Haven CC0 Shared PBR Material Pool + PMREM Sky Reflection)"
+    "app.js (Half-Life 120Hz Physics + High-Detail 1880 Character + Mobile Dual-Thumb Touch Controls + 5-Phase 360 Pure Skies)",
+    "render_culling_engine.js (Occlusion Culling + Interior Culling + Multi-Tier Distance LOD + 2D CSR TileSpatialCollider)",
+    "pbr_materials.js + assets/pbr/* + assets/sky/* (Poly Haven CC0 Shared PBR Material Pool + Photo Sky PMREM IBL)",
+    "hue_realism_shaders.js (GPU Hue Tropical Moss/Rain-Streak Weathering + Architectural Vertex AO aHueOcc + Courtyard Warm Bounce + Foliage Wind)"
   ],
   "completed_tiles": 30,
   "total_tiles": 30,
   "last_sync_backend": "rclone",
-  "last_sync_applied_files": 11,
-  "last_sync_utc": "2026-11-24T15:30:40+00:00",
+  "last_sync_applied_files": 3,
+  "last_sync_utc": "2026-11-24T16:01:34+00:00",
   "tile_versions": {
     "T01": {
       "version": 12,
@@ -59,8 +60,8 @@
       "sha256_12": "747f9b4d2aec"
     },
     "T08": {
-      "version": 13,
-      "sha256_12": "4d5afde8e17d"
+      "version": 14,
+      "sha256_12": "33eeae6e0602"
     },
     "T09": {
       "version": 14,
@@ -83,12 +84,12 @@
       "sha256_12": "f9ebb589a0d6"
     },
     "T14": {
-      "version": 13,
-      "sha256_12": "fe4cda1182f2"
+      "version": 14,
+      "sha256_12": "5f42d2ed7a7a"
     },
     "T15": {
-      "version": 11,
-      "sha256_12": "7d29f9fa7ef1"
+      "version": 14,
+      "sha256_12": "c2141018eb52"
     },
     "T16": {
       "version": 10,

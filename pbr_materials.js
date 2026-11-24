@@ -1,4 +1,9 @@
 import * as THREE from "three";
+import {
+  attachHueRealismShader,
+  setHueRealismQuality,
+  updateHueRealismTime,
+} from "./hue_realism_shaders.js";
 
 /**
  * pbr_materials.js — Thư Viện Vật Liệu Bề Mặt PBR Cung Đình Huế 1880 (Dùng Chung & Tiết Kiệm VRAM)
@@ -311,6 +316,9 @@ export class HuePbrMaterialLibrary {
       opacity: extraOpts.opacity != null ? extraOpts.opacity : 1.0,
     });
     mat.userData.baseNormalScale = baseNScale;
+    if (!extraOpts.transparent && archetypeKey !== "water_ripple") {
+      attachHueRealismShader(mat, archetypeKey);
+    }
     this.upgradedMaterials.push(mat);
     return mat;
   }
@@ -406,6 +414,7 @@ export class HuePbrMaterialLibrary {
    * Tự động điều chỉnh mức chi tiết Normal & Anisotropy theo cấu hình đồ họa (Siêu mượt / Cân bằng / Cao)
    */
   applyQualityPreset(qualityKey) {
+    setHueRealismQuality(qualityKey);
     if (qualityKey === "fast") {
       this.normalStrengthScale = 0.35;
       this.currentAniso = 1;
@@ -693,6 +702,9 @@ export class HuePbrMaterialLibrary {
     });
     pbrMat.userData.baseNormalScale = spec.normalScale;
     pbrMat.userData.shared = true;
+    if (!isWater) {
+      attachHueRealismShader(pbrMat, archetypeKey);
+    }
 
     this.materialPool.set(poolKey, pbrMat);
     this.upgradedMaterials.push(pbrMat);
@@ -724,6 +736,7 @@ export class HuePbrMaterialLibrary {
   }
 
   update(dt) {
+    updateHueRealismTime(dt);
     if (this.waterNormalMap) {
       this.waterNormalMap.offset.x = (this.waterNormalMap.offset.x + dt * 0.015) % 1.0;
       this.waterNormalMap.offset.y = (this.waterNormalMap.offset.y + dt * 0.01) % 1.0;
