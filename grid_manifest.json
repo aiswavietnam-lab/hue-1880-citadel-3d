@@ -5,7 +5,7 @@
   "coordinate_frame": "master_plan_z_up_meters",
   "total_tiles": 30,
   "completed_tiles": 30,
-  "last_updated_utc": "2026-11-24T14:30:41.981007+00:00",
+  "last_updated_utc": "2026-11-24T15:30:40.483798+00:00",
   "master_bounds_m": {
     "x_min": -980.0,
     "x_max": 980.0,
@@ -231,7 +231,7 @@
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T03_ho_thai_dich_cau_trung_dao.glb",
-      "sha256": "f13dbf572285a661029c9a30dd16a77ad123e1c7fc538d56337079a9c6ccc163",
+      "sha256": "7201fc3e227b29e9faa99f049ade5297e11fbebf213d00e965f418565c6044ed",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T13:04:42+00:00",
@@ -916,7 +916,7 @@
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T10_thai_to_mieu_trieu_mieu.glb",
-      "sha256": "5507ade9682f4b6bf0589ae7acee1aa3aad44372ce8b52462174050b526d9ce5",
+      "sha256": "7314ff9c380d10f88c10a9fc0b009518c9d0fc4ec3d4ef6f6c2e22a723150c9f",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T13:04:42+00:00",
@@ -956,7 +956,7 @@
       ],
       "architectural_brief": "Quần thể miếu thờ các Chúa Nguyễn phía Đông Nam Hoàng Thành: Thái Tổ Miếu Trùng thiềm điệp ốc mái Hoàng lưu ly, Tuy Thành Các, Triệu Tổ Miếu và sân lát gạch Bát Tràng.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 13,
+      "version": 14,
       "approved_stop": false,
       "orchestrator_note": "Mở thông Thái Tổ Miếu & Triệu Tổ Miếu cho GTA đi vào chiêm bái nội thất tôn miếu (cột gỗ lim, vì kèo, hương án, long vị, khám thờ) & chi tiết cổ diêm Pháp lam.",
       "reference_photos": [
@@ -984,7 +984,7 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T10_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": false
+      "interior_ready": true
     },
     {
       "tile_id": "T11",

@@ -1,8 +1,8 @@
 {
   "T01_ky_dai_quang_truong.glb": {
-    "id": "1a0A9Q12gWJ-IM_NkpOG7D9Zm5lOHbtE1",
-    "source": "inbox",
-    "name": "T01__v14_20261124_212000.glb",
+    "id": "1e9iGJMJBG4_XDTM94D3MiulCP6kn3Oji",
+    "source": "tiles",
+    "name": "T01_ky_dai_quang_truong.glb",
     "modifiedTime": "2026-11-24T14:24:43.723Z",
     "size": "3585340"
   },
@@ -17,8 +17,8 @@
     "id": "1mbz7tC16EnMAyyayial20fjOd5c2aOFE",
     "source": "tiles",
     "name": "T03_ho_thai_dich_cau_trung_dao.glb",
-    "modifiedTime": "2026-11-24T08:40:05.028Z",
-    "size": "3782852"
+    "modifiedTime": "2026-11-24T14:36:47.352Z",
+    "size": "4131912"
   },
   "T04_dien_thai_hoa.glb": {
     "id": "1D55RG4fGvvvE11bPuFDSPCQB1CT44WZp",
@@ -42,58 +42,58 @@
     "size": "4509512"
   },
   "T07_dien_can_thanh_khon_thai.glb": {
-    "id": "1k0hxDnWFwyEFDkCj2vRaBFLqcC0xy1k_",
-    "source": "inbox",
-    "name": "T07__v14_20261124_191430.glb",
+    "id": "1SN_6jSFY-c3aolM9gc7xQbCduo_2Xh_e",
+    "source": "tiles",
+    "name": "T07_dien_can_thanh_khon_thai.glb",
     "modifiedTime": "2026-11-24T12:14:53.077Z",
     "size": "6792144"
   },
   "T08_lau_kien_trung_vuon_co_ha.glb": {
-    "id": "1FDwEdevTqt57nSziQPE0D7dHKNtFK73S",
-    "source": "inbox",
-    "name": "T08__v13_20261124_155930.glb",
+    "id": "1-74zY_7pFlYBf1tFPEo7LCM_Ld-vDNQF",
+    "source": "tiles",
+    "name": "T08_lau_kien_trung_vuon_co_ha.glb",
     "modifiedTime": "2026-11-24T08:59:48.899Z",
     "size": "4581676"
   },
   "T09_the_to_mieu_hien_lam_cac.glb": {
-    "id": "1Soi9AMWoEUQWP2O40Wx7Utu4PX4hyTmy",
-    "source": "inbox",
-    "name": "T09__v14_20261124_193400.glb",
+    "id": "12JgmynWhJXU1cIO66vUBmU3D4zjlbmXq",
+    "source": "tiles",
+    "name": "T09_the_to_mieu_hien_lam_cac.glb",
     "modifiedTime": "2026-11-24T12:34:50.789Z",
     "size": "7356032"
   },
   "T10_thai_to_mieu_trieu_mieu.glb": {
-    "id": "1TEJybbPpnjS2uOP_UhZENjhwNQzm3-vC",
+    "id": "1lOvxxHSYjl9Ndgq65GQ5yjE_PiIsWj7b",
     "source": "inbox",
-    "name": "T10__v13_20261124_162100.glb",
-    "modifiedTime": "2026-11-24T09:21:29.491Z",
-    "size": "5964248"
+    "name": "T10__v14_20261124_221100.glb",
+    "modifiedTime": "2026-11-24T15:10:59.802Z",
+    "size": "6171276"
   },
   "T11_cung_dien_tho.glb": {
-    "id": "13kmT2FxQQVCh7IC0u4DnKhN51a-zI_W7",
-    "source": "inbox",
-    "name": "T11__v14_20261124_193300.glb",
+    "id": "1cdds-xwJnjDeqMfWLvbLAokXwiLVI10N",
+    "source": "tiles",
+    "name": "T11_cung_dien_tho.glb",
     "modifiedTime": "2026-11-24T12:34:22.659Z",
     "size": "3882476"
   },
   "T12_phu_noi_vu_hien_nhon_mon.glb": {
-    "id": "1fAM0i5byjbckx_6pfE-8buW8-UywK2rK",
-    "source": "inbox",
-    "name": "T12__v13_20261124_165023.glb",
+    "id": "10Sm7seZcBP3viC4LJrMOJYxPmU1wjGWL",
+    "source": "tiles",
+    "name": "T12_phu_noi_vu_hien_nhon_mon.glb",
     "modifiedTime": "2026-11-24T09:56:12.994Z",
     "size": "6895104"
   },
   "T13_cua_chuong_duc_tay_ht.glb": {
-    "id": "17RLUvxErRlGhuuZ4Lt7Qa7LszIYukoQT",
-    "source": "inbox",
-    "name": "T13__v12_20261124_201200.glb",
+    "id": "10qMa8flt4Ru08nCU2cYJfQ3asXwS_o55",
+    "source": "tiles",
+    "name": "T13_cua_chuong_duc_tay_ht.glb",
     "modifiedTime": "2026-11-24T13:16:36.290Z",
     "size": "3784196"
   },
   "T14_cung_truong_sanh.glb": {
-    "id": "1Ax2C0Q3cGqUoWupUdoI7jOaEIwv6bxED",
-    "source": "inbox",
-    "name": "T14__v13_20261124_162500.glb",
+    "id": "1Y-tx7p5g11nICZn4QbYmPE3UC96LCBXE",
+    "source": "tiles",
+    "name": "T14_cung_truong_sanh.glb",
     "modifiedTime": "2026-11-24T09:25:59.644Z",
     "size": "2494916"
   },
@@ -119,9 +119,9 @@
     "size": "5429652"
   },
   "T18_cua_the_nhon_than_cong_dong.glb": {
-    "id": "1dTyOZZjp1tQTn8Q0MqTkNGhAZaPpQYL4",
-    "source": "inbox",
-    "name": "T18__v11_20261124_170830.glb",
+    "id": "14M2fCmBZR-VgrjCAc6zPmqomJlegInSo",
+    "source": "tiles",
+    "name": "T18_cua_the_nhon_than_cong_dong.glb",
     "modifiedTime": "2026-11-24T10:10:56.800Z",
     "size": "4191336"
   },

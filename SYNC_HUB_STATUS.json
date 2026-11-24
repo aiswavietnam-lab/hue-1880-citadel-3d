@@ -27,8 +27,8 @@
   "completed_tiles": 30,
   "total_tiles": 30,
   "last_sync_backend": "rclone",
-  "last_sync_applied_files": 7,
-  "last_sync_utc": "2026-11-24T14:30:41+00:00",
+  "last_sync_applied_files": 11,
+  "last_sync_utc": "2026-11-24T15:30:40+00:00",
   "tile_versions": {
     "T01": {
       "version": 12,
@@ -40,7 +40,7 @@
     },
     "T03": {
       "version": 11,
-      "sha256_12": "f13dbf572285"
+      "sha256_12": "7201fc3e227b"
     },
     "T04": {
       "version": 14,
@@ -67,8 +67,8 @@
       "sha256_12": "bf6d39c74e15"
     },
     "T10": {
-      "version": 13,
-      "sha256_12": "5507ade9682f"
+      "version": 14,
+      "sha256_12": "7314ff9c380d"
     },
     "T11": {
       "version": 14,
