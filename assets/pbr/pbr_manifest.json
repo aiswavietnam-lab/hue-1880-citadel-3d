@@ -1,0 +1,121 @@
+{
+  "version": "1.0.0",
+  "license": "CC0 1.0 Universal (Poly Haven & Procedural)",
+  "resolution": {
+    "albedo": "512x512",
+    "normal_gl": "512x512 (4:4:4)",
+    "roughness": "256x256"
+  },
+  "surfaces": [
+    {
+      "id": "arch_concrete",
+      "source": "Poly Haven CC0 (brushed_concrete)",
+      "albedo": "arch_concrete_albedo.jpg",
+      "normal": "arch_concrete_normal.jpg",
+      "rough": "arch_concrete_rough.jpg"
+    },
+    {
+      "id": "brushed_metal",
+      "source": "Poly Haven CC0 (metal_plate)",
+      "albedo": "brushed_metal_albedo.jpg",
+      "normal": "brushed_metal_normal.jpg",
+      "rough": "brushed_metal_rough.jpg"
+    },
+    {
+      "id": "clay_brick",
+      "source": "Poly Haven CC0 (red_brick)",
+      "albedo": "clay_brick_albedo.jpg",
+      "normal": "clay_brick_normal.jpg",
+      "rough": "clay_brick_rough.jpg"
+    },
+    {
+      "id": "clay_roof",
+      "source": "Poly Haven CC0 (clay_roof_tiles_02)",
+      "albedo": "clay_roof_albedo.jpg",
+      "normal": "clay_roof_normal.jpg",
+      "rough": "clay_roof_rough.jpg"
+    },
+    {
+      "id": "corrugated_metal",
+      "source": "Poly Haven CC0 (corrugated_iron_02)",
+      "albedo": "corrugated_metal_albedo.jpg",
+      "normal": "corrugated_metal_normal.jpg",
+      "rough": "corrugated_metal_rough.jpg"
+    },
+    {
+      "id": "fine_wood",
+      "source": "Poly Haven CC0 (wood_table_001)",
+      "albedo": "fine_wood_albedo.jpg",
+      "normal": "fine_wood_normal.jpg",
+      "rough": "fine_wood_rough.jpg"
+    },
+    {
+      "id": "granite_paver",
+      "source": "Poly Haven CC0 (granite_tile_02)",
+      "albedo": "granite_paver_albedo.jpg",
+      "normal": "granite_paver_normal.jpg",
+      "rough": "granite_paver_rough.jpg"
+    },
+    {
+      "id": "heritage_stucco",
+      "source": "Poly Haven CC0 (white_stucco)",
+      "albedo": "heritage_stucco_albedo.jpg",
+      "normal": "heritage_stucco_normal.jpg",
+      "rough": "heritage_stucco_rough.jpg"
+    },
+    {
+      "id": "lush_grass",
+      "source": "Poly Haven CC0 (leafy_grass)",
+      "albedo": "lush_grass_albedo.jpg",
+      "normal": "lush_grass_normal.jpg",
+      "rough": "lush_grass_rough.jpg"
+    },
+    {
+      "id": "road_asphalt",
+      "source": "Poly Haven CC0 (asphalt_02)",
+      "albedo": "road_asphalt_albedo.jpg",
+      "normal": "road_asphalt_normal.jpg",
+      "rough": "road_asphalt_rough.jpg"
+    },
+    {
+      "id": "slate_roof",
+      "source": "Poly Haven CC0 (roof_slates_02)",
+      "albedo": "slate_roof_albedo.jpg",
+      "normal": "slate_roof_normal.jpg",
+      "rough": "slate_roof_rough.jpg"
+    },
+    {
+      "id": "stone_masonry",
+      "source": "Poly Haven CC0 (rustic_stone_wall_02)",
+      "albedo": "stone_masonry_albedo.jpg",
+      "normal": "stone_masonry_normal.jpg",
+      "rough": "stone_masonry_rough.jpg"
+    },
+    {
+      "id": "terracotta_paver",
+      "source": "Poly Haven CC0 (terracotta_floor_tiles)",
+      "albedo": "terracotta_paver_albedo.jpg",
+      "normal": "terracotta_paver_normal.jpg",
+      "rough": "terracotta_paver_rough.jpg"
+    },
+    {
+      "id": "tree_bark",
+      "source": "Poly Haven CC0 (bark_brown_02)",
+      "albedo": "tree_bark_albedo.jpg",
+      "normal": "tree_bark_normal.jpg",
+      "rough": "tree_bark_rough.jpg"
+    },
+    {
+      "id": "foliage_canopy",
+      "source": "Procedural Seamless Botanical Canopy (CC0)",
+      "albedo": "foliage_canopy_albedo.jpg",
+      "normal": "foliage_canopy_normal.jpg",
+      "rough": "foliage_canopy_rough.jpg"
+    },
+    {
+      "id": "water_ripple",
+      "source": "Procedural Fourier Periodic Capillary Waves (CC0)",
+      "normal": "water_ripple_normal.jpg"
+    }
+  ]
+}

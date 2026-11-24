@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
+import { HuePbrMaterialLibrary } from "./pbr_materials.js";
 
 /* =========================================================================
  * TRÌNH XEM QUY HOẠCH WEBGL & NHẬP VAI GTA — KINH THÀNH HUẾ 1880
@@ -131,6 +132,8 @@ renderer.shadowMap.needsUpdate = true;
 
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0xcbd5df, 0.00028);
+const huePbr = new HuePbrMaterialLibrary(renderer, scene, ASSET_ROOT || ".");
+huePbr.applyQualityPreset(STATE.quality);
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 6500);
 camera.position.set(280, 215, 485);
@@ -257,6 +260,7 @@ scene.add(ambientFill);
 function applyQualityPreset(key, notifyUser = false) {
   const preset = QUALITY_PRESETS[key] || QUALITY_PRESETS.balanced;
   STATE.quality = key;
+  huePbr.applyQualityPreset(key);
 
   renderer.setPixelRatio(IS_QA_MODE ? 1 : Math.min(window.devicePixelRatio || 1, preset.dprMax));
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -321,14 +325,14 @@ function createGroundTexture() {
   return tex;
 }
 
-// --- Dựng nền địa hình tổng thể Tam Trùng Thành Quách ---
+// --- Dựng nền địa hình tổng thể Tam Trùng Thành Quách (PBR Thực Tế) ---
 function buildMasterTerrainGuide() {
-  const groundTex = createGroundTexture();
+  const groundMat = huePbr.createTiledSurfaceMaterial("lush_grass", 0x6b7c59, 840, 920, {
+    roughness: 0.92,
+    normalScale: 0.75,
+  });
 
-  const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(4200, 4600),
-    new THREE.MeshStandardMaterial({ map: groundTex, roughness: 0.94, metalness: 0.0 })
-  );
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(4200, 4600), groundMat);
   ground.rotation.x = -Math.PI / 2;
   ground.position.set(0, -0.08, 120);
   ground.receiveShadow = true;
@@ -338,7 +342,10 @@ function buildMasterTerrainGuide() {
 
   const hoangThanhBase = new THREE.Mesh(
     new THREE.PlaneGeometry(622, 614),
-    new THREE.MeshStandardMaterial({ color: 0x8f7a64, roughness: 0.88 })
+    huePbr.createTiledSurfaceMaterial("terracotta_paver", 0x9b836c, 622, 614, {
+      roughness: 0.82,
+      normalScale: 0.8,
+    })
   );
   hoangThanhBase.rotation.x = -Math.PI / 2;
   hoangThanhBase.position.copy(planToThree(0, 87, -0.04));
@@ -349,7 +356,10 @@ function buildMasterTerrainGuide() {
 
   const tuCamThanhBase = new THREE.Mesh(
     new THREE.PlaneGeometry(324, 290),
-    new THREE.MeshStandardMaterial({ color: 0x9c725a, roughness: 0.84 })
+    huePbr.createTiledSurfaceMaterial("terracotta_paver", 0xa8785e, 324, 290, {
+      roughness: 0.76,
+      normalScale: 0.85,
+    })
   );
   tuCamThanhBase.rotation.x = -Math.PI / 2;
   tuCamThanhBase.position.copy(planToThree(0, 185, -0.02));
@@ -360,7 +370,10 @@ function buildMasterTerrainGuide() {
 
   const axisRoad = new THREE.Mesh(
     new THREE.PlaneGeometry(16, 1174),
-    new THREE.MeshStandardMaterial({ color: 0xa69d8f, roughness: 0.8 })
+    huePbr.createTiledSurfaceMaterial("granite_paver", 0xb3aba0, 16, 1174, {
+      roughness: 0.72,
+      normalScale: 0.82,
+    })
   );
   axisRoad.rotation.x = -Math.PI / 2;
   axisRoad.position.copy(planToThree(0, -193, 0.02));
@@ -384,10 +397,11 @@ function buildMasterTerrainGuide() {
   freezeStaticObject(axisLine);
   terrainGroup.add(axisLine);
 
-  riverMaterial = new THREE.MeshStandardMaterial({
-    color: 0x264e56,
-    roughness: 0.14,
-    metalness: 0.25,
+  riverMaterial = huePbr.createTiledSurfaceMaterial("water_ripple", 0x26525b, 3400, 280, {
+    roughness: 0.12,
+    metalness: 0.26,
+    normalScale: 0.58,
+    envIntensity: 1.38,
   });
   const songHuong = new THREE.Mesh(new THREE.PlaneGeometry(3400, 280), riverMaterial);
   songHuong.rotation.x = -Math.PI / 2;
@@ -396,20 +410,26 @@ function buildMasterTerrainGuide() {
   freezeStaticObject(songHuong);
   terrainGroup.add(songHuong);
 
-  const bankMat = new THREE.MeshStandardMaterial({ color: 0x6b675c, roughness: 0.9 });
+  const bankMat = huePbr.createTiledSurfaceMaterial("stone_masonry", 0x7b766a, 4, 4, {
+    roughness: 0.86,
+  });
   [-780, -1060].forEach((yEdge) => {
-    const bank = new THREE.Mesh(new THREE.BoxGeometry(2400, 2.6, 8), bankMat);
+    const bankGeo = new THREE.BoxGeometry(2400, 2.6, 8);
+    bankGeo.deleteAttribute("uv");
+    huePbr.ensureMetricUVs(bankGeo, 3.0);
+    const bank = new THREE.Mesh(bankGeo, bankMat);
     bank.position.copy(planToThree(0, yEdge, -1.25));
     freezeStaticObject(bank);
     terrainGroup.add(bank);
   });
 
-  const moatMat = new THREE.MeshStandardMaterial({
-    color: 0x244a4f,
-    roughness: 0.18,
-    metalness: 0.18,
-  });
   const addMoatStrip = (x, y, w, d, elev) => {
+    const moatMat = huePbr.createTiledSurfaceMaterial("water_ripple", 0x244e54, w, d, {
+      roughness: 0.14,
+      metalness: 0.22,
+      normalScale: 0.5,
+      envIntensity: 1.3,
+    });
     const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), moatMat);
     m.rotation.x = -Math.PI / 2;
     m.position.copy(planToThree(x, y, elev));
@@ -429,19 +449,24 @@ function buildMasterTerrainGuide() {
   addMoatStrip(0, -118, 128, 48, -1.2);
 
   buildVaubanPerimeterGuide();
-  buildWallPerimeter(-311, 311, -210, 394, 4.0, 1.4, 0x9c8974, [
+  buildWallPerimeter(-311, 311, -210, 394, 4.0, 1.4, 0xa38e78, [
     { side: "south", center: 0, width: 60 },
     { side: "north", center: 0, width: 14 },
   ]);
-  buildWallPerimeter(-162, 162, 40, 330, 3.7, 1.0, 0x9c5944, [
+  buildWallPerimeter(-162, 162, 40, 330, 3.7, 1.0, 0xa65e48, [
     { side: "south", center: 0, width: 22 },
   ]);
 
-  const nguBinhGeo = new THREE.CylinderGeometry(160, 460, 105, 6, 1);
+  const nguBinhGeo = new THREE.CylinderGeometry(160, 460, 105, 12, 2);
   nguBinhGeo.scale(2.1, 1.0, 0.72);
+  nguBinhGeo.deleteAttribute("uv");
+  huePbr.ensureMetricUVs(nguBinhGeo, 16.0);
   const nguBinh = new THREE.Mesh(
     nguBinhGeo,
-    new THREE.MeshStandardMaterial({ color: 0x3f5443, roughness: 0.96, metalness: 0.0 })
+    huePbr.createTiledSurfaceMaterial("foliage_canopy", 0x465f49, 16, 16, {
+      roughness: 0.88,
+      normalScale: 0.85,
+    })
   );
   nguBinh.position.copy(planToThree(0, -1680, 48));
   freezeStaticObject(nguBinh);
@@ -487,11 +512,10 @@ function buildVaubanPerimeterGuide() {
   }
   pts2D.push([-xHalf, yMin]);
 
-  const wallMat = new THREE.MeshStandardMaterial({
-    color: 0x6e695f,
-    roughness: 0.9,
+  const wallMat = huePbr.createTiledSurfaceMaterial("stone_masonry", 0x7c766b, 3, 3, {
+    roughness: 0.86,
     transparent: true,
-    opacity: 0.52,
+    opacity: 0.72,
   });
 
   const segGeos = [];
@@ -516,6 +540,8 @@ function buildVaubanPerimeterGuide() {
     const merged = mergeGeometries(segGeos, false);
     segGeos.forEach((g) => g.dispose());
     if (merged) {
+      merged.deleteAttribute("uv");
+      huePbr.ensureMetricUVs(merged, 2.8);
       const wallMesh = new THREE.Mesh(merged, wallMat);
       freezeStaticObject(wallMesh);
       terrainGroup.add(wallMesh);
@@ -532,11 +558,10 @@ function buildVaubanPerimeterGuide() {
 }
 
 function buildWallPerimeter(xMin, xMax, yMin, yMax, height, thickness, colorHex, gaps = []) {
-  const mat = new THREE.MeshStandardMaterial({
-    color: colorHex,
-    roughness: 0.88,
+  const mat = huePbr.createTiledSurfaceMaterial("clay_brick", colorHex, 2, 2, {
+    roughness: 0.84,
     transparent: true,
-    opacity: 0.65,
+    opacity: 0.78,
   });
 
   const parts = [];
@@ -568,6 +593,8 @@ function buildWallPerimeter(xMin, xMax, yMin, yMax, height, thickness, colorHex,
     const merged = mergeGeometries(parts, false);
     parts.forEach((g) => g.dispose());
     if (merged) {
+      merged.deleteAttribute("uv");
+      huePbr.ensureMetricUVs(merged, 2.2);
       const m = new THREE.Mesh(merged, mat);
       freezeStaticObject(m);
       terrainGroup.add(m);
@@ -770,6 +797,7 @@ function optimizeTileRoot(rawRoot, tile) {
   rawRoot.rotation.set(0, 0, 0);
   rawRoot.scale.set(1, 1, 1);
   rawRoot.updateWorldMatrix(true, true);
+  huePbr.upgradeTileHierarchy(rawRoot);
 
   const instGroups = new Map();
   const passthrough = [];
@@ -1263,6 +1291,7 @@ function updateTimeOfDay(hour) {
   if (riverMaterial) {
     riverMaterial.color.copy(lerpColorTriple(0x274f57, midCol.getHex(), h >= 17.0 ? 0.45 : 0.16));
   }
+  huePbr.updateSkyEnvironment(topCol, midCol, horCol, sunCol, currentSunDir, h);
 
   if (h >= 17.2) {
     currentLanternPower = THREE.MathUtils.clamp((h - 17.2) / 0.55, 0, 1);
@@ -2877,6 +2906,7 @@ function animate(now) {
     updateWalkMovement(dt);
   }
 
+  huePbr.update(dt);
   updateTileCulling();
   updateLabelsAndCompass(false);
   renderer.render(scene, camera);
