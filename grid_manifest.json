@@ -5,7 +5,7 @@
   "coordinate_frame": "master_plan_z_up_meters",
   "total_tiles": 30,
   "completed_tiles": 30,
-  "last_updated_utc": "2026-11-24T04:45:50.958281+00:00",
+  "last_updated_utc": "2026-11-24T10:20:20.534443+00:00",
   "master_bounds_m": {
     "x_min": -980.0,
     "x_max": 980.0,
@@ -133,7 +133,7 @@
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T02_ngo_mon_lau_ngu_phung.glb",
-      "sha256": "14d7bb80aad89d2e9d1e0dfe41c5f1b5b0678714219ffecc945167d001df92ef",
+      "sha256": "1bffdfb32a3588bbe31093a990f3926f19af66ce41bd4715f197d456b176f3ef",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -227,7 +227,7 @@
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T03_ho_thai_dich_cau_trung_dao.glb",
-      "sha256": "fc64272c1cdb08d075419ee3d9c00acabc858074111c6f9945cd2c7922240665",
+      "sha256": "f13dbf572285a661029c9a30dd16a77ad123e1c7fc538d56337079a9c6ccc163",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -316,7 +316,7 @@
       "elevation_z": 0.0,
       "poly_budget": 620000,
       "glb_path": "T04_dien_thai_hoa.glb",
-      "sha256": "5095470128ec9caaf99eb44632fc3a3d25d9a738a96f818fd81753ac0e7166eb",
+      "sha256": "bd9d0c128110caea13dc13de91dbf3ea1870b6ee67870c8d8a1d6db57e88c13b",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -509,7 +509,7 @@
       "elevation_z": 0.0,
       "poly_budget": 620000,
       "glb_path": "T06_dien_can_chanh.glb",
-      "sha256": "7ad224b46d928e25ad1237753b66ee08b5d08e802d0077fd6b68ba89018c8855",
+      "sha256": "44fc6dde18c5bc57d9fc874515e9ee141a2712463335f644a0da5d23671ed602",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -601,7 +601,7 @@
       "elevation_z": 0.0,
       "poly_budget": 620000,
       "glb_path": "T07_dien_can_thanh_khon_thai.glb",
-      "sha256": "ae59262aa987b5fd4db8f17c7d73b8345885dfde8dff6fc3c0a8a3123ec28fe9",
+      "sha256": "145e20554220bb00997b808fdfc9cce7bab94ae0e344ca6c5533438fa9e71479",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -791,7 +791,7 @@
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T09_the_to_mieu_hien_lam_cac.glb",
-      "sha256": "e2ba7ec96579f8db6b9896bc29dabe3f56b50c71fe26c6cce7a32ac10351ec93",
+      "sha256": "61c9a6dcb693d6dbfbe1aed13db4a38580e99d52d87f644eb0decf7c88d42423",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -977,7 +977,7 @@
       "elevation_z": 0.0,
       "poly_budget": 480000,
       "glb_path": "T11_cung_dien_tho.glb",
-      "sha256": "710c4f8f98aaa37311c0f44e940b604335ebf1ffdc7ff87f1dd5c7d577762d43",
+      "sha256": "08127a54b87c91ceb785ef28615c3c7463cadb0f97eae32bcd038fd5a8069ffd",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -1341,7 +1341,7 @@
       "elevation_z": 0.0,
       "poly_budget": 360000,
       "glb_path": "T15_co_ha_duyet_thi_duong.glb",
-      "sha256": "7fda6455c3bfec7c239e22b609e9c23060273bb4e7cdb4de6e0be79127e2ecc7",
+      "sha256": "7d29f9fa7ef143e7db512016b8a27add1b5121a25225e431be017d6c1f3428be",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -1429,7 +1429,7 @@
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T16_cua_hoa_binh_vuon_thieu_phuong.glb",
-      "sha256": "8478641a54540d94407e797d0239bdf49ef9ee31411a75b56c8e9d81d3aa2894",
+      "sha256": "0178e52ff94b21855367222e492c83804531ec0549579ac0461af279ba50cc79",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -1517,7 +1517,7 @@
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T17_cua_quang_duc_than_cong_tay.glb",
-      "sha256": "b9d234037ffe3557c70a78980db7d015117256dd92b6d3dbd7f86fd827fc6394",
+      "sha256": "72b080e864956fc2497b45b3d178dcbc669492f3abffc994e35379d10354e9aa",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -1782,7 +1782,7 @@
       "elevation_z": 0.0,
       "poly_budget": 240000,
       "glb_path": "T20_kim_thuy_tay_bac_xa_tac.glb",
-      "sha256": "23ac6fd72fcb1fe57d0ff1a4bc05751cfc600962ddff3c6ccc64f09525e1d696",
+      "sha256": "5a3977d47ce3ae7d0c7e92a031524109d8429bed9d820a259d0f877fb88bafa0",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
@@ -2389,7 +2389,7 @@
       "elevation_z": 0.0,
       "poly_budget": 240000,
       "glb_path": "T27_thanh_vauban_bac.glb",
-      "sha256": "6c8e6f571486247f1d0d703146e3b58d3923ef6fc948713a44ab948d37a8879b",
+      "sha256": "99720246ac9e39379f899a08691662ccdb53c54f4eb0502fe31ee0ea27da8da1",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-22T15:45:19+00:00",
