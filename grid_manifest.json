@@ -5,7 +5,7 @@
   "coordinate_frame": "master_plan_z_up_meters",
   "total_tiles": 30,
   "completed_tiles": 30,
-  "last_updated_utc": "2026-11-24T10:20:20.534443+00:00",
+  "last_updated_utc": "2026-11-24T13:15:21.099045+00:00",
   "master_bounds_m": {
     "x_min": -980.0,
     "x_max": 980.0,
@@ -44,8 +44,8 @@
       "sha256": "1e824110cf0d09f7d3d7cc3eaee48fac8677f7ffd8c80c4d0d0aefa0002cf82c",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 22888,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 66939,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -57,12 +57,12 @@
           "max": [
             160.0,
             54.48,
-            190.0
+            190.24
           ],
           "size": [
             320.0,
             56.113,
-            380.0
+            380.24
           ]
         },
         "warnings": []
@@ -76,7 +76,7 @@
       ],
       "architectural_brief": "Bao gồm Kỳ Đài (pháo đài Nam Chánh tường gạch vồ & đá Thanh 3 tầng chóp cụt cao 17.5m + kỳ đài gỗ/cột cờ cao 37m dựng cờ vàng triều Nguyễn), đoạn tường Kinh Thành Vauban mặt Nam dài 320m, Cầu Kim Thủy đá vòm bắc qua Hào Kim Thủy (y=-255..-220m, cao độ nước -1.5m), và Quảng trường Ngọ Môn lát gạch/đá dẫn thẳng trục Thần đạo tới Ngọ Môn.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "version": 12,
       "approved_stop": false,
       "orchestrator_note": "Mở thông nội thất Phu Văn Lâu (16 cột gỗ lim, vì kèo 2 tầng mái, bia Khuynh cái hạ mã) & hoàn thiện Kỳ Đài + Tả/Hữu Pháo Xưởng Cửu Vị Thần Công đúng 1880.",
       "reference_photos": [
@@ -97,12 +97,14 @@
         "05_qa_outputs/references/T01/ref_15.jpg",
         "05_qa_outputs/references/T01/ref_16.jpg",
         "05_qa_outputs/references/T01/ref_17.jpg",
-        "05_qa_outputs/references/T01/ref_18.jpg"
+        "05_qa_outputs/references/T01/ref_18.jpg",
+        "05_qa_outputs/references/T01/ref_19.jpg",
+        "05_qa_outputs/references/T01/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T01_LATEST_COMPARE.jpg",
       "scene_triangle_count": 139990,
       "reference_target_count": 15,
-      "real_reference_count": 18,
+      "real_reference_count": 20,
       "interior_ready": false
     },
     {
@@ -133,11 +135,11 @@
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T02_ngo_mon_lau_ngu_phung.glb",
-      "sha256": "1bffdfb32a3588bbe31093a990f3926f19af66ce41bd4715f197d456b176f3ef",
+      "sha256": "4c4f6c0eb2bcaca537157a89409383523faf61f170eed2a03fdc26ed7c0f92e2",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 37945,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 84759,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -148,12 +150,12 @@
           ],
           "max": [
             70.0,
-            17.976,
+            18.581,
             35.0
           ],
           "size": [
             140.0,
-            17.976,
+            18.581,
             70.0
           ]
         },
@@ -170,8 +172,8 @@
         "P18_o_hoc_phap_lam_co_diem"
       ],
       "architectural_brief": "Nền đài Ngọ Môn hình chữ U bằng đá Thanh và gạch vồ cao đúng 5.60m (ngang 57.77m, sâu 27.60m) trổ 5 lối đi (cửa chính giữa, hai cửa Tả/Hữu Giáp Môn, hai cửa Tả/Hữu Dịch Môn); bên trên là Lầu Ngũ Phụng 2 tầng kết cấu gỗ lim sơn son thếp vàng (100 cột), tổng cao ~17.0m, 9 bộ mái chồng diêm đặc trưng Huế: bộ mái trung tâm lợp ngói Hoàng lưu ly vàng, 8 bộ mái hai cánh lợp ngói Thanh lưu ly xanh. Kèm đoạn tường Hoàng Thành cao 4.0m nối liền hai bên ra biên x=±70m.",
-      "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 14,
       "approved_stop": false,
       "orchestrator_note": "Mở thông 5 cửa vòm Ngọ Môn cho nhân vật 1.70m đi qua & dựng sâu nội thất 2 tầng Lầu Ngũ Phụng (100 cột gỗ lim, Tả Chung Hữu Cổ, cửa lá sách, cổ diêm Pháp lam).",
       "reference_photos": [
@@ -192,12 +194,14 @@
         "05_qa_outputs/references/T02/ref_15.jpg",
         "05_qa_outputs/references/T02/ref_16.jpg",
         "05_qa_outputs/references/T02/ref_17.jpg",
-        "05_qa_outputs/references/T02/ref_18.jpg"
+        "05_qa_outputs/references/T02/ref_18.jpg",
+        "05_qa_outputs/references/T02/ref_19.jpg",
+        "05_qa_outputs/references/T02/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T02_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 18,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T03",
@@ -230,24 +234,24 @@
       "sha256": "f13dbf572285a661029c9a30dd16a77ad123e1c7fc538d56337079a9c6ccc163",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 15135,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 78081,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
             -69.8,
-            0.0,
+            -0.025,
             -54.8
           ],
           "max": [
             69.8,
-            9.713,
+            9.54,
             54.8
           ],
           "size": [
             139.6,
-            9.713,
+            9.565,
             109.6
           ]
         },
@@ -263,7 +267,7 @@
       ],
       "architectural_brief": "Hồ Thái Dịch kè đá Thanh chữ nhật trải ngang (cao độ mặt nước -1.20m) phủ cụm sen Huế; Cầu Trung Đạo đá vòm 3 nhịp bắc chính giữa trục Thần đạo hai đầu dựng cổng Tam Quan đồng thếp vàng (Ngưỡng Quan); tiếp nối là Sân Đại Triều Nghi 2 cấp lát đá Thanh & gạch Bát Tràng đặt hàng bia phẩm sơn (Chánh Nhất phẩm đến Cửu phẩm) hai bên Tả Văn - Hữu Võ.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "version": 11,
       "approved_stop": false,
       "orchestrator_note": "Sắc nét lan can đá Thanh & 3 cổng Cầu Trung Đạo, Tả/Hữu Tùng & 4 góc sân Đại Triều Nghi, phẩm sơn Bát Tràng & đèn trụ đá.",
       "reference_photos": [
@@ -281,12 +285,18 @@
         "05_qa_outputs/references/T03/ref_12.jpg",
         "05_qa_outputs/references/T03/ref_13.jpg",
         "05_qa_outputs/references/T03/ref_14.jpg",
-        "05_qa_outputs/references/T03/ref_15.jpg"
+        "05_qa_outputs/references/T03/ref_15.jpg",
+        "05_qa_outputs/references/T03/ref_16.jpg",
+        "05_qa_outputs/references/T03/ref_17.jpg",
+        "05_qa_outputs/references/T03/ref_18.jpg",
+        "05_qa_outputs/references/T03/ref_19.jpg",
+        "05_qa_outputs/references/T03/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T03_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 15,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": false,
+      "scene_triangle_count": 319926
     },
     {
       "tile_id": "T04",
@@ -316,11 +326,11 @@
       "elevation_z": 0.0,
       "poly_budget": 620000,
       "glb_path": "T04_dien_thai_hoa.glb",
-      "sha256": "bd9d0c128110caea13dc13de91dbf3ea1870b6ee67870c8d8a1d6db57e88c13b",
+      "sha256": "c53e8ca9bda5fa67d7895ed1d4cfeaf19f9e1bc629c4f1aad74f4e2b5e5898f8",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 59174,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 619874,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -355,8 +365,8 @@
         "P18_o_hoc_phap_lam_co_diem"
       ],
       "architectural_brief": "Trái tim hệ tọa độ (0,0,0). Điện Thái Hòa dựng trên nền đá Thanh 2 cấp cao 2.35m (tam cấp đá chạm rồng chính giữa và hai bên), kiến trúc chuẩn thức 'Trùng thiềm điệp ốc' Huế (Tiền điện 7 gian 2 chái nối Chính điện 5 gian 2 chái qua trần thừa lưu, kích thước 44.0m × 30.5m, chiều cao cột cái 4.80m sơn son thếp vàng vẽ rồng ẩn mây, tổng cao mái ~11.80m). Mái lợp ngói ống Hoàng lưu ly vàng, cổ diêm trang trí pháp lam Huế ô hộc thơ văn, nội thất đặt Ngai vàng & Bửu tán. Kèm hai cặp Kỳ lân đồng thếp vàng và dãy hành lang nối hai bên.",
-      "detail_stage": "L2_EXTERIOR_SHARP",
-      "version": 7,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 14,
       "approved_stop": false,
       "orchestrator_note": "Ngân sách mới 620,000 tris: mở rộng cửa thượng song hạ bản (>=1.25m), dựng sâu nội thất 80 cột gỗ lim sơn son thếp vàng, vì kèo trùng thiềm điệp ốc nhìn rõ từ bên trong, Ngai Vàng - Bửu Tán 3 cấp, Hoành phi Câu đối & Ngự Án.",
       "reference_photos": [
@@ -378,13 +388,14 @@
         "05_qa_outputs/references/T04/ref_16.jpg",
         "05_qa_outputs/references/T04/ref_17.jpg",
         "05_qa_outputs/references/T04/ref_18.jpg",
-        "05_qa_outputs/references/T04/ref_19.jpg"
+        "05_qa_outputs/references/T04/ref_19.jpg",
+        "05_qa_outputs/references/T04/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T04_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 319976,
+      "scene_triangle_count": 619950,
       "reference_target_count": 15,
-      "real_reference_count": 19,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T05",
@@ -417,8 +428,8 @@
       "sha256": "e7c3e5d3659941b956e5b6b7c9f6b7a0a5f50039e510d20cc887bc019bd9e4a4",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 38383,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 77313,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -430,12 +441,12 @@
           "max": [
             70.0,
             9.755,
-            35.158
+            35.0
           ],
           "size": [
             140.0,
             9.755,
-            70.158
+            70.0
           ]
         },
         "warnings": []
@@ -453,7 +464,7 @@
       ],
       "architectural_brief": "Phục dựng nguyên trạng năm 1880 (đã bị thiêu hủy năm 1947): tường mặt Nam Tử Cấm Thành cao đúng 3.70m bằng gạch vồ trát vôi vữa lợp mũ ngói; Đại Cung Môn 5 gian 3 cửa sơn son thếp vàng mái Hoàng lưu ly làm cổng chính vào Tử Cấm Thành; bên trong là sân Bái Mạng có bể cạn non bộ đặt cân đối, hai bên Đông (+X) là Tả Vu và Tây (-X) là Hữu Vu (mỗi tòa 5 gian 2 chái mái ngói Thanh lưu ly, cột cao 4.2m) nối liền hành lang có mái che.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "version": 12,
       "approved_stop": false,
       "orchestrator_note": "Mở cửa Đại Cung Môn & hai dãy Tả Vu / Hữu Vu cho GTA bước vào trong: hàng cột gỗ lim sơn son, trần ván ghép, hoành phi, bàn ghế chuẩn triều Tự Đức.",
       "reference_photos": [
@@ -474,12 +485,15 @@
         "05_qa_outputs/references/T05/ref_15.jpg",
         "05_qa_outputs/references/T05/ref_16.jpg",
         "05_qa_outputs/references/T05/ref_17.jpg",
-        "05_qa_outputs/references/T05/ref_18.jpg"
+        "05_qa_outputs/references/T05/ref_18.jpg",
+        "05_qa_outputs/references/T05/ref_19.jpg",
+        "05_qa_outputs/references/T05/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T05_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 18,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": false,
+      "scene_triangle_count": 478558
     },
     {
       "tile_id": "T06",
@@ -512,8 +526,8 @@
       "sha256": "44fc6dde18c5bc57d9fc874515e9ee141a2712463335f644a0da5d23671ed602",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 38572,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 105782,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -548,7 +562,7 @@
       ],
       "architectural_brief": "Phục dựng nguyên bản 1880 (đã mất 1947) nơi Vua Tự Đức thiết thường triều hằng ngày: kiến trúc Trùng thiềm điệp ốc quy mô lớn nhất Tử Cấm Thành (Tiền điện 7 gian 2 chái, Chính điện 5 gian 2 chái, mặt bằng ~42.0m × 27.0m trên nền đá Thanh cao 1.15m có lan can đá chạm). Cột gỗ lim cao 4.60m sơn son thếp vàng không vẽ rồng mà chạm tinh xảo, mái lợp ngói Hoàng lưu ly, cổ diêm pháp lam Huế. Hai bên cánh có Tả/Hữu Tùng Viện và trường lang nối sang Đại Cung Môn & Điện Càn Thành.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "version": 11,
       "approved_stop": false,
       "orchestrator_note": "Ngân sách mới 620,000 tris: dựng hoàn chỉnh Ngoại-Nội thất Điện Cần Chánh 1880 (80 cột gỗ lim sơn son thếp vàng, vì kèo chồng rường, Ngai Vàng, Bửu Tán, Bảo vật, cửa bức bàn mở thông).",
       "reference_photos": [
@@ -566,12 +580,18 @@
         "05_qa_outputs/references/T06/ref_12.jpg",
         "05_qa_outputs/references/T06/ref_13.jpg",
         "05_qa_outputs/references/T06/ref_14.jpg",
-        "05_qa_outputs/references/T06/ref_15.jpg"
+        "05_qa_outputs/references/T06/ref_15.jpg",
+        "05_qa_outputs/references/T06/ref_16.jpg",
+        "05_qa_outputs/references/T06/ref_17.jpg",
+        "05_qa_outputs/references/T06/ref_18.jpg",
+        "05_qa_outputs/references/T06/ref_19.jpg",
+        "05_qa_outputs/references/T06/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T06_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 15,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": false,
+      "scene_triangle_count": 619826
     },
     {
       "tile_id": "T07",
@@ -601,11 +621,11 @@
       "elevation_z": 0.0,
       "poly_budget": 620000,
       "glb_path": "T07_dien_can_thanh_khon_thai.glb",
-      "sha256": "145e20554220bb00997b808fdfc9cce7bab94ae0e344ca6c5533438fa9e71479",
+      "sha256": "747f9b4d2aec1d1c92a63e6227f8595805692a091228c7cc9fa09dd450607fa1",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 34260,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 619420,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -639,8 +659,8 @@
         "P18_o_hoc_phap_lam_co_diem"
       ],
       "architectural_brief": "Phục dựng nguyên bản 1880 (đã mất 1947): phía Nam ô là Điện Càn Thành (tẩm điện của Hoàng đế, Trùng thiềm điệp ốc ~44.0m × 28.0m, cột cái cao 4.80m, mái Hoàng lưu ly, bình phong & sân cảnh trước điện); nối liền qua trường lang về phía Bắc là Cung Khôn Thái (chính cung Hoàng hậu, nhà kép mái Thanh lưu ly thanh nhã, vườn hoa nội cung hai bên).",
-      "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 14,
       "approved_stop": false,
       "orchestrator_note": "Ngân sách mới 620,000 tris: dựng hoàn chỉnh Ngoại-Nội thất Điện Càn Thành & Cung Khôn Thái (không gian sinh hoạt Hoàng Đế & Hoàng Hậu 1880: sập ngự, bình phong, hàng cột lim, vì kèo lộ thiên).",
       "reference_photos": [
@@ -661,13 +681,15 @@
         "05_qa_outputs/references/T07/ref_15.jpg",
         "05_qa_outputs/references/T07/ref_16.jpg",
         "05_qa_outputs/references/T07/ref_17.jpg",
-        "05_qa_outputs/references/T07/ref_18.jpg"
+        "05_qa_outputs/references/T07/ref_18.jpg",
+        "05_qa_outputs/references/T07/ref_19.jpg",
+        "05_qa_outputs/references/T07/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T07_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 319730,
+      "scene_triangle_count": 619388,
       "reference_target_count": 15,
-      "real_reference_count": 18,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T08",
@@ -697,11 +719,11 @@
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T08_lau_kien_trung_vuon_co_ha.glb",
-      "sha256": "f568f8792aee7cad042286af033d0376bb28366671c4f96f18151390d0d80d66",
+      "sha256": "4d5afde8e17d65e81f0271f5f067b2020f102c969b2a79d10fb39f62c7b8c338",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 32306,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 558564,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -712,12 +734,12 @@
           ],
           "max": [
             70.0,
-            15.381,
+            16.1,
             30.0
           ],
           "size": [
             140.0,
-            15.381,
+            16.1,
             60.0
           ]
         },
@@ -736,8 +758,8 @@
         "P18_o_hoc_phap_lam_co_diem"
       ],
       "architectural_brief": "Điểm kết phía Bắc trục Thần đạo trong Tử Cấm Thành (áp tường Bắc Tử Cấm Thành cao 3.70m tại y=+330m): nền cao đá Thanh & kiến trúc lầu gác cung đình triều Nguyễn thế kỷ 19 (nền Lầu Minh Viễn / Lầu Du Cửu tiền thân Kiến Trung, 2 tầng mái ngói lưu ly hài hòa tỷ lệ Huế cao tối đa 15.5m, không dựng tháp cao Bắc Kinh), kết hợp khu vườn ngự uyển cảnh quan non bộ, hồ cá nhỏ, hành lang uốn khúc nối sang Vườn Cơ Hạ.",
-      "detail_stage": "L2_EXTERIOR_SHARP",
-      "version": 7,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 13,
       "approved_stop": false,
       "orchestrator_note": "Khắc phục chuẩn mốc 1880 (Lầu Minh Viễn tiền thân Kiến Trung trước 1921 hoặc chỉnh lầu 3 tầng cổ điển + nội thất sảnh chính đi bộ vào được, hàng cột gỗ/lan can & Vườn Cơ Hạ Tây).",
       "reference_photos": [
@@ -756,12 +778,17 @@
         "05_qa_outputs/references/T08/ref_13.jpg",
         "05_qa_outputs/references/T08/ref_14.jpg",
         "05_qa_outputs/references/T08/ref_15.jpg",
-        "05_qa_outputs/references/T08/ref_16.jpg"
+        "05_qa_outputs/references/T08/ref_16.jpg",
+        "05_qa_outputs/references/T08/ref_17.jpg",
+        "05_qa_outputs/references/T08/ref_18.jpg",
+        "05_qa_outputs/references/T08/ref_19.jpg",
+        "05_qa_outputs/references/T08/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T08_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 16,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true,
+      "scene_triangle_count": 559420
     },
     {
       "tile_id": "T09",
@@ -791,11 +818,11 @@
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T09_the_to_mieu_hien_lam_cac.glb",
-      "sha256": "61c9a6dcb693d6dbfbe1aed13db4a38580e99d52d87f644eb0decf7c88d42423",
+      "sha256": "bf6d39c74e152f82b0d10448a2700de17ec8cd705ba17a8b77b206994ff7cfce",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 40664,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 102394,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -830,8 +857,8 @@
         "P18_o_hoc_phap_lam_co_diem"
       ],
       "architectural_brief": "Quần thể miếu thờ các Hoàng đế triều Nguyễn ở góc Tây Nam Hoàng Thành (bao gồm tường Hoàng Thành Nam & Tây cao 4.0m): Thế Tổ Miếu (Trùng thiềm điệp ốc 9 gian 2 chái mái Hoàng lưu ly, cột cao 4.8m), phía trước là sân đặt hàng ngang Cửu Đỉnh đúc đồng (Cao Đỉnh ở giữa cao 2.5m nhô lên trước 8 đỉnh còn lại), Hiển Lâm Các 3 tầng gỗ tinh xảo (cao ~17m — biểu tượng tưởng niệm công thần), Miếu Môn, Tả/Hữu Tùng Tự và Hưng Tổ Miếu ở phía Bắc ô.",
-      "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 14,
       "approved_stop": false,
       "orchestrator_note": "Mở thông cửa Thế Tổ Miếu cho GTA đi vào tham quan án thờ các vua Nguyễn, hàng cột gỗ lim sơn son thếp vàng, hoành phi câu đối; dựng sâu nội-ngoại thất Hiển Lâm Các & 9 đỉnh đồng Cửu Đỉnh (khắc nổi sắc nét).",
       "reference_photos": [
@@ -850,12 +877,16 @@
         "05_qa_outputs/references/T09/ref_13.jpg",
         "05_qa_outputs/references/T09/ref_14.jpg",
         "05_qa_outputs/references/T09/ref_15.jpg",
-        "05_qa_outputs/references/T09/ref_16.jpg"
+        "05_qa_outputs/references/T09/ref_16.jpg",
+        "05_qa_outputs/references/T09/ref_17.jpg",
+        "05_qa_outputs/references/T09/ref_18.jpg",
+        "05_qa_outputs/references/T09/ref_19.jpg",
+        "05_qa_outputs/references/T09/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T09_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 16,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T10",
@@ -885,11 +916,11 @@
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T10_thai_to_mieu_trieu_mieu.glb",
-      "sha256": "a431126519c923369a8954a2fa0764a25f4f9dd2d753be5cd60a945f57c9ebe1",
+      "sha256": "5507ade9682f4b6bf0589ae7acee1aa3aad44372ce8b52462174050b526d9ce5",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 22422,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 88269,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -924,8 +955,8 @@
         "P18_o_hoc_phap_lam_co_diem"
       ],
       "architectural_brief": "Quần thể miếu thờ các Chúa Nguyễn phía Đông Nam Hoàng Thành: Thái Tổ Miếu Trùng thiềm điệp ốc mái Hoàng lưu ly, Tuy Thành Các, Triệu Tổ Miếu và sân lát gạch Bát Tràng.",
-      "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 13,
       "approved_stop": false,
       "orchestrator_note": "Mở thông Thái Tổ Miếu & Triệu Tổ Miếu cho GTA đi vào chiêm bái nội thất tôn miếu (cột gỗ lim, vì kèo, hương án, long vị, khám thờ) & chi tiết cổ diêm Pháp lam.",
       "reference_photos": [
@@ -942,12 +973,18 @@
         "05_qa_outputs/references/T10/ref_11.jpg",
         "05_qa_outputs/references/T10/ref_12.jpg",
         "05_qa_outputs/references/T10/ref_13.jpg",
-        "05_qa_outputs/references/T10/ref_14.jpg"
+        "05_qa_outputs/references/T10/ref_14.jpg",
+        "05_qa_outputs/references/T10/ref_15.jpg",
+        "05_qa_outputs/references/T10/ref_16.jpg",
+        "05_qa_outputs/references/T10/ref_17.jpg",
+        "05_qa_outputs/references/T10/ref_18.jpg",
+        "05_qa_outputs/references/T10/ref_19.jpg",
+        "05_qa_outputs/references/T10/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T10_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 14,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T11",
@@ -977,11 +1014,11 @@
       "elevation_z": 0.0,
       "poly_budget": 480000,
       "glb_path": "T11_cung_dien_tho.glb",
-      "sha256": "08127a54b87c91ceb785ef28615c3c7463cadb0f97eae32bcd038fd5a8069ffd",
+      "sha256": "bee0993abe9a48c1745efcdc481cdfa6c785733d114be1033540dcfe09cc2a57",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 29460,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 86088,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -992,12 +1029,12 @@
           ],
           "max": [
             65.0,
-            11.158,
+            11.19,
             72.5
           ],
           "size": [
             130.0,
-            11.158,
+            11.19,
             145.0
           ]
         },
@@ -1014,8 +1051,8 @@
         "P18_o_hoc_phap_lam_co_diem"
       ],
       "architectural_brief": "Cung Diên Thọ (Gia Thọ) khu Tây Hoàng Thành: Điện Diên Thọ Trùng thiềm điệp ốc, Tạ Trường Du trên hồ sen, Các Phước Thọ, Điện Thọ Ninh và hành lang kín.",
-      "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 14,
       "approved_stop": false,
       "orchestrator_note": "Mở thông Cung Diên Thọ (Điện Chính, Tả/Hữu Trà, Khương Ninh Các, Trường Du Tạ) cho nhân vật 1.70m đi dạo xuyên hiên và vào nội thất sảnh Thái hậu.",
       "reference_photos": [
@@ -1034,12 +1071,16 @@
         "05_qa_outputs/references/T11/ref_13.jpg",
         "05_qa_outputs/references/T11/ref_14.jpg",
         "05_qa_outputs/references/T11/ref_15.jpg",
-        "05_qa_outputs/references/T11/ref_16.jpg"
+        "05_qa_outputs/references/T11/ref_16.jpg",
+        "05_qa_outputs/references/T11/ref_17.jpg",
+        "05_qa_outputs/references/T11/ref_18.jpg",
+        "05_qa_outputs/references/T11/ref_19.jpg",
+        "05_qa_outputs/references/T11/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T11_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 16,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T12",
@@ -1069,11 +1110,11 @@
       "elevation_z": 0.0,
       "poly_budget": 480000,
       "glb_path": "T12_phu_noi_vu_hien_nhon_mon.glb",
-      "sha256": "3bd452567f741e19af23ea20c8198868bfab24e3491586f636646bc08cb6f0f7",
+      "sha256": "fe4afaed317e72c884f3e6f0aed0fe8d83cd8a9a7cabb759411bbdc1dfe565cf",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 20250,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 108182,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -1107,8 +1148,8 @@
         "P18_o_hoc_phap_lam_co_diem"
       ],
       "architectural_brief": "Khu Đông Hoàng Thành: Cửa Hiển Nhơn nguyên bản 1880, Phủ Nội Vụ Trùng thiềm điệp ốc mái Thanh lưu ly, Điện Khâm Văn và kho tàng cung đình.",
-      "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 13,
       "approved_stop": false,
       "orchestrator_note": "Mở thông Cửa Hiển Nhơn khảm sành sứ Pháp lam & nội thất Phủ Nội Vụ + Điện Khâm Văn (kho báu, sảnh đường gỗ, cửa mở thông).",
       "reference_photos": [
@@ -1129,12 +1170,14 @@
         "05_qa_outputs/references/T12/ref_15.jpg",
         "05_qa_outputs/references/T12/ref_16.jpg",
         "05_qa_outputs/references/T12/ref_17.jpg",
-        "05_qa_outputs/references/T12/ref_18.jpg"
+        "05_qa_outputs/references/T12/ref_18.jpg",
+        "05_qa_outputs/references/T12/ref_19.jpg",
+        "05_qa_outputs/references/T12/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T12_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 18,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T13",
@@ -1167,8 +1210,8 @@
       "sha256": "d0c6297cc11f21b5447a648cdfbd1167efffe3acfe2f5a67d526209331e80f15",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 27099,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 69667,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -1199,8 +1242,8 @@
         "P14_binh_phong_gach_kham_sanh"
       ],
       "architectural_brief": "Tuyến tường Tây Hoàng Thành cao 4.0m (x=-311m), Cửa Chương Đức 2 tầng tam quan, dải vườn & sân đệm phía Tây Thế Tổ Miếu và Cung Diên Thọ.",
-      "detail_stage": "L2_EXTERIOR_SHARP",
-      "version": 6,
+      "detail_stage": "L3_POLISH_PHAP_LAM",
+      "version": 10,
       "approved_stop": false,
       "orchestrator_note": "Sắc nét chi tiết khảm sành sứ Cửa Chương Đức, cổng vòm đi bộ thông suốt + điếm canh & hành lang tường Tây Hoàng Thành.",
       "reference_photos": [
@@ -1218,11 +1261,16 @@
         "05_qa_outputs/references/T13/ref_12.jpg",
         "05_qa_outputs/references/T13/ref_13.jpg",
         "05_qa_outputs/references/T13/ref_14.jpg",
-        "05_qa_outputs/references/T13/ref_15.jpg"
+        "05_qa_outputs/references/T13/ref_15.jpg",
+        "05_qa_outputs/references/T13/ref_16.jpg",
+        "05_qa_outputs/references/T13/ref_17.jpg",
+        "05_qa_outputs/references/T13/ref_18.jpg",
+        "05_qa_outputs/references/T13/ref_19.jpg",
+        "05_qa_outputs/references/T13/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T13_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 15,
+      "real_reference_count": 20,
       "interior_ready": false
     },
     {
@@ -1253,11 +1301,11 @@
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T14_cung_truong_sanh.glb",
-      "sha256": "529bc716370e5d873bb8614dbea35ded85d7095eb5da5a319869184764fd3e96",
+      "sha256": "fe4cda1182f2bc2c2d0a8ebccbaefa88394caf403e411086dfb5f3b6b8961ad3",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 17321,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 51485,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -1287,8 +1335,8 @@
         "P14_binh_phong_gach_kham_sanh"
       ],
       "architectural_brief": "Cung Trường Sanh (tẩm cung Thái hậu với hệ thống hồ nước uốn quanh, cầu đá, lầu thủy tạ), Điện Quang Minh và đoạn tường Bắc Hoàng Thành cao 4.0m.",
-      "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 13,
       "approved_stop": false,
       "orchestrator_note": "Mở thông các nếp nhà Cung Trường Sanh, bình phong đá chạm rồng, hồ bán nguyệt & nội thất gỗ tiếp khách Hoàng gia.",
       "reference_photos": [
@@ -1306,12 +1354,17 @@
         "05_qa_outputs/references/T14/ref_12.jpg",
         "05_qa_outputs/references/T14/ref_13.jpg",
         "05_qa_outputs/references/T14/ref_14.jpg",
-        "05_qa_outputs/references/T14/ref_15.jpg"
+        "05_qa_outputs/references/T14/ref_15.jpg",
+        "05_qa_outputs/references/T14/ref_16.jpg",
+        "05_qa_outputs/references/T14/ref_17.jpg",
+        "05_qa_outputs/references/T14/ref_18.jpg",
+        "05_qa_outputs/references/T14/ref_19.jpg",
+        "05_qa_outputs/references/T14/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T14_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 15,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T15",
@@ -1344,8 +1397,8 @@
       "sha256": "7d29f9fa7ef143e7db512016b8a27add1b5121a25225e431be017d6c1f3428be",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 21408,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 113263,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -1376,7 +1429,7 @@
       ],
       "architectural_brief": "Góc Đông Bắc Hoàng Thành: Duyệt Thị Đường, Thái Bình Lâu, khu Vườn Cơ Hạ mở rộng (hồ sen, đảo non bộ, đình tạ Thanh lưu ly) và góc tường Đông Bắc Hoàng Thành.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "version": 11,
       "approved_stop": false,
       "orchestrator_note": "Duyệt Thị Đường (nhà hát cổ nhất VN): mở cửa cho GTA bước vào ngồi xem Sân Khấu Cung Đình, lầu khán giả 2 tầng, hàng cột son đỏ vẽ mây rồng & nội thất Thái Bình Lâu.",
       "reference_photos": [
@@ -1394,11 +1447,16 @@
         "05_qa_outputs/references/T15/ref_12.jpg",
         "05_qa_outputs/references/T15/ref_13.jpg",
         "05_qa_outputs/references/T15/ref_14.jpg",
-        "05_qa_outputs/references/T15/ref_15.jpg"
+        "05_qa_outputs/references/T15/ref_15.jpg",
+        "05_qa_outputs/references/T15/ref_16.jpg",
+        "05_qa_outputs/references/T15/ref_17.jpg",
+        "05_qa_outputs/references/T15/ref_18.jpg",
+        "05_qa_outputs/references/T15/ref_19.jpg",
+        "05_qa_outputs/references/T15/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T15_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 15,
+      "real_reference_count": 20,
       "interior_ready": false
     },
     {
@@ -1432,8 +1490,8 @@
       "sha256": "0178e52ff94b21855367222e492c83804531ec0549579ac0461af279ba50cc79",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 15434,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 65620,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -1464,7 +1522,7 @@
       ],
       "architectural_brief": "Dải đất mặt Bắc Hoàng Thành (giữa tường Bắc Tử Cấm Thành y=+330m và tường Bắc Hoàng Thành cao 4.0m tại y=+394m): chính giữa trục Thần đạo là Cửa Hòa Bình (cổng Bắc Hoàng Thành 2 tầng mái lưu ly vàng/xanh), hai bên là hành lang vườn Thiệu Phương hình chữ Vạn, giếng cổ và các nhà trực thị vệ.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "version": 10,
       "approved_stop": false,
       "orchestrator_note": "Cửa Hòa Bình (3 lối vòm đi qua được) & Vườn Thiệu Phương: lầu bát giác lộ thiên với hàng cột gỗ & tiểu cảnh hòn non bộ.",
       "reference_photos": [
@@ -1482,12 +1540,18 @@
         "05_qa_outputs/references/T16/ref_12.jpg",
         "05_qa_outputs/references/T16/ref_13.jpg",
         "05_qa_outputs/references/T16/ref_14.jpg",
-        "05_qa_outputs/references/T16/ref_15.jpg"
+        "05_qa_outputs/references/T16/ref_15.jpg",
+        "05_qa_outputs/references/T16/ref_16.jpg",
+        "05_qa_outputs/references/T16/ref_17.jpg",
+        "05_qa_outputs/references/T16/ref_18.jpg",
+        "05_qa_outputs/references/T16/ref_19.jpg",
+        "05_qa_outputs/references/T16/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T16_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 15,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": false,
+      "scene_triangle_count": 319978
     },
     {
       "tile_id": "T17",
@@ -1519,29 +1583,15 @@
       "glb_path": "T17_cua_quang_duc_than_cong_tay.glb",
       "sha256": "72b080e864956fc2497b45b3d178dcbc669492f3abffc994e35379d10354e9aa",
       "audit": {
-        "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 25375,
-        "pivot_ok": true,
-        "bbox_ok": true,
-        "bounds_y_up": {
-          "min": [
-            -230.0,
-            0.0,
-            -190.0
-          ],
-          "max": [
-            230.0,
-            13.954,
-            190.0
-          ],
-          "size": [
-            460.0,
-            13.954,
-            380.0
-          ]
-        },
-        "warnings": []
+        "verified": false,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 0,
+        "pivot_ok": false,
+        "bbox_ok": false,
+        "bounds_y_up": null,
+        "warnings": [
+          "Tệp GLB rỗng hoặc không chứa hình học hợp lệ."
+        ]
       },
       "recommended_props": [
         "P04_cay_tung_bach",
@@ -1550,8 +1600,8 @@
         "P10_linh_thi_ve_1880"
       ],
       "architectural_brief": "Cánh Tây Nam Kinh Thành: đoạn tường Vauban mặt Nam cao 6.6m có pháo đài nhô, Cửa Quảng Đức (Cửa Sập) 2 tầng vọng lâu mái ngói ống, nhà súng Hữu trưng bày 5 khẩu Thần Công (Ngũ Hành) đúc đồng trên giá gỗ chạm, đoạn Hào Kim Thủy phía Tây Nam và đường nội thành trồng phượng vĩ.",
-      "detail_stage": "L2_EXTERIOR_SHARP",
-      "version": 6,
+      "detail_stage": "L3_POLISH_PHAP_LAM",
+      "version": 10,
       "approved_stop": false,
       "orchestrator_note": "Mở cổng vòm Cửa Quảng Đức cho GTA đi qua & hoàn thiện Tả Pháo Xưởng / kỳ đài góc Tây Nam sắc nét gạch vồ.",
       "reference_photos": [
@@ -1569,12 +1619,17 @@
         "05_qa_outputs/references/T17/ref_12.jpg",
         "05_qa_outputs/references/T17/ref_13.jpg",
         "05_qa_outputs/references/T17/ref_14.jpg",
-        "05_qa_outputs/references/T17/ref_15.jpg"
+        "05_qa_outputs/references/T17/ref_15.jpg",
+        "05_qa_outputs/references/T17/ref_16.jpg",
+        "05_qa_outputs/references/T17/ref_17.jpg",
+        "05_qa_outputs/references/T17/ref_18.jpg",
+        "05_qa_outputs/references/T17/ref_19.jpg",
+        "05_qa_outputs/references/T17/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T17_LATEST_COMPARE.jpg",
       "scene_triangle_count": 109560,
       "reference_target_count": 15,
-      "real_reference_count": 15,
+      "real_reference_count": 20,
       "interior_ready": false
     },
     {
@@ -1605,11 +1660,11 @@
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T18_cua_the_nhon_than_cong_dong.glb",
-      "sha256": "c06ef71c12572a1f6b2ca157a2766ef054d5a2fd62a2f252d229dfc687f95353",
+      "sha256": "e9fc04c05e9cc07f4157fe36ce289dc8454139ec1637e61cd5eea5c425b019a9",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 17133,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 63534,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -1620,12 +1675,12 @@
           ],
           "max": [
             230.0,
-            13.839,
+            14.98,
             190.0
           ],
           "size": [
             460.0,
-            13.839,
+            14.98,
             380.0
           ]
         },
@@ -1639,7 +1694,7 @@
       ],
       "architectural_brief": "Cánh Đông Nam Kinh Thành: đoạn tường Vauban mặt Nam cao 6.6m, Cửa Thể Nhơn (Cửa Ngăn) 2 tầng vọng lâu, nhà súng Tả trưng bày 4 khẩu Thần Công (Tứ Thời: Xuân-Hạ-Thu-Đông) đúc đồng, Hào Kim Thủy Đông Nam và cầu đá đi vào Quốc Tử Giám / khu quan lại.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "version": 11,
       "approved_stop": false,
       "orchestrator_note": "Mở cổng vòm Cửa Thể Nhơn (Cửa Ngăn) đi qua được & hoàn thiện Hữu Pháo Xưởng / chòi gác góc Đông Nam.",
       "reference_photos": [
@@ -1660,13 +1715,15 @@
         "05_qa_outputs/references/T18/ref_15.jpg",
         "05_qa_outputs/references/T18/ref_16.jpg",
         "05_qa_outputs/references/T18/ref_17.jpg",
-        "05_qa_outputs/references/T18/ref_18.jpg"
+        "05_qa_outputs/references/T18/ref_18.jpg",
+        "05_qa_outputs/references/T18/ref_19.jpg",
+        "05_qa_outputs/references/T18/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T18_LATEST_COMPARE.jpg",
       "scene_triangle_count": 109967,
       "reference_target_count": 15,
-      "real_reference_count": 18,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T19",
@@ -1699,8 +1756,8 @@
       "sha256": "957792fdd26237818d7668d5ea8cbc7664cd699ae711d29bdaa2dc06955a7800",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 16622,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 31024,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -1730,7 +1787,7 @@
       ],
       "architectural_brief": "Đoạn Hào Kim Thủy bao sát mặt Tây Nam Hoàng Thành (mặt nước -1.50m, kè đá Thanh, cầu đá sang khu Tây), kèm dãy dinh thự nhà rường Huế mái ngói âm dương của các nha sở triều đình phía Tây.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "version": 10,
       "approved_stop": false,
       "orchestrator_note": "Sắc nét tường gạch vồ hào Kim Thủy Tây Nam, cầu gạch & các công sở nha môn có cửa mở vào hiên.",
       "reference_photos": [
@@ -1747,11 +1804,17 @@
         "05_qa_outputs/references/T19/ref_11.jpg",
         "05_qa_outputs/references/T19/ref_12.jpg",
         "05_qa_outputs/references/T19/ref_13.jpg",
-        "05_qa_outputs/references/T19/ref_14.jpg"
+        "05_qa_outputs/references/T19/ref_14.jpg",
+        "05_qa_outputs/references/T19/ref_15.jpg",
+        "05_qa_outputs/references/T19/ref_16.jpg",
+        "05_qa_outputs/references/T19/ref_17.jpg",
+        "05_qa_outputs/references/T19/ref_18.jpg",
+        "05_qa_outputs/references/T19/ref_19.jpg",
+        "05_qa_outputs/references/T19/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T19_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 14,
+      "real_reference_count": 20,
       "interior_ready": false
     },
     {
@@ -1785,8 +1848,8 @@
       "sha256": "5a3977d47ce3ae7d0c7e92a031524109d8429bed9d820a259d0f877fb88bafa0",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 21716,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 50514,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -1816,7 +1879,7 @@
       ],
       "architectural_brief": "Hào Kim Thủy Tây Bắc và cầu vòm đá dẫn vào Cửa Chương Đức; bên ngoài là khuôn viên Đàn Xã Tắc (2 tầng đàn vuông đắp đất ngũ sắc, bậc đá 4 hướng, lan can gạch xây thấp) cùng khu nhà vườn cổ nội thành.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "version": 10,
       "approved_stop": false,
       "orchestrator_note": "Đàn Xã Tắc 2 tầng nền đá Thanh, lan can chạm hoa văn, hương trụ, bậc cấp không ngập đất & Hào Kim Thủy Tây Bắc.",
       "reference_photos": [
@@ -1833,11 +1896,17 @@
         "05_qa_outputs/references/T20/ref_11.jpg",
         "05_qa_outputs/references/T20/ref_12.jpg",
         "05_qa_outputs/references/T20/ref_13.jpg",
-        "05_qa_outputs/references/T20/ref_14.jpg"
+        "05_qa_outputs/references/T20/ref_14.jpg",
+        "05_qa_outputs/references/T20/ref_15.jpg",
+        "05_qa_outputs/references/T20/ref_16.jpg",
+        "05_qa_outputs/references/T20/ref_17.jpg",
+        "05_qa_outputs/references/T20/ref_18.jpg",
+        "05_qa_outputs/references/T20/ref_19.jpg",
+        "05_qa_outputs/references/T20/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T20_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 14,
+      "real_reference_count": 20,
       "interior_ready": false
     },
     {
@@ -1868,17 +1937,17 @@
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T21_kim_thuy_dong_nam_luc_bo.glb",
-      "sha256": "d74ced9e308ff127ad0c36803c9af228583130687a5102ab1da5bce96652e93c",
+      "sha256": "c0036452cdd8d08ae836bbfc76cb79058dc4571d140606e44015e193d0287251",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 12634,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 29714,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
             -154.5,
-            0.0,
+            -0.305,
             -155.0
           ],
           "max": [
@@ -1888,7 +1957,7 @@
           ],
           "size": [
             309.0,
-            10.867,
+            11.172,
             310.0
           ]
         },
@@ -1902,8 +1971,8 @@
         "P11_quan_van_vo_1880"
       ],
       "architectural_brief": "Đoạn Hào Kim Thủy mặt Đông Nam và cụm công sở hành chính cao nhất triều Nguyễn bên ngoài Hoàng Thành: Khu Lục Bộ (Lại, Hộ, Lễ, Binh, Hình, Công), Viện Cơ Mật và Quốc Sử Quán kiến trúc nhà rường 3 gian 2 chái mái ngói liệt có sân vườn cân đối.",
-      "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 5,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 11,
       "approved_stop": false,
       "orchestrator_note": "Khu Lục Bộ & Cơ Mật Viện: bổ sung sảnh nha môn mở cửa bước vào được, bàn án công đường, mái ngói liệt.",
       "reference_photos": [
@@ -1920,13 +1989,19 @@
         "05_qa_outputs/references/T21/ref_11.jpg",
         "05_qa_outputs/references/T21/ref_12.jpg",
         "05_qa_outputs/references/T21/ref_13.jpg",
-        "05_qa_outputs/references/T21/ref_14.jpg"
+        "05_qa_outputs/references/T21/ref_14.jpg",
+        "05_qa_outputs/references/T21/ref_15.jpg",
+        "05_qa_outputs/references/T21/ref_16.jpg",
+        "05_qa_outputs/references/T21/ref_17.jpg",
+        "05_qa_outputs/references/T21/ref_18.jpg",
+        "05_qa_outputs/references/T21/ref_19.jpg",
+        "05_qa_outputs/references/T21/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T21_LATEST_COMPARE.jpg",
       "scene_triangle_count": 109980,
       "reference_target_count": 15,
-      "real_reference_count": 14,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T22",
@@ -1956,17 +2031,17 @@
       "elevation_z": 0.0,
       "poly_budget": 260000,
       "glb_path": "T22_kim_thuy_dong_bac_tinh_tam_nam.glb",
-      "sha256": "ff491f993c995a24a762d1266323028176b2327ce0de34c93dead187e85553bf",
+      "sha256": "21eb08a5c3b25c249eb0275c730dc440dd471dc2693075d14053992191fdfce9",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 16774,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 35441,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
             -154.5,
-            -0.19,
+            0.0,
             -152.0
           ],
           "max": [
@@ -1976,7 +2051,7 @@
           ],
           "size": [
             309.0,
-            12.268,
+            12.078,
             304.0
           ]
         },
@@ -1990,8 +2065,8 @@
         "P07_lan_can_da_thanh"
       ],
       "architectural_brief": "Hào Kim Thủy Đông Bắc, cầu vòm đá dẫn vào Cửa Hiển Nhơn và nửa Nam của Hồ Tịnh Tâm (ngự uyển sen trắng nổi tiếng kinh đô với cầu Hồng Cừ, đê Kim Oanh và tường bao xây gạch vồ).",
-      "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 11,
       "approved_stop": false,
       "orchestrator_note": "Hồ Tịnh Tâm (Nam) với đảo Bồng Lai / Tạ Văn Tân có cầu dẫn đi bộ ra chòi gỗ 8 mái trên mặt hồ.",
       "reference_photos": [
@@ -2008,12 +2083,19 @@
         "05_qa_outputs/references/T22/ref_11.jpg",
         "05_qa_outputs/references/T22/ref_12.jpg",
         "05_qa_outputs/references/T22/ref_13.jpg",
-        "05_qa_outputs/references/T22/ref_14.jpg"
+        "05_qa_outputs/references/T22/ref_14.jpg",
+        "05_qa_outputs/references/T22/ref_15.jpg",
+        "05_qa_outputs/references/T22/ref_16.jpg",
+        "05_qa_outputs/references/T22/ref_17.jpg",
+        "05_qa_outputs/references/T22/ref_18.jpg",
+        "05_qa_outputs/references/T22/ref_19.jpg",
+        "05_qa_outputs/references/T22/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T22_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 14,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true,
+      "scene_triangle_count": 259976
     },
     {
       "tile_id": "T23",
@@ -2043,11 +2125,11 @@
       "elevation_z": 0.0,
       "poly_budget": 220000,
       "glb_path": "T23_doanh_trai_tay_bac.glb",
-      "sha256": "5b6904e677030a3a5bdd71103297cc49db8a154625118c301f0821b775e4a16d",
+      "sha256": "f058a4ec21cdfbede9e0979708211e0e02d8016a8987b8a7d5ced741412980b4",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 15029,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 69034,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -2075,8 +2157,8 @@
         "P10_linh_thi_ve_1880"
       ],
       "architectural_brief": "Nửa Tây của Hào Kim Thủy phía Bắc (cầu đá qua Cửa Hòa Bình tại biên x=0), sông Ngự Hà cắt ngang nội thành, các dãy trại lính Cấm binh & kho lương triều Nguyễn mái ngói đất nung xen kẽ vườn cây xanh.",
-      "detail_stage": "L2_EXTERIOR_SHARP",
-      "version": 6,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 10,
       "approved_stop": false,
       "orchestrator_note": "Doanh trại Thị Vệ Tây Bắc & Cửa An Hòa / tường Bắc Kinh Thành: mở cổng trại lính, giá vũ khí, phản gỗ nội thất.",
       "reference_photos": [
@@ -2093,12 +2175,19 @@
         "05_qa_outputs/references/T23/ref_11.jpg",
         "05_qa_outputs/references/T23/ref_12.jpg",
         "05_qa_outputs/references/T23/ref_13.jpg",
-        "05_qa_outputs/references/T23/ref_14.jpg"
+        "05_qa_outputs/references/T23/ref_14.jpg",
+        "05_qa_outputs/references/T23/ref_15.jpg",
+        "05_qa_outputs/references/T23/ref_16.jpg",
+        "05_qa_outputs/references/T23/ref_17.jpg",
+        "05_qa_outputs/references/T23/ref_18.jpg",
+        "05_qa_outputs/references/T23/ref_19.jpg",
+        "05_qa_outputs/references/T23/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T23_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 14,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true,
+      "scene_triangle_count": 218237
     },
     {
       "tile_id": "T24",
@@ -2128,27 +2217,27 @@
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T24_tinh_tam_bac_tang_thu_lau.glb",
-      "sha256": "c1cb897e5cf921399fd0d1ae7406dda3e90dea20df6dae345bb768e80a824e34",
+      "sha256": "1b2d36f311f1205a90b2cad601b75d019b53d3d17923c35c621516288f4a1458",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 16268,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 120280,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
             -310.0,
-            0.0,
+            -0.005,
             -163.0
           ],
           "max": [
             310.0,
-            12.426,
+            12.498,
             163.0
           ],
           "size": [
             620.0,
-            12.426,
+            12.503,
             326.0
           ]
         },
@@ -2162,8 +2251,8 @@
         "P07_lan_can_da_thanh"
       ],
       "architectural_brief": "Nửa Bắc Hồ Tịnh Tâm (Đảo Bồng Lai, Bồng Doanh Các, Phương Trượng), Hồ Học Hải và Tàng Thư Lâu 2 tầng xây gạch vồ chống cháy nằm giữa đảo hồ (nơi lưu trữ châu bản, địa bạ triều Nguyễn), nối sông Ngự Hà.",
-      "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 11,
       "approved_stop": false,
       "orchestrator_note": "Tàng Thư Lâu 2 tầng giữa Hồ Học Hải (cho phép đi qua cầu đá vào tầng 1 vòm gạch chứa Châu bản, tủ kinh sách triều Nguyễn).",
       "reference_photos": [
@@ -2177,13 +2266,22 @@
         "05_qa_outputs/references/T24/ref_08.jpg",
         "05_qa_outputs/references/T24/ref_09.jpg",
         "05_qa_outputs/references/T24/ref_10.jpg",
-        "05_qa_outputs/references/T24/ref_11.jpg"
+        "05_qa_outputs/references/T24/ref_11.jpg",
+        "05_qa_outputs/references/T24/ref_12.jpg",
+        "05_qa_outputs/references/T24/ref_13.jpg",
+        "05_qa_outputs/references/T24/ref_14.jpg",
+        "05_qa_outputs/references/T24/ref_15.jpg",
+        "05_qa_outputs/references/T24/ref_16.jpg",
+        "05_qa_outputs/references/T24/ref_17.jpg",
+        "05_qa_outputs/references/T24/ref_18.jpg",
+        "05_qa_outputs/references/T24/ref_19.jpg",
+        "05_qa_outputs/references/T24/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T24_LATEST_COMPARE.jpg",
       "scene_triangle_count": 109986,
       "reference_target_count": 15,
-      "real_reference_count": 11,
-      "interior_ready": false
+      "real_reference_count": 20,
+      "interior_ready": true
     },
     {
       "tile_id": "T25",
@@ -2216,8 +2314,8 @@
       "sha256": "233e4e821f2ecb550716223794f9a33c6fb2408622586910a1552ddab242204e",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 24422,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 74709,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -2246,7 +2344,7 @@
       ],
       "architectural_brief": "Tường Kinh Thành kiểu Vauban mặt Tây cao 6.6m, dày 21m, có 5 pháo đài góc nhọn zic-zắc phòng thủ, Cửa Hữu & Cửa Chánh Tây (vọng lâu 2 tầng mái ngói ống), Hộ Thành Hào Tây rộng 35m (mặt nước -2.20m) có cầu đá vòm bắc qua và dải cây xanh ngoại vi.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 5,
+      "version": 9,
       "approved_stop": false,
       "orchestrator_note": "Thành Vauban Tây, Hộ Thành Hào Tây & pháo đài gạch vồ: lỗ châu mai, pháo đài góc, ụ pháo & điếm canh mở cửa.",
       "reference_photos": [
@@ -2263,12 +2361,18 @@
         "05_qa_outputs/references/T25/ref_11.jpg",
         "05_qa_outputs/references/T25/ref_12.jpg",
         "05_qa_outputs/references/T25/ref_13.jpg",
-        "05_qa_outputs/references/T25/ref_14.jpg"
+        "05_qa_outputs/references/T25/ref_14.jpg",
+        "05_qa_outputs/references/T25/ref_15.jpg",
+        "05_qa_outputs/references/T25/ref_16.jpg",
+        "05_qa_outputs/references/T25/ref_17.jpg",
+        "05_qa_outputs/references/T25/ref_18.jpg",
+        "05_qa_outputs/references/T25/ref_19.jpg",
+        "05_qa_outputs/references/T25/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T25_LATEST_COMPARE.jpg",
       "scene_triangle_count": 99980,
       "reference_target_count": 15,
-      "real_reference_count": 14,
+      "real_reference_count": 20,
       "interior_ready": false
     },
     {
@@ -2302,8 +2406,8 @@
       "sha256": "c551cc855a251d12833d5887e22df0a749450cf6247b9da77bc8e5c26a6c7d54",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 16926,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 68395,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -2332,7 +2436,7 @@
       ],
       "architectural_brief": "Tường Kinh Thành kiểu Vauban mặt Đông cao 6.6m với các pháo đài nhô sắc cạnh, Cửa Thượng Tứ (Đông Nam Môn) và Cửa Đông Ba (Chánh Đông Môn) có vọng lâu 2 tầng, Hộ Thành Hào Đông (sông Đông Ba cổ, cao độ nước -2.20m) cùng cầu đá dẫn sang phố cổ Gia Hội.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "version": 9,
       "approved_stop": false,
       "orchestrator_note": "Thành Vauban Đông, Hộ Thành Hào Đông & Cửa Đông Ba / Kẻ Trài: vòm gạch đi qua được, lan can cổ, nhà gác.",
       "reference_photos": [
@@ -2392,8 +2496,8 @@
       "sha256": "99720246ac9e39379f899a08691662ccdb53c54f4eb0502fe31ee0ea27da8da1",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 13502,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 79750,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -2404,12 +2508,12 @@
           ],
           "max": [
             979.2,
-            13.823,
+            14.845,
             159.2
           ],
           "size": [
             1958.4,
-            13.823,
+            14.845,
             318.4
           ]
         },
@@ -2421,8 +2525,8 @@
         "P10_linh_thi_ve_1880"
       ],
       "architectural_brief": "Toàn tuyến tường Kinh Thành Vauban mặt Bắc cao 6.6m nối khép kín góc Tây Bắc và Đông Bắc (Trấn Bình Đài — đồn Mang Cá phòng thủ góc Đông Bắc), Cửa Chánh Bắc (Cửa Hậu), Cửa An Hòa, Hộ Thành Hào Bắc rộng 35m (cao độ nước -2.20m).",
-      "detail_stage": "L2_EXTERIOR_SHARP",
-      "version": 6,
+      "detail_stage": "L3_POLISH_PHAP_LAM",
+      "version": 9,
       "approved_stop": false,
       "orchestrator_note": "Thành Vauban Bắc & Trấn Bình Đài (Mang Cá): nâng cấp pháo đài phòng thủ, cầu đá, vọng lâu mở cửa đi vào.",
       "reference_photos": [
@@ -2439,11 +2543,17 @@
         "05_qa_outputs/references/T27/ref_11.jpg",
         "05_qa_outputs/references/T27/ref_12.jpg",
         "05_qa_outputs/references/T27/ref_13.jpg",
-        "05_qa_outputs/references/T27/ref_14.jpg"
+        "05_qa_outputs/references/T27/ref_14.jpg",
+        "05_qa_outputs/references/T27/ref_15.jpg",
+        "05_qa_outputs/references/T27/ref_16.jpg",
+        "05_qa_outputs/references/T27/ref_17.jpg",
+        "05_qa_outputs/references/T27/ref_18.jpg",
+        "05_qa_outputs/references/T27/ref_19.jpg",
+        "05_qa_outputs/references/T27/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T27_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 14,
+      "real_reference_count": 20,
       "interior_ready": false
     },
     {
@@ -2477,8 +2587,8 @@
       "sha256": "c83b9f08d5d8f4ac27591cbc7dba17f88875b81b7ea49a46fbca78ff231db6d4",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 40758,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 84670,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -2509,7 +2619,7 @@
       ],
       "architectural_brief": "Tuyến Hộ Thành Hào Nam (mặt nước -2.20m) chạy dọc chân Kỳ Đài, bờ kè đá Bắc Sông Hương, dải công viên ven sông có 2 trụ đá 'Khuynh Cái Hạ Mã'; chính tâm trục Thần đạo (x=0) là Phu Văn Lâu 2 tầng lầu gỗ sơn son mái Hoàng lưu ly (nơi niêm yết chiếu chỉ Vua) và Nghênh Lương Đình 1 gian 4 chái có bậc đá bước xuống bến ngự Sông Hương.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "version": 8,
       "approved_stop": false,
       "orchestrator_note": "Phu Văn Lâu + Nghênh Lương Đình: cả hai công trình đều thoáng mở bốn bề đi bộ xuyên qua, lộ kết cấu vì kèo gỗ lim nhìn thấy từ bên trong + bến Ngự.",
       "reference_photos": [
@@ -2563,8 +2673,8 @@
       "sha256": "727009689bf1fe1f462c8df4e1fea84aefeff4b03c0620498b42710ac180a2cf",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 26127,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 22620,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -2592,7 +2702,7 @@
       ],
       "architectural_brief": "Mặt nước Sông Hương trong xanh rộng 280m (cao độ mặt nước -2.50m, vật liệu phản chiếu bầu trời Huế và hoàng hôn tím), bố trí đội Thuyền Rồng ngự dụng (instanced từ P12) đậu gần bến Nghênh Lương Đình và xuôi dòng nhẹ nhàng, xen vài đò ngang gỗ truyền thống.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "version": 7,
       "approved_stop": false,
       "orchestrator_note": "Đội Ngự Thuyền Rồng trên Sông Hương: đầu rồng Bezier, khoang thuyền lâu có bàn ngự, rèm lụa, đèn lồng chiếu sáng.",
       "reference_photos": [
@@ -2648,8 +2758,8 @@
       "sha256": "8a713593ba89953a4a8394785dc0772b299717661ce09e0acbe195de5a107251",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-22T15:45:19+00:00",
-        "triangle_count": 19854,
+        "audited_at": "2026-11-24T12:59:43+00:00",
+        "triangle_count": 20772,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -2677,7 +2787,7 @@
       ],
       "architectural_brief": "Bờ Nam Sông Hương phủ hàng cây phượng vĩ, bến đò cổ, làng xóm thấp tầng thế kỷ 19 và phông địa hình đồi thông Tiền Án hướng về Núi Ngự Bình (khối địa hình viễn cảnh mượt mà tạo đường chân trời phong thủy Huế nguyên bản).",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 6,
+      "version": 7,
       "approved_stop": false,
       "orchestrator_note": "Bờ Nam Sông Hương & Núi Ngự Bình: nâng cấp thảm thực vật thông Huế, đàn Nam Giao/vọng cảnh & đường mòn bờ sông.",
       "reference_photos": [
@@ -2694,11 +2804,17 @@
         "05_qa_outputs/references/T30/ref_11.jpg",
         "05_qa_outputs/references/T30/ref_12.jpg",
         "05_qa_outputs/references/T30/ref_13.jpg",
-        "05_qa_outputs/references/T30/ref_14.jpg"
+        "05_qa_outputs/references/T30/ref_14.jpg",
+        "05_qa_outputs/references/T30/ref_15.jpg",
+        "05_qa_outputs/references/T30/ref_16.jpg",
+        "05_qa_outputs/references/T30/ref_17.jpg",
+        "05_qa_outputs/references/T30/ref_18.jpg",
+        "05_qa_outputs/references/T30/ref_19.jpg",
+        "05_qa_outputs/references/T30/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T30_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
-      "real_reference_count": 14,
+      "real_reference_count": 20,
       "interior_ready": false
     }
   ]

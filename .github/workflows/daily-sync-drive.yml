@@ -1,0 +1,54 @@
+name: Daily Auto-Sync Hue 1880 3D from Google Drive
+
+on:
+  schedule:
+    # 06:00 sáng giờ Việt Nam (GMT+7) mỗi ngày = 23:00 UTC
+    - cron: "0 23 * * *"
+  workflow_dispatch:
+    inputs:
+      include_inbox:
+        description: "Lấy cả bản GLB mới hơn đã xác thực SHA-256 trong 03_assets_glb/inbox"
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hue-1880-drive-sync
+  cancel-in-progress: false
+
+jobs:
+  sync-drive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Configure git bot author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync Hue 1880 tiles and manifests from Google Drive
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GDRIVE_OAUTH_REFRESH_TOKEN: ${{ secrets.GDRIVE_OAUTH_REFRESH_TOKEN }}
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_API_KEY: ${{ secrets.GDRIVE_API_KEY }}
+          REQUIRE_DRIVE_AUTH: "1"
+        run: |
+          EXTRA_ARGS=""
+          if [ "${{ inputs.include_inbox }}" = "false" ]; then
+            EXTRA_ARGS="--no-inbox"
+          fi
+          python3 scripts/sync_from_drive.py --push $EXTRA_ARGS

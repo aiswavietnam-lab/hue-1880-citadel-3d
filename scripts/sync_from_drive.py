@@ -1,32 +1,207 @@
 #!/usr/bin/env python3
+"""
+Đồng bộ tự động dữ liệu 3D Kinh Thành Huế 1880 từ Google Drive lên GitHub Pages.
+- Hỗ trợ 2 chế độ truy cập Drive:
+  1) `gdrive` CLI (mặc định trên Antigravity Cloud VM)
+  2) Google Drive API v3 (trên GitHub Actions qua GOOGLE_SERVICE_ACCOUNT_JSON,
+     GDRIVE_OAUTH_REFRESH_TOKEN + GDRIVE_CLIENT_ID + GDRIVE_CLIENT_SECRET, hoặc GDRIVE_API_KEY)
+- Kiểm tra cả `03_assets_glb/tiles` lẫn `03_assets_glb/inbox` (chỉ nhận file inbox có
+  companion `task_*_manifest.json` trạng thái completed, khớp SHA-256 và hợp lệ chuẩn glTF 2.0).
+- Tuyệt đối không ghi đè code giao diện điện thoại / PBR (`index.html`, `styles.css`, `app.js`,
+  `pbr_materials.js`, `assets/pbr/`).
+"""
 import argparse
+import base64
 import concurrent.futures
 import datetime
 import hashlib
 import json
+import os
 import pathlib
+import re
+import shutil
+import struct
 import subprocess
+import tempfile
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STATE_FILE = ROOT / "scripts" / "drive_state.json"
 
-# Real active 00_HUE_1880_PIPELINE folder (shared from ai.swavietnam@gmail.com)
+# Thư mục chuẩn 00_HUE_1880_PIPELINE trên Google Drive
 STATE_FOLDER_ID = "1in-xM0U0gyOE6W0OQUmltWihPWjglaOq"   # 01_state
 TILES_FOLDER_ID = "1xBiXbc051Dw0A8GylSG15x4eeloQoHa6"   # 03_assets_glb/tiles
+INBOX_FOLDER_ID = "14CgrGAp47K76fZefMQOzquEkN5hpyb7a"   # 03_assets_glb/inbox
+
+TILE_ID_RE = re.compile(r"^(T\d{2})")
 
 
-def list_folder(folder_id):
-    out = subprocess.check_output(["gdrive", "readonly", "ls", folder_id, "--json"], text=True)
-    data = json.loads(out)
-    items = data.get("files", []) if isinstance(data, dict) else data
-    best = {}
-    for it in items:
-        if it.get("mimeType") == "application/vnd.google-apps.folder":
-            continue
-        fn = it.get("name", "")
-        if fn not in best or it.get("modifiedTime", "") > best[fn].get("modifiedTime", ""):
-            best[fn] = it
-    return best
+def _b64url(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).rstrip(b"=").decode("ascii")
+
+
+class DriveClient:
+    def __init__(self):
+        self.mode = None
+        self.access_token = None
+        self.api_key = None
+
+        if shutil.which("gdrive"):
+            self.mode = "cli"
+            return
+
+        sa_json = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON", "").strip()
+        if sa_json:
+            self.access_token = self._token_from_service_account(json.loads(sa_json))
+            self.mode = "api"
+            return
+
+        rt = os.environ.get("GDRIVE_OAUTH_REFRESH_TOKEN", "").strip()
+        cid = os.environ.get("GDRIVE_CLIENT_ID", "").strip()
+        csec = os.environ.get("GDRIVE_CLIENT_SECRET", "").strip()
+        if rt and cid and csec:
+            self.access_token = self._token_from_refresh(rt, cid, csec)
+            self.mode = "api"
+            return
+
+        api_key = os.environ.get("GDRIVE_API_KEY", "").strip()
+        if api_key:
+            self.api_key = api_key
+            self.mode = "api"
+            return
+
+        raise RuntimeError(
+            "Không tìm thấy `gdrive` CLI hoặc Secret Google Drive "
+            "(GOOGLE_SERVICE_ACCOUNT_JSON / GDRIVE_OAUTH_REFRESH_TOKEN / GDRIVE_API_KEY)."
+        )
+
+    def _token_from_service_account(self, sa: dict) -> str:
+        now = int(time.time())
+        header = _b64url(json.dumps({"alg": "RS256", "typ": "JWT"}, separators=(",", ":")).encode())
+        payload = _b64url(
+            json.dumps(
+                {
+                    "iss": sa["client_email"],
+                    "scope": "https://www.googleapis.com/auth/drive.readonly",
+                    "aud": sa.get("token_uri", "https://oauth2.googleapis.com/token"),
+                    "iat": now,
+                    "exp": now + 3600,
+                },
+                separators=(",", ":"),
+            ).encode()
+        )
+        signing_input = f"{header}.{payload}".encode("ascii")
+        with tempfile.NamedTemporaryFile("w", suffix=".pem", delete=False) as tf:
+            tf.write(sa["private_key"])
+            key_path = tf.name
+        try:
+            sig = subprocess.check_output(
+                ["openssl", "dgst", "-sha256", "-sign", key_path],
+                input=signing_input,
+            )
+        finally:
+            try:
+                os.unlink(key_path)
+            except OSError:
+                pass
+        assertion = f"{header}.{payload}.{_b64url(sig)}"
+        body = urllib.parse.urlencode(
+            {
+                "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+                "assertion": assertion,
+            }
+        ).encode("utf-8")
+        req = urllib.request.Request(
+            sa.get("token_uri", "https://oauth2.googleapis.com/token"),
+            data=body,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.loads(resp.read().decode("utf-8"))["access_token"]
+
+    def _token_from_refresh(self, refresh_token: str, client_id: str, client_secret: str) -> str:
+        body = urllib.parse.urlencode(
+            {
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "refresh_token": refresh_token,
+                "grant_type": "refresh_token",
+            }
+        ).encode("utf-8")
+        req = urllib.request.Request(
+            "https://oauth2.googleapis.com/token",
+            data=body,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.loads(resp.read().decode("utf-8"))["access_token"]
+
+    def _api_headers(self):
+        return {"Authorization": f"Bearer {self.access_token}"} if self.access_token else {}
+
+    def list_folder(self, folder_id: str) -> dict:
+        if self.mode == "cli":
+            out = subprocess.check_output(["gdrive", "readonly", "ls", folder_id, "--json"], text=True)
+            data = json.loads(out)
+            items = data.get("files", []) if isinstance(data, dict) else data
+        else:
+            items = []
+            page_token = None
+            while True:
+                params = {
+                    "q": f"'{folder_id}' in parents and trashed = false",
+                    "fields": "nextPageToken,files(id,name,mimeType,modifiedTime,size)",
+                    "pageSize": "1000",
+                    "supportsAllDrives": "true",
+                    "includeItemsFromAllDrives": "true",
+                }
+                if self.api_key:
+                    params["key"] = self.api_key
+                if page_token:
+                    params["pageToken"] = page_token
+                url = "https://www.googleapis.com/drive/v3/files?" + urllib.parse.urlencode(params)
+                req = urllib.request.Request(url, headers=self._api_headers())
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    payload = json.loads(resp.read().decode("utf-8"))
+                items.extend(payload.get("files", []))
+                page_token = payload.get("nextPageToken")
+                if not page_token:
+                    break
+
+        best = {}
+        for it in items:
+            if it.get("mimeType") == "application/vnd.google-apps.folder":
+                continue
+            fn = it.get("name", "")
+            if fn not in best or it.get("modifiedTime", "") > best[fn].get("modifiedTime", ""):
+                best[fn] = it
+        return best
+
+    def download(self, file_id: str, dest: pathlib.Path) -> None:
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_name(dest.name + ".tmp")
+        try:
+            if self.mode == "cli":
+                subprocess.check_call(
+                    ["gdrive", "readonly", "download", file_id, "--out", str(tmp)],
+                    stdout=subprocess.DEVNULL,
+                )
+            else:
+                params = {"alt": "media", "supportsAllDrives": "true"}
+                if self.api_key:
+                    params["key"] = self.api_key
+                url = f"https://www.googleapis.com/drive/v3/files/{urllib.parse.quote(file_id)}?" + urllib.parse.urlencode(params)
+                req = urllib.request.Request(url, headers=self._api_headers())
+                with urllib.request.urlopen(req, timeout=180) as resp, tmp.open("wb") as out_f:
+                    shutil.copyfileobj(resp, out_f)
+            tmp.replace(dest)
+        except Exception:
+            if tmp.exists():
+                tmp.unlink()
+            raise
 
 
 def sha256_file(path: pathlib.Path) -> str:
@@ -37,17 +212,67 @@ def sha256_file(path: pathlib.Path) -> str:
     return h.hexdigest()
 
 
-def normalize_grid_manifest():
+def is_valid_glb(path: pathlib.Path) -> bool:
+    if not path.exists() or path.stat().st_size < 20:
+        return False
+    with path.open("rb") as f:
+        head = f.read(12)
+    magic, version, length = struct.unpack("<4sII", head)
+    return magic == b"glTF" and version == 2 and length <= path.stat().st_size + 4
+
+
+def parse_manifest_version(meta: dict):
+    vn = meta.get("version_number")
+    if isinstance(vn, int):
+        return vn
+    v = meta.get("version")
+    if isinstance(v, int):
+        return v
+    if isinstance(v, str):
+        m = re.search(r"(\d+)", v)
+        if m:
+            return int(m.group(1))
+    return None
+
+
+def is_manifest_ready(meta: dict) -> tuple[bool, str]:
+    if meta.get("needs_rework") is True:
+        return False, "needs_rework=true"
+    st = meta.get("status")
+    if st is None or st == "":
+        return True, "ok"
+    s = str(st).strip().lower()
+    if any(tok in s for tok in ("fail", "error", "rework", "reject", "pending", "in_progress")):
+        return False, f"status={st}"
+    return True, f"status={st}"
+
+
+def find_manifest_sha256(meta: dict) -> str:
+    for key in ("sha256", "glb_sha256", "file_sha256"):
+        val = meta.get(key)
+        if isinstance(val, str) and len(val.strip()) == 64:
+            return val.strip().lower()
+    for sub in ("glb", "output", "artifact", "file"):
+        obj = meta.get(sub)
+        if isinstance(obj, dict):
+            for key in ("sha256", "glb_sha256"):
+                val = obj.get(key)
+                if isinstance(val, str) and len(val.strip()) == 64:
+                    return val.strip().lower()
+    return ""
+
+
+def normalize_grid_manifest(inbox_meta_by_tid: dict) -> None:
     gm_path = ROOT / "grid_manifest.json"
     if not gm_path.exists():
         return
     gm = json.loads(gm_path.read_text(encoding="utf-8"))
     completed = 0
     for tile in gm.get("tiles", []):
+        tid = tile.get("tile_id", "")
         gp = tile.get("glb_path") or ""
         base = pathlib.Path(gp).name if gp else ""
-        if not base:
-            tid = tile.get("tile_id", "")
+        if not base or not (ROOT / base).exists():
             matches = sorted(ROOT.glob(f"{tid}_*.glb"))
             if matches:
                 base = matches[0].name
@@ -55,65 +280,196 @@ def normalize_grid_manifest():
             tile["glb_path"] = base
             tile["status"] = "completed"
             tile["sha256"] = sha256_file(ROOT / base)
+            meta = inbox_meta_by_tid.get(tid)
+            if meta:
+                ver = parse_manifest_version(meta)
+                if ver is not None:
+                    tile["version"] = ver
+                if meta.get("detail_stage"):
+                    tile["detail_stage"] = meta["detail_stage"]
+                if meta.get("interior_ready") is not None:
+                    tile["interior_ready"] = meta["interior_ready"]
+                if meta.get("poly_count_tris"):
+                    tile.setdefault("audit", {})["triangle_count"] = meta["poly_count_tris"]
             completed += 1
     gm["completed_tiles"] = completed
     gm["last_updated_utc"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     gm_path.write_text(json.dumps(gm, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def append_step_summary(lines: list[str]) -> None:
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_path:
+        with open(summary_path, "a", encoding="utf-8") as f:
+            f.write("\n".join(lines) + "\n")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--push", action="store_true")
+    parser.add_argument("--no-inbox", action="store_true", help="Chỉ lấy từ 03_assets_glb/tiles, bỏ qua 03_assets_glb/inbox")
     args = parser.parse_args()
+
+    try:
+        client = DriveClient()
+    except RuntimeError as exc:
+        msg = f"[HUE 30/30 SYNC] Bỏ qua: {exc}"
+        print(msg, flush=True)
+        append_step_summary(["### Hue 1880 Sync — Chưa cấu hình thông tin xác thực Google Drive", f"- {exc}"])
+        return 1 if os.environ.get("REQUIRE_DRIVE_AUTH") == "1" else 0
 
     old_state = json.loads(STATE_FILE.read_text(encoding="utf-8")) if STATE_FILE.exists() else {}
     new_state = {}
 
-    state_items = list_folder(STATE_FOLDER_ID)
-    tile_items = list_folder(TILES_FOLDER_ID)
+    state_items = client.list_folder(STATE_FOLDER_ID)
+    tile_items = client.list_folder(TILES_FOLDER_ID)
+    inbox_items = {} if args.no_inbox else client.list_folder(INBOX_FOLDER_ID)
 
     targets = {}
     for fn in ("config.json", "grid_manifest.json", "library_manifest.json"):
         if fn in state_items:
-            targets[fn] = state_items[fn]
+            targets[fn] = ("state", state_items[fn], None)
+
+    canonical_by_tid = {}
+    tile_by_tid = {}
     for fn, it in tile_items.items():
         if fn.endswith(".glb") and fn.startswith("T"):
-            targets[fn] = it
+            m = TILE_ID_RE.match(fn)
+            if m:
+                tid = m.group(1)
+                canonical_by_tid[tid] = fn
+                tile_by_tid[tid] = it
+                targets[fn] = ("tiles", it, None)
+
+    # Kiểm tra các bản GLB mới hơn (v10..v14+) trong 03_assets_glb/inbox có manifest xác thực kèm theo
+    inbox_glbs_by_tid = {}
+    inbox_manifests_by_stem = {}
+    for fn, it in inbox_items.items():
+        if fn.endswith(".glb") and fn.startswith("T"):
+            m = TILE_ID_RE.match(fn)
+            if m:
+                tid = m.group(1)
+                if tid not in inbox_glbs_by_tid or it.get("modifiedTime", "") > inbox_glbs_by_tid[tid].get("modifiedTime", ""):
+                    inbox_glbs_by_tid[tid] = it
+        elif fn.startswith("task_") and fn.endswith("_manifest.json"):
+            stem = fn[len("task_") : -len("_manifest.json")]
+            inbox_manifests_by_stem[stem] = it
+
+    for tid, gx in sorted(inbox_glbs_by_tid.items()):
+        canonical = canonical_by_tid.get(tid)
+        cur = tile_by_tid.get(tid)
+        if not canonical or not cur:
+            continue
+        stem = gx["name"][:-4]
+        mx = inbox_manifests_by_stem.get(stem)
+        if not mx:
+            continue
+        if gx.get("modifiedTime", "") > cur.get("modifiedTime", "") and str(gx.get("size", "")) != str(cur.get("size", "")):
+            targets[canonical] = ("inbox", gx, mx)
 
     changed = []
-    for rel_path, it in sorted(targets.items()):
-        sig = {"id": it["id"], "modifiedTime": it.get("modifiedTime", ""), "size": str(it.get("size", ""))}
+    for rel_path, (src, it, manifest_it) in sorted(targets.items()):
+        sig = {
+            "id": it["id"],
+            "source": src,
+            "name": it.get("name", rel_path),
+            "modifiedTime": it.get("modifiedTime", ""),
+            "size": str(it.get("size", "")),
+        }
         new_state[rel_path] = sig
         local_file = ROOT / rel_path
         if old_state.get(rel_path) != sig or not local_file.exists():
-            changed.append((rel_path, it["id"]))
+            changed.append((rel_path, src, it, manifest_it))
 
-    print(f"[HUE 30/30 GTA SYNC] Checked {len(targets)} files on Drive, changed/new: {len(changed)}", flush=True)
-    for rel_path, _ in changed:
-        print(f"  -> {rel_path}", flush=True)
+    print(
+        f"[HUE 30/30 GTA SYNC] Backend={client.mode} | Checked {len(targets)} files on Drive, changed/new: {len(changed)}",
+        flush=True,
+    )
+    for rel_path, src, it, _ in changed:
+        print(f"  -> {rel_path} [{src}: {it.get('name')}]", flush=True)
+
+    inbox_meta_by_tid = {}
+    applied = []
+    skipped = []
 
     if not args.dry_run and changed:
-        def dl(job):
-            rel_path, fid = job
+        def dl_job(job):
+            rel_path, src, it, manifest_it = job
             dest = ROOT / rel_path
-            subprocess.check_call(["gdrive", "readonly", "download", fid, "--out", str(dest)], stdout=subprocess.DEVNULL)
+            if src == "inbox" and manifest_it is not None:
+                with tempfile.TemporaryDirectory() as td:
+                    tdp = pathlib.Path(td)
+                    m_path = tdp / "manifest.json"
+                    g_path = tdp / rel_path
+                    client.download(manifest_it["id"], m_path)
+                    meta = json.loads(m_path.read_text(encoding="utf-8"))
+                    ready, reason = is_manifest_ready(meta)
+                    if not ready:
+                        return (rel_path, False, f"inbox manifest {reason}", None)
+                    client.download(it["id"], g_path)
+                    if not is_valid_glb(g_path):
+                        return (rel_path, False, "invalid glTF 2.0 header", None)
+                    expected_sha = find_manifest_sha256(meta)
+                    actual_sha = sha256_file(g_path).lower()
+                    if expected_sha and actual_sha != expected_sha:
+                        return (rel_path, False, f"sha256 mismatch ({actual_sha[:8]} != {expected_sha[:8]})", None)
+                    shutil.move(str(g_path), str(dest))
+                    ver = parse_manifest_version(meta)
+                    return (rel_path, True, f"inbox v{ver if ver is not None else '?'}", meta)
+            else:
+                with tempfile.TemporaryDirectory() as td:
+                    tmp_path = pathlib.Path(td) / rel_path
+                    client.download(it["id"], tmp_path)
+                    if rel_path.endswith(".glb") and not is_valid_glb(tmp_path):
+                        return (rel_path, False, "invalid glTF 2.0 header", None)
+                    if rel_path.endswith(".json"):
+                        json.loads(tmp_path.read_text(encoding="utf-8"))
+                    shutil.move(str(tmp_path), str(dest))
+                    return (rel_path, True, src, None)
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
-            list(ex.map(dl, changed))
-        normalize_grid_manifest()
+            for rel_path, ok, note, meta in ex.map(dl_job, changed):
+                if ok:
+                    applied.append((rel_path, note))
+                    if meta:
+                        tid = meta.get("tile_id") or meta.get("target_id")
+                        if not tid:
+                            m = TILE_ID_RE.match(rel_path)
+                            tid = m.group(1) if m else None
+                        if tid:
+                            inbox_meta_by_tid[tid] = meta
+                else:
+                    skipped.append((rel_path, note))
+                    if rel_path in old_state:
+                        new_state[rel_path] = old_state[rel_path]
+                    print(f"  [WARN] Skipped {rel_path}: {note}", flush=True)
+
+        normalize_grid_manifest(inbox_meta_by_tid)
 
     if not args.dry_run:
         STATE_FILE.write_text(json.dumps(new_state, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    summary = [
+        f"### Hue 1880 Citadel 3D — Drive Sync ({datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC')})",
+        f"- Backend: `{client.mode}` | Checked: **{len(targets)}** | Applied: **{len(applied)}** | Skipped: **{len(skipped)}**",
+    ]
+    for rp, note in applied[:20]:
+        summary.append(f"  - `{rp}` ({note})")
+    append_step_summary(summary)
 
     if args.push and not args.dry_run:
         st = subprocess.check_output(["git", "status", "--porcelain"], cwd=str(ROOT), text=True).strip()
         if st:
             subprocess.check_call(["git", "add", "-A"], cwd=str(ROOT))
-            subprocess.check_call(["git", "commit", "-m", "Auto-sync Hue 1880 30/30 GTA GLB tiles from Google Drive"], cwd=str(ROOT))
+            subprocess.check_call(
+                ["git", "commit", "-m", f"chore(sync): update {len(applied)} Hue 1880 tiles/manifests from Google Drive"],
+                cwd=str(ROOT),
+            )
             subprocess.check_call(["git", "push", "origin", "main"], cwd=str(ROOT))
-            print("[HUE 30/30 GTA SYNC] Pushed updates to GitHub Pages.")
+            print("[HUE 30/30 GTA SYNC] Pushed updates to GitHub Pages.", flush=True)
         else:
-            print("[HUE 30/30 GTA SYNC] No changes to push.")
+            print("[HUE 30/30 GTA SYNC] No changes to push.", flush=True)
     return 0
 
 
