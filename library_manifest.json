@@ -1,0 +1,548 @@
+{
+  "schema_version": "1.0.0",
+  "project_id": "HUE_IMPERIAL_CITY_1880",
+  "instancing_policy": "1 Prototype + Instancing. Mọi đạo cụ đặt Pivot đáy tại (0, 0, min_z) trong Blender (tương đương (0, min_y=0, 0) sau khi xuất GLB Y-up).",
+  "total_props": 18,
+  "props": [
+    {
+      "prop_id": "P01_den_long_luc_giac",
+      "name_vi": "Đèn lồng cung đình lục giác",
+      "category": "lighting",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P01_den_long_luc_giac.glb",
+      "sha256": "5c8fc1956a5685fb6dbd8899a8deecd3b6aa0d18e8e7a0fc9b39ce8f2de87d2e",
+      "dimensions_m": {
+        "width": 0.48,
+        "depth": 0.48,
+        "height": 1.15
+      },
+      "poly_budget": 2400,
+      "emissive_night": true,
+      "architectural_brief": "Đèn lồng gỗ sơn son thếp vàng hình lục giác cổ truyền Huế, chóp mái cong 6 múi, thân căng lụa vàng nhạt có vật liệu emissive (tên material chứa 'LanternEmissive') để trình xem WebGL tự bật sáng lúc 17:45, tua rua đỏ dưới đáy.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 1272,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P02_den_tru_da",
+      "name_vi": "Trụ đèn đá Thanh sân chầu",
+      "category": "lighting",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P02_den_tru_da.glb",
+      "sha256": "5bd827be7e5a20d3047d70aa60d17122f0bb1fd4c31319d2d17a293525fa039c",
+      "dimensions_m": {
+        "width": 0.65,
+        "depth": 0.65,
+        "height": 2.6
+      },
+      "poly_budget": 3200,
+      "emissive_night": true,
+      "architectural_brief": "Chân đế đá Thanh chạm cánh sen, thân trụ vuông vát góc, buồng đèn 4 mặt kính gỗ sơn son có vật liệu 'LanternEmissive', mái chóp đá nhỏ 4 mái kiểu Huế.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 440,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P03_cay_dai_su",
+      "name_vi": "Cây Đại (Cây Sứ) cổ thụ cung đình",
+      "category": "foliage",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P03_cay_dai_su.glb",
+      "sha256": "8949ec6ed48d36bbb5bc119acd1f714ac3c8ba8529e37bf4a1e7d7b7e6382a43",
+      "dimensions_m": {
+        "width": 5.8,
+        "depth": 5.8,
+        "height": 6.5
+      },
+      "poly_budget": 6500,
+      "emissive_night": false,
+      "architectural_brief": "Thân gỗ xám uốn lượn rẽ nhánh điển hình trong sân miếu và cung điện Huế, tán lá xanh sẫm thuôn dài cụm hoa trắng tâm vàng (instanced leaf cards, tránh hình cầu thô).",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 2456,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P04_cay_tung_bach",
+      "name_vi": "Cây Tùng / Bách cổ thụ Hoàng Thành",
+      "category": "foliage",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P04_cay_tung_bach.glb",
+      "sha256": "0177e7a7687b6021e4c4ff312e58d09825828ddc8045c94cd46ac669639f7d68",
+      "dimensions_m": {
+        "width": 4.6,
+        "depth": 4.6,
+        "height": 9.5
+      },
+      "poly_budget": 7000,
+      "emissive_night": false,
+      "architectural_brief": "Tùng cổ thụ phân tầng tán ngang uy nghi trồng dọc trục Thần đạo và Thế Tổ Miếu, thân nâu sẫm vảy nứt nhẹ, cụm tán kim xanh trầm phân lớp rõ.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 1920,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P05_cay_phuong_vi",
+      "name_vi": "Cây Phượng vĩ ven thành & Sông Hương",
+      "category": "foliage",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P05_cay_phuong_vi.glb",
+      "sha256": "66efe3f9fe3ab1d3b62617568321fb446c5058381d879248edcc4bc304a77d2a",
+      "dimensions_m": {
+        "width": 9.0,
+        "depth": 9.0,
+        "height": 8.5
+      },
+      "poly_budget": 7500,
+      "emissive_night": false,
+      "architectural_brief": "Tán rộng xòe ô thanh thoát dọc Hộ Thành Hào và bờ Sông Hương, lá kép xanh mướt xen điểm hoa đỏ rực nhẹ mùa hè Huế.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 2096,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P06_cum_sen_ho",
+      "name_vi": "Cụm sen trắng & hồng Hồ Thái Dịch",
+      "category": "foliage",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P06_cum_sen_ho.glb",
+      "sha256": "567b4b422838e490058e7d78a91088014a8bb42d21736699fbcde65585c6875d",
+      "dimensions_m": {
+        "width": 2.4,
+        "depth": 2.4,
+        "height": 0.75
+      },
+      "poly_budget": 2800,
+      "emissive_night": false,
+      "architectural_brief": "Cụm 12-18 lá sen tròn gợn mép cao thấp tự nhiên trên mặt nước, 3-5 bông sen hồng/trắng Huế (sen Tịnh Tâm) đặt Pivot tại cao độ mặt nước z=0.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 598,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P07_lan_can_da_thanh",
+      "name_vi": "Mô-đun lan can đá Thanh chữ Vạn",
+      "category": "architecture_modular",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P07_lan_can_da_thanh.glb",
+      "sha256": "532a06e9a4c3dc28293cfa2c0747f4b4a841d26152e024e1a2ffbf1b5f9da653",
+      "dimensions_m": {
+        "width": 2.5,
+        "depth": 0.32,
+        "height": 1.05
+      },
+      "poly_budget": 3200,
+      "emissive_night": false,
+      "architectural_brief": "Đoạn lan can đá Thanh chuẩn dài đúng 2.50m ghép liền mạch: 1 trụ đầu búp sen, thanh vịn trên bo tròn, ô thủng hoa văn chữ Vạn / đồng tiền cổ Huế.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 1540,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P08_vac_dong_lu_huong",
+      "name_vi": "Vạc đồng & Lư hương đỉnh đồng sân chầu",
+      "category": "ceremonial",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P08_vac_dong_lu_huong.glb",
+      "sha256": "b565303c1418c53428eeb3ff94e8e24eb8f836641341f0faa102ad92c48d4f67",
+      "dimensions_m": {
+        "width": 1.65,
+        "depth": 1.65,
+        "height": 1.85
+      },
+      "poly_budget": 5200,
+      "emissive_night": false,
+      "architectural_brief": "Vạc đồng đúc lớn đặt trên bệ đá Thanh bát giác, 3 chân quỳ, quai hình vòng cung, bề mặt đồng cổ patina xanh rêu nhẹ.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 2864,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P09_ky_lan_dong_thep_vang",
+      "name_vi": "Kỳ lân đồng thếp vàng chầu điện",
+      "category": "ceremonial",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P09_ky_lan_dong_thep_vang.glb",
+      "sha256": "656b27983014699862fc91fd3d9dc9521f09653fc0a62b4577a84ffd55924a83",
+      "dimensions_m": {
+        "width": 0.9,
+        "depth": 1.45,
+        "height": 1.55
+      },
+      "poly_budget": 6800,
+      "emissive_night": false,
+      "architectural_brief": "Tượng Kỳ lân cung đình Huế đặt trên bệ đá Thanh chạm hồi văn, dáng oai vệ chuẩn tỷ lệ đôi kỳ lân trước sân Điện Thái Hòa, hoàn thiện đồng thếp vàng cổ.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 4692,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P10_linh_thi_ve_1880",
+      "name_vi": "Lính Thị vệ & Cấm binh triều Nguyễn 1880 (1.70m)",
+      "category": "character_scale",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P10_linh_thi_ve_1880.glb",
+      "sha256": "1e6c97fa135dbf13919844e3fb3f7cc51ea4ea497fe6995f1adb0787632e7982",
+      "dimensions_m": {
+        "width": 0.7,
+        "depth": 0.65,
+        "height": 1.7
+      },
+      "poly_budget": 4800,
+      "emissive_night": false,
+      "architectural_brief": "Mốc tỷ lệ người thực tế cao đúng 1.70m từ gót chân đến đỉnh đầu (chưa tính chóp nón dấu 1.84m): lính Cấm binh mặc áo nẹp đỏ viền vàng, xà cạp, đội nón dấu sơn đen có chóp đồng, tay giữ kích hoặc cờ lệnh.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 1564,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P11_quan_van_vo_1880",
+      "name_vi": "Quan Văn / Quan Võ đại triều phục 1880 (1.70m)",
+      "category": "character_scale",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P11_quan_van_vo_1880.glb",
+      "sha256": "84e839483b25c9c298c24e0f6f1e1df305407e1a52e8383ddf657eff36be4768",
+      "dimensions_m": {
+        "width": 0.68,
+        "depth": 0.6,
+        "height": 1.7
+      },
+      "poly_budget": 4800,
+      "emissive_night": false,
+      "architectural_brief": "Nhân vật đối chiếu tỷ lệ cao đúng 1.70m: quan triều Nguyễn mặc phẩm phục thụng tay rộng màu chàm/tía, bổ tử trước ngực, đai ngọc, mũ cánh chuồn, tay cầm hốt ngà đứng chầu sân Đại Triều.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 1588,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P12_thuyen_rong_ngu_dung",
+      "name_vi": "Thuyền rồng ngự dụng triều Nguyễn",
+      "category": "watercraft",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P12_thuyen_rong_ngu_dung.glb",
+      "sha256": "4579a70ff431d65a530fba96b0e61fb0c0c1c504668682aaef1e7ab7dd6443f8",
+      "dimensions_m": {
+        "width": 3.4,
+        "depth": 18.0,
+        "height": 4.2
+      },
+      "poly_budget": 8000,
+      "emissive_night": true,
+      "architectural_brief": "Thuyền rồng đôi ngự dụng trên Sông Hương: mũi chạm đầu rồng sơn son thếp vàng, thân gỗ sơn đỏ đen, khoang lầu gỗ chạm trổ mái cong lợp giả ngói vàng, treo 2 đèn lồng lục giác trước mũi, Pivot đặt tại mớn nước z=0.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 4240,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P13_chau_bonsai_su_men_lam",
+      "name_vi": "Chậu sứ men lam trồng cây kiểng",
+      "category": "foliage",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P13_chau_bonsai_su_men_lam.glb",
+      "sha256": "2b7fb5fc0ac2f18268fe17576be2820be99106a5f6ce11dd39822feed405212b",
+      "dimensions_m": {
+        "width": 0.95,
+        "depth": 0.95,
+        "height": 1.65
+      },
+      "poly_budget": 3600,
+      "emissive_night": false,
+      "architectural_brief": "Chậu lục giác gốm sứ men lam Huế đặt trên đôn đá Thanh, bên trong trồng cây mai chiếu thủy hoặc tùng thế bonsai uốn lượn chuẩn mỹ thuật cung đình.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 1232,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P14_binh_phong_gach_kham_sanh",
+      "name_vi": "Bình phong gạch vồ khảm sành sứ",
+      "category": "architecture_modular",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P14_binh_phong_gach_kham_sanh.glb",
+      "sha256": "1562ad7468664e4668686d14d947b719dcda50a4b9bb3ee2e6906299158a1195",
+      "dimensions_m": {
+        "width": 4.2,
+        "depth": 0.7,
+        "height": 2.85
+      },
+      "poly_budget": 3800,
+      "emissive_night": false,
+      "architectural_brief": "Bình phong cuốn thư chắn gió đặt trước cung điện và vườn ngự uyển Huế, xây gạch vồ trát vôi vữa, viền mái ngói ống, mặt trước đắp nổi Long Mã hoặc chữ Thọ khảm sành sứ.",
+      "detail_stage": "L1_MASSING",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 1460,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P15_luong_long_chau_nhat",
+      "name_vi": "Bộ Lưỡng long chầu nhật & Mặt trời pháp lam bờ nóc (Tinh xảo)",
+      "category": "hero_sculpture",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P15_luong_long_chau_nhat.glb",
+      "sha256": "5660282f4e0fd2281a222055830451ca580f484e330055cc726e44e1702e161f",
+      "dimensions_m": {
+        "width": 6.4,
+        "depth": 0.9,
+        "height": 1.65
+      },
+      "poly_budget": 24000,
+      "emissive_night": false,
+      "detail_stage": "L2_DETAIL",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "Cấm khối hộp thô: dùng Bezier sweep uốn thân rồng hình sin mềm mại, vây lưng thuôn, bờm rồng, mặt trời pháp lam tròn xoay 32 phân đoạn, Shade Smooth.",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "architectural_brief": "Cụm điêu khắc trọng tâm trên đỉnh bờ nóc điện chính Huế: đôi rồng uốn lượn mềm mại bằng đường cong Bezier thuôn nhọn (chạm vảy, sừng, râu, vây sóng) chầu vào bầu mặt trời/ngọc châu pháp lam ở giữa, đặt trên bệ hồi văn khảm sành sứ. Tuyệt đối cấm dựng bằng khối hộp/hình chóp cụt.",
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 9212,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P16_binh_ho_lo_phap_lam",
+      "name_vi": "Bình hồ lô / Bảo đỉnh Pháp lam Huế đỉnh nóc (Tiện tròn 32 cạnh)",
+      "category": "hero_sculpture",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P16_binh_ho_lo_phap_lam.glb",
+      "sha256": "f24bab518624949e913a37fb9ca4b6d6f0e916654900f80ee72c2335d9f967c8",
+      "dimensions_m": {
+        "width": 0.85,
+        "depth": 0.85,
+        "height": 1.45
+      },
+      "poly_budget": 12000,
+      "emissive_night": false,
+      "detail_stage": "L2_DETAIL",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "Dùng Lathe/Spin tối thiểu 32 cạnh tròn mượt, bệ sen uốn cánh, men pháp lam xanh lam - vàng - lục bảo bóng (Roughness 0.22).",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "architectural_brief": "Bình hồ lô pháp lam đặt chính giữa đỉnh nóc các cung điện Huế: tiện tròn mượt >= 32 phân đoạn, thắt eo cổ chai thanh thoát, đế đài sen 2 tầng, chóp búp lửa thếp vàng, sơn men pháp lam ngũ sắc.",
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 3004,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P17_dau_dao_hoi_long",
+      "name_vi": "Đầu đao mái cong & Rồng hồi long góc mái Huế",
+      "category": "hero_sculpture",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P17_dau_dao_hoi_long.glb",
+      "sha256": "cb7701dcb1bae0f0fe1663a3eec52eae4854ec1471914a577b25af2f497d5fb5",
+      "dimensions_m": {
+        "width": 0.7,
+        "depth": 2.2,
+        "height": 1.2
+      },
+      "poly_budget": 14000,
+      "emissive_night": false,
+      "detail_stage": "L2_DETAIL",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "Đường cong bờ quyết thanh thoát kiểu Huế (không nhọn gắt Bắc Kinh), uốn mây lửa và rồng hồi long bằng Bezier mượt + Shade Smooth.",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "architectural_brief": "Chi tiết đầu đao đặt tại 4-8 góc bờ quyết mái Trùng thiềm điệp ốc: đường cong vuốt mềm kiểu Huế, thân rồng hồi long uốn cong bằng Bezier mượt cùng cụm mây xoắn pháp lam.",
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 8436,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    },
+    {
+      "prop_id": "P18_o_hoc_phap_lam_co_diem",
+      "name_vi": "Mô-đun ô hộc cổ diêm Pháp lam Huế (Nhất thi nhất họa)",
+      "category": "architecture_modular",
+      "status": "completed",
+      "glb_path": "03_assets_glb/props/P18_o_hoc_phap_lam_co_diem.glb",
+      "sha256": "47eda4b929af82df67640189b97b876e6104c31897bb3d32aa1d847e40667b6f",
+      "dimensions_m": {
+        "width": 2.4,
+        "depth": 0.18,
+        "height": 0.65
+      },
+      "poly_budget": 6000,
+      "emissive_night": false,
+      "detail_stage": "L2_DETAIL",
+      "version": 0,
+      "approved_stop": false,
+      "orchestrator_note": "Khung nẹp nổi sơn son thếp vàng, ô lòng lõm men lam Huế có họa tiết thơ văn & bát bửu độ phân giải cao.",
+      "reference_photos": [],
+      "latest_comparison_jpg": null,
+      "architectural_brief": "Tấm cổ diêm mô-đun dài 2.40m ghép dọc dưới mái tầng trên Trùng thiềm điệp ốc: ô chữ nhật lòng lõm men pháp lam xanh coban, viền khung chỉ nổi vàng son, trang trí nhất thi nhất họa sắc nét.",
+      "audit": {
+        "verified": true,
+        "audited_at": "2026-11-22T15:45:19+00:00",
+        "triangle_count": 1448,
+        "pivot_ok": true,
+        "bbox_ok": true,
+        "warnings": []
+      }
+    }
+  ]
+}

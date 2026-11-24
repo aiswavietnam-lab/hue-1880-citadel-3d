@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 import argparse
+import concurrent.futures
+import datetime
 import hashlib
 import json
 import pathlib
 import subprocess
-import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 STATE_FILE = ROOT / "scripts" / "drive_state.json"
 
-DRIVE_FILES = {
-    "api/scene.json": ("1yIDyfyaTUx6ZYs0x7V3d3oDUt1SzmN8g", "hue_1880_citadel_scene.json"),
-    "api/hue_1880_citadel.gltf": ("1yIDyfyaTUx6ZYs0x7V3d3oDUt1SzmN8g", "hue_1880_citadel.gltf"),
-    "api/audio-manifest.json": ("1Eh8Gl08QiYN5xxgT-fk8uwhc0Lq6JGv_", "audio_manifest.json"),
-}
-AUDIO_FOLDER_ID = "1Eh8Gl08QiYN5xxgT-fk8uwhc0Lq6JGv_"
+# Real active 00_HUE_1880_PIPELINE folder (shared from ai.swavietnam@gmail.com)
+STATE_FOLDER_ID = "1in-xM0U0gyOE6W0OQUmltWihPWjglaOq"   # 01_state
+TILES_FOLDER_ID = "1xBiXbc051Dw0A8GylSG15x4eeloQoHa6"   # 03_assets_glb/tiles
 
 
 def list_folder(folder_id):
@@ -23,10 +21,44 @@ def list_folder(folder_id):
     items = data.get("files", []) if isinstance(data, dict) else data
     best = {}
     for it in items:
+        if it.get("mimeType") == "application/vnd.google-apps.folder":
+            continue
         fn = it.get("name", "")
         if fn not in best or it.get("modifiedTime", "") > best[fn].get("modifiedTime", ""):
             best[fn] = it
     return best
+
+
+def sha256_file(path: pathlib.Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def normalize_grid_manifest():
+    gm_path = ROOT / "grid_manifest.json"
+    if not gm_path.exists():
+        return
+    gm = json.loads(gm_path.read_text(encoding="utf-8"))
+    completed = 0
+    for tile in gm.get("tiles", []):
+        gp = tile.get("glb_path") or ""
+        base = pathlib.Path(gp).name if gp else ""
+        if not base:
+            tid = tile.get("tile_id", "")
+            matches = sorted(ROOT.glob(f"{tid}_*.glb"))
+            if matches:
+                base = matches[0].name
+        if base and (ROOT / base).exists():
+            tile["glb_path"] = base
+            tile["status"] = "completed"
+            tile["sha256"] = sha256_file(ROOT / base)
+            completed += 1
+    gm["completed_tiles"] = completed
+    gm["last_updated_utc"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    gm_path.write_text(json.dumps(gm, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def main():
@@ -38,17 +70,16 @@ def main():
     old_state = json.loads(STATE_FILE.read_text(encoding="utf-8")) if STATE_FILE.exists() else {}
     new_state = {}
 
-    folder_cache = {}
-    for fid in {v[0] for v in DRIVE_FILES.values()} | {AUDIO_FOLDER_ID}:
-        folder_cache[fid] = list_folder(fid)
+    state_items = list_folder(STATE_FOLDER_ID)
+    tile_items = list_folder(TILES_FOLDER_ID)
 
     targets = {}
-    for rel_path, (fid, drive_name) in DRIVE_FILES.items():
-        if drive_name in folder_cache[fid]:
-            targets[rel_path] = folder_cache[fid][drive_name]
-    for fn, it in folder_cache[AUDIO_FOLDER_ID].items():
-        if fn.endswith(".mp3"):
-            targets[f"audio/{fn}"] = it
+    for fn in ("config.json", "grid_manifest.json", "library_manifest.json"):
+        if fn in state_items:
+            targets[fn] = state_items[fn]
+    for fn, it in tile_items.items():
+        if fn.endswith(".glb") and fn.startswith("T"):
+            targets[fn] = it
 
     changed = []
     for rel_path, it in sorted(targets.items()):
@@ -58,50 +89,18 @@ def main():
         if old_state.get(rel_path) != sig or not local_file.exists():
             changed.append((rel_path, it["id"]))
 
-    print(f"[HUE SYNC] Checked {len(targets)} files on Drive, changed/new: {len(changed)}")
-    for rel_path, fid in changed:
-        print(f"  -> {rel_path} ({fid})")
-        if not args.dry_run:
-            dest = ROOT / rel_path
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            subprocess.check_call(["gdrive", "readonly", "download", fid, "--out", str(dest)])
+    print(f"[HUE 30/30 GTA SYNC] Checked {len(targets)} files on Drive, changed/new: {len(changed)}", flush=True)
+    for rel_path, _ in changed:
+        print(f"  -> {rel_path}", flush=True)
 
     if not args.dry_run and changed:
-        # Patch ./audio/ paths in audio-manifest.json
-        am_path = ROOT / "api" / "audio-manifest.json"
-        if am_path.exists():
-            am_txt = am_path.read_text(encoding="utf-8").replace('"/audio/', '"./audio/')
-            am_path.write_text(am_txt, encoding="utf-8")
-
-        # Update api/pipeline-status.json
-        scene = json.loads((ROOT / "api" / "scene.json").read_text(encoding="utf-8"))
-        def sha16(p):
-            return hashlib.sha256(p.read_bytes()).hexdigest()[:16] if p.exists() else ""
-        audio_cnt = len(list((ROOT / "audio").glob("*.mp3")))
-        total_kb = round(sum(p.stat().st_size for p in ROOT.rglob("*") if p.is_file() and ".git" not in p.parts) / 1024, 1)
-        status = {
-            "project": "00_HUE_1880_PIPELINE",
-            "timestamp": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "zone_count": len(scene.get("zones", [])),
-            "zones": scene.get("zones", []),
-            "assets": {
-                "scene_json_ready": (ROOT / "api" / "scene.json").exists(),
-                "scene_json_sha256": sha16(ROOT / "api" / "scene.json"),
-                "gltf_ready": (ROOT / "api" / "hue_1880_citadel.gltf").exists(),
-                "gltf_sha256": sha16(ROOT / "api" / "hue_1880_citadel.gltf"),
-                "audio_manifest_ready": (ROOT / "api" / "audio-manifest.json").exists(),
-                "audio_file_count": audio_cnt,
-            },
-            "drive_sync": {
-                "mode": "GitHub Pages Auto-Sync (sha256_delta_batch)",
-                "manifest_updated_at": targets.get("api/scene.json", {}).get("modifiedTime"),
-                "tracked_synced_files": len(new_state),
-                "local_eligible_files": len([p for p in ROOT.rglob("*") if p.is_file() and ".git" not in p.parts]),
-                "local_total_kb": total_kb,
-                "excluded_items_blocked": 0,
-            },
-        }
-        (ROOT / "api" / "pipeline-status.json").write_text(json.dumps(status, ensure_ascii=False, indent=2), encoding="utf-8")
+        def dl(job):
+            rel_path, fid = job
+            dest = ROOT / rel_path
+            subprocess.check_call(["gdrive", "readonly", "download", fid, "--out", str(dest)], stdout=subprocess.DEVNULL)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
+            list(ex.map(dl, changed))
+        normalize_grid_manifest()
 
     if not args.dry_run:
         STATE_FILE.write_text(json.dumps(new_state, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -110,11 +109,11 @@ def main():
         st = subprocess.check_output(["git", "status", "--porcelain"], cwd=str(ROOT), text=True).strip()
         if st:
             subprocess.check_call(["git", "add", "-A"], cwd=str(ROOT))
-            subprocess.check_call(["git", "commit", "-m", "Auto-sync Hue 1880 Citadel assets from Google Drive"], cwd=str(ROOT))
+            subprocess.check_call(["git", "commit", "-m", "Auto-sync Hue 1880 30/30 GTA GLB tiles from Google Drive"], cwd=str(ROOT))
             subprocess.check_call(["git", "push", "origin", "main"], cwd=str(ROOT))
-            print("[HUE SYNC] Pushed updates to GitHub Pages.")
+            print("[HUE 30/30 GTA SYNC] Pushed updates to GitHub Pages.")
         else:
-            print("[HUE SYNC] No changes to push.")
+            print("[HUE 30/30 GTA SYNC] No changes to push.")
     return 0
 
 

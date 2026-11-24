@@ -1,0 +1,273 @@
+{
+  "schema_version": "1.0.0",
+  "project": {
+    "id": "HUE_IMPERIAL_CITY_1880",
+    "name_vi": "Phục Dựng Kinh Thành & Tử Cấm Thành Huế Nguyên Bản Thế Kỷ 19 (1880)",
+    "historical_era": "Triều Nguyễn — Năm Tự Đức thứ 33 (1880), nguyên trạng trước biến cố 1885 và 1947",
+    "gdrive_root_folder": "00_HUE_1880_PIPELINE"
+  },
+  "coordinate_system": {
+    "unit": "meter",
+    "unit_scale": 1.0,
+    "origin_description": "Tâm nền móng Điện Thái Hòa tại cao độ sân Đại Triều Nghi (0.0, 0.0, 0.0)",
+    "origin": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "master_plan_z_up": {
+      "handedness": "right_handed",
+      "up_axis": "+Z",
+      "sacred_axis_forward_se": "-Y (Hướng Đông Nam nhìn ra Ngọ Môn, Kỳ Đài, Sông Hương & Núi Ngự Bình)",
+      "sacred_axis_rear_nw": "+Y (Hướng Tây Bắc đi sâu vào Tử Cấm Thành: Cần Chánh, Càn Thành, Kiến Trung)",
+      "emperor_left_ta_ne": "+X (Bên Tả hướng Đông Bắc: Tả Vu, Thái Tổ Miếu, Duyệt Thị Đường, Phủ Nội Vụ)",
+      "emperor_right_huu_sw": "-X (Bên Hữu hướng Tây Nam: Hữu Vu, Thế Tổ Miếu, Cửu Đỉnh, Cung Diên Thọ, Trường Sanh)"
+    },
+    "gltf_threejs_y_up": {
+      "conversion_from_blender": {
+        "x_gltf": "+x_plan",
+        "y_gltf": "+z_plan",
+        "z_gltf": "-y_plan"
+      },
+      "note": "Blender glTF 2.0 exporter mặc định bật export_yup=True. Mọi file .glb được kiểm định ở không gian Y-up (Pivot đáy tại y_min = 0.0, tâm x ≈ 0, z ≈ 0) tương đương tuyệt đối với (0, 0, min_z) trong Blender Z-up."
+    },
+    "geo_astronomy": {
+      "latitude_deg": 16.4698,
+      "longitude_deg": 107.5778,
+      "sacred_axis_azimuth_deg": 148.0,
+      "timezone_utc_offset": 7,
+      "note": "Trục Thần đạo lệch 32 độ về phía Đông so với hướng Nam chính, thẳng tâm Sông Hương và Tiền Án Núi Ngự Bình."
+    }
+  },
+  "architectural_standards": {
+    "hue_identity_rules": [
+      "TUYỆT ĐỐI CẤM dựng lầu cao vút kiểu Tử Cấm Thành Bắc Kinh hay mái cong vểnh quá đà kiểu Trung Hoa.",
+      "Tất cả điện chính (Thái Hòa, Cần Chánh, Càn Thành, Thế Tổ Miếu...) bắt buộc theo thức 'Trùng thiềm điệp ốc' (nhà kép Tiền doanh - Chính doanh nối liền bằng trần thừa lưu, trải ngang bề thế, mái hai tầng thấp thoáng thanh thoát).",
+      "Mái lợp ngói ống tráng men Hoàng lưu ly (điện chính của Hoàng đế, giữa Lầu Ngũ Phụng) hoặc Thanh lưu ly (hai cánh Ngũ Phụng, Tả Hữu Vu, công trình hoàng tộc phụ trợ), bờ nóc trang trí lưỡng long chầu nhật và pháp lam Huế.",
+      "Độ dốc mái cung đình Huế chuẩn: 28° - 33° (không dốc đứng), bờ quyết cong nhẹ thanh thoát.",
+      "Tỷ lệ nhân trắc đối chiếu: mọi cảnh QA bắt buộc đặt mốc người chuẩn cao 1.70m tại bậc tam cấp và sân chầu."
+    ],
+    "locked_dimensions_m": {
+      "human_reference_height": 1.7,
+      "main_hall_column_height_min": 4.2,
+      "main_hall_column_height_max": 5.5,
+      "tu_cam_thanh_wall_height": 3.7,
+      "tu_cam_thanh_wall_thickness": 0.72,
+      "tu_cam_thanh_width_x": 324.0,
+      "tu_cam_thanh_depth_y": 290.0,
+      "hoang_thanh_wall_height": 4.0,
+      "hoang_thanh_wall_thickness": 1.05,
+      "hoang_thanh_width_x": 622.0,
+      "hoang_thanh_depth_y": 604.0,
+      "ngo_mon_platform_height": 5.6,
+      "ngo_mon_platform_width": 57.77,
+      "ngo_mon_platform_depth": 27.6,
+      "lau_ngu_phung_total_height": 17.0,
+      "dien_thai_hoa_terrace_height": 2.35,
+      "dien_thai_hoa_width": 44.0,
+      "dien_thai_hoa_depth": 30.5,
+      "dien_thai_hoa_total_height": 11.8,
+      "ky_dai_terrace_height": 17.5,
+      "ky_dai_flagpole_height": 37.0,
+      "kinh_thanh_vauban_wall_height": 6.6,
+      "ho_thanh_hao_water_elevation": -2.2,
+      "ho_kim_thuy_water_elevation": -1.5,
+      "ho_thai_dich_water_elevation": -1.2,
+      "song_huong_water_elevation": -2.5
+    },
+    "anti_blocky_sculpting_standard": {
+      "forbid_blocky_primitives": true,
+      "rules": [
+        "CẤM TUYỆT ĐỐI ghép khối hộp (Cube/Box), hình nón cụt hoặc khối lăng trụ góc cạnh thô để mô phỏng Lưỡng long chầu nhật, Đầu đao, Bình hồ lô, Kỳ lân, Mây lửa hay Tán cây.",
+        "Bờ nóc rồng & họa tiết uốn lượn BẮT BUỘC dựng bằng đường cong mượt (BezierCurve / Catmull-Rom Spline Sweep) có tiết diện thuôn nhọn, chia phân đoạn mịn (>= 24 đoạn dọc thân), bật Shade Smooth + Weighted/Auto Normals.",
+        "Bình hồ lô pháp lam, vạc đồng, búp sen trụ đá BẮT BUỘC dùng kỹ thuật tiện tròn xoay mượt (Lathe / Spin >= 24-32 cạnh tròn), cấm dùng hình trụ 6-8 cạnh thô.",
+        "Ngói ống lưu ly PHẢI tối ưu thành cụm dải instanced chiếm tối đa <= 45% ngân sách đa giác của ô, dành tối thiểu >= 30% ngân sách cho điêu khắc bờ nóc, cổ diêm Pháp lam Huế và khung cửa thượng song hạ bản.",
+        "Ưu tiên nạp và nhân bản (1 Prototype + Instancing) 4 mẫu điêu khắc tinh xảo dùng chung P15_luong_long_chau_nhat, P16_binh_ho_lo_phap_lam, P17_dau_dao_hoi_long, P18_o_hoc_phap_lam_co_diem từ 03_assets_glb/props/."
+      ]
+    },
+    "interior_architectural_standard": {
+      "require_walkable_interior_gta": true,
+      "min_clear_doorway_width_m": 1.25,
+      "min_clear_doorway_height_m": 2.35,
+      "rules": [
+        "Mọi cung điện, miếu đường, lầu gác và cổng vòm (T01–T18, T24, T28) BẮT BUỘC dựng đầy đủ kiến trúc từ Ngoại thất vào Nội thất (Exterior-to-Interior) để nhân vật 1.70m ở chế độ GTA bước xuyên qua cửa vào tham quan thực tế.",
+        "Hệ cửa bức bàn / thượng song hạ bản mặt tiền và mặt hậu bắt buộc mở rộng các khoang giữa (>= 1.25m x 2.35m thông thủy), CẤM dựng tường đặc hoặc khối hộp chắn ngang lối đi trong lòng nhà.",
+        "Bên trong lòng nhà BẮT BUỘC dựng đủ kết cấu gỗ lim Huế: cột cái, cột quân, cột hiên tròn >= 24 cạnh đặt trên đá tảng, hệ vì kèo cánh ác / chồng rường cù / trần thừa lưu vẽ mây rồng nhìn rõ từ bên trong.",
+        "Nội thất đúng nguyên bản 1880 từng di tích: Bệ tam cấp - Ngai Vàng - Bửu Tán thếp vàng (Điện Thái Hòa/Cần Chánh/Càn Thành), Ngự Án / Án Thờ, Hoành Phi - Câu Đối chữ Hán, Bình Phong, Sập Ngự, Đèn lồng nội thất (LanternEmissive) và nền gạch Bát Tràng / đá Thanh."
+      ]
+    },
+    "reference_photo_standard": {
+      "min_real_photos_per_tile": 10,
+      "target_real_photos_per_tile": 15,
+      "max_real_photos_per_tile": 20,
+      "exterior_share_min_pct": 45,
+      "interior_detail_share_min_pct": 45,
+      "forbid_self_rendered_fake_refs": true,
+      "rules": [
+        "Mỗi ô quy hoạch (trong 12 task thu thập & dựng hình) BẮT BUỘC có 10–20 ảnh chụp thực tế / bản vẽ đo vẽ khảo cổ gốc từ Internet (05_qa_outputs/references/<TILE_ID>/ref_01.jpg .. ref_20.jpg + ref_sources.json), tối thiểu 45% Ngoại thất và 45% Nội thất & Cận cảnh chi tiết.",
+        "TUYỆT ĐỐI CẤM dùng ảnh render 3D tự chụp hoặc lọc màu sepia/sketch từ chính mô hình 3D để giả làm ref_*.jpg.",
+        "Mỗi mục trong ref_sources.json PHẢI có URL ảnh trực tiếp (direct_image_url / commons_url), phân loại góc chụp (exterior / interior / detail / floorplan) và thông số đo đạc hoặc ghi chú sai khác so với mốc 1880.",
+        "Khi sandbox tác vụ Gemini bị giới hạn tải tệp nhị phân ra ngoài, tác vụ vẫn dùng công cụ Tìm kiếm Web thu thập đủ 10–20 URL ảnh xác thực + arch_spec_<TILE_ID>.json; máy chủ cầu nối (fetch_real_references.py) sẽ tự động tải ảnh gốc thật về Drive."
+      ]
+    }
+  },
+  "imperial_palette_pbr": {
+    "hoang_luu_ly": {
+      "name_vi": "Ngói ống Hoàng lưu ly (Vàng Hoàng đế)",
+      "hex": "#D4A017",
+      "accent_hex": "#B58110",
+      "roughness": 0.24,
+      "metallic": 0.05,
+      "clearcoat": 0.85,
+      "usage": "Mái Điện Thái Hòa, Điện Cần Chánh, Điện Càn Thành, nóc giữa Lầu Ngũ Phụng, Đại Cung Môn"
+    },
+    "thanh_luu_ly": {
+      "name_vi": "Ngói ống Thanh lưu ly (Xanh ngọc lưu ly)",
+      "hex": "#1F6B5C",
+      "accent_hex": "#175247",
+      "roughness": 0.26,
+      "metallic": 0.05,
+      "clearcoat": 0.8,
+      "usage": "Hai cánh Lầu Ngũ Phụng, Tả Vu, Hữu Vu, Cung Khôn Thái, Cung Diên Thọ, miếu đường"
+    },
+    "ngoi_liet_dat_nung": {
+      "name_vi": "Ngói liệt / Ngói âm dương đất nung",
+      "hex": "#8B4B36",
+      "accent_hex": "#683728",
+      "roughness": 0.82,
+      "metallic": 0.0,
+      "usage": "Mũ tường Tử Cấm Thành, tường Hoàng Thành, mái nhà phụ và doanh trại"
+    },
+    "son_son": {
+      "name_vi": "Sơn son chu sa cung đình",
+      "hex": "#8C1D18",
+      "accent_hex": "#6E1410",
+      "roughness": 0.34,
+      "metallic": 0.02,
+      "usage": "Hệ cột cái gỗ lim, xà ngang, cửa bản khoa, lan can gỗ cung điện"
+    },
+    "thep_vang": {
+      "name_vi": "Thếp vàng kim hoàn cung đình",
+      "hex": "#D9AE3A",
+      "accent_hex": "#F0CA59",
+      "roughness": 0.28,
+      "metallic": 0.88,
+      "usage": "Họa tiết rồng ẩn mây trên cột, hoành phi câu đối, ngai vàng, bửu tán"
+    },
+    "da_thanh": {
+      "name_vi": "Đá Thanh (Đá xanh Thanh Hóa & đá gan gà Huế)",
+      "hex": "#7D7E78",
+      "accent_hex": "#5E615B",
+      "roughness": 0.78,
+      "metallic": 0.0,
+      "usage": "Đài Ngọ Môn, nền bậc tam cấp, lan can chạm rồng, Cầu Trung Đạo, Kỳ Đài"
+    },
+    "gach_vo_co": {
+      "name_vi": "Gạch vồ triều Nguyễn & vôi vữa cổ phủ rêu nhẹ",
+      "hex": "#8F6A56",
+      "plaster_hex": "#B9AA95",
+      "moss_hex": "#5A694F",
+      "roughness": 0.88,
+      "metallic": 0.0,
+      "usage": "Tường Tử Cấm Thành (3.7m), tường Hoàng Thành (4.0m), thành Vauban (6.6m)"
+    },
+    "gach_bat_trang": {
+      "name_vi": "Gạch Bát Tràng & đá lát sân Đại Triều Nghi",
+      "hex": "#A36B52",
+      "accent_hex": "#8A5944",
+      "roughness": 0.76,
+      "metallic": 0.0,
+      "usage": "Sân Đại Triều Nghi, sân Bái Mạng, hành lang lộ thiên"
+    },
+    "go_lim_den": {
+      "name_vi": "Gỗ lim truyền thống (kết cấu vì kèo & cột tự nhiên)",
+      "hex": "#3E271E",
+      "accent_hex": "#2A1913",
+      "roughness": 0.62,
+      "metallic": 0.0,
+      "usage": "Vì kèo, đòn tay, rui mè, khung cửa thượng song hạ bản"
+    },
+    "phap_lam_hue": {
+      "name_vi": "Pháp lam Huế (men đồng ngũ sắc)",
+      "hex": "#22577A",
+      "accent_hex": "#2B7A67",
+      "roughness": 0.22,
+      "metallic": 0.16,
+      "usage": "Ô hộc cổ diêm, đầu đao mái, bình hoa đỉnh nóc cung điện"
+    },
+    "dong_co_patina": {
+      "name_vi": "Đồng đúc cổ triều Nguyễn (Cửu Đỉnh, Vạc đồng, Cửu Vị Thần Công)",
+      "hex": "#4E4638",
+      "patina_hex": "#4B695B",
+      "roughness": 0.45,
+      "metallic": 0.82,
+      "usage": "Cửu Đỉnh, vạc đồng, lư hương, đại bác Thần Công"
+    },
+    "den_long_emissive": {
+      "name_vi": "Ánh đèn lồng cung đình (tự kích hoạt hoàng hôn 17:45 - bình minh 05:45)",
+      "hex": "#F5B841",
+      "emissive_hex": "#FF9E2C",
+      "emissive_intensity": 2.4,
+      "roughness": 0.45,
+      "metallic": 0.0
+    },
+    "nuoc_song_huong": {
+      "name_vi": "Mặt nước Sông Hương & Hồ Thái Dịch",
+      "hex": "#274C52",
+      "deep_hex": "#183338",
+      "roughness": 0.1,
+      "metallic": 0.05
+    }
+  },
+  "poly_budgets": {
+    "hero_palace_tile_max_tris": 600000,
+    "ceremonial_gate_tile_max_tris": 450000,
+    "temple_complex_tile_max_tris": 420000,
+    "citadel_rampart_tile_max_tris": 260000,
+    "river_landscape_tile_max_tris": 200000,
+    "shared_prop_prototype_max_tris": 12000,
+    "instancing_policy": "BẮT BUỘC dùng kỹ thuật 1 Prototype + Instancing (Mesh/Collection Instance hoặc glTF EXT_mesh_gpu_instancing / shared mesh data) cho ngói ống, cột gỗ, vì kèo, lan can, đèn lồng, cây cối, lính thị vệ để tổng draw call WebGL luôn mượt 60 FPS dù tổng tam giác scene lên tới 600k.",
+    "max_texture_size_px": 2048,
+    "hero_sculpture_prop_max_tris": 36000,
+    "roof_tile_budget_share_max_pct": 40,
+    "ornament_detail_budget_share_min_pct": 30,
+    "interior_furnishing_budget_share_min_pct": 25
+  },
+  "qa_and_export_rules": {
+    "asset_format": "glb",
+    "pivot_rule_blender": "(0, 0, min_z)",
+    "pivot_rule_gltf_y_up": "(0, min_y=0, 0)",
+    "pivot_tolerance_m": 0.08,
+    "bbox_overflow_tolerance_m": 0.5,
+    "contact_sheet": {
+      "format": "JPEG",
+      "extension": ".jpg",
+      "quality": 95,
+      "max_edge_px": 2000,
+      "forbid_png": true,
+      "layout": "2x2"
+    },
+    "timelapse_video": {
+      "filename": "00_master_timelapse.mp4",
+      "width": 1920,
+      "height": 1080,
+      "fps": 24,
+      "video_codec": "libx264",
+      "pixel_format": "yuv420p",
+      "movflags": "+faststart",
+      "frame_extraction_rule": "Đặt cờ -ss TRƯỚC cờ -i"
+    },
+    "gemini_task_guardrails": {
+      "evolution_iterations": [
+        "L1_MASSING",
+        "L2_EXTERIOR_SHARP",
+        "L3_POLISH_PHAP_LAM",
+        "L4_INTERIOR_WALKABLE",
+        "L5_HERITAGE_FINAL"
+      ],
+      "timeout_cutoff_minutes": 38,
+      "require_sha256_manifest": true,
+      "require_human_scale_check_m": 1.7
+    }
+  }
+}

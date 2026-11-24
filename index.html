@@ -3,118 +3,440 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kinh Thành Huế 1880 — 3D Citadel & Pipeline Simulation</title>
-  <link rel="stylesheet" href="./css/style.css" />
-  <script src="./js/three.min.js"></script>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' rx='6' fill='%23181411'/%3E%3Cpath d='M4 21H24M8 15H20L14 7L8 15Z' fill='none' stroke='%23eab308' stroke-width='2'/%3E%3C/svg%3E" />
+  <title>Kinh Thành &amp; Tử Cấm Thành Huế 1880 — Trình Xem Quy Hoạch WebGL</title>
+  <meta name="description" content="Hệ thống trình xem tổng hợp WebGL 30 ô quy hoạch độc lập cho dự án Phục Dựng Kinh Thành và Tử Cấm Thành Huế nguyên bản thế kỷ 19 (1880)." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' rx='6' fill='%23181411'/%3E%3Cpath d='M4 21H24M6 18H22M8 14.5H20L14 7L8 14.5Z' fill='none' stroke='%23D4A017' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./three.module.js",
+        "three/addons/controls/OrbitControls.js": "./OrbitControls.js",
+        "three/addons/loaders/GLTFLoader.js": "./GLTFLoader.js",
+        "three/addons/utils/BufferGeometryUtils.js": "./BufferGeometryUtils.js"
+      }
+    }
+  </script>
 </head>
 <body>
-  <div id="viewport"></div>
-
-  <aside class="hud-panel hud-left">
-    <div class="brand-header">
-      <span class="badge-era">1880 · TRIỀU NGUYỄN</span>
-      <h1>Hoàng Thành Huế 3D</h1>
-      <p class="subtitle">10 Phân Khu Không Chồng Chéo · Three.js r128</p>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Góc Nhìn Nhanh (Camera Presets)</div>
-      <div class="btn-grid">
-        <button class="btn active" data-cam="overview">Toàn Cảnh Kinh Thành</button>
-        <button class="btn" data-cam="ngomon">Ngọ Môn &amp; Thái Hòa</button>
-        <button class="btn" data-cam="kydai">Kỳ Đài &amp; Sông Hương</button>
-        <button class="btn" data-cam="themieu">Thế Miếu &amp; Hiển Lâm Các</button>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Thời Điểm Ánh Sáng 1880</div>
-      <div class="btn-grid">
-        <button class="btn" data-mood="dawn">Bình Minh Sương</button>
-        <button class="btn active" data-mood="noon">Chính Ngọ</button>
-        <button class="btn" data-mood="sunset">Hoàng Hôn</button>
-        <button class="btn" data-mood="night">Đêm Đèn Lồng</button>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Chế Độ Phân Vùng &amp; Pipeline</div>
-      <label class="toggle-row">
-        <input type="checkbox" id="toggle-zones" />
-        <span>Hiện ranh 10 Phân Khu (ULTRA_1 / ULTRA_2)</span>
-      </label>
-      <div id="zone-list" class="zone-list"></div>
-    </div>
-  </aside>
-
-  <div class="audio-topbar" id="audio-topbar">
-    <button class="btn-audio-main" id="btn-audio-toggle" type="button">
-      <span class="audio-dot" id="audio-status-dot"></span>
-      <span id="audio-toggle-label">Bật Nhã Nhạc Cung Đình 1880</span>
-    </button>
-    <div class="audio-topbar-meta">
-      <div class="audio-track-name" id="audio-topbar-track">Đăng Đàn Cung (登壇宮)</div>
-      <div class="audio-zone-sub" id="audio-topbar-zone">Kinh Thành Huế 1880 · Sẵn sàng</div>
-    </div>
-    <button class="btn btn-mini" id="btn-top-gong" type="button" title="Thỉnh Chiêng Ngọ Môn">Chiêng Ngọ Môn</button>
+  <div id="viewport-root" aria-label="Khung nhìn 3D Kinh Thành Huế 1880">
+    <canvas id="webgl-canvas"></canvas>
+    <div id="label-layer" aria-hidden="true"></div>
   </div>
 
-  <aside class="hud-panel hud-right">
-    <div class="section audio-section">
-      <div class="section-title">Âm Thanh Cung Đình Huế 1880</div>
-      <div class="audio-controls-col">
-        <label class="field-label" for="audio-mode-select">Chế độ Nhã Nhạc &amp; Phân Khu</label>
-        <select id="audio-mode-select" class="audio-select">
-          <option value="auto">Tự động theo Phân Khu 3D</option>
-          <option value="dang_dan_cung">Đăng Đàn Cung (Nhã nhạc Đại Triều)</option>
-          <option value="tu_dai_canh">Tứ Đại Cảnh (Ca Cung Đình — Tự Đức)</option>
-          <option value="co_ban">Cổ Bản (Ca Cung Đình Huế)</option>
-        </select>
-
-        <label class="toggle-row audio-skip-row">
-          <input type="checkbox" id="toggle-skip-intro" checked />
-          <span>Vào thẳng nhạc (bỏ qua lời giới thiệu)</span>
-        </label>
-
-        <div class="slider-row">
-          <span>Nhã nhạc / Ca cung đình</span>
-          <span id="val-music-vol">72%</span>
-        </div>
-        <input id="slider-music-vol" class="audio-slider" type="range" min="0" max="100" value="72" />
-
-        <div class="slider-row">
-          <span>Không gian 3D (Sông · Chuông)</span>
-          <span id="val-amb-vol">65%</span>
-        </div>
-        <input id="slider-amb-vol" class="audio-slider" type="range" min="0" max="100" value="65" />
-
-        <div class="btn-grid">
-          <button class="btn" id="btn-sfx-gong" type="button">Thỉnh Chiêng Ngọ Môn</button>
-          <button class="btn" id="btn-sfx-bell" type="button">Đại Hồng Chung</button>
-        </div>
-        <div id="audio-telemetry" class="metrics-box audio-metrics">Đang nạp kho âm thanh cung đình...</div>
+  <!-- Thanh tiêu đề & trạng thái tổng thể -->
+  <header id="hud-topbar" class="hud-panel">
+    <div class="brand-block">
+      <div class="brand-emblem" aria-hidden="true">
+        <svg viewBox="0 0 28 28" width="24" height="24" fill="none">
+          <path d="M4 21H24M6 18H22M8 14.5H20L14 7L8 14.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M3 14.5C6.5 14.5 9.5 12 14 7C18.5 12 21.5 14.5 25 14.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <line x1="14" y1="4" x2="14" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Kinh Thành &amp; Tử Cấm Thành Huế 1880</h1>
+        <p class="subtitle">Hệ tọa độ thực 1:1 · Gốc (0, 0, 0) tại Điện Thái Hòa · Vĩ độ 16.47° Bắc</p>
       </div>
     </div>
 
-    <div class="section">
-      <div class="section-title">Chi Tiết Công Trình Đang Chọn</div>
-      <div id="selection-info" class="selection-box">
-        Nhấp chuột trái vào bất kỳ cung điện, cổng thành hoặc pháo đài nào để xem thông số 1880.
+    <div class="progress-strip">
+      <div class="stat-item">
+        <span class="stat-label">Tiến độ lắp ráp</span>
+        <strong id="stat-progress" class="stat-value mono">0 / 30 ô</strong>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0">
+        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Đạo cụ thư viện</span>
+        <strong id="stat-props" class="stat-value mono">0 / 18 mẫu</strong>
+      </div>
+      <div class="stat-item stat-perf">
+        <span class="stat-label">Hiệu năng WebGL</span>
+        <strong id="stat-fps" class="stat-value mono">-- FPS</strong>
       </div>
     </div>
-    <div class="section">
-      <div class="section-title">Trạng Thái Hạ Tầng Drive SHA-256</div>
-      <div id="sync-metrics" class="metrics-box">Đang tải dữ liệu thực tế...</div>
+
+    <div class="topbar-actions">
+      <select id="quality-select" class="quality-select" aria-label="Mức đồ họa tối ưu hiệu năng" title="Chọn mức đồ họa phù hợp cấu hình máy">
+        <option value="fast">Đồ họa: Siêu mượt</option>
+        <option value="balanced" selected>Đồ họa: Cân bằng</option>
+        <option value="high">Đồ họa: Cao</option>
+      </select>
+      <button id="btn-open-orchestrator" class="btn-accent" type="button" title="Mở Bảng Điều Phối (Orchestrator), Lịch Khung Giờ & Đối Chiếu 1-1">
+        <svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true">
+          <rect x="2.5" y="3.5" width="6" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="11.5" y="3.5" width="6" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="2.5" y="11" width="6" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M11.5 13.75H17.5M14.5 11V16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Orchestrator &amp; Lịch</span>
+      </button>
+      <button id="btn-hot-reload" class="btn-primary" type="button" title="Quét lại grid_manifest.json và nạp nóng các tệp .glb mới">
+        <svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true">
+          <path d="M16.5 10A6.5 6.5 0 1 1 14.6 5.4M16.5 3.5V7H13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Nạp nóng dữ liệu</span>
+      </button>
+      <button id="btn-toggle-sidebar" class="btn-ghost" type="button" title="Ẩn hoặc hiện bảng quy hoạch 30 ô" aria-expanded="true">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
+          <rect x="2.5" y="3.5" width="15" height="13" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+          <line x1="7.5" y1="3.5" x2="7.5" y2="16.5" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <span>30 Ô quy hoạch</span>
+      </button>
     </div>
-    <div class="controls-help">
-      <strong>Điều khiển chuẩn SketchUp:</strong><br />
-      • Cuộn chuột: Zoom tới vị trí con trỏ<br />
-      • Chuột giữa / Kéo trái: Xoay Orbit<br />
-      • Shift + Chuột giữa / Chuột phải: Trượt Pan
+  </header>
+
+  <!-- Bảng danh sách 30 ô quy hoạch độc lập -->
+  <aside id="hud-sidebar" class="hud-panel" aria-label="Danh sách 30 ô quy hoạch độc lập">
+    <div class="panel-header">
+      <h2>Phân vùng 30 Ô độc lập</h2>
+      <div class="filter-tabs" role="tablist" aria-label="Lọc theo phân khu">
+        <button class="filter-chip active" data-zone="all" type="button">Tất cả</button>
+        <button class="filter-chip" data-zone="truc_than_dao" type="button">Thần đạo</button>
+        <button class="filter-chip" data-zone="tu_cam_thanh" type="button">Tử Cấm</button>
+        <button class="filter-chip" data-zone="hoang_thanh" type="button">Hoàng Thành</button>
+        <button class="filter-chip" data-zone="outer" type="button">Ngoại vi</button>
+      </div>
+    </div>
+
+    <div id="tile-list" class="tile-list" role="list"></div>
+
+    <div class="sidebar-footer">
+      <label class="toggle-row">
+        <input id="chk-show-grid" type="checkbox" checked />
+        <span>Hiển thị khung ranh giới 3D</span>
+      </label>
+      <label class="toggle-row">
+        <input id="chk-show-labels" type="checkbox" checked />
+        <span>Hiển thị nhãn tên cung điện</span>
+      </label>
+      <label class="toggle-row">
+        <input id="chk-show-humans" type="checkbox" checked />
+        <span>Mốc đối chiếu người (1.70m)</span>
+      </label>
+      <label id="row-auto-poll" class="toggle-row">
+        <input id="chk-auto-poll" type="checkbox" checked />
+        <span>Tự kiểm tra tệp mới (10 giây)</span>
+      </label>
     </div>
   </aside>
 
-  <script type="module" src="./js/app.js"></script>
+  <!-- Bảng chi tiết ô đang chọn -->
+  <section id="tile-inspector" class="hud-panel hidden" aria-label="Chi tiết ô quy hoạch">
+    <div class="inspector-head">
+      <div>
+        <span id="insp-badge" class="status-badge pending">Chờ xử lý</span>
+        <h3 id="insp-title">Ô 04: Điện Thái Hòa</h3>
+      </div>
+      <button id="btn-close-inspector" class="icon-btn" type="button" aria-label="Đóng chi tiết">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none">
+          <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="inspector-grid mono">
+      <div><span>Tâm (X, Y, Z)</span><strong id="insp-center">0, 0, 0 m</strong></div>
+      <div><span>Kích thước</span><strong id="insp-dims">140 × 80 m</strong></div>
+      <div><span>Ngân sách đa giác</span><strong id="insp-poly">180,000 tris</strong></div>
+      <div><span>Cao độ nền</span><strong id="insp-elev">0.0 m</strong></div>
+    </div>
+
+    <div class="inspector-hash">
+      <span>Mã băm SHA-256</span>
+      <code id="insp-sha">Chưa nạp tệp .glb</code>
+    </div>
+
+    <p id="insp-brief" class="inspector-brief"></p>
+
+    <div class="inspector-actions">
+      <button id="btn-fly-tile" class="btn-primary" type="button">
+        <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+          <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M10 2V5M10 15V18M2 10H5M15 10H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Bay tới ô</span>
+      </button>
+      <button id="btn-walk-tile" class="btn-ghost" type="button" title="Thả nhân vật nhập vai góc nhìn thứ 3 ngay trước công trình này">
+        <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+          <circle cx="10" cy="4.5" r="2" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M7 17L9 11.5L11.5 13L13 17M6.5 9L10 7.5L13.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Nhập vai tại ô</span>
+      </button>
+    </div>
+    <div class="inspector-actions inspector-orch-row">
+      <button id="btn-insp-approve" class="btn-jade" type="button" title="Chốt Đạt ô này, dừng Task hiện tại và chuyển sang ô tiếp theo">
+        <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+          <path d="M4.5 10.5L8.5 14.5L15.5 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Chốt đạt · Chuyển ô</span>
+      </button>
+      <button id="btn-insp-prompt" class="btn-ghost" type="button" title="Xem &amp; sao chép Prompt dựng/tinh chỉnh riêng ô này">
+        <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+          <rect x="6" y="6" width="10" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M4 13V4.5A1.5 1.5 0 0 1 5.5 3H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <span>Prompt Ô</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- La bàn & Chỉ số Camera -->
+  <div id="hud-compass" class="hud-panel" aria-label="La bàn định hướng Trục Thần đạo">
+    <svg id="compass-svg" viewBox="0 0 64 64" width="54" height="54" aria-hidden="true">
+      <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(218,198,162,0.28)" stroke-width="1.2"/>
+      <g id="compass-needle-group">
+        <polygon points="32,8 36,32 32,28 28,32" fill="#C94A38"/>
+        <polygon points="32,56 36,32 32,36 28,32" fill="#D4A017"/>
+        <text x="32" y="19" text-anchor="middle" font-size="7" font-weight="700" fill="#F2E9D8">B</text>
+      </g>
+      <circle cx="32" cy="32" r="2.2" fill="#F2E9D8"/>
+    </svg>
+    <div class="compass-meta">
+      <span class="meta-title">Trục Thần Đạo</span>
+      <span class="mono meta-sub">Đông Nam 148°</span>
+      <span id="cam-coords" class="mono meta-coords">X 0 · Y 0 · H 145m</span>
+    </div>
+  </div>
+
+  <!-- Thanh điều khiển Camera & Giờ Mặt Trời phía dưới -->
+  <footer id="hud-bottombar" class="hud-panel">
+    <div class="control-group">
+      <span class="group-label">Chế độ Góc máy</span>
+      <div class="segmented" role="group" aria-label="Chế độ camera">
+        <button id="mode-bird" class="seg-btn active" type="button" data-mode="bird">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
+            <path d="M2.5 7.5L10 3.5L17.5 7.5L10 11.5L2.5 7.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M2.5 12L10 16L17.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Quy hoạch</span>
+        </button>
+        <button id="mode-gta" class="seg-btn" type="button" data-mode="gta" title="Nhập vai nhân vật góc nhìn thứ 3 kiểu GTA">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
+            <circle cx="10" cy="4.2" r="2.1" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M6.8 17.2L8.8 11.6L11.2 12.8L13.2 17.2M5.5 10.2L10 7.6L14.5 10.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 5.5C4.2 3.8 5.8 3 7.4 3M17 5.5C15.8 3.8 14.2 3 12.6 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.75"/>
+          </svg>
+          <span>Nhập vai GTA</span>
+        </button>
+        <button id="mode-walk" class="seg-btn" type="button" data-mode="walk">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
+            <path d="M2.5 10C4.6 6.8 7.2 5.4 10 5.4C12.8 5.4 15.4 6.8 17.5 10C15.4 13.2 12.8 14.6 10 14.6C7.2 14.6 4.6 13.2 2.5 10Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <circle cx="10" cy="10" r="2.2" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span>Mắt 1.70m</span>
+        </button>
+        <button id="mode-timelapse" class="seg-btn" type="button" data-mode="timelapse">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
+            <rect x="2.5" y="5" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M13.5 8.5L17.5 6.5V13.5L13.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <span>Time-lapse</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="divider-v" aria-hidden="true"></div>
+
+    <div class="control-group time-group">
+      <div class="time-header">
+        <span class="group-label">Quỹ đạo Mặt trời (Huế 16.47°N)</span>
+        <div class="time-readout">
+          <strong id="time-display" class="mono">09:30</strong>
+          <span id="time-phase" class="phase-tag">Nắng sớm</span>
+          <span id="lantern-status" class="lantern-pill off">Đèn lồng: Tắt</span>
+        </div>
+      </div>
+      <div class="time-controls">
+        <input id="time-slider" type="range" min="5.5" max="20.5" step="0.05" value="9.5" aria-label="Giờ trong ngày tại Huế" />
+        <div class="time-presets">
+          <button class="preset-btn" data-hour="5.5" type="button">05:30 Bình minh</button>
+          <button class="preset-btn" data-hour="12.0" type="button">12:00 Chính ngọ</button>
+          <button class="preset-btn" data-hour="17.75" type="button">17:45 Hoàng hôn tím</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cửa sổ Bảng Điều Phối Web Orchestrator -->
+  <div id="orchestrator-modal" class="orch-backdrop hidden" role="dialog" aria-modal="true" aria-label="Bảng Điều Phối Web Orchestrator">
+    <div class="orch-shell">
+      <div class="orch-header">
+        <div class="orch-title-wrap">
+          <h2>Trung Tâm Điều Phối &amp; Lịch Trình (Web Orchestrator)</h2>
+          <p id="orch-status-line" class="mono">Đang tải trạng thái điều phối...</p>
+        </div>
+        <div class="orch-header-actions">
+          <button id="btn-orch-sync" class="btn-primary" type="button">
+            <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
+              <path d="M16.5 10A6.5 6.5 0 1 1 14.6 5.4M16.5 3.5V7H13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Đồng bộ Drive &amp; Kiểm định QA ngay</span>
+          </button>
+          <button id="btn-close-orchestrator" class="icon-btn" type="button" aria-label="Đóng bảng điều phối">
+            <svg viewBox="0 0 20 20" width="18" height="18" fill="none">
+              <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="orch-tabs" role="tablist">
+        <button class="orch-tab active" data-tab="queue" type="button">Điều phối 30 Ô &amp; Chốt đạt</button>
+        <button class="orch-tab" data-tab="schedule" type="button">Lịch Khung Giờ (Ultra 20x)</button>
+        <button class="orch-tab" data-tab="qa" type="button">Đối chiếu 1-1 &amp; Tư liệu QA</button>
+      </div>
+
+      <div class="orch-body">
+        <!-- TAB 1: Hàng đợi & Chốt Đạt -->
+        <section id="tab-queue" class="orch-pane active">
+          <div class="orch-toolbar">
+            <div class="orch-target-banner">
+              <span>Mục tiêu ưu tiên hiện tại:</span>
+              <strong id="orch-active-target">Đang xác định...</strong>
+            </div>
+            <div class="orch-filter-row">
+              <button id="btn-copy-master-prompt" class="btn-accent" type="button">Copy 1 Prompt Duy Nhất (Chạy suốt tháng)</button>
+              <button class="filter-chip active" data-qfilter="all" type="button">Tất cả 30 ô</button>
+              <button class="filter-chip" data-qfilter="active" type="button">Đang chờ / Cần sửa</button>
+              <button class="filter-chip" data-qfilter="completed" type="button">Đã chốt đạt</button>
+              <button id="btn-copy-lib-prompt" class="btn-ghost" type="button">Copy Prompt Thư viện 18 Đạo cụ</button>
+            </div>
+          </div>
+          <div id="orch-tile-table" class="orch-table-wrap"></div>
+        </section>
+
+        <!-- TAB 2: Lịch Khung Giờ & Bảo vệ hạn mức Ultra 20x -->
+        <section id="tab-schedule" class="orch-pane">
+          <div class="sched-profile-bar">
+            <div>
+              <h3>Cấu hình Nhịp Độ An Toàn Hạn Mức Gemini Ultra 20x</h3>
+              <p class="sched-sub">Mỗi khung giờ chỉ xử lý tối đa 1 Task (giới hạn 38 phút), tự động đọc trạng thái Drive để nâng cấp từ Tổng thể -&gt; Chi tiết và bỏ qua các ô bạn đã bấm Chốt Đạt.</p>
+            </div>
+            <div class="sched-profile-btns">
+              <button id="btn-prof-4" class="btn-primary" data-profile="ultra_20x_12tasks_96runs" type="button">96 Lượt/ngày (12 Task × Mỗi 3h)</button>
+              <button id="btn-prof-3" class="btn-ghost" data-profile="ultra_20x_12tasks_24h_relay" type="button">12 Lượt/ngày (Nhịp nhẹ 2h)</button>
+            </div>
+          </div>
+          <div id="orch-slot-cards" class="slot-grid"></div>
+          <div class="roadmap-box">
+            <h4>Lộ trình Phục dựng Xuyên suốt Hàng Tháng (Tổng thể -&gt; Chi tiết)</h4>
+            <div id="orch-monthly-roadmap" class="roadmap-grid"></div>
+          </div>
+        </section>
+
+        <!-- TAB 3: Đối chiếu 1-1 & Tư liệu QA -->
+        <section id="tab-qa" class="orch-pane">
+          <div class="qa-section">
+            <h3>Bảng Đối Chiếu 1-1 Giữa Các Phiên Bản &amp; Ảnh Thực Tế Internet</h3>
+            <div id="orch-comparisons-grid" class="media-grid"></div>
+          </div>
+          <div class="qa-section">
+            <h3>Ảnh Tư Liệu Thực Tế Đã Thu Thập Từ Internet</h3>
+            <div id="orch-references-grid" class="media-grid"></div>
+          </div>
+          <div class="qa-split">
+            <div class="qa-card">
+              <h3>Contact Sheet Tổng Hợp Mới Nhất (JPG Q95)</h3>
+              <div id="orch-contact-sheet-wrap" class="qa-media-box"></div>
+            </div>
+            <div class="qa-card">
+              <h3>Video Tiến Độ Tổng Hợp (00_master_timelapse.mp4)</h3>
+              <div id="orch-timelapse-wrap" class="qa-media-box"></div>
+            </div>
+          </div>
+          <div class="qa-section">
+            <h3>Nhật Ký Chạy Ngầm (pipeline_daemon.log)</h3>
+            <pre id="orch-log-box" class="log-pre mono"></pre>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cửa sổ Xem & Copy Prompt nhanh -->
+  <div id="prompt-modal" class="orch-backdrop hidden" role="dialog" aria-modal="true" aria-label="Xem và Sao chép Prompt Gemini Task">
+    <div class="prompt-shell">
+      <div class="orch-header">
+        <h3 id="prompt-modal-title">Prompt Gemini Task</h3>
+        <div class="orch-header-actions">
+          <button id="btn-copy-prompt-text" class="btn-primary" type="button">Sao chép toàn bộ Prompt</button>
+          <button id="btn-close-prompt-modal" class="icon-btn" type="button" aria-label="Đóng cửa sổ Prompt">
+            <svg viewBox="0 0 20 20" width="18" height="18" fill="none">
+              <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <textarea id="prompt-modal-textarea" class="prompt-textarea mono" readonly></textarea>
+    </div>
+  </div>
+
+  <!-- Giao diện Chế độ Nhập vai GTA (Góc nhìn Thứ 3) -->
+  <div id="gta-hud" class="gta-hud hidden" aria-label="Giao diện chế độ nhập vai GTA">
+    <div id="gta-topbar" class="hud-panel gta-topbar">
+      <div class="gta-keys-line">
+        <strong class="gta-tag">NHẬP VAI GTA · 1.70M</strong>
+        <span><code>W A S D</code> di chuyển · <code>Shift</code> chạy nhanh · <code>F</code> phi tốc độ cao · <code>Space</code> nhảy · <strong>Bấm cảnh</strong> xoay chuột 360° (hoặc giữ kéo chuột) · <code>V</code> góc camera · <code>C</code> đổi trang phục · <code>Esc</code> thả chuột</span>
+      </div>
+      <div class="gta-tp-row">
+        <span class="gta-tp-label">Dịch chuyển nhanh:</span>
+        <button class="gta-tp-btn" type="button" data-tp="0,-165,0">Ngọ Môn</button>
+        <button class="gta-tp-btn" type="button" data-tp="0,-95,0">Cầu Trung Đạo</button>
+        <button class="gta-tp-btn" type="button" data-tp="0,-32,0">Điện Thái Hòa</button>
+        <button class="gta-tp-btn" type="button" data-tp="0,95,0">Tử Cấm Thành</button>
+        <button class="gta-tp-btn" type="button" data-tp="0,-420,0">Kỳ Đài</button>
+        <button class="gta-tp-btn" type="button" data-tp="0,-735,0">Bờ Sông Hương</button>
+        <span class="gta-tp-sep" aria-hidden="true"></span>
+        <button id="btn-gta-outfit" class="gta-tp-btn accent" type="button">Trang phục: Thị Vệ (C)</button>
+        <button id="btn-gta-cam" class="gta-tp-btn" type="button">Góc máy: Chuẩn GTA (V)</button>
+        <button id="btn-gta-exit" class="gta-tp-btn danger" type="button">Thoát</button>
+      </div>
+    </div>
+
+    <div id="gta-radar-card" class="hud-panel gta-radar-card">
+      <div class="gta-radar-frame">
+        <canvas id="gta-radar" width="176" height="176"></canvas>
+      </div>
+      <div class="gta-radar-info">
+        <div id="gta-location-name" class="gta-loc-title">Cầu Trung Đạo · Trục Thần Đạo</div>
+        <div class="gta-loc-meta">
+          <span id="gta-stance-pill" class="gta-stance">Đứng yên</span>
+          <span id="gta-coords-mini" class="mono">X 0 · Y -95 · H 0.0m</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ghi chú điều khiển đi bộ 1.70m -->
+  <div id="walk-hint" class="walk-hint hidden" role="status">
+    <strong>Chế độ tầm mắt thứ nhất 1.70m:</strong> Giữ chuột trái kéo để xoay góc nhìn · Phím <code>W A S D</code> hoặc mũi tên để di chuyển · <code>Shift</code> đi nhanh · <code>Esc</code> thoát.
+  </div>
+
+  <!-- Thông báo Toast -->
+  <div id="toast-bar" class="toast-bar hidden" role="status" aria-live="polite"></div>
+
+  <script>
+    window.HUE_PUBLIC_MODE = true;
+    window.HUE_FLAT_PUBLIC = true;
+    window.addEventListener("error", function (ev) {
+      var banner = document.getElementById("public-err-banner");
+      if (!banner) {
+        banner = document.createElement("div");
+        banner.id = "public-err-banner";
+        banner.style.cssText = "position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:99;padding:10px 16px;border-radius:8px;background:#3a1714;border:1px solid #d4a017;color:#fff2d6;font:13px/1.4 sans-serif;max-width:90vw;";
+        document.body.appendChild(banner);
+      }
+      banner.textContent = "Thieu tep khi tai canh 3D: " + (ev.message || "Vui long kiem tra da upload du 43 tep trong thu muc goc.");
+    });
+  </script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>
