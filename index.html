@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kinh Thành Huế 1880 — 3D Citadel & Pipeline Simulation</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <script src="./js/three.min.js"></script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' rx='6' fill='%23181411'/%3E%3Cpath d='M4 21H24M8 15H20L14 7L8 15Z' fill='none' stroke='%23eab308' stroke-width='2'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <div id="viewport"></div>
+
+  <aside class="hud-panel hud-left">
+    <div class="brand-header">
+      <span class="badge-era">1880 · TRIỀU NGUYỄN</span>
+      <h1>Hoàng Thành Huế 3D</h1>
+      <p class="subtitle">10 Phân Khu Không Chồng Chéo · Three.js r128</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Góc Nhìn Nhanh (Camera Presets)</div>
+      <div class="btn-grid">
+        <button class="btn active" data-cam="overview">Toàn Cảnh Kinh Thành</button>
+        <button class="btn" data-cam="ngomon">Ngọ Môn &amp; Thái Hòa</button>
+        <button class="btn" data-cam="kydai">Kỳ Đài &amp; Sông Hương</button>
+        <button class="btn" data-cam="themieu">Thế Miếu &amp; Hiển Lâm Các</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Thời Điểm Ánh Sáng 1880</div>
+      <div class="btn-grid">
+        <button class="btn" data-mood="dawn">Bình Minh Sương</button>
+        <button class="btn active" data-mood="noon">Chính Ngọ</button>
+        <button class="btn" data-mood="sunset">Hoàng Hôn</button>
+        <button class="btn" data-mood="night">Đêm Đèn Lồng</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Chế Độ Phân Vùng &amp; Pipeline</div>
+      <label class="toggle-row">
+        <input type="checkbox" id="toggle-zones" />
+        <span>Hiện ranh 10 Phân Khu (ULTRA_1 / ULTRA_2)</span>
+      </label>
+      <div id="zone-list" class="zone-list"></div>
+    </div>
+  </aside>
+
+  <div class="audio-topbar" id="audio-topbar">
+    <button class="btn-audio-main" id="btn-audio-toggle" type="button">
+      <span class="audio-dot" id="audio-status-dot"></span>
+      <span id="audio-toggle-label">Bật Nhã Nhạc Cung Đình 1880</span>
+    </button>
+    <div class="audio-topbar-meta">
+      <div class="audio-track-name" id="audio-topbar-track">Đăng Đàn Cung (登壇宮)</div>
+      <div class="audio-zone-sub" id="audio-topbar-zone">Kinh Thành Huế 1880 · Sẵn sàng</div>
+    </div>
+    <button class="btn btn-mini" id="btn-top-gong" type="button" title="Thỉnh Chiêng Ngọ Môn">Chiêng Ngọ Môn</button>
+  </div>
+
+  <aside class="hud-panel hud-right">
+    <div class="section audio-section">
+      <div class="section-title">Âm Thanh Cung Đình Huế 1880</div>
+      <div class="audio-controls-col">
+        <label class="field-label" for="audio-mode-select">Chế độ Nhã Nhạc &amp; Phân Khu</label>
+        <select id="audio-mode-select" class="audio-select">
+          <option value="auto">Tự động theo Phân Khu 3D</option>
+          <option value="dang_dan_cung">Đăng Đàn Cung (Nhã nhạc Đại Triều)</option>
+          <option value="tu_dai_canh">Tứ Đại Cảnh (Ca Cung Đình — Tự Đức)</option>
+          <option value="co_ban">Cổ Bản (Ca Cung Đình Huế)</option>
+        </select>
+
+        <label class="toggle-row audio-skip-row">
+          <input type="checkbox" id="toggle-skip-intro" checked />
+          <span>Vào thẳng nhạc (bỏ qua lời giới thiệu)</span>
+        </label>
+
+        <div class="slider-row">
+          <span>Nhã nhạc / Ca cung đình</span>
+          <span id="val-music-vol">72%</span>
+        </div>
+        <input id="slider-music-vol" class="audio-slider" type="range" min="0" max="100" value="72" />
+
+        <div class="slider-row">
+          <span>Không gian 3D (Sông · Chuông)</span>
+          <span id="val-amb-vol">65%</span>
+        </div>
+        <input id="slider-amb-vol" class="audio-slider" type="range" min="0" max="100" value="65" />
+
+        <div class="btn-grid">
+          <button class="btn" id="btn-sfx-gong" type="button">Thỉnh Chiêng Ngọ Môn</button>
+          <button class="btn" id="btn-sfx-bell" type="button">Đại Hồng Chung</button>
+        </div>
+        <div id="audio-telemetry" class="metrics-box audio-metrics">Đang nạp kho âm thanh cung đình...</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Chi Tiết Công Trình Đang Chọn</div>
+      <div id="selection-info" class="selection-box">
+        Nhấp chuột trái vào bất kỳ cung điện, cổng thành hoặc pháo đài nào để xem thông số 1880.
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Trạng Thái Hạ Tầng Drive SHA-256</div>
+      <div id="sync-metrics" class="metrics-box">Đang tải dữ liệu thực tế...</div>
+    </div>
+    <div class="controls-help">
+      <strong>Điều khiển chuẩn SketchUp:</strong><br />
+      • Cuộn chuột: Zoom tới vị trí con trỏ<br />
+      • Chuột giữa / Kéo trái: Xoay Orbit<br />
+      • Shift + Chuột giữa / Chuột phải: Trượt Pan
+    </div>
+  </aside>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

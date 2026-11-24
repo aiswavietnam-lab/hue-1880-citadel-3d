@@ -1,0 +1,225 @@
+{
+  "schema_version": "1.0.0",
+  "project": "00_HUE_1880_PIPELINE",
+  "title": "Hệ Thống Âm Thanh Cung Đình Huế 1880 (Nhã Nhạc & Không Gian 3D)",
+  "tracks": [
+    {
+      "id": "dang_dan_cung",
+      "title": "Đăng Đàn Cung (登壇宮)",
+      "subtitle": "Nhã nhạc Đại Triều Nghi Triều Nguyễn (1880)",
+      "category": "nha_nhac_dai_trieu",
+      "url": "./audio/dang_dan_cung_nha_nhac.mp3",
+      "filename": "dang_dan_cung_nha_nhac.mp3",
+      "duration_sec": 66.98,
+      "cue_start_sec": 0.0,
+      "loop_gapless": true,
+      "zone_ids": ["zone_01", "zone_02", "zone_03", "zone_04"],
+      "license": "CC BY 3.0",
+      "attribution": "Phục dựng bởi GS. Liam C. Kelley (Lê Minh Khải) qua Wikimedia Commons",
+      "source_url": "https://commons.wikimedia.org/wiki/File:%C4%90%C4%83ng_%C4%90%C3%A0n_cung_(%E7%99%BB%E5%A3%87%E5%AE%AE)_-_1941_Annam_Anthem_-_Recreation_by_Prof._Liam_C._Kelley_(L%C3%AA_Minh_Kh%E1%BA%A3i).mp3"
+    },
+    {
+      "id": "tu_dai_canh",
+      "title": "Tứ Đại Cảnh (Lời cổ)",
+      "subtitle": "Ca Cung Đình Huế — Tương truyền Vua Tự Đức sáng tác",
+      "category": "ca_cung_dinh_tieu_nhac",
+      "url": "./audio/ca_cung_dinh_tu_dai_canh.mp3",
+      "filename": "ca_cung_dinh_tu_dai_canh.mp3",
+      "duration_sec": 240.54,
+      "cue_start_sec": 33.5,
+      "loop_gapless": false,
+      "zone_ids": ["zone_05", "zone_08", "zone_09"],
+      "license": "CC BY-ND 4.0",
+      "attribution": "Saigon Audio - Hãng Phim Bông Sen (Album Ca Cung Đình Huế - Hương Xưa, nguyên bản không chỉnh sửa)",
+      "source_url": "https://archive.org/details/ca-cung-dinh-hue-huong-xua-wav"
+    },
+    {
+      "id": "co_ban",
+      "title": "Cổ Bản (Lời cổ)",
+      "subtitle": "Ca Cung Đình Huế — Không gian Cung Diên Thọ & Thế Miếu",
+      "category": "ca_cung_dinh_tieu_nhac",
+      "url": "./audio/ca_cung_dinh_co_ban.mp3",
+      "filename": "ca_cung_dinh_co_ban.mp3",
+      "duration_sec": 317.57,
+      "cue_start_sec": 27.5,
+      "loop_gapless": false,
+      "zone_ids": ["zone_06", "zone_07", "zone_10"],
+      "license": "CC BY-ND 4.0",
+      "attribution": "Saigon Audio - Hãng Phim Bông Sen (Album Ca Cung Đình Huế - Hương Xưa, nguyên bản không chỉnh sửa)",
+      "source_url": "https://archive.org/details/ca-cung-dinh-hue-huong-xua-wav"
+    }
+  ],
+  "sfx": {
+    "chieng_ngomon": {
+      "id": "chieng_ngomon",
+      "title": "Chiêng Ngọ Môn (Nghi lễ Đại Triều)",
+      "url": "./audio/chieng_ngomon.mp3",
+      "filename": "chieng_ngomon.mp3",
+      "duration_sec": 12.15,
+      "anchor_xyz": [0, -463, 6.2],
+      "ripple_color": "#eab308",
+      "license": "CC0 1.0 (Public Domain)",
+      "source_url": "https://commons.wikimedia.org/wiki/File:240382_the-very-real-horst_chinese-gong-finish-session-2014-06-10-29-143.wav"
+    },
+    "dai_hong_chung": {
+      "id": "dai_hong_chung",
+      "title": "Đại Hồng Chung (Thế Miếu & Thiên Mụ)",
+      "url": "./audio/dai_hong_chung.mp3",
+      "filename": "dai_hong_chung.mp3",
+      "duration_sec": 16.04,
+      "anchor_xyz": [-232, -395, 11.5],
+      "ripple_color": "#22d3ee",
+      "license": "CC BY 2.1 JP",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Bonsyou5599.ogg"
+    },
+    "khanh_chime": {
+      "id": "khanh_chime",
+      "title": "Khánh Đồng Cung Đình",
+      "url": "./audio/khanh_chime.mp3",
+      "filename": "khanh_chime.mp3",
+      "duration_sec": 4.55,
+      "anchor_xyz": [0, -295, 5.0],
+      "ripple_color": "#f59e0b",
+      "license": "CC0 1.0 (Public Domain)",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Gong_or_bell_vibrant_(short).ogg"
+    }
+  },
+  "ambience": {
+    "song_huong_water": {
+      "id": "song_huong_water",
+      "title": "Tiếng nước Sông Hương & Hồ Thái Dịch",
+      "url": "./audio/song_huong_water.mp3",
+      "filename": "song_huong_water.mp3",
+      "duration_sec": 18.55,
+      "license": "Public Domain",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Flowing-water-100019.ogg"
+    },
+    "hue_binh_minh": {
+      "id": "hue_binh_minh",
+      "title": "Bình Minh Kinh Thành (Chim bìm bịp Đông Nam Á)",
+      "url": "./audio/hue_binh_minh.mp3",
+      "filename": "hue_binh_minh.mp3",
+      "duration_sec": 15.46,
+      "license": "CC BY-SA 4.0",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Morning_call_of_Greater_coucal_or_crow_pheasant_(Centropus_sinensis).wav"
+    },
+    "hue_dem_den_long": {
+      "id": "hue_dem_den_long",
+      "title": "Đêm Đèn Lồng Hoàng Thành (Côn trùng đêm nhiệt đới)",
+      "url": "./audio/hue_dem_den_long.mp3",
+      "filename": "hue_dem_den_long.mp3",
+      "duration_sec": 44.04,
+      "license": "CC BY-SA 3.0",
+      "source_url": "https://commons.wikimedia.org/wiki/File:2013-07-24_00-19-04hrs_Chiang_Mai_Chang_Khien_rain_animal_sounds_night_time.ogg"
+    }
+  },
+  "spatial_anchors": [
+    {
+      "id": "anchor_dai_trieu_nghi",
+      "label": "Điện Thái Hòa & Ngọ Môn (Đại Triều Nghi)",
+      "zone_id": "zone_04",
+      "track_id": "dang_dan_cung",
+      "x": 0.0,
+      "y": -340.0,
+      "z": 4.0,
+      "radius_m": 760.0,
+      "base_weight": 1.0
+    },
+    {
+      "id": "anchor_duyet_thi_duong",
+      "label": "Nhà Hát Duyệt Thị Đường (Tử Cấm Thành)",
+      "zone_id": "zone_05",
+      "track_id": "tu_dai_canh",
+      "x": 92.0,
+      "y": -105.0,
+      "z": 4.0,
+      "radius_m": 460.0,
+      "base_weight": 1.15
+    },
+    {
+      "id": "anchor_the_mieu_dien_tho",
+      "label": "Thế Miếu & Cung Diên Thọ (Khu Tây)",
+      "zone_id": "zone_06",
+      "track_id": "co_ban",
+      "x": -232.0,
+      "y": -210.0,
+      "z": 4.0,
+      "radius_m": 480.0,
+      "base_weight": 1.1
+    },
+    {
+      "id": "anchor_song_huong",
+      "label": "Sông Hương & Bến Ngự",
+      "zone_id": "zone_10",
+      "ambience_id": "song_huong_water",
+      "x": 0.0,
+      "y": -1420.0,
+      "z": 0.0,
+      "radius_m": 920.0,
+      "line_half_width_m": 1350.0,
+      "base_weight": 1.0
+    },
+    {
+      "id": "anchor_ho_thai_dich",
+      "label": "Hồ Thái Dịch & Cầu Trung Đạo",
+      "zone_id": "zone_03",
+      "ambience_id": "song_huong_water",
+      "x": 0.0,
+      "y": -411.0,
+      "z": 0.0,
+      "radius_m": 260.0,
+      "line_half_width_m": 85.0,
+      "base_weight": 0.65
+    },
+    {
+      "id": "anchor_ngu_ha",
+      "label": "Sông Ngự Hà & Hồ Tịnh Tâm",
+      "zone_id": "zone_09",
+      "ambience_id": "song_huong_water",
+      "x": 0.0,
+      "y": 460.0,
+      "z": 0.0,
+      "radius_m": 420.0,
+      "line_half_width_m": 950.0,
+      "base_weight": 0.72
+    }
+  ],
+  "mood_profiles": {
+    "dawn": {
+      "label": "Bình Minh Sương (05:45)",
+      "lowpass_hz": 13500,
+      "court_music_scale": 0.85,
+      "water_scale": 0.9,
+      "dawn_birds_gain": 0.45,
+      "night_crickets_gain": 0.0,
+      "entry_chime": "khanh_chime"
+    },
+    "noon": {
+      "label": "Chính Ngọ Đại Triều (12:00)",
+      "lowpass_hz": 18500,
+      "court_music_scale": 1.0,
+      "water_scale": 0.65,
+      "dawn_birds_gain": 0.0,
+      "night_crickets_gain": 0.0,
+      "entry_chime": null
+    },
+    "sunset": {
+      "label": "Hoàng Hôn Thu Vàng (17:45)",
+      "lowpass_hz": 10500,
+      "court_music_scale": 0.88,
+      "water_scale": 0.85,
+      "dawn_birds_gain": 0.0,
+      "night_crickets_gain": 0.25,
+      "entry_chime": "dai_hong_chung"
+    },
+    "night": {
+      "label": "Đêm Đèn Lồng (21:00)",
+      "lowpass_hz": 4400,
+      "court_music_scale": 0.72,
+      "water_scale": 0.95,
+      "dawn_birds_gain": 0.0,
+      "night_crickets_gain": 0.65,
+      "entry_chime": "dai_hong_chung"
+    }
+  }
+}
