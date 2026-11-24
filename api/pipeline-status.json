@@ -1,6 +1,6 @@
 {
   "project": "00_HUE_1880_PIPELINE",
-  "timestamp": "2026-11-24T03:43:00Z",
+  "timestamp": "2026-11-24T04:10:55Z",
   "zone_count": 10,
   "zones": [
     {
@@ -209,11 +209,11 @@
     "audio_file_count": 9
   },
   "drive_sync": {
-    "mode": "GitHub Pages Static Build (sha256_delta_batch)",
-    "manifest_updated_at": "2026-11-22T02:24:32.569071+00:00",
-    "tracked_synced_files": 33,
-    "local_eligible_files": 24,
-    "local_total_kb": 15488.3,
+    "mode": "GitHub Pages Auto-Sync (sha256_delta_batch)",
+    "manifest_updated_at": "2026-11-22T02:24:26.869Z",
+    "tracked_synced_files": 12,
+    "local_eligible_files": 22,
+    "local_total_kb": 15498.7,
     "excluded_items_blocked": 0
   }
 }
