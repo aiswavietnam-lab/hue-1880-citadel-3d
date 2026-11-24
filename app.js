@@ -1770,14 +1770,35 @@ function updateGtaSimulation(dt) {
   _rgt.set(Math.cos(gtaState.camYaw), 0, -Math.sin(gtaState.camYaw));
   _move.set(0, 0, 0);
 
+  const hasKeyMove =
+    walkState.keys.has("KeyW") ||
+    walkState.keys.has("ArrowUp") ||
+    walkState.keys.has("KeyS") ||
+    walkState.keys.has("ArrowDown") ||
+    walkState.keys.has("KeyD") ||
+    walkState.keys.has("ArrowRight") ||
+    walkState.keys.has("KeyA") ||
+    walkState.keys.has("ArrowLeft");
+
   if (walkState.keys.has("KeyW") || walkState.keys.has("ArrowUp")) _move.add(_fwd);
   if (walkState.keys.has("KeyS") || walkState.keys.has("ArrowDown")) _move.sub(_fwd);
   if (walkState.keys.has("KeyD") || walkState.keys.has("ArrowRight")) _move.add(_rgt);
   if (walkState.keys.has("KeyA") || walkState.keys.has("ArrowLeft")) _move.sub(_rgt);
 
+  const joyMag = Math.min(1, Math.hypot(touchControlState.joyX, touchControlState.joyY));
+  if (joyMag > 0.05) {
+    _move.addScaledVector(_fwd, -touchControlState.joyY);
+    _move.addScaledVector(_rgt, touchControlState.joyX);
+  }
+
   const isMoving = _move.lengthSq() > 0.0001;
-  const isSprinting = walkState.keys.has("ShiftLeft") || walkState.keys.has("ShiftRight");
-  const maxSpeed = gtaState.turbo ? (isSprinting ? 26.0 : 16.5) : isSprinting ? 9.2 : 3.5;
+  const isSprinting =
+    walkState.keys.has("ShiftLeft") ||
+    walkState.keys.has("ShiftRight") ||
+    touchControlState.sprint ||
+    joyMag > 0.84;
+  const joyScale = !hasKeyMove && joyMag > 0.05 ? Math.max(0.35, joyMag) : 1.0;
+  const maxSpeed = (gtaState.turbo ? (isSprinting ? 26.0 : 16.5) : isSprinting ? 9.2 : 3.5) * joyScale;
 
   let targetVx = 0;
   let targetVz = 0;
@@ -1828,7 +1849,9 @@ function updateGtaSimulation(dt) {
   gtaState.pos.z = THREE.MathUtils.clamp(gtaState.pos.z + stepZ, -820, 1080);
 
   // 3. Nhảy & Bám cao độ bậc thềm / cầu / sân cung điện
-  if (gtaState.grounded && walkState.keys.has("Space")) {
+  const wantJump = walkState.keys.has("Space") || touchControlState.jumpQueued;
+  touchControlState.jumpQueued = false;
+  if (gtaState.grounded && wantJump) {
     gtaState.velY = 7.4;
     gtaState.grounded = false;
   }
@@ -2136,6 +2159,83 @@ const walkState = {
   lastY: 0,
 };
 
+const touchControlState = {
+  joyX: 0,
+  joyY: 0,
+  sprint: false,
+  jumpQueued: false,
+  lookPointers: new Map(),
+  pinchDist: null,
+};
+
+function isHueMobileUi() {
+  return window.innerWidth <= 900 || window.matchMedia("(pointer: coarse)").matches;
+}
+
+function resetTouchInputs() {
+  touchControlState.joyX = 0;
+  touchControlState.joyY = 0;
+  touchControlState.sprint = false;
+  touchControlState.jumpQueued = false;
+  touchControlState.lookPointers.clear();
+  touchControlState.pinchDist = null;
+  const joyBase = document.getElementById("hue-joy-base");
+  const joyKnob = document.getElementById("hue-joy-knob");
+  if (joyBase) joyBase.classList.remove("active");
+  if (joyKnob) joyKnob.style.transform = "translate(-50%, -50%)";
+}
+
+function syncMobileHudState() {
+  const sidebar = document.getElementById("hud-sidebar");
+  const inspector = document.getElementById("tile-inspector");
+  const sidebarOpen = Boolean(sidebar && !sidebar.classList.contains("collapsed"));
+  const inspectorOpen = Boolean(inspector && !inspector.classList.contains("hidden"));
+  document.body.classList.toggle("hue-sidebar-open", sidebarOpen);
+  document.body.classList.toggle("hue-inspector-open", inspectorOpen);
+
+  const mobilePad = document.getElementById("hue-mobile-pad");
+  const btnJump = document.getElementById("hue-touch-jump");
+  const btnTurbo = document.getElementById("hue-touch-turbo");
+  const isTouchMode = (STATE.cameraMode === "gta" || STATE.cameraMode === "walk") && isHueMobileUi();
+  if (mobilePad) {
+    mobilePad.classList.toggle("hidden", !isTouchMode);
+  }
+  if (btnJump) {
+    btnJump.classList.toggle("hidden", STATE.cameraMode !== "gta");
+  }
+  if (btnTurbo) {
+    if (STATE.cameraMode === "walk") {
+      btnTurbo.textContent = touchControlState.sprint ? "⚡ Đang chạy" : "⚡ Chạy";
+      btnTurbo.classList.toggle("active", touchControlState.sprint);
+    } else {
+      btnTurbo.textContent = gtaState.turbo ? "🚀 Turbo ON" : "🚀 Turbo";
+      btnTurbo.classList.toggle("active", Boolean(gtaState.turbo));
+    }
+  }
+
+  const narrow = window.innerWidth <= 640;
+  const titleEl = document.querySelector("#hud-topbar .brand-text h1");
+  if (titleEl) {
+    if (!titleEl.dataset.fullTitle) titleEl.dataset.fullTitle = titleEl.textContent.trim();
+    titleEl.textContent = narrow ? "Huế 1880 3D" : titleEl.dataset.fullTitle;
+  }
+  const sidebarLabelEl = document.querySelector("#btn-toggle-sidebar span");
+  if (sidebarLabelEl) {
+    if (!sidebarLabelEl.dataset.fullLabel) sidebarLabelEl.dataset.fullLabel = sidebarLabelEl.textContent.trim();
+    sidebarLabelEl.textContent = narrow ? "30 Ô" : sidebarLabelEl.dataset.fullLabel;
+  }
+
+  document.querySelectorAll(".preset-btn").forEach((btn) => {
+    if (!btn.dataset.fullLabel) btn.dataset.fullLabel = btn.textContent.trim();
+    const hr = parseFloat(btn.dataset.hour);
+    if (narrow && !Number.isNaN(hr)) {
+      btn.textContent = hr < 9 ? "05:30" : hr < 15 ? "12:00" : "17:45";
+    } else {
+      btn.textContent = btn.dataset.fullLabel;
+    }
+  });
+}
+
 function exitPointerLockSafe() {
   if (document.pointerLockElement === renderer.domElement && document.exitPointerLock) {
     document.exitPointerLock();
@@ -2145,6 +2245,7 @@ function exitPointerLockSafe() {
 function setCameraMode(mode, startPlan = null) {
   const prevMode = STATE.cameraMode;
   STATE.cameraMode = mode;
+  if (prevMode !== mode) resetTouchInputs();
 
   document.querySelectorAll(".seg-btn").forEach((b) => {
     b.classList.toggle("active", b.dataset.mode === mode);
@@ -2153,6 +2254,7 @@ function setCameraMode(mode, startPlan = null) {
   const walkHint = document.getElementById("walk-hint");
   const gtaHud = document.getElementById("gta-hud");
   const sidebar = document.getElementById("hud-sidebar");
+  const inspector = document.getElementById("tile-inspector");
   const preset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
 
   if (prevMode === "gta" && mode !== "gta") {
@@ -2160,7 +2262,7 @@ function setCameraMode(mode, startPlan = null) {
     document.body.classList.remove("gta-active");
     if (gtaHud) gtaHud.classList.add("hidden");
     if (gtaState.rig) gtaState.rig.root.visible = false;
-    if (!gtaState.cachedSidebarWasCollapsed && sidebar) {
+    if (!gtaState.cachedSidebarWasCollapsed && sidebar && window.innerWidth > 900) {
       sidebar.classList.remove("collapsed");
     }
     syncSunShadowAnchor(0, 0, true);
@@ -2184,7 +2286,7 @@ function setCameraMode(mode, startPlan = null) {
       gtaState.cachedSidebarWasCollapsed = sidebar.classList.contains("collapsed");
       sidebar.classList.add("collapsed");
     }
-    document.getElementById("tile-inspector").classList.add("hidden");
+    if (inspector) inspector.classList.add("hidden");
 
     const camP = GTA_CAM_PRESETS[gtaState.camPresetIdx];
     camera.fov = camP.fov;
@@ -2198,9 +2300,17 @@ function setCameraMode(mode, startPlan = null) {
     }
     updateTimeOfDay(STATE.hour);
     renderGtaRadar(false, false);
-    showToast("Đã bật Nhập vai GTA · Bấm vào cảnh để xoay chuột 360° hoặc dùng W A S D");
+    showToast(
+      isHueMobileUi()
+        ? "Nhập vai GTA · Cần trái để chạy, vuốt màn hình xoay 360°, 2 ngón thu phóng"
+        : "Đã bật Nhập vai GTA · Bấm vào cảnh để xoay chuột 360° hoặc dùng W A S D"
+    );
   } else if (mode === "walk") {
     controls.enabled = false;
+    if (window.innerWidth <= 900) {
+      if (sidebar) sidebar.classList.add("collapsed");
+      if (inspector) inspector.classList.add("hidden");
+    }
     camera.fov = 58;
     camera.far = preset.farGta;
     camera.updateProjectionMatrix();
@@ -2221,6 +2331,8 @@ function setCameraMode(mode, startPlan = null) {
     camera.lookAt(MASTER_TIMELAPSE_CAM.target);
     walkHint.classList.add("hidden");
   }
+
+  syncMobileHudState();
 }
 
 function applyWalkOrientation() {
@@ -2266,6 +2378,7 @@ window.addEventListener("keydown", (e) => {
       }
       if (e.code === "KeyF") {
         gtaState.turbo = !gtaState.turbo;
+        syncMobileHudState();
         showToast(gtaState.turbo ? "Bật Phi tốc độ cao (16–26 m/s)" : "Tắt tốc độ cao · Về tốc độ đi bộ/chạy thực 1:1");
         return;
       }
@@ -2282,6 +2395,7 @@ window.addEventListener("blur", () => {
   walkState.keys.clear();
   walkState.dragging = false;
   gtaState.dragging = false;
+  resetTouchInputs();
 });
 
 renderer.domElement.addEventListener("mousedown", (e) => {
@@ -2334,6 +2448,62 @@ window.addEventListener("mouseup", () => {
   gtaState.dragging = false;
 });
 
+renderer.domElement.addEventListener("pointerdown", (e) => {
+  if (e.pointerType !== "touch") return;
+  if (STATE.cameraMode !== "gta" && STATE.cameraMode !== "walk") return;
+  try {
+    renderer.domElement.setPointerCapture(e.pointerId);
+  } catch {
+    // Ignore pointer capture restriction
+  }
+  touchControlState.lookPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (touchControlState.lookPointers.size === 2) {
+    const pts = Array.from(touchControlState.lookPointers.values());
+    touchControlState.pinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+  }
+});
+
+renderer.domElement.addEventListener("pointermove", (e) => {
+  if (e.pointerType !== "touch") return;
+  if (STATE.cameraMode !== "gta" && STATE.cameraMode !== "walk") return;
+  const prev = touchControlState.lookPointers.get(e.pointerId);
+  if (!prev) return;
+  const dx = e.clientX - prev.x;
+  const dy = e.clientY - prev.y;
+  prev.x = e.clientX;
+  prev.y = e.clientY;
+
+  if (touchControlState.lookPointers.size === 1) {
+    if (STATE.cameraMode === "walk") {
+      walkState.yaw -= dx * 0.0052;
+      walkState.pitch = THREE.MathUtils.clamp(walkState.pitch - dy * 0.0044, -1.2, 1.2);
+      applyWalkOrientation();
+    } else if (STATE.cameraMode === "gta") {
+      gtaState.camYaw -= dx * 0.0056;
+      gtaState.camPitch = THREE.MathUtils.clamp(gtaState.camPitch + dy * 0.0048, -0.18, 1.08);
+    }
+  } else if (touchControlState.lookPointers.size >= 2 && STATE.cameraMode === "gta") {
+    const pts = Array.from(touchControlState.lookPointers.values());
+    const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+    if (touchControlState.pinchDist !== null) {
+      const delta = dist - touchControlState.pinchDist;
+      gtaState.targetCamDist = THREE.MathUtils.clamp(gtaState.targetCamDist - delta * 0.025, 2.3, 14.5);
+    }
+    touchControlState.pinchDist = dist;
+  }
+});
+
+function releaseTouchLookPointer(e) {
+  if (e.pointerType !== "touch") return;
+  touchControlState.lookPointers.delete(e.pointerId);
+  if (touchControlState.lookPointers.size < 2) {
+    touchControlState.pinchDist = null;
+  }
+}
+
+renderer.domElement.addEventListener("pointerup", releaseTouchLookPointer);
+renderer.domElement.addEventListener("pointercancel", releaseTouchLookPointer);
+
 renderer.domElement.addEventListener(
   "wheel",
   (e) => {
@@ -2346,7 +2516,13 @@ renderer.domElement.addEventListener(
 
 function updateWalkMovement(dt) {
   if (STATE.cameraMode !== "walk") return;
-  const speed = walkState.keys.has("ShiftLeft") || walkState.keys.has("ShiftRight") ? 18.0 : 5.5;
+  const joyMag = Math.min(1, Math.hypot(touchControlState.joyX, touchControlState.joyY));
+  const isSprinting =
+    walkState.keys.has("ShiftLeft") ||
+    walkState.keys.has("ShiftRight") ||
+    touchControlState.sprint ||
+    joyMag > 0.84;
+  const speed = isSprinting ? 18.0 : 5.5;
   _fwd.set(-Math.sin(walkState.yaw), 0, -Math.cos(walkState.yaw));
   _rgt.set(Math.cos(walkState.yaw), 0, -Math.sin(walkState.yaw));
   _move.set(0, 0, 0);
@@ -2355,9 +2531,23 @@ function updateWalkMovement(dt) {
   if (walkState.keys.has("KeyS") || walkState.keys.has("ArrowDown")) _move.sub(_fwd);
   if (walkState.keys.has("KeyD") || walkState.keys.has("ArrowRight")) _move.add(_rgt);
   if (walkState.keys.has("KeyA") || walkState.keys.has("ArrowLeft")) _move.sub(_rgt);
+  if (joyMag > 0.05) {
+    _move.addScaledVector(_fwd, -touchControlState.joyY);
+    _move.addScaledVector(_rgt, touchControlState.joyX);
+  }
 
   if (_move.lengthSq() > 0) {
-    _move.normalize().multiplyScalar(speed * dt);
+    const hasKeyMove =
+      walkState.keys.has("KeyW") ||
+      walkState.keys.has("ArrowUp") ||
+      walkState.keys.has("KeyS") ||
+      walkState.keys.has("ArrowDown") ||
+      walkState.keys.has("KeyD") ||
+      walkState.keys.has("ArrowRight") ||
+      walkState.keys.has("KeyA") ||
+      walkState.keys.has("ArrowLeft");
+    const scale = !hasKeyMove && joyMag > 0.05 ? Math.max(0.38, joyMag) : 1.0;
+    _move.normalize().multiplyScalar(speed * scale * dt);
     camera.position.add(_move);
     camera.position.y = 1.7;
   }
@@ -2497,7 +2687,16 @@ function renderTileSidebar() {
       </div>
       <span class="status-badge ${isDone ? "completed" : "pending"}">${isDone ? "Hoàn tất" : "Chờ đúc"}</span>
     `;
-    btn.addEventListener("click", () => selectTile(t.tile_id, true));
+    btn.addEventListener("click", () => {
+      selectTile(t.tile_id, true);
+      if (window.innerWidth <= 900) {
+        const sb = document.getElementById("hud-sidebar");
+        const toggleBtn = document.getElementById("btn-toggle-sidebar");
+        if (sb) sb.classList.add("collapsed");
+        if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
+        syncMobileHudState();
+      }
+    });
     listEl.appendChild(btn);
   });
 }
@@ -2507,11 +2706,13 @@ function renderInspector(tileId) {
   const entry = tileObjects.get(tileId);
   if (!entry) {
     panel.classList.add("hidden");
+    syncMobileHudState();
     return;
   }
   const t = entry.tile;
   const isDone = t.status === "completed";
   panel.classList.remove("hidden");
+  syncMobileHudState();
 
   const badge = document.getElementById("insp-badge");
   badge.textContent = isDone ? "Đã nghiệm thu GLB" : "Đang chờ Gemini Task";
@@ -2665,10 +2866,17 @@ function bindUiEvents() {
     qualitySel.addEventListener("change", (e) => applyQualityPreset(e.target.value, true));
   }
 
-  document.getElementById("btn-toggle-sidebar").addEventListener("click", (e) => {
-    const sb = document.getElementById("hud-sidebar");
-    const collapsed = sb.classList.toggle("collapsed");
+  const sidebarEl = document.getElementById("hud-sidebar");
+  const toggleSidebarBtn = document.getElementById("btn-toggle-sidebar");
+  if (window.innerWidth <= 900 && sidebarEl) {
+    sidebarEl.classList.add("collapsed");
+    if (toggleSidebarBtn) toggleSidebarBtn.setAttribute("aria-expanded", "false");
+  }
+
+  toggleSidebarBtn.addEventListener("click", (e) => {
+    const collapsed = sidebarEl.classList.toggle("collapsed");
     e.currentTarget.setAttribute("aria-expanded", String(!collapsed));
+    syncMobileHudState();
   });
 
   document.querySelectorAll(".filter-chip[data-zone]").forEach((chip) => {
@@ -2711,16 +2919,26 @@ function bindUiEvents() {
     STATE.selectedTileId = null;
     document.getElementById("tile-inspector").classList.add("hidden");
     renderTileSidebar();
+    syncMobileHudState();
   });
 
   document.getElementById("btn-fly-tile").addEventListener("click", () => {
     if (STATE.selectedTileId) flyToTile(STATE.selectedTileId);
+    if (window.innerWidth <= 900 && sidebarEl) {
+      sidebarEl.classList.add("collapsed");
+      if (toggleSidebarBtn) toggleSidebarBtn.setAttribute("aria-expanded", "false");
+      syncMobileHudState();
+    }
   });
 
   document.getElementById("btn-walk-tile").addEventListener("click", () => {
     const entry = tileObjects.get(STATE.selectedTileId);
     if (!entry) return;
     const t = entry.tile;
+    if (window.innerWidth <= 900 && sidebarEl) {
+      sidebarEl.classList.add("collapsed");
+      if (toggleSidebarBtn) toggleSidebarBtn.setAttribute("aria-expanded", "false");
+    }
     setCameraMode("gta", {
       x: t.center.x,
       y: t.center.y - Math.min(t.dimensions.depth * 0.38, 36),
@@ -2759,6 +2977,89 @@ function bindUiEvents() {
     btnExit.addEventListener("click", () => setCameraMode("bird"));
   }
 
+  // Điều khiển cảm ứng ảo cho điện thoại / máy tính bảng (GTA & Đi bộ 1.70m)
+  const joyBase = document.getElementById("hue-joy-base");
+  const joyKnob = document.getElementById("hue-joy-knob");
+  if (joyBase && joyKnob) {
+    let joyPointerId = null;
+    const updateJoyStick = (clientX, clientY) => {
+      const rect = joyBase.getBoundingClientRect();
+      const maxR = Math.max(24, rect.width * 0.36);
+      const cx = rect.left + rect.width * 0.5;
+      const cy = rect.top + rect.height * 0.5;
+      let dx = clientX - cx;
+      let dy = clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      if (dist > maxR) {
+        dx = (dx / dist) * maxR;
+        dy = (dy / dist) * maxR;
+      }
+      touchControlState.joyX = dx / maxR;
+      touchControlState.joyY = dy / maxR;
+      joyKnob.style.transform = `translate(calc(-50% + ${dx.toFixed(1)}px), calc(-50% + ${dy.toFixed(1)}px))`;
+    };
+    const clearJoyStick = (e) => {
+      if (joyPointerId === null || (e && e.pointerId !== undefined && e.pointerId !== joyPointerId)) return;
+      joyPointerId = null;
+      touchControlState.joyX = 0;
+      touchControlState.joyY = 0;
+      joyBase.classList.remove("active");
+      joyKnob.style.transform = "translate(-50%, -50%)";
+    };
+    joyBase.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      joyPointerId = e.pointerId;
+      joyBase.classList.add("active");
+      try {
+        joyBase.setPointerCapture(e.pointerId);
+      } catch {
+        // Ignore pointer capture restriction
+      }
+      updateJoyStick(e.clientX, e.clientY);
+    });
+    joyBase.addEventListener("pointermove", (e) => {
+      if (e.pointerId !== joyPointerId) return;
+      e.preventDefault();
+      updateJoyStick(e.clientX, e.clientY);
+    });
+    joyBase.addEventListener("pointerup", clearJoyStick);
+    joyBase.addEventListener("pointercancel", clearJoyStick);
+    joyBase.addEventListener("lostpointercapture", clearJoyStick);
+  }
+
+  const btnTouchJump = document.getElementById("hue-touch-jump");
+  if (btnTouchJump) {
+    btnTouchJump.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      touchControlState.jumpQueued = true;
+    });
+  }
+
+  const btnTouchTurbo = document.getElementById("hue-touch-turbo");
+  if (btnTouchTurbo) {
+    btnTouchTurbo.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (STATE.cameraMode === "walk") {
+        touchControlState.sprint = !touchControlState.sprint;
+        showToast(touchControlState.sprint ? "Đã bật Chạy nhanh 18 m/s" : "Về tốc độ đi bộ 5.5 m/s");
+      } else {
+        gtaState.turbo = !gtaState.turbo;
+        showToast(gtaState.turbo ? "Bật Phi tốc độ cao (16–26 m/s)" : "Tắt tốc độ cao · Về tốc độ đi bộ/chạy thực 1:1");
+      }
+      syncMobileHudState();
+    });
+  }
+
+  const btnTouchExit = document.getElementById("hue-touch-exit");
+  if (btnTouchExit) {
+    btnTouchExit.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setCameraMode("bird");
+    });
+  }
+
   const slider = document.getElementById("time-slider");
   slider.addEventListener("input", (e) => updateTimeOfDay(parseFloat(e.target.value)));
 
@@ -2770,7 +3071,10 @@ function bindUiEvents() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    syncMobileHudState();
   });
+
+  syncMobileHudState();
 }
 
 // --- API điều khiển cho Playwright Headless QA (`ingest_and_audit.py`) ---

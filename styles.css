@@ -48,6 +48,7 @@ html, body {
   inset: 0;
   width: 100vw;
   height: 100vh;
+  touch-action: none;
 }
 
 #webgl-canvas {
@@ -55,6 +56,7 @@ html, body {
   width: 100%;
   height: 100%;
   cursor: grab;
+  touch-action: none;
 }
 
 #webgl-canvas:active {
@@ -1280,7 +1282,7 @@ button {
   #hud-bottombar {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 8px;
   }
   .divider-v {
     display: none;
@@ -1516,6 +1518,492 @@ body.public-mode #btn-hot-reload,
 body.public-mode .inspector-orch-row,
 body.public-mode #row-auto-poll {
   display: none !important;
+}
+
+/* Mobile Virtual Joystick & Touch Action Pad */
+.hue-mobile-pad,
+#hue-mobile-pad {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: max(14px, env(safe-area-inset-bottom, 14px));
+  padding: 0 14px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+  z-index: 48;
+}
+
+.hue-mobile-pad.hidden,
+#hue-mobile-pad.hidden {
+  display: none !important;
+}
+
+body:not(.gta-active) #hue-mobile-pad {
+  bottom: calc(128px + env(safe-area-inset-bottom, 0px));
+}
+
+body.gta-active #hue-mobile-pad {
+  bottom: max(14px, env(safe-area-inset-bottom, 14px));
+}
+
+.hue-joy-wrap,
+.hue-touch-actions,
+#hue-mobile-pad > * {
+  pointer-events: auto;
+}
+
+.hue-joy-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.hue-joy-base,
+#hue-joy-base {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  border-radius: 999px;
+  touch-action: none;
+  pointer-events: auto;
+  background: radial-gradient(circle at center, rgba(212, 160, 23, 0.16), rgba(16, 13, 10, 0.72));
+  border: 1.5px solid rgba(212, 160, 23, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 0 18px rgba(212, 160, 23, 0.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.hue-joy-knob,
+#hue-joy-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: radial-gradient(circle at 35% 35%, #FCE29C, #C89214 72%, #8A5E08);
+  border: 1.5px solid rgba(255, 245, 214, 0.75);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.06s ease-out;
+}
+
+#hue-joy-base.active #hue-joy-knob,
+.hue-joy-base.active .hue-joy-knob {
+  transition: none;
+}
+
+.hue-touch-actions,
+#hue-mobile-pad > div:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.hue-touch-btn,
+#hue-mobile-pad button {
+  pointer-events: auto;
+  touch-action: manipulation;
+  min-width: 74px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #FAF2E1;
+  background: rgba(18, 15, 12, 0.78);
+  border: 1px solid rgba(212, 160, 23, 0.48);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#hue-touch-jump {
+  min-width: 82px;
+  height: 44px;
+  border-color: rgba(252, 226, 156, 0.62);
+}
+
+#hue-touch-exit {
+  border-color: rgba(235, 120, 96, 0.55);
+  background: rgba(48, 20, 16, 0.78);
+}
+
+.hue-touch-btn.active,
+.hue-touch-btn:active,
+#hue-mobile-pad button.active,
+#hue-mobile-pad button:active {
+  background: rgba(212, 160, 23, 0.34);
+  border-color: #FCE29C;
+  color: #FFF8E6;
+  transform: scale(0.96);
+}
+
+.hue-touch-btn.hidden,
+#hue-mobile-pad button.hidden {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  #hud-topbar {
+    top: max(8px, env(safe-area-inset-top, 8px));
+    left: 8px;
+    right: 8px;
+    padding: 7px 10px;
+    gap: 8px;
+    max-width: calc(100vw - 16px);
+  }
+
+  #hud-topbar .brand-block {
+    min-width: 0;
+    flex: 1 1 auto;
+    gap: 8px;
+  }
+
+  #hud-topbar .brand-text {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  #hud-topbar h1,
+  #hud-topbar .brand-title {
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #hud-topbar .topbar-actions,
+  #hud-topbar .header-actions {
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+
+  #hud-topbar button,
+  #hud-topbar select {
+    padding: 6px 8px;
+    font-size: 11.5px;
+    min-height: 32px;
+  }
+
+  #hud-compass {
+    top: 64px;
+    right: 8px;
+    bottom: auto;
+    left: auto;
+    transform: scale(0.8);
+    transform-origin: top right;
+    z-index: 24;
+    transition: opacity 0.18s ease;
+  }
+
+  body.hue-sidebar-open #hud-compass,
+  body.hue-inspector-open #hud-compass,
+  body.gta-active #hud-compass {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #hud-sidebar {
+    top: 62px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-width: none;
+    bottom: calc(122px + env(safe-area-inset-bottom, 0px));
+    max-height: calc(100dvh - 194px);
+    z-index: 45;
+  }
+
+  #hud-sidebar.collapsed {
+    transform: translateX(calc(-100% - 32px));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #tile-inspector {
+    left: 8px;
+    right: 8px;
+    top: auto;
+    bottom: calc(122px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-width: none;
+    max-height: 44dvh;
+    overflow-y: auto;
+    z-index: 40;
+  }
+
+  #tile-inspector.hidden {
+    display: none !important;
+  }
+
+  #hud-bottombar {
+    left: 8px;
+    right: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom, 8px));
+    padding: 8px 9px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: stretch;
+    max-width: calc(100vw - 16px);
+    box-sizing: border-box;
+    z-index: 35;
+  }
+
+  #hud-bottombar .divider-v {
+    display: none !important;
+  }
+
+  #hud-bottombar .control-group {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+  }
+
+  #hud-bottombar .segmented {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    width: 100%;
+  }
+
+  #hud-bottombar .segmented button,
+  #hud-bottombar .seg-btn {
+    min-width: 0;
+    padding: 7px 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    justify-content: center;
+  }
+
+  #hud-bottombar .time-header {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  #hud-bottombar .time-readout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  #hud-bottombar .time-controls {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  #hud-bottombar input[type="range"] {
+    flex: 1 1 auto;
+    min-width: 56px;
+  }
+
+  #hud-bottombar .time-presets {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 4px;
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  #hud-bottombar .preset-btn {
+    padding: 5px 7px;
+    font-size: 11px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  body.gta-active #hud-topbar,
+  body.gta-active #hud-bottombar,
+  body.gta-active #hud-compass {
+    display: none !important;
+  }
+
+  #gta-topbar {
+    top: max(8px, env(safe-area-inset-top, 8px));
+    left: 8px;
+    right: 8px;
+    transform: none !important;
+    width: auto;
+    max-width: calc(100vw - 16px);
+    padding: 6px 8px;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  #gta-topbar .gta-keys-line,
+  #gta-topbar .gta-tp-label,
+  #gta-topbar .gta-tp-sep {
+    display: none !important;
+  }
+
+  #gta-topbar .gta-tp-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 5px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #gta-topbar .gta-tp-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  #gta-topbar .gta-tp-btn,
+  #gta-topbar button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 11px;
+    padding: 5px 8px;
+    min-height: 28px;
+  }
+
+  #gta-radar-card {
+    top: 56px;
+    left: 8px;
+    right: auto;
+    bottom: auto;
+    transform: scale(0.76);
+    transform-origin: top left;
+  }
+
+  #walk-hint,
+  .gta-controls-hint {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  #hud-topbar .brand-emblem {
+    width: 28px;
+    height: 28px;
+  }
+
+  #hud-topbar .subtitle,
+  #hud-topbar .brand-sub,
+  #hud-topbar .hud-subtitle {
+    display: none;
+  }
+
+  #hud-topbar #quality-select {
+    max-width: 132px;
+    padding: 5px 6px;
+    font-size: 11px;
+  }
+
+  #hud-topbar #btn-toggle-sidebar {
+    padding: 5px 8px;
+    font-size: 11px;
+    gap: 5px;
+  }
+
+  #hud-bottombar .group-label,
+  #hud-bottombar .bar-label {
+    display: none;
+  }
+
+  #hud-bottombar .seg-btn {
+    padding: 6px 3px;
+    font-size: 10.5px;
+    gap: 0;
+  }
+
+  #hud-bottombar .seg-btn svg {
+    display: none;
+  }
+
+  #hud-bottombar .preset-btn {
+    padding: 4px 6px;
+    font-size: 10.5px;
+  }
+
+  #tile-inspector {
+    padding: 10px 12px;
+    max-height: 41dvh;
+  }
+
+  #tile-inspector .inspector-hash code {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #tile-inspector .inspector-brief {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .hue-joy-base,
+  #hue-joy-base {
+    width: 102px;
+    height: 102px;
+  }
+
+  .hue-joy-knob,
+  #hue-joy-knob {
+    width: 42px;
+    height: 42px;
+  }
+
+  .hue-touch-btn,
+  #hue-mobile-pad button {
+    min-width: 66px;
+    height: 37px;
+    padding: 0 10px;
+    font-size: 11.5px;
+  }
+
+  #hue-touch-jump {
+    min-width: 74px;
+    height: 41px;
+  }
+}
+
+@media (pointer: coarse) and (max-width: 1024px) {
+  #walk-hint,
+  .gta-controls-hint {
+    display: none !important;
+  }
 }
 
 

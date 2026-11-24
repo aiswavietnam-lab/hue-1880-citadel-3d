@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Kinh Thành &amp; Tử Cấm Thành Huế 1880 — Trình Xem Quy Hoạch WebGL</title>
   <meta name="description" content="Hệ thống trình xem tổng hợp WebGL 30 ô quy hoạch độc lập cho dự án Phục Dựng Kinh Thành và Tử Cấm Thành Huế nguyên bản thế kỷ 19 (1880)." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' rx='6' fill='%23181411'/%3E%3Cpath d='M4 21H24M6 18H22M8 14.5H20L14 7L8 14.5Z' fill='none' stroke='%23D4A017' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E" />
@@ -418,6 +418,19 @@
   <!-- Ghi chú điều khiển đi bộ 1.70m -->
   <div id="walk-hint" class="walk-hint hidden" role="status">
     <strong>Chế độ tầm mắt thứ nhất 1.70m:</strong> Giữ chuột trái kéo để xoay góc nhìn · Phím <code>W A S D</code> hoặc mũi tên để di chuyển · <code>Shift</code> đi nhanh · <code>Esc</code> thoát.
+  </div>
+
+  <!-- Cần điều khiển cảm ứng cho Chế độ GTA & Mắt 1.70m trên điện thoại -->
+  <div id="hue-mobile-pad" class="hue-mobile-pad hidden" aria-label="Điều khiển nhân vật cảm ứng">
+    <div id="hue-joy-base" class="hue-joy-base" role="application" aria-label="Joystick di chuyển nhân vật">
+      <div class="hue-joy-ring"></div>
+      <div id="hue-joy-knob" class="hue-joy-knob"></div>
+    </div>
+    <div class="hue-touch-actions">
+      <button id="hue-touch-turbo" class="hue-touch-btn" type="button">⚡ Phi</button>
+      <button id="hue-touch-jump" class="hue-touch-btn primary" type="button">⬆ Nhảy</button>
+      <button id="hue-touch-exit" class="hue-touch-btn danger" type="button">✕ Thoát</button>
+    </div>
   </div>
 
   <!-- Thông báo Toast -->
