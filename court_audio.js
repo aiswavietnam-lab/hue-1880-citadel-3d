@@ -603,7 +603,20 @@ export class HueCourtAudioController {
   setMusicVolume(val) {
     this.musicVolume = clamp(Number(val), 0, 1);
     if (this.ctx && this.musicMasterGain) {
-      this.musicMasterGain.gain.setTargetAtTime(this.musicVolume, this.ctx.currentTime, 0.06);
+      const duckScale = this.voiceDucked ? 0.24 : 1.0;
+      this.musicMasterGain.gain.setTargetAtTime(this.musicVolume * duckScale, this.ctx.currentTime, 0.08);
+    }
+  }
+
+  setVoiceDucking(active) {
+    this.voiceDucked = Boolean(active);
+    if (this.ctx && this.musicMasterGain) {
+      const duckScale = this.voiceDucked ? 0.24 : 1.0;
+      this.musicMasterGain.gain.setTargetAtTime(this.musicVolume * duckScale, this.ctx.currentTime, 0.16);
+    }
+    if (this.ctx && this.ambientMasterGain) {
+      const ambDuck = this.voiceDucked ? 0.45 : 1.0;
+      this.ambientMasterGain.gain.setTargetAtTime(this.ambienceVolume * ambDuck, this.ctx.currentTime, 0.16);
     }
   }
 

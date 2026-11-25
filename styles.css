@@ -2042,7 +2042,7 @@ button:disabled { opacity: .46; cursor: default; }
   scrollbar-color: #8e8062 #282a22;
   scrollbar-width: thin;
 }
-#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #court-audio-sheet {
+#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #court-audio-sheet, #heritage-quest-sheet {
   top: var(--header-bottom);
   right: var(--edge-right);
   bottom: auto;
@@ -2125,7 +2125,8 @@ button:disabled { opacity: .46; cursor: default; }
 .museum-panel-head h2 { margin: 0; font: 600 18px/1.4 var(--font-serif); }
 .museum-panel-head .museum-btn { flex: none; border-color: transparent; color: var(--text-secondary); }
 .museum-panel-head .museum-kicker { margin: 0; }
-#heritage-tour { right: auto; left: var(--edge-left); }
+#heritage-tour, #heritage-quest-sheet { right: auto; left: var(--edge-left); }
+#heritage-quest-sheet { width: min(392px, calc(100% - var(--edge-left) - var(--edge-right))); }
 #heritage-stops { list-style: none; padding: 0; margin: 10px 0 0; counter-reset: stop; }
 #heritage-stops li { counter-increment: stop; border-top: 1px solid var(--border-subtle); }
 #heritage-stops button {
@@ -2277,7 +2278,7 @@ summary { cursor: pointer; color: var(--imperial-gold); padding-block: 4px; }
 .gta-radar-frame, #gta-radar { width: 86px; height: 86px; }
 #move-settings-panel { z-index: 41; }
 #hue-joy-base, #hue-mobile-pad button, #hue-touch-dock, .orch-backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
-body.hud-hidden :is(#label-layer, #heritage-preloader, #hue-mobile-pad, #hue-touch-dock, #public-err-banner),
+body.hud-hidden :is(#label-layer, #heritage-preloader, #hue-mobile-pad, #hue-touch-dock, #public-err-banner, #hue-quest-tracker, #hue-quest-talk-btn, #hue-voice-bar, #heritage-quest-sheet, #hue-quest-modal),
 body:not(.hud-hidden) #heritage-photo-tools { display: none !important; }
 .photo-tools {
   position: fixed; right: var(--edge-right); top: var(--edge-top); z-index: 52;
@@ -2322,6 +2323,7 @@ body.hue-touch-ui #hud-compass {
 }
 body.hue-touch-ui #hud-compass svg { width: 38px; height: 38px; }
 body.hue-touch-ui:has(#heritage-tour:not([hidden])) #hud-compass,
+body.hue-touch-ui:has(#heritage-quest-sheet:not([hidden])) #hud-compass,
 body.hue-touch-ui.hue-sidebar-open #hud-compass {
   visibility: hidden;
 }
@@ -2353,12 +2355,13 @@ body.hue-touch-ui #gta-topbar {
   right: calc(var(--edge-right) + 48px);
   width: min(390px, calc(100vw - var(--edge-left) - var(--edge-right) - 132px));
 }
-body.hue-touch-ui :is(#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet) {
+body.hue-touch-ui :is(#heritage-tour, #heritage-quest-sheet, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet) {
   top: var(--header-bottom);
   bottom: auto;
   max-height: calc(100dvh - var(--header-bottom) - var(--pad-space) - 14px);
 }
 body.hue-touch-ui #heritage-tour,
+body.hue-touch-ui #heritage-quest-sheet,
 body.hue-touch-ui #hud-sidebar {
   left: var(--edge-left);
   right: auto;
@@ -2387,8 +2390,9 @@ body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-set
 @media (max-width: 900px) {
   #hud-topbar .museum-btn:not(#heritage-tour-toggle) span,
   #hud-topbar #btn-toggle-sidebar span { display: none; }
-  #hud-topbar .museum-btn:not(#heritage-tour-toggle),
+  #hud-topbar .museum-btn:not(#heritage-tour-toggle):not(#heritage-quest-toggle),
   #hud-topbar #btn-toggle-sidebar { width: 38px; padding: 0; }
+  #heritage-quest-toggle { width: auto; padding: 4px 7px; gap: 4px; }
 }
 
 /* Bố cục Điện thoại Dọc (< 700px): Thanh chế độ gắn ngay dưới Header, tấm thông tin mở dạng Bottom Sheet không che cần điều khiển */
@@ -2414,13 +2418,15 @@ body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-set
     grid-area: 2/1/3/3;
     display: flex;
     justify-content: space-between;
-    gap: 4px;
+    gap: 3px;
     flex-wrap: nowrap;
     width: 100%;
   }
-  #hud-topbar .museum-btn, #hud-topbar #btn-toggle-sidebar { min-height: 36px; }
-  #hud-topbar .museum-btn:not(#heritage-tour-toggle), #hud-topbar #btn-toggle-sidebar { width: 36px; flex: 0 0 auto; }
-  #heritage-tour-toggle { flex: 1 1 auto; padding: 4px 8px; font-size: 11.5px; gap: 5px; }
+  #hud-topbar .museum-btn, #hud-topbar #btn-toggle-sidebar { min-height: 35px; }
+  #hud-topbar .museum-btn:not(#heritage-tour-toggle):not(#heritage-quest-toggle),
+  #hud-topbar #btn-toggle-sidebar { width: 32px; flex: 0 0 auto; }
+  #heritage-quest-toggle { flex: 0 0 auto; padding: 4px 5px; gap: 3px; }
+  #heritage-tour-toggle { flex: 1 1 auto; min-width: 0; padding: 4px 6px; font-size: 11px; gap: 4px; }
 
   #hue-touch-dock {
     top: var(--header-bottom);
@@ -2496,8 +2502,8 @@ body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-set
     width: 39px;
   }
 
-  :is(#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet),
-  body.hue-touch-ui :is(#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet) {
+  :is(#heritage-tour, #heritage-quest-sheet, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet),
+  body.hue-touch-ui :is(#heritage-tour, #heritage-quest-sheet, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet) {
     top: auto;
     bottom: var(--edge-bottom);
     left: var(--edge-left);
@@ -2535,7 +2541,8 @@ body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-set
 }
 
 @media (max-width: 380px) {
-  #hud-topbar .museum-btn:not(#heritage-tour-toggle), #hud-topbar #btn-toggle-sidebar { width: 33px; }
+  #hud-topbar .museum-btn:not(#heritage-tour-toggle):not(#heritage-quest-toggle),
+  #hud-topbar #btn-toggle-sidebar { width: 30px; }
   .hue-dock-btn { padding: 4px 8px; font-size: 11px; }
 }
 
@@ -2563,15 +2570,15 @@ body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-set
   #hue-mobile-pad .hue-touch-btn { min-height: 34px; padding: 3px 9px; font-size: 11px; }
   #hue-mobile-pad .hue-touch-btn.icon-only { min-width: 34px; width: 34px; }
   body.gta-active #gta-radar-card { width: fit-content; }
-  #heritage-card, #hud-bottombar, #move-settings-panel, #heritage-tour, #tile-inspector, #hud-sidebar, #court-audio-sheet,
-  body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #move-settings-panel, #heritage-tour, #tile-inspector, #hud-sidebar, #court-audio-sheet) {
+  #heritage-card, #hud-bottombar, #move-settings-panel, #heritage-tour, #heritage-quest-sheet, #tile-inspector, #hud-sidebar, #court-audio-sheet,
+  body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #move-settings-panel, #heritage-tour, #heritage-quest-sheet, #tile-inspector, #hud-sidebar, #court-audio-sheet) {
     left: auto; right: var(--edge-right); width: min(360px, 56vw);
     top: var(--header-bottom); bottom: auto;
     max-height: calc(100dvh - var(--header-bottom) - 12px);
     z-index: 51;
   }
-  #heritage-tour, #hud-sidebar,
-  body.hue-touch-ui :is(#heritage-tour, #hud-sidebar) {
+  #heritage-tour, #heritage-quest-sheet, #hud-sidebar,
+  body.hue-touch-ui :is(#heritage-tour, #heritage-quest-sheet, #hud-sidebar) {
     left: var(--edge-left); right: auto;
   }
 }
@@ -2594,6 +2601,441 @@ body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-set
   font-size: 15px; line-height: 1.3; text-wrap: pretty;
 }
 #heritage-card[data-presentation="summary"] #heritage-read-more { grid-area: 1/2; min-height: 38px; }
+
+/* =========================================================================
+ * NHIỆM VỤ KHÁM PHÁ CỐ ĐÔ 1880 & GIỌNG ĐỌC AI TỰ NHIÊN MIỄN PHÍ
+ * ========================================================================= */
+.quest-top-btn {
+  border-color: rgb(229 199 135 / 56%);
+  background: rgb(132 62 53 / 36%);
+  color: var(--imperial-gold-bright);
+}
+.quest-top-btn:hover:enabled,
+.quest-top-btn[aria-expanded="true"] {
+  background: rgb(148 68 58 / 55%);
+  border-color: var(--imperial-gold-bright);
+}
+.quest-badge-pill {
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: rgb(20 22 18 / 65%);
+  border: 1px solid rgb(229 199 135 / 42%);
+  color: #fce5a8;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.quest-rank-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 8px;
+  margin: 10px 0 12px;
+  padding: 8px 11px;
+  border-radius: 6px;
+  background: linear-gradient(120deg, rgb(118 46 37 / 42%), rgb(35 32 23 / 72%));
+  border: 1px solid rgb(229 199 135 / 42%);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.quest-rank-banner strong {
+  color: var(--imperial-gold-bright);
+  font-family: var(--font-serif);
+  font-size: 13.5px;
+}
+
+.quest-seal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.quest-seal-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  padding: 7px 6px;
+  border-radius: 6px;
+  border: 1px dashed rgb(225 201 153 / 28%);
+  background: rgb(14 16 14 / 45%);
+  color: var(--text-muted);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.quest-seal-card .seal-stamp {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1.5px solid rgb(225 201 153 / 32%);
+  font: 700 10px/1 var(--font-serif);
+  letter-spacing: 0.04em;
+}
+.quest-seal-card .seal-title {
+  font-size: 11px;
+  line-height: 1.28;
+  font-weight: 600;
+}
+.quest-seal-card .seal-sub {
+  font: 10px/1.2 var(--font-mono);
+  opacity: 0.78;
+}
+.quest-seal-card.earned {
+  border-style: solid;
+  border-color: rgb(226 112 94 / 72%);
+  background: linear-gradient(145deg, rgb(126 36 28 / 38%), rgb(34 22 20 / 72%));
+  color: #fdebd2;
+}
+.quest-seal-card.earned .seal-stamp {
+  border-color: #f38b7a;
+  background: #9e2a20;
+  color: #fff3e6;
+  box-shadow: 0 2px 8px rgb(158 42 32 / 48%);
+}
+
+.quest-chapter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.quest-chapter-item {
+  padding: 10px 11px;
+  border-radius: 7px;
+  border: 1px solid var(--border-subtle);
+  background: rgb(14 17 14 / 48%);
+}
+.quest-chapter-item.current {
+  border-color: var(--imperial-gold);
+  background: rgb(214 182 117 / 10%);
+}
+.quest-chapter-item.done {
+  border-color: rgb(118 182 161 / 52%);
+}
+.quest-ch-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.quest-ch-status {
+  flex: none;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  border: 1px solid var(--border-subtle);
+  color: var(--imperial-gold-bright);
+}
+.quest-chapter-item.done .quest-ch-status {
+  border-color: rgb(118 182 161 / 65%);
+  color: #a9ebd2;
+}
+.quest-ch-place {
+  margin: 4px 0 3px;
+  font-size: 11.5px;
+  color: #a4d3c1;
+}
+.quest-ch-obj {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.48;
+  color: var(--text-secondary);
+}
+.quest-ch-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.quest-ch-actions .museum-btn {
+  flex: 1 1 128px;
+  min-height: 34px;
+  padding: 5px 8px;
+  font-size: 11.5px;
+}
+.quest-sheet-foot {
+  margin-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 4px;
+}
+
+/* Thanh theo dõi mục tiêu hiện tại & Nút đối thoại NPC */
+.hue-quest-tracker {
+  position: fixed;
+  top: var(--header-bottom);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 32;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(460px, calc(100vw - 220px));
+  padding: 5px 8px 5px 12px;
+  border-radius: 999px;
+  border: 1px solid rgb(229 199 135 / 45%);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 35%);
+}
+.hue-quest-tracker.hidden,
+.hue-quest-talk-btn.hidden,
+.hue-voice-bar.hidden,
+.quest-modal-backdrop.hidden {
+  display: none !important;
+}
+.quest-tracker-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f5cb6c;
+  box-shadow: 0 0 8px #f5cb6c;
+  flex: none;
+}
+.hue-quest-tracker-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.quest-mini-btn {
+  flex: none;
+  min-height: 26px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid #e7ca92;
+  background: #d9bd85;
+  color: #2b2115;
+  font: 600 11px/1.2 var(--font-sans);
+  cursor: pointer;
+}
+.quest-mini-btn:hover { background: #efd7a3; }
+
+.hue-quest-talk-btn {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--edge-bottom) + var(--pad-space) + 12px);
+  z-index: 44;
+  min-height: 42px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1.5px solid #f5d68e;
+  background: linear-gradient(135deg, #8f3529, #57211a);
+  color: #fff6e4;
+  font: 600 13px/1.3 var(--font-sans);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 48%);
+  cursor: pointer;
+}
+.hue-quest-talk-btn:hover {
+  background: linear-gradient(135deg, #a63e30, #692820);
+}
+
+/* Nút phát thuyết minh AI & Thanh phụ đề Giọng đọc AI */
+.voice-speak-btn {
+  border-color: rgb(118 182 161 / 62%);
+  background: rgb(36 96 82 / 28%);
+  color: #d7f7eb;
+}
+.voice-speak-btn:hover:enabled,
+.voice-speak-btn.is-speaking {
+  border-color: #8ee2c6;
+  background: rgb(44 138 119 / 45%);
+  color: #ffffff;
+}
+.inspector-voice-btn {
+  width: 100%;
+  margin: 0 0 8px;
+}
+
+.hue-voice-bar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--edge-bottom) + var(--pad-space) + 60px);
+  z-index: 45;
+  width: min(540px, calc(100vw - var(--edge-left) - var(--edge-right)));
+  padding: 9px 13px;
+  border: 1px solid rgb(138 206 184 / 52%);
+  box-shadow: 0 8px 26px rgb(0 0 0 / 44%);
+}
+.hue-voice-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+#hue-voice-speaker {
+  font-size: 11.5px;
+  color: #9fe6cd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hue-voice-btns {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+}
+.hue-voice-chip {
+  min-height: 24px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: rgb(15 19 16 / 65%);
+  color: var(--text-secondary);
+  font: 500 10.5px/1.2 var(--font-sans);
+  cursor: pointer;
+}
+.hue-voice-chip.active {
+  border-color: rgb(118 182 161 / 68%);
+  color: #bdf2df;
+}
+.hue-voice-chip.danger {
+  border-color: rgb(228 130 112 / 55%);
+  color: #ffd5cc;
+}
+.hue-voice-text {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.52;
+  color: var(--text-primary);
+  max-height: 4.6em;
+  overflow-y: auto;
+}
+
+/* Hộp hội thoại NPC & Giải đố nhận Ấn triện */
+.quest-modal-backdrop {
+  z-index: 75;
+  padding: 14px;
+}
+.quest-modal-shell {
+  width: min(560px, 100%);
+  max-height: min(86dvh, 720px);
+  overflow-y: auto;
+  padding: 18px 20px;
+  border: 1px solid var(--border-strong);
+  border-top: 3px solid var(--imperial-gold);
+  box-shadow: 0 18px 48px rgb(0 0 0 / 62%);
+}
+.quest-modal-place {
+  margin: 3px 0 0;
+  font-size: 12px;
+  color: #a4d3c1;
+}
+.quest-dialogue-box {
+  margin: 12px 0 10px;
+  padding: 11px 14px;
+  border-left: 3px solid var(--imperial-gold);
+  border-radius: 0 6px 6px 0;
+  background: rgb(12 15 12 / 56%);
+  color: var(--text-primary);
+  font-size: 13.5px;
+  line-height: 1.62;
+}
+.quest-quiz-block {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+.quest-question-title {
+  margin: 0 0 10px;
+  font: 600 14.5px/1.45 var(--font-serif);
+  color: var(--imperial-gold-bright);
+}
+.quest-choices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.quest-choice-btn {
+  width: 100%;
+  text-align: left;
+  min-height: 42px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  background: rgb(18 22 18 / 72%);
+  color: var(--text-primary);
+  font: 500 13px/1.45 var(--font-sans);
+  cursor: pointer;
+  transition: border-color 0.14s ease, background-color 0.14s ease;
+}
+.quest-choice-btn:hover {
+  border-color: var(--border-strong);
+  background: rgb(214 182 117 / 14%);
+}
+.quest-choice-btn.correct {
+  border-color: #6ce0c6;
+  background: rgb(36 112 92 / 42%);
+  color: #eafff9;
+}
+.quest-choice-btn.wrong {
+  border-color: #e39b6d;
+  background: rgb(110 52 34 / 38%);
+}
+.quest-feedback {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+.quest-feedback.hint {
+  border: 1px solid rgb(229 182 115 / 55%);
+  background: rgb(88 58 24 / 38%);
+  color: #fde6be;
+}
+.quest-feedback.success {
+  border: 1px solid rgb(118 182 161 / 68%);
+  background: rgb(28 84 69 / 42%);
+  color: #dcfaee;
+}
+.quest-modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+.quest-primary-next {
+  width: 100%;
+  min-height: 40px;
+  background: #d9bd85;
+  border-color: #e7ca92;
+  color: #2b2115;
+  font-weight: 600;
+}
+.quest-primary-next:hover:enabled { background: #efd7a3; }
+
+@media (max-width: 699px) {
+  .hue-quest-tracker {
+    top: calc(var(--header-bottom) + 46px);
+    max-width: calc(100vw - 134px);
+    padding: 4px 6px 4px 9px;
+    gap: 5px;
+  }
+  .hue-quest-tracker-text { font-size: 11px; }
+  .quest-mini-btn { padding: 2px 8px; font-size: 10.5px; min-height: 24px; }
+  body:has(.heritage-sheet:not([hidden])) .hue-quest-tracker,
+  body:has(#gta-topbar:not([hidden])) .hue-quest-tracker,
+  body.hue-sidebar-open .hue-quest-tracker,
+  body.hue-inspector-open .hue-quest-tracker {
+    display: none !important;
+  }
+  body:has(.heritage-sheet:not([hidden])) .hue-voice-bar,
+  body.hue-inspector-open .hue-voice-bar {
+    top: calc(var(--header-bottom) + 44px);
+    bottom: auto;
+  }
+  .quest-modal-shell {
+    padding: 14px 15px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .heritage-sheet, .tile-label, #heritage-preloader, .hud-panel, .court-audio-btn { animation: none !important; transition: none !important; }
 }

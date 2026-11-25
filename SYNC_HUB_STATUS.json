@@ -23,34 +23,36 @@
     "app.js (Half-Life 120Hz Physics + High-Detail 1880 Character + Mobile Dual-Thumb Touch Controls)",
     "render_culling_engine.js (Occlusion Culling + Interior Culling + 2D CSR TileSpatialCollider)",
     "pbr_materials.js + assets/pbr/* (Poly Haven CC0 Shared PBR Material Pool + PMREM Sky Reflection)",
-    "court_audio.js + assets/audio/* (Hue 1880 Nha Nhac, Ca Cung Dinh, Ceremonial Bell/Gong & Half-Life/Bird's-Eye Movement Spatial Audio)",
     "CSM.js",
     "CSMFrustum.js",
     "CSMShader.js",
+    "court_audio.js",
+    "heritage_quests.js",
     "heritage_ui.js",
+    "heritage_voice.js",
     "hue_atmosphere_water.js",
     "hue_postfx.js",
     "hue_realism_shaders.js",
-    "hue_view_performance.js",
-    "hue_touch_controls.js"
+    "hue_touch_controls.js",
+    "hue_view_performance.js"
   ],
   "completed_tiles": 30,
   "total_tiles": 30,
-  "last_sync_backend": "cli",
-  "last_sync_applied_files": 24,
-  "last_sync_utc": "2026-11-25T14:58:55+00:00",
+  "last_sync_backend": "rclone",
+  "last_sync_applied_files": 9,
+  "last_sync_utc": "2026-11-25T16:21:38+00:00",
   "tile_versions": {
     "T01": {
       "version": 13,
-      "sha256_12": "a8e5d1f7ee6b"
+      "sha256_12": "bc767c16e31a"
     },
     "T02": {
       "version": 18,
       "sha256_12": "8a2c80a68cb7"
     },
     "T03": {
-      "version": 17,
-      "sha256_12": "ae47058658a2"
+      "version": 18,
+      "sha256_12": "eb247b471cbb"
     },
     "T04": {
       "version": 18,
@@ -69,16 +71,16 @@
       "sha256_12": "747f9b4d2aec"
     },
     "T08": {
-      "version": 15,
-      "sha256_12": "33eeae6e0602"
+      "version": 18,
+      "sha256_12": "731f21d1d75b"
     },
     "T09": {
       "version": 18,
       "sha256_12": "4bee7df73947"
     },
     "T10": {
-      "version": 17,
-      "sha256_12": "23aa197f6e53"
+      "version": 18,
+      "sha256_12": "7a4dc1003cf6"
     },
     "T11": {
       "version": 18,
@@ -89,16 +91,16 @@
       "sha256_12": "76f95b207dd6"
     },
     "T13": {
-      "version": 14,
-      "sha256_12": "722d9a18a9c8"
+      "version": 15,
+      "sha256_12": "958a049e8c69"
     },
     "T14": {
-      "version": 17,
-      "sha256_12": "e17a9f1c6bf1"
+      "version": 18,
+      "sha256_12": "e342355597dd"
     },
     "T15": {
-      "version": 17,
-      "sha256_12": "37a7043dfd08"
+      "version": 18,
+      "sha256_12": "46e08a13bb79"
     },
     "T16": {
       "version": 14,
@@ -121,16 +123,16 @@
       "sha256_12": "5eb28a6359b7"
     },
     "T21": {
-      "version": 13,
-      "sha256_12": "09b7de43e9d5"
+      "version": 14,
+      "sha256_12": "1f56bba4f3b2"
     },
     "T22": {
       "version": 14,
       "sha256_12": "2184238353b3"
     },
     "T23": {
-      "version": 11,
-      "sha256_12": "3631297b00de"
+      "version": 12,
+      "sha256_12": "cef332970721"
     },
     "T24": {
       "version": 13,

@@ -7,8 +7,9 @@
      GDRIVE_OAUTH_REFRESH_TOKEN + GDRIVE_CLIENT_ID + GDRIVE_CLIENT_SECRET, hoặc GDRIVE_API_KEY)
 - Kiểm tra cả `03_assets_glb/tiles` lẫn `03_assets_glb/inbox` (chỉ nhận file inbox có
   companion `task_*_manifest.json` trạng thái completed, khớp SHA-256 và hợp lệ chuẩn glTF 2.0).
-- Tuyệt đối không ghi đè code giao diện điện thoại / PBR (`index.html`, `styles.css`, `app.js`,
-  `pbr_materials.js`, `assets/pbr/`).
+- Tuyệt đối không ghi đè code giao diện điện thoại / PBR / Nhiệm vụ / Giọng đọc AI (`index.html`,
+  `styles.css`, `app.js`, `pbr_materials.js`, `heritage_quests.js`, `heritage_voice.js`,
+  `assets/pbr/`, `assets/quests/`, `assets/voice/`, `assets/audio/`).
 """
 import argparse
 import base64

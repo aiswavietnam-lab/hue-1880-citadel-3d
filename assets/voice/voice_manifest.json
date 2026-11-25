@@ -1,0 +1,298 @@
+{
+  "schema": "hue_1880_voice_manifest_v1",
+  "generated_utc": "2026-11-25T15:51:49+00:00",
+  "engine": "Microsoft Edge Neural TTS (Free Static Pre-Generated + Web Speech API Fallback)",
+  "voices": {
+    "narrator_female": {
+      "voice": "vi-VN-HoaiMyNeural",
+      "rate": "-5%",
+      "pitch": "-1Hz",
+      "speaker_label": "Thuyết minh Di sản"
+    },
+    "official_male": {
+      "voice": "vi-VN-NamMinhNeural",
+      "rate": "-6%",
+      "pitch": "-3Hz",
+      "speaker_label": "Quan Triều Đình · Tự Đức 1880"
+    }
+  },
+  "total_clips": 18,
+  "total_bytes": 1895472,
+  "clips": [
+    {
+      "id": "narration_T28",
+      "category": "narration",
+      "tile_ids": [
+        "T28",
+        "T29"
+      ],
+      "quest_id": null,
+      "speaker": "Thuyết minh Di sản",
+      "voice_model": "vi-VN-HoaiMyNeural",
+      "title": "Bến Nghênh Lương Đình và Phu Văn Lâu",
+      "text": "Từ bến ngự bên dòng sông Hương nhìn lên, hai nếp mái cong của Nghênh Lương Tạ và Phu Văn Lâu mở đầu trục Thần đạo của Kinh thành Huế. Phu Văn Lâu dựng năm 1819 dưới triều Gia Long là nơi niêm yết chiếu chỉ của nhà vua và bảng vàng khoa cử. Phía trước là Nghênh Lương Tạ dựng năm 1852, nơi vua Tự Đức dừng chân hóng mát và ngự thuyền rồng trên dòng Hương Giang.",
+      "url": "./assets/voice/narration_T28.mp3",
+      "bytes": 139680,
+      "duration_sec": 23.28,
+      "sha256_12": "7122d269c6b8"
+    },
+    {
+      "id": "narration_T01",
+      "category": "narration",
+      "tile_ids": [
+        "T01"
+      ],
+      "quest_id": null,
+      "speaker": "Thuyết minh Di sản",
+      "voice_model": "vi-VN-HoaiMyNeural",
+      "title": "Kỳ Đài và Cửu Vị Thần Công",
+      "text": "Sừng sững ở chính mặt nam Kinh thành là Kỳ Đài ba tầng xây gạch vồ từ năm 1807 thời Gia Long. Vào năm 1880, cột cờ trên đỉnh đài vẫn làm bằng gỗ lim hai tầng có vọng đẩu canh gác. Hai bên tả hữu quảng trường là Pháo xưởng đặt Cửu Vị Thần Công, chín khẩu đại bác bằng đồng tượng trưng cho bốn mùa và ngũ hành bảo hộ kinh đô.",
+      "url": "./assets/voice/narration_T01.mp3",
+      "bytes": 131328,
+      "duration_sec": 21.89,
+      "sha256_12": "7ce94ef4b3b9"
+    },
+    {
+      "id": "narration_T02",
+      "category": "narration",
+      "tile_ids": [
+        "T02"
+      ],
+      "quest_id": null,
+      "speaker": "Thuyết minh Di sản",
+      "voice_model": "vi-VN-HoaiMyNeural",
+      "title": "Ngọ Môn và Lầu Ngũ Phụng",
+      "text": "Ngọ Môn được vua Minh Mạng cho xây dựng năm 1833 trên nền đài đá Thanh và gạch vồ hình chữ U, mở năm lối đi nghiêm cẩn. Cửa chính giữa chỉ dành riêng cho Hoàng đế. Phía trên là Lầu Ngũ Phụng nâng chín bộ mái ngói lưu ly vàng và xanh trên một trăm cột gỗ lim, nơi nhà vua ngự ban lịch và dự lễ Truyền lô xướng danh tân tiến sĩ.",
+      "url": "./assets/voice/narration_T02.mp3",
+      "bytes": 126000,
+      "duration_sec": 21.0,
+      "sha256_12": "c9027138923c"
+    },
+    {
+      "id": "narration_T04",
+      "category": "narration",
+      "tile_ids": [
+        "T04",
+        "T03"
+      ],
+      "quest_id": null,
+      "speaker": "Thuyết minh Di sản",
+      "voice_model": "vi-VN-HoaiMyNeural",
+      "title": "Cầu Trung Đạo và Điện Thái Hòa",
+      "text": "Bước qua cầu Trung Đạo giữa mặt nước hồ Thái Dịch là sân Đại Triều Nghi hai tầng đá Thanh dẫn lên Điện Thái Hòa, trung tâm quyền lực tối cao của triều Nguyễn. Ngôi điện xây theo thức trùng thiềm điệp ốc lợp ngói Hoàng lưu ly, bên trong tám mươi cột gỗ lim sơn son thếp vàng nâng đỡ vòm trần và bệ Ngai vàng dưới Bửu tán cửu long.",
+      "url": "./assets/voice/narration_T04.mp3",
+      "bytes": 108288,
+      "duration_sec": 18.05,
+      "sha256_12": "1682c47cac70"
+    },
+    {
+      "id": "narration_T06",
+      "category": "narration",
+      "tile_ids": [
+        "T06",
+        "T05"
+      ],
+      "quest_id": null,
+      "speaker": "Thuyết minh Di sản",
+      "voice_model": "vi-VN-HoaiMyNeural",
+      "title": "Đại Cung Môn và Điện Cần Chánh",
+      "text": "Qua khỏi Đại Cung Môn là không gian thâm nghiêm của Tử Cấm Thành với tâm điểm là Điện Cần Chánh dựng từ năm 1804. Nếu Điện Thái Hòa dành cho lễ Đại triều, thì Điện Cần Chánh là nơi Hoàng đế thiết thường triều, giải quyết chính sự hằng ngày cùng Nội các và khoản đãi các đoàn sứ bộ.",
+      "url": "./assets/voice/narration_T06.mp3",
+      "bytes": 102240,
+      "duration_sec": 17.04,
+      "sha256_12": "a2a2f2174921"
+    },
+    {
+      "id": "narration_T09",
+      "category": "narration",
+      "tile_ids": [
+        "T09"
+      ],
+      "quest_id": null,
+      "speaker": "Thuyết minh Di sản",
+      "voice_model": "vi-VN-HoaiMyNeural",
+      "title": "Thế Tổ Miếu, Hiển Lâm Các và Cửu Đỉnh",
+      "text": "Ở góc tây nam Hoàng thành là Thế Tổ Miếu dựng năm 1821, nơi thờ các vị vua triều Nguyễn. Trước sân miếu, đối diện lầu Hiển Lâm Các cao mười bảy mét là chín đỉnh đồng Cửu Đỉnh đúc từ năm 1835 đến năm 1837. Trên thân chín đỉnh chạm nổi một trăm sáu mươi hai họa tiết núi sông, sản vật và biển đảo như bộ bách khoa thư bằng đồng của nước Đại Nam.",
+      "url": "./assets/voice/narration_T09.mp3",
+      "bytes": 144288,
+      "duration_sec": 24.05,
+      "sha256_12": "3867f724372e"
+    },
+    {
+      "id": "narration_T11",
+      "category": "narration",
+      "tile_ids": [
+        "T11"
+      ],
+      "quest_id": null,
+      "speaker": "Thuyết minh Di sản",
+      "voice_model": "vi-VN-HoaiMyNeural",
+      "title": "Cung Diên Thọ",
+      "text": "Phía tây Tử Cấm Thành là Cung Diên Thọ, quần thể cung điện và vườn cảnh dành phụng dưỡng Hoàng thái hậu Từ Dụ dưới triều Tự Đức. Chính điện thanh nhã nối liền lầu Khương Ninh Các và thủy tạ Trường Du Tạ soi bóng bên mặt hồ sen tĩnh lặng.",
+      "url": "./assets/voice/narration_T11.mp3",
+      "bytes": 83952,
+      "duration_sec": 13.99,
+      "sha256_12": "e8da9665905b"
+    },
+    {
+      "id": "narration_T15",
+      "category": "narration",
+      "tile_ids": [
+        "T15"
+      ],
+      "quest_id": null,
+      "speaker": "Thuyết minh Di sản",
+      "voice_model": "vi-VN-HoaiMyNeural",
+      "title": "Nhà hát Duyệt Thị Đường",
+      "text": "Nằm phía đông nam Tử Cấm Thành là Duyệt Thị Đường, nhà hát cung đình cổ nhất Việt Nam được dựng năm Minh Mạng thứ bảy, tức năm 1826. Dưới vòm trần xanh vẽ trăng sao và mây rồng, nhà vua cùng hoàng gia và quần thần thưởng thức tuồng cung đình cùng Nhã nhạc Đại Nội.",
+      "url": "./assets/voice/narration_T15.mp3",
+      "bytes": 99792,
+      "duration_sec": 16.63,
+      "sha256_12": "363ec4e57cbc"
+    },
+    {
+      "id": "narration_T20",
+      "category": "narration",
+      "tile_ids": [
+        "T20"
+      ],
+      "quest_id": null,
+      "speaker": "Thuyết minh Di sản",
+      "voice_model": "vi-VN-HoaiMyNeural",
+      "title": "Đàn Xã Tắc",
+      "text": "Phía tây Hoàng thành là Đàn Xã Tắc đắp năm 1806 bằng đất sạch ngũ sắc gom từ khắp các trấn thành trong cả nước. Hằng năm vào mùa xuân và mùa thu, đích thân nhà vua hoặc khâm mạng đại thần cử hành đại lễ tế Thần Đất và Thần Lúa cầu cho quốc thái dân an, mùa màng tươi tốt.",
+      "url": "./assets/voice/narration_T20.mp3",
+      "bytes": 101376,
+      "duration_sec": 16.9,
+      "sha256_12": "4149ade96bc1"
+    },
+    {
+      "id": "narration_T24",
+      "category": "narration",
+      "tile_ids": [
+        "T24"
+      ],
+      "quest_id": null,
+      "speaker": "Thuyết minh Di sản",
+      "voice_model": "vi-VN-HoaiMyNeural",
+      "title": "Tàng Thư Lâu và Hồ Học Hải",
+      "text": "Giữa mặt nước vuông vức của hồ Học Hải phía đông bắc Kinh thành là Tàng Thư Lâu xây dựng năm 1825. Tòa lầu hai tầng bằng gạch và đá nằm biệt lập trên đảo giữa hồ, nối với bờ chỉ bằng một chiếc cầu đá nhằm chống ẩm và ngăn hỏa hoạn, bảo vệ hàng vạn tập Châu bản, Quốc sử và Địa bạ triều đình.",
+      "url": "./assets/voice/narration_T24.mp3",
+      "bytes": 110592,
+      "duration_sec": 18.43,
+      "sha256_12": "a4acbc35e160"
+    },
+    {
+      "id": "quest_01_intro",
+      "category": "quest",
+      "tile_ids": [],
+      "quest_id": "Q01",
+      "speaker": "Quan Truyền Lô Bộ Lễ",
+      "voice_model": "vi-VN-NamMinhNeural",
+      "title": "Chương 1: Truyền Lô Bến Ngự",
+      "text": "Chúc mừng tân khoa tiến sĩ vừa đỗ đạt Ân khoa năm Tự Đức thứ ba mươi ba. Bảng vàng vừa được rước ra niêm yết tại Phu Văn Lâu trước bến sông Hương này. Hãy trả lời câu hỏi khảo cứu nghi điển để nhận Lệnh Bài Nhập Thành, bắt đầu hành trình tiến cung.",
+      "url": "./assets/voice/quest_01_intro.mp3",
+      "bytes": 96048,
+      "duration_sec": 16.01,
+      "sha256_12": "66abe81eb1ac"
+    },
+    {
+      "id": "quest_02_intro",
+      "category": "quest",
+      "tile_ids": [],
+      "quest_id": "Q02",
+      "speaker": "Đội Trưởng Cẩm Y Thị Vệ",
+      "voice_model": "vi-VN-NamMinhNeural",
+      "title": "Chương 2: Ngưỡng Vọng Kỳ Đài",
+      "text": "Tân khoa dừng bước trình lệnh bài. Trước mắt ngài là Kỳ Đài ba tầng trấn giữ mặt nam Kinh thành và chín cỗ Cửu Vị Thần Công đúc từ thời Đức Thế Tổ Gia Long. Hãy chứng tỏ kiến thức về đài cờ kinh đô trước khi tiến đến cửa Ngọ Môn.",
+      "url": "./assets/voice/quest_02_intro.mp3",
+      "bytes": 91296,
+      "duration_sec": 15.22,
+      "sha256_12": "913728e915ec"
+    },
+    {
+      "id": "quest_03_intro",
+      "category": "quest",
+      "tile_ids": [],
+      "quest_id": "Q03",
+      "speaker": "Thị Vệ Trực Ngọ Môn",
+      "voice_model": "vi-VN-NamMinhNeural",
+      "title": "Chương 3: Nghi Lễ Ngọ Môn Quan",
+      "text": "Đây là Ngọ Môn Quan, cửa chính nam của Hoàng thành. Phép tắc triều đình cực kỳ nghiêm cẩn: năm cửa mở dưới Lầu Ngũ Phụng nhưng không phải cửa nào bề tôi cũng được bước qua. Ngài hãy nêu rõ phép đi qua cửa Ngọ Môn để được điểm chiêng mở lối vào Đại Nội.",
+      "url": "./assets/voice/quest_03_intro.mp3",
+      "bytes": 100080,
+      "duration_sec": 16.68,
+      "sha256_12": "a5815eeb7806"
+    },
+    {
+      "id": "quest_04_intro",
+      "category": "quest",
+      "tile_ids": [],
+      "quest_id": "Q04",
+      "speaker": "Quan Thượng Thư Bộ Lễ",
+      "voice_model": "vi-VN-NamMinhNeural",
+      "title": "Chương 4: Đại Triều Điện Thái Hòa",
+      "text": "Khâm phụng Hoàng Thượng chuẩn ban ân điển! Tân khoa đã bước qua cầu Trung Đạo tới sân Đại Triều Nghi trước Điện Thái Hòa. Ngước nhìn mái ngói Hoàng lưu ly và tám mươi cột gỗ lim thếp vàng, ngài hãy hoàn thành câu khảo cứu kiến trúc chính điện để nhận Ấn Đại Triều.",
+      "url": "./assets/voice/quest_04_intro.mp3",
+      "bytes": 97920,
+      "duration_sec": 16.32,
+      "sha256_12": "1e9868305ef6"
+    },
+    {
+      "id": "quest_05_intro",
+      "category": "quest",
+      "tile_ids": [],
+      "quest_id": "Q05",
+      "speaker": "Quan Tự Khanh Thái Thường Tự",
+      "voice_model": "vi-VN-NamMinhNeural",
+      "title": "Chương 5: Khảo Cứu Cửu Đỉnh",
+      "text": "Nơi sân Thế Tổ Miếu và Hiển Lâm Các này hội tụ chín đỉnh đồng Cửu Đỉnh thiêng liêng của quốc gia, mỗi đỉnh ứng với miếu hiệu một bậc đế vương nhà Nguyễn. Tân khoa hãy giải đáp bí ẩn trên thân đỉnh đồng để thỉnh tiếng Đại Hồng Chung.",
+      "url": "./assets/voice/quest_05_intro.mp3",
+      "bytes": 83376,
+      "duration_sec": 13.9,
+      "sha256_12": "17e6d0510e0e"
+    },
+    {
+      "id": "quest_06_intro",
+      "category": "quest",
+      "tile_ids": [],
+      "quest_id": "Q06",
+      "speaker": "Nhạc Quan Thanh Bình Thự",
+      "voice_model": "vi-VN-NamMinhNeural",
+      "title": "Chương 6: Thưởng Âm Duyệt Thị Đường",
+      "text": "Hoan nghênh tân khoa tiến vào Duyệt Thị Đường trong Tử Cấm Thành. Sau buổi đại triều, triều đình mở tiệc ban yến và tấu khúc Đăng Đàn Cung tại nhà hát cổ này. Hãy trả lời câu hỏi về âm nhạc cung đình để lĩnh Ấn Thanh Bình Nhã Nhạc.",
+      "url": "./assets/voice/quest_06_intro.mp3",
+      "bytes": 87984,
+      "duration_sec": 14.66,
+      "sha256_12": "1261f08b176f"
+    },
+    {
+      "id": "quest_07_intro",
+      "category": "quest",
+      "tile_ids": [],
+      "quest_id": "Q07",
+      "speaker": "Quan Hàn Lâm Viện Biên Tu",
+      "voice_model": "vi-VN-NamMinhNeural",
+      "title": "Chương 7: Mật Điển Tàng Thư Lâu",
+      "text": "Ngài đã tới đích cuối tại Tàng Thư Lâu giữa hồ Học Hải. Mọi châu bản ngự phê và quốc sử Đại Nam đều được gìn giữ giữa bốn bề mặt nước nơi đây. Hãy giải đáp câu hỏi cuối cùng để lưu danh vào sổ vàng Hàn Lâm Viện.",
+      "url": "./assets/voice/quest_07_intro.mp3",
+      "bytes": 87696,
+      "duration_sec": 14.62,
+      "sha256_12": "cd872fd6643a"
+    },
+    {
+      "id": "quest_complete",
+      "category": "quest",
+      "tile_ids": [],
+      "quest_id": "COMPLETE",
+      "speaker": "Thượng Thư Nội Các",
+      "voice_model": "vi-VN-NamMinhNeural",
+      "title": "Hoàn Tất Sứ Mệnh Khâm Sai Bác Cổ",
+      "text": "Khâm thử! Tân khoa đã thu thập trọn vẹn bảy đạo Ấn triện Hoàng cung từ bến sông Hương qua Ngọ Môn, Điện Thái Hòa, Thế Tổ Miếu, Duyệt Thị Đường đến Tàng Thư Lâu. Triều đình chính thức sắc phong ngài danh hiệu Khâm Sai Bác Cổ Đại Thần năm Tự Đức thứ ba mươi ba!",
+      "url": "./assets/voice/quest_complete.mp3",
+      "bytes": 103536,
+      "duration_sec": 17.26,
+      "sha256_12": "98eb04c9062a"
+    }
+  ]
+}

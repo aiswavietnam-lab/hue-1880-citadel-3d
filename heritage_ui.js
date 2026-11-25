@@ -1,3 +1,5 @@
+import { heritageVoice } from "./heritage_voice.js";
+
 // Tọa độ cổng theo mặt bằng (x, y). Điểm ngắm và mắt máy theo hệ Three (x, cao, -y).
 // Các cổng đối chiếu với hình học GLB, kể cả miếu môn và cửa phía đông nhà hát.
 const stops = [
@@ -132,6 +134,11 @@ function closeMenus() {
     audioSheet.hidden = true;
     $("court-audio-panel-toggle")?.setAttribute("aria-expanded", "false");
   }
+  const questSheet = $("heritage-quest-sheet");
+  if (questSheet) {
+    questSheet.hidden = true;
+    $("heritage-quest-toggle")?.setAttribute("aria-expanded", "false");
+  }
 }
 
 function closeDirectory() {
@@ -202,14 +209,21 @@ function showStop(stop, origin) {
   card.hidden = false;
   document.body.classList.add("heritage-card-open");
   if (origin === "tour") $("heritage-title").focus({ preventScroll: true });
+  heritageVoice.onHeritageCardOpened(stop.id, stop.name, stop.story, origin);
 }
 
 function selectTile(tileId, tile, place) {
   registerArea(tile, place);
   cancelFlight();
   const stop = byTile.get(tileId);
-  if (stop) showStop(stop, "selection");
-  else closeCard(false, false);
+  if (stop) {
+    showStop(stop, "selection");
+  } else {
+    closeCard(false, false);
+    if (tile) {
+      heritageVoice.onHeritageCardOpened(tileId, tile.name_vi || tileId, tile.architectural_brief || "", "selection");
+    }
+  }
 }
 
 function cancelFlight() {
@@ -478,7 +492,9 @@ window.addEventListener("keydown", e => {
     $("heritage-help-toggle").click();
   } else if (e.key === "Escape") {
     const audioSheet = $("court-audio-sheet");
+    const questSheet = $("heritage-quest-sheet");
     if (hidden) togglePhoto();
+    else if (questSheet && !questSheet.hidden) { questSheet.hidden = true; $("heritage-quest-toggle")?.setAttribute("aria-expanded", "false"); $("heritage-quest-toggle")?.focus(); }
     else if (audioSheet && !audioSheet.hidden) { audioSheet.hidden = true; $("court-audio-panel-toggle")?.setAttribute("aria-expanded", "false"); $("court-audio-panel-toggle")?.focus(); }
     else if (!drawer.hidden) $("heritage-controls-close").click();
     else if (!tour.hidden) $("heritage-tour-close").click();
@@ -490,7 +506,7 @@ window.addEventListener("keydown", e => {
   e.stopImmediatePropagation();
 }, true);
 
-for (const panel of [card, tour, drawer, photoTools, help]) {
+for (const panel of [card, tour, drawer, photoTools, help, $("heritage-quest-sheet")].filter(Boolean)) {
   panel.addEventListener("keydown", e => {
     if (["Enter", " ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) e.stopPropagation();
   });

@@ -8,6 +8,8 @@ import { HuePbrMaterialLibrary } from "./pbr_materials.js";
 import { computeArchitecturalVertexOcclusion } from "./hue_realism_shaders.js";
 import { courtAudio } from "./court_audio.js";
 import { createHueTouchController, isHueTouchDevice } from "./hue_touch_controls.js";
+import { heritageVoice } from "./heritage_voice.js";
+import { heritageQuests } from "./heritage_quests.js";
 import {
   HueRenderCullingEngine,
   classifyMeshInterior,
@@ -3154,6 +3156,7 @@ function findSafeSpawnFloor(threeX, threeZ, targetY = 0) {
 }
 
 function resnapPlayerToLoadedTileFloor(tile) {
+  heritageQuests.refreshGroundHeights();
   if (STATE.cameraMode !== "walk" && STATE.cameraMode !== "gta") return;
   const b = tile.bounds;
   const planX = gtaState.pos.x;
@@ -4247,10 +4250,16 @@ window.addEventListener("keydown", (e) => {
   if (isTextEntryElement(document.activeElement)) return;
   const orchOpen = !document.getElementById("orchestrator-modal").classList.contains("hidden");
   const promptOpen = !document.getElementById("prompt-modal").classList.contains("hidden");
-  if (orchOpen || promptOpen) return;
+  const questModalOpen = Boolean(
+    document.getElementById("hue-quest-modal") &&
+    !document.getElementById("hue-quest-modal").classList.contains("hidden")
+  );
+  if (orchOpen || promptOpen || questModalOpen) return;
 
   const isGround = STATE.cameraMode === "walk" || STATE.cameraMode === "gta";
   if (e.key === "Escape") {
+    const questSheet = document.getElementById("heritage-quest-sheet");
+    if (questSheet && !questSheet.hidden) return;
     const settingsPanel = document.getElementById("move-settings-panel");
     if (settingsPanel && !settingsPanel.classList.contains("hidden")) {
       settingsPanel.classList.add("hidden");
@@ -4661,6 +4670,7 @@ function renderInspector(tileId) {
   document.getElementById("insp-elev").textContent = `${t.elevation_z.toFixed(1)} m`;
   document.getElementById("insp-sha").textContent = t.sha256 || "Chưa nạp tệp .glb (trạng thái pending)";
   document.getElementById("insp-brief").textContent = t.architectural_brief || "";
+  heritageVoice._syncUi?.();
 }
 
 // --- Chiếu nhãn 3D (dùng GPU transform, không reflow) & Cập nhật La bàn ---
@@ -5155,6 +5165,7 @@ function bindUiEvents() {
       const ctrlBtn = document.getElementById("heritage-controls-toggle");
       const inspEl = document.getElementById("tile-inspector");
       const movePanel = document.getElementById("move-settings-panel");
+      heritageQuests.closeSheet();
       if (tourEl) tourEl.hidden = true;
       if (bottomEl) bottomEl.hidden = true;
       if (tourBtn) tourBtn.setAttribute("aria-expanded", "false");
@@ -5167,6 +5178,66 @@ function bindUiEvents() {
         syncMobileHudState();
       }
     },
+  });
+
+  heritageVoice.bindUI(() => {
+    const entry = tileObjects.get(STATE.selectedTileId);
+    return entry
+      ? {
+          tileId: STATE.selectedTileId,
+          title: entry.tile.name_vi || STATE.selectedTileId,
+          brief: entry.tile.architectural_brief || "",
+        }
+      : null;
+  });
+
+  heritageQuests.init({
+    scene,
+    isQaMode: IS_QA_MODE,
+    sampleFloorY: (worldX, worldZ) => findSafeSpawnFloor(worldX, worldZ, 0).floorY,
+    teleportToQuestPlan: (planX, planY, yaw, label) => {
+      cancelFlight();
+      if (STATE.cameraMode !== "gta" && STATE.cameraMode !== "walk") {
+        setCameraMode("gta", { x: planX, y: planY, z: 0, yaw });
+        if (label) showToast(`Hành trình nhiệm vụ: ${label}`);
+      } else {
+        teleportGtaToPlan(planX, planY, 0, yaw, label);
+      }
+      heritageQuests.updateFrame(performance.now(), STATE.cameraMode, gtaState.pos, camera.position);
+      updateTileCulling(true);
+      updateLabelsAndCompass(true);
+      renderGtaRadar(false, false, 0);
+      if (STATE.loopPaused) renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    },
+    closeOtherMenus: () => {
+      const tourEl = document.getElementById("heritage-tour");
+      const bottomEl = document.getElementById("hud-bottombar");
+      const audioEl = document.getElementById("court-audio-sheet");
+      const cardEl = document.getElementById("heritage-card");
+      const tourBtn = document.getElementById("heritage-tour-toggle");
+      const ctrlBtn = document.getElementById("heritage-controls-toggle");
+      const audioBtn = document.getElementById("court-audio-panel-toggle");
+      const inspEl = document.getElementById("tile-inspector");
+      const movePanel = document.getElementById("move-settings-panel");
+      if (tourEl) tourEl.hidden = true;
+      if (bottomEl) bottomEl.hidden = true;
+      if (audioEl) audioEl.hidden = true;
+      if (cardEl) {
+        cardEl.hidden = true;
+        document.body.classList.remove("heritage-card-open");
+      }
+      if (tourBtn) tourBtn.setAttribute("aria-expanded", "false");
+      if (ctrlBtn) ctrlBtn.setAttribute("aria-expanded", "false");
+      if (audioBtn) audioBtn.setAttribute("aria-expanded", "false");
+      if (inspEl) inspEl.classList.add("hidden");
+      if (movePanel) movePanel.classList.add("hidden");
+      if (sidebarEl && !sidebarEl.classList.contains("collapsed")) {
+        sidebarEl.classList.add("collapsed");
+        if (toggleSidebarBtn) toggleSidebarBtn.setAttribute("aria-expanded", "false");
+        syncMobileHudState();
+      }
+    },
+    showToast,
   });
 
   syncMoveSettingsUi();
@@ -5250,6 +5321,7 @@ window.__HUE_VIEWER__ = {
     } else {
       teleportGtaToPlan(planX, planY, planZ, yaw);
     }
+    heritageQuests.updateFrame(performance.now(), STATE.cameraMode, gtaState.pos, camera.position);
     renderEngine.invalidateOcclusion();
     const s = updateTileCulling(true);
     updateLabelsAndCompass(true);
@@ -5266,6 +5338,7 @@ window.__HUE_VIEWER__ = {
     } else {
       teleportGtaToPlan(planX, planY, planZ, yaw);
     }
+    heritageQuests.updateFrame(performance.now(), STATE.cameraMode, gtaState.pos, camera.position);
     renderEngine.invalidateOcclusion();
     const s = updateTileCulling(true);
     updateLabelsAndCompass(true);
@@ -5294,6 +5367,7 @@ window.__HUE_VIEWER__ = {
         });
       }
     }
+    heritageQuests.updateFrame(simNow, STATE.cameraMode, gtaState.pos, camera.position);
     updateTileCulling(true);
     renderGtaRadar(
       Math.hypot(gtaState.velX, gtaState.velZ) > 0.25,
@@ -5530,6 +5604,7 @@ function animate(now) {
 
   skyUniforms.uTime.value = now * 0.001;
   huePbr.update(dt);
+  heritageQuests.updateFrame(now, STATE.cameraMode, gtaState.pos, camera.position);
   updateTileCulling(false);
   renderEngine.updateCsmAndShadowTrigger(now, IS_QA_MODE, requestShadowUpdate);
   updateLabelsAndCompass(false);
