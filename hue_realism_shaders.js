@@ -257,20 +257,25 @@ export function attachHueRealismShader(material, archetypeKey) {
     }
   };
 
-  material.userData.__hueRealismApplyFn = applyRealismToShader;
-  const prevHook = typeof material.onBeforeCompile === "function" ? material.onBeforeCompile : null;
-  material.onBeforeCompile = (shader, renderer) => {
-    if (prevHook) prevHook(shader, renderer);
-    applyRealismToShader(shader);
-  };
-
-  const prevCacheKey =
-    typeof material.customProgramCacheKey === "function"
-      ? material.customProgramCacheKey.bind(material)
-      : () => "";
-  material.customProgramCacheKey = () => `${prevCacheKey()}|hueRealism_${mode}`;
-
+  chainHueShader(material, `hueRealism_${mode}`, applyRealismToShader);
   return material;
+}
+
+// CSM cài lại onBeforeCompile khi bật bóng. Giữ toàn bộ chuỗi cho cả hai thứ tự cài.
+export function chainHueShader(material, key, apply) {
+  const data = material.userData;
+  const previousApply = data.__hueRealismApplyFn;
+  data.__hueRealismApplyFn = previousApply
+    ? (shader) => { previousApply(shader); apply(shader); }
+    : apply;
+  const previousHook = material.onBeforeCompile;
+  const previousKey = material.customProgramCacheKey.bind(material);
+  material.onBeforeCompile = function (shader, renderer) {
+    previousHook.call(this, shader, renderer);
+    apply(shader);
+  };
+  material.customProgramCacheKey = () => `${previousKey()}|${key}`;
+  material.needsUpdate = true;
 }
 
 /**

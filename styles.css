@@ -1801,355 +1801,404 @@ body.gta-active #hue-mobile-pad {
   display: none !important;
 }
 
-@media (max-width: 900px) {
-  #hud-topbar {
-    top: max(8px, env(safe-area-inset-top, 8px));
-    left: 8px;
-    right: 8px;
-    padding: 7px 10px;
-    gap: 8px;
-    max-width: calc(100vw - 16px);
-  }
+/* Giao diện tham quan. Các ngăn dùng chung khoảng trống giữa thanh đầu và vùng chạm. */
+:root {
+  --bg-obsidian: #161915;
+  --text-primary: #f7f0dd;
+  --text-secondary: #dbd2be;
+  --text-muted: #b7ad98;
+  --imperial-gold: #d6b675;
+  --imperial-gold-bright: #f3d89a;
+  --vermilion: #843e35;
+  --jade-green: #76b6a1;
+  --border-subtle: rgb(225 201 153 / 24%);
+  --border-strong: rgb(229 199 135 / 62%);
+  --shadow-panel: 0 7px 24px rgb(9 12 10 / 32%);
+  --lacquer: linear-gradient(125deg, rgb(43 43 32 / 97%), rgb(23 26 23 / 98%) 52%, rgb(31 31 24 / 97%));
+  --edge-left: max(14px, env(safe-area-inset-left));
+  --edge-right: max(14px, env(safe-area-inset-right));
+  --edge-top: max(12px, env(safe-area-inset-top));
+  --edge-bottom: max(12px, env(safe-area-inset-bottom));
+  --header-bottom: calc(var(--edge-top) + 72px);
+  --pad-space: 0px;
+}
+[hidden], html[data-qa="1"] #heritage-preloader { display: none !important; }
+.heritage-symbols { position: absolute; width: 0; height: 0; overflow: hidden; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+:where(button, a, summary, select, input):focus-visible {
+  outline: 2px solid var(--imperial-gold-bright);
+  outline-offset: 2px;
+}
+button:disabled { opacity: .46; cursor: default; }
+.hud-panel { background: var(--lacquer); border-radius: 8px; }
+#viewport-root { height: 100dvh; }
+#hud-topbar {
+  top: var(--edge-top);
+  left: var(--edge-left);
+  right: var(--edge-right);
+  z-index: 50;
+  padding: 8px 12px;
+  gap: 16px;
+  border-top-color: var(--border-strong);
+}
+.brand-block { flex: 1; gap: 11px; }
+.brand-emblem {
+  width: 41px;
+  height: 41px;
+  border-radius: 4px;
+  background: linear-gradient(145deg, #813d32, #422824);
+  color: #f7dc9d;
+}
+.brand-text h1 { font: 600 21px/1.25 var(--font-serif); white-space: normal; }
+.brand-text .subtitle, .museum-kicker {
+  margin: 0 0 2px;
+  color: var(--imperial-gold);
+  font: 500 10px/1.4 var(--font-sans);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+#heritage-stream {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  font: 10px/1.4 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+#heritage-stream i { width: 6px; height: 6px; border-radius: 50%; background: var(--imperial-gold); }
+#heritage-stream[data-ready="true"] i { background: var(--jade-green); }
+.topbar-actions { flex-wrap: wrap; justify-content: flex-end; }
+.museum-btn, #btn-toggle-sidebar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 5px;
+  background: rgb(8 12 9 / 18%);
+  color: var(--text-primary);
+  font: 500 12px/1.4 var(--font-sans);
+}
+.museum-btn svg { flex: none; }
+.museum-btn:hover:enabled, #btn-toggle-sidebar:hover, .museum-btn[aria-expanded="true"] {
+  border-color: var(--border-strong);
+  background: rgb(215 188 122 / 13%);
+}
+#heritage-tour-toggle, #heritage-fly {
+  background: #d9bd85;
+  color: #30261a;
+  border-color: #e7ca92;
+}
+#heritage-tour-toggle:hover, #heritage-fly:hover:enabled { background: #efd7a3; }
+#heritage-photo-toggle span, .museum-panel-head .museum-btn span { display: none; }
+#heritage-photo-toggle, .museum-panel-head .museum-btn { width: 36px; padding: 0; }
+.heritage-sheet, #tile-inspector, #hud-sidebar, #move-settings-panel {
+  overscroll-behavior: contain;
+  scrollbar-color: #8e8062 #282a22;
+  scrollbar-width: thin;
+}
+#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel {
+  top: var(--header-bottom);
+  right: var(--edge-right);
+  bottom: auto;
+  left: auto;
+  width: min(364px, calc(100% - var(--edge-left) - var(--edge-right)));
+  max-height: calc(100dvh - var(--header-bottom) - var(--edge-bottom) - var(--pad-space));
+  overflow: auto;
+  padding: 15px 18px;
+  z-index: 38;
+}
+.heritage-sheet:not([hidden]) { animation: rise-in .17s ease-out; }
+@keyframes rise-in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+.museum-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.museum-panel-head h2 { margin: 0; font: 600 18px/1.4 var(--font-serif); }
+.museum-panel-head .museum-btn { flex: none; border-color: transparent; color: var(--text-secondary); }
+.museum-panel-head .museum-kicker { margin: 0; }
+#heritage-tour { right: auto; left: var(--edge-left); }
+#heritage-stops { list-style: none; padding: 0; margin: 10px 0 0; counter-reset: stop; }
+#heritage-stops li { counter-increment: stop; border-top: 1px solid var(--border-subtle); }
+#heritage-stops button {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  min-height: 43px;
+  gap: 12px;
+  padding: 6px;
+  background: transparent;
+  border: 0;
+  color: var(--text-primary);
+  font: 500 13px/1.45 var(--font-sans);
+}
+#heritage-stops button::before {
+  content: counter(stop, decimal-leading-zero);
+  color: var(--imperial-gold);
+  font: 11px var(--font-mono);
+}
+#heritage-stops button:hover, #heritage-stops button[aria-current] { background: rgb(216 193 141 / 11%); }
+#heritage-card { border-top: 2px solid var(--imperial-gold); }
+#heritage-title { margin: 4px 0 8px; font: 600 24px/1.28 var(--font-serif); text-wrap: balance; }
+#heritage-title:focus { outline: none; }
+#heritage-date { margin: 0 0 12px; color: #a4d3c1; font: 500 11.5px/1.5 var(--font-sans); }
+#heritage-story { margin: 0 0 10px; color: var(--text-secondary); font-size: 13px; line-height: 1.65; }
+#heritage-sources, .model-details { margin: 7px 0; font-size: 12px; }
+summary { cursor: pointer; color: var(--imperial-gold); padding-block: 4px; }
+#heritage-source-links a { display: block; margin: 5px 0; color: #b5dfd0; text-underline-offset: 3px; }
+.heritage-card-actions { display: flex; flex-wrap: wrap; gap: 7px; margin: 12px 0; }
+.heritage-card-actions button { flex: 1 1 120px; padding: 6px 8px; }
+.heritage-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 7px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.heritage-pagination button { border-color: transparent; background: transparent; font-size: 11px; }
+#heritage-next { flex-direction: row-reverse; }
+#heritage-model { margin: 5px 0 9px; padding: 2px 0; }
+.heritage-card-open #tile-inspector { display: none; }
+#hud-sidebar {
+  left: var(--edge-left);
+  top: var(--header-bottom);
+  bottom: var(--edge-bottom);
+  max-height: calc(100dvh - var(--header-bottom) - var(--edge-bottom) - var(--pad-space));
+  z-index: 40;
+}
+#hud-sidebar.collapsed { visibility: hidden; }
+#hud-compass { bottom: var(--edge-bottom); right: var(--edge-right); }
+#hud-compass .meta-sub { display: none; }
+.model-details summary { font-weight: 500; }
+#hud-bottombar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 14px;
+  width: min(420px, calc(100% - var(--edge-left) - var(--edge-right)));
+}
+#hud-bottombar .divider-v { display: none; }
+#hud-bottombar .control-group, #hud-bottombar .time-group { min-width: 0; flex: none; }
+#hud-bottombar .segmented, #hud-bottombar .time-presets {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+#hud-bottombar .seg-btn, #hud-bottombar .preset-btn {
+  min-width: 0;
+  height: auto;
+  min-height: 34px;
+  white-space: normal;
+  justify-content: center;
+}
+#hud-bottombar .time-header { flex-wrap: wrap; gap: 4px 12px; }
+#hud-bottombar .time-controls { display: grid; gap: 5px; }
+#time-slider { width: 100%; margin: 5px 0; }
+.quality-row { display: grid; gap: 5px; color: var(--text-secondary); font-size: 12px; }
+.quality-row select { width: 100%; min-width: 0; }
+#hud-bottombar .progress-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 6px; }
+#hud-bottombar .stat-perf { grid-column: 1/-1; }
+#hud-bottombar .stat-value { white-space: normal; }
+#hud-bottombar .progress-track { display: none; }
+#heritage-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(ellipse at 50% 44%, #41402d, #242823 49%, #171b18);
+  color: var(--text-primary);
+  text-align: center;
+  transition: opacity .32s ease;
+}
+#heritage-preloader.leaving { opacity: 0; pointer-events: none; }
+.heritage-welcome {
+  position: relative;
+  padding: clamp(18px, 5vw, 52px);
+  width: min(440px, 100%);
+  border: 1px solid var(--border-subtle);
+}
+.heritage-welcome::before, .heritage-welcome::after {
+  content: "";
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  top: -1px;
+  left: -1px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Cpath d='M1 35V1h34M7 29V7h22M7 17h10V7' fill='none' stroke='%23d6b675'/%3E%3C/svg%3E") no-repeat;
+}
+.heritage-welcome::after { inset: auto -1px -1px auto; transform: rotate(180deg); }
+.heritage-welcome > svg { color: var(--imperial-gold); }
+.heritage-welcome h2 { margin: 5px 0 20px; font: 600 clamp(28px, 5vw, 44px)/1.25 var(--font-serif); }
+.heritage-welcome p { color: var(--text-secondary); }
+.heritage-welcome progress { width: min(180px, 70%); height: 5px; accent-color: var(--jade-green); vertical-align: middle; }
+.heritage-welcome output { padding-left: 8px; font-size: 11px; }
+.text-action { display: block; margin: 16px auto 0; padding: 6px; border: 0; background: transparent; color: var(--imperial-gold-bright); text-decoration: underline; text-underline-offset: 4px; }
+.tile-label { transition: opacity .16s ease, background-color .15s ease, border-color .15s ease; }
+.tile-label[data-label-state="dot"] {
+  width: 7px; height: 7px; min-width: 0; padding: 0;
+  overflow: hidden; font-size: 0; line-height: 0;
+  border: 1px solid #f0ddb3; border-radius: 50%; background: #846a3b;
+  pointer-events: none; box-shadow: 0 1px 3px #191a16;
+}
+.tile-label[data-label-state="dot"] > * { display: none; }
+#heritage-help-toggle {
+  position: fixed; top: var(--header-bottom); left: var(--edge-left);
+  z-index: 27; pointer-events: auto;
+  width: 38px; height: 38px; padding: 0; border-radius: 50%;
+  background: #282c24; color: var(--imperial-gold-bright);
+  font: 600 18px var(--font-serif);
+}
+#gta-topbar {
+  top: var(--header-bottom); left: calc(var(--edge-left) + 46px); right: auto;
+  width: min(370px, calc(100vw - 80px)); transform: none;
+  max-height: calc(100dvh - var(--header-bottom) - var(--edge-bottom) - var(--pad-space));
+  overflow: auto; padding: 10px 12px;
+}
+#gta-topbar .gta-tp-row { flex-wrap: wrap; }
+#gta-topbar[data-intro] .gta-tp-row { display: none; }
+.touch-help { display: none; }
+#gta-radar-card {
+  left: var(--edge-left); bottom: var(--edge-bottom) !important; width: 168px; padding: 7px;
+}
+.gta-radar-frame, #gta-radar { width: 86px; height: 86px; }
+#move-settings-panel { z-index: 41; }
+#hue-joy-base, #hue-mobile-pad button, .orch-backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
+body.hud-hidden :is(#label-layer, #heritage-preloader, #hue-mobile-pad, #public-err-banner),
+body:not(.hud-hidden) #heritage-photo-tools { display: none !important; }
+.photo-tools {
+  position: fixed; right: var(--edge-right); top: var(--edge-top); z-index: 52;
+  display: flex; gap: 5px; padding: 5px; border-radius: 6px; background: var(--lacquer);
+}
+body.hud-hidden #webgl-canvas { cursor: crosshair; }
+.toast-bar { bottom: calc(var(--edge-bottom) + var(--pad-space)); max-width: min(460px, 80vw); }
 
-  #hud-topbar .brand-block {
-    min-width: 0;
-    flex: 1 1 auto;
-    gap: 8px;
+@media (max-width: 900px), (pointer: coarse) {
+  :root {
+    --edge-left: max(8px, env(safe-area-inset-left));
+    --edge-right: max(8px, env(safe-area-inset-right));
+    --edge-top: max(7px, env(safe-area-inset-top));
+    --edge-bottom: max(8px, env(safe-area-inset-bottom));
   }
-
-  #hud-topbar .brand-text {
-    min-width: 0;
-    flex: 1 1 auto;
+  body:has(#hue-mobile-pad:not(.hidden)) { --pad-space: 122px; }
+  #hud-topbar { gap: 9px; padding: 6px 8px; }
+  .topbar-actions { gap: 4px; }
+  .brand-text h1 { font-size: 17px; }
+  #hud-sidebar { width: min(350px, calc(100% - var(--edge-left) - var(--edge-right))); }
+  #hud-bottombar, #heritage-tour, #heritage-card, #tile-inspector, #move-settings-panel {
+    top: auto; bottom: calc(var(--edge-bottom) + var(--pad-space));
+    right: var(--edge-right); left: auto;
   }
-
-  #hud-topbar h1,
-  #hud-topbar .brand-title {
-    font-size: 13px;
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  #hud-topbar .topbar-actions,
-  #hud-topbar .header-actions {
-    flex: 0 0 auto;
-    gap: 6px;
-  }
-
-  #hud-topbar button,
-  #hud-topbar select {
-    padding: 6px 8px;
-    font-size: 11.5px;
-    min-height: 32px;
-  }
-
-  #hud-compass {
-    top: 64px;
-    right: 8px;
-    bottom: auto;
-    left: auto;
-    transform: scale(0.8);
-    transform-origin: top right;
-    z-index: 24;
-    transition: opacity 0.18s ease;
-  }
-
-  body.hue-sidebar-open #hud-compass,
-  body.hue-inspector-open #hud-compass,
-  body.gta-active #hud-compass {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  #hud-sidebar {
-    top: 62px;
-    left: 8px;
-    right: 8px;
-    width: auto;
-    max-width: none;
-    bottom: calc(122px + env(safe-area-inset-bottom, 0px));
-    max-height: calc(100dvh - 194px);
-    z-index: 45;
-  }
-
-  #hud-sidebar.collapsed {
-    transform: translateX(calc(-100% - 32px));
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  #tile-inspector {
-    left: 8px;
-    right: 8px;
-    top: auto;
-    bottom: calc(122px + env(safe-area-inset-bottom, 0px));
-    width: auto;
-    max-width: none;
-    max-height: 44dvh;
-    overflow-y: auto;
-    z-index: 40;
-  }
-
-  #tile-inspector.hidden {
-    display: none !important;
-  }
-
-  #hud-bottombar {
-    left: 8px;
-    right: 8px;
-    bottom: max(8px, env(safe-area-inset-bottom, 8px));
-    padding: 8px 9px;
-    gap: 6px;
-    flex-direction: column;
-    align-items: stretch;
-    max-width: calc(100vw - 16px);
-    box-sizing: border-box;
-    z-index: 35;
-  }
-
-  #hud-bottombar .divider-v {
-    display: none !important;
-  }
-
-  #hud-bottombar .control-group {
-    width: 100%;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 5px;
-  }
-
-  #hud-bottombar .segmented {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 4px;
-    width: 100%;
-  }
-
-  #hud-bottombar .segmented button,
-  #hud-bottombar .seg-btn {
-    min-width: 0;
-    padding: 7px 4px;
-    font-size: 11px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
-    justify-content: center;
-  }
-
-  #hud-bottombar .time-header {
-    width: 100%;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-  }
-
-  #hud-bottombar .time-readout {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px;
-    font-size: 11px;
-  }
-
-  #hud-bottombar .time-controls {
-    width: 100%;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: nowrap;
-  }
-
-  #hud-bottombar input[type="range"] {
-    flex: 1 1 auto;
-    min-width: 56px;
-  }
-
-  #hud-bottombar .time-presets {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 4px;
-    flex: 0 0 auto;
-    width: auto;
-  }
-
-  #hud-bottombar .preset-btn {
-    padding: 5px 7px;
-    font-size: 11px;
-    white-space: nowrap;
-    flex: 0 0 auto;
-  }
-
-  body.gta-active #hud-topbar,
-  body.gta-active #hud-bottombar,
-  body.gta-active #hud-compass {
-    display: none !important;
-  }
-
-  #gta-topbar {
-    top: max(8px, env(safe-area-inset-top, 8px));
-    left: 8px;
-    right: 8px;
-    transform: none !important;
-    width: auto;
-    max-width: calc(100vw - 16px);
-    padding: 6px 8px;
-    gap: 0;
-    overflow: hidden;
-  }
-
-  #gta-topbar .gta-keys-line,
-  #gta-topbar .gta-tp-label,
-  #gta-topbar .gta-tp-sep {
-    display: none !important;
-  }
-
-  #gta-topbar .gta-tp-row {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: 5px;
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  #gta-topbar .gta-tp-row::-webkit-scrollbar {
-    display: none;
-  }
-
-  #gta-topbar .gta-tp-btn,
-  #gta-topbar button {
-    flex: 0 0 auto;
-    white-space: nowrap;
-    font-size: 11px;
-    padding: 5px 8px;
-    min-height: 28px;
-  }
-
+  #heritage-tour { left: var(--edge-left); right: auto; }
+  #hud-compass { padding: 4px 7px; }
+  #hud-compass svg { width: 37px; height: 37px; }
+  body:has(.heritage-sheet:not([hidden])) #hud-compass, body.hue-inspector-open #hud-compass { visibility: hidden; }
   #gta-radar-card {
-    top: 56px;
-    left: 8px;
-    right: auto;
-    bottom: auto !important;
-    height: auto !important;
-    transform: scale(0.76);
-    transform-origin: top left;
+    top: var(--header-bottom); left: var(--edge-left); bottom: auto !important;
+    display: flex !important; width: auto; padding: 3px; border-radius: 50%; pointer-events: none;
   }
-
-  #walk-hint,
-  .gta-controls-hint {
-    display: none !important;
+  .gta-radar-frame, #gta-radar { width: 58px; height: 58px; }
+  .gta-radar-info { display: none; }
+  #heritage-help-toggle { left: auto; right: var(--edge-right); }
+  #gta-topbar {
+    left: auto; right: calc(var(--edge-right) + 44px);
+    width: min(360px, calc(100vw - var(--edge-left) - var(--edge-right) - 120px));
   }
-}
-
-@media (max-width: 640px) {
-  #hud-topbar .brand-emblem {
-    width: 28px;
-    height: 28px;
-  }
-
-  #hud-topbar .subtitle,
-  #hud-topbar .brand-sub,
-  #hud-topbar .hud-subtitle {
-    display: none;
-  }
-
-  #hud-topbar #quality-select {
-    max-width: 132px;
-    padding: 5px 6px;
-    font-size: 11px;
-  }
-
-  #hud-topbar #btn-toggle-sidebar {
-    padding: 5px 8px;
-    font-size: 11px;
+  .hue-touch-actions, #hue-mobile-pad > div:last-child {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(56px, auto));
     gap: 5px;
   }
-
-  #hud-bottombar .group-label,
-  #hud-bottombar .bar-label {
-    display: none;
-  }
-
-  #hud-bottombar .seg-btn {
-    padding: 6px 3px;
-    font-size: 10.5px;
-    gap: 0;
-  }
-
-  #hud-bottombar .seg-btn svg {
-    display: none;
-  }
-
-  #hud-bottombar .preset-btn {
-    padding: 4px 6px;
-    font-size: 10.5px;
-  }
-
-  #tile-inspector {
-    padding: 10px 12px;
-    max-height: 41dvh;
-  }
-
-  #tile-inspector .inspector-hash code {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  #tile-inspector .inspector-brief {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    margin-bottom: 8px;
-  }
-
-  .hue-joy-base,
-  #hue-joy-base {
-    width: 102px;
-    height: 102px;
-  }
-
-  .hue-joy-knob,
-  #hue-joy-knob {
-    width: 42px;
-    height: 42px;
-  }
-
-  .hue-touch-btn,
-  #hue-mobile-pad button {
-    min-width: 66px;
-    height: 36px;
-    padding: 0 10px;
-    font-size: 11.5px;
-  }
-
-  #hue-touch-jump {
-    min-width: 74px;
-    height: 40px;
-  }
+  #hue-mobile-pad { padding: 0 var(--edge-right) 0 var(--edge-left); }
+  #hue-mobile-pad button { min-width: 0; min-height: 42px; height: auto; padding: 4px 8px; }
+  #hue-joy-base { width: 100px; height: 100px; flex: none; }
+  #hue-joy-knob { width: 42px; height: 42px; }
 }
-
-@media (pointer: coarse) and (max-width: 1024px) {
-  #walk-hint,
-  .gta-controls-hint {
-    display: none !important;
-  }
+@media (pointer: coarse) {
+  #gta-keys-hint { display: none; }
+  .touch-help { display: block; }
 }
-
-
-
+@media (max-width: 740px) {
+  #hud-topbar .museum-btn:not(#heritage-tour-toggle) span, #hud-topbar #btn-toggle-sidebar span { display: none; }
+  #hud-topbar .museum-btn:not(#heritage-tour-toggle), #hud-topbar #btn-toggle-sidebar { width: 38px; padding: 0; }
+}
+@media (max-width: 600px) {
+  #hud-topbar {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1px 6px;
+  }
+  #hud-topbar .brand-block { grid-area: 1/1; }
+  #hud-topbar .brand-emblem, #hud-topbar .subtitle { display: none; }
+  #hud-topbar h1 { white-space: normal; overflow: visible; font-size: 15px; }
+  #heritage-stream { grid-area: 2/1; font-size: 9px; }
+  #hud-topbar .topbar-actions { grid-area: 1/2/3/3; gap: 2px; }
+  #hud-topbar .museum-btn, #hud-topbar #btn-toggle-sidebar { min-height: 40px; }
+  #hud-topbar .museum-btn:not(#heritage-tour-toggle), #hud-topbar #btn-toggle-sidebar { width: 33px; }
+  #heritage-tour-toggle { padding: 5px 7px; font-size: 11px; }
+  #heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar {
+    left: var(--edge-left); right: var(--edge-right); width: auto;
+    max-height: min(62dvh, calc(100dvh - var(--header-bottom) - var(--edge-bottom) - var(--pad-space)));
+  }
+  #hud-sidebar { top: auto; height: min(540px, 62dvh); bottom: calc(var(--edge-bottom) + var(--pad-space)); }
+  body.gta-active :is(#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar) {
+    max-height: min(55dvh, calc(100dvh - var(--header-bottom) - var(--edge-bottom) - var(--pad-space) - 72px));
+  }
+  #heritage-card { padding: 9px 13px; }
+  #heritage-title { font-size: 20px; }
+  #heritage-story { font-size: 12px; line-height: 1.55; }
+  .heritage-card-actions { margin-block: 7px; }
+  #hud-bottombar .time-readout { flex-wrap: wrap; }
+  #hud-bottombar .preset-btn { font-size: 0; }
+  #hud-bottombar .preset-btn::before { content: attr(aria-label); font-size: 11px; }
+}
+@media (max-width: 365px) {
+  #heritage-tour-toggle span { display: none; }
+  #heritage-tour-toggle { width: 36px; }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+  body:has(#hue-mobile-pad:not(.hidden)) { --pad-space: 88px; }
+  #hud-topbar .brand-block .subtitle { display: none; }
+  #hud-topbar .brand-emblem { width: 30px; height: 30px; }
+  #hud-topbar .museum-btn, #hud-topbar #btn-toggle-sidebar { min-height: 32px; }
+  #hue-joy-base { width: 76px; height: 76px; }
+  #hue-mobile-pad button { min-height: 34px; }
+  body.gta-active #gta-radar-card { width: fit-content; }
+  #heritage-card, #hud-bottombar, #move-settings-panel, #heritage-tour, #tile-inspector, #hud-sidebar {
+    left: auto; right: var(--edge-right); width: min(360px, 59vw);
+    top: var(--header-bottom); bottom: auto;
+  }
+  body.gta-active #heritage-help-toggle { right: auto; left: calc(var(--edge-left) + 70px); }
+  body.gta-active #gta-topbar { top: calc(var(--header-bottom) + 42px); left: var(--edge-left); right: auto; width: min(38vw, 310px); }
+}
+#heritage-read-more { margin: 0; padding: 5px 2px; font: 500 12px var(--font-sans); }
+#heritage-card[data-presentation="summary"] {
+  left: auto;
+  width: min(314px, calc(100vw - var(--edge-left) - var(--edge-right)));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 32px;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 7px 4px 12px;
+}
+#heritage-card[data-presentation="summary"] .museum-panel-head { display: contents; }
+#heritage-card[data-presentation="summary"] #heritage-location { display: none; }
+#heritage-card[data-presentation="summary"] #heritage-close { grid-area: 1/3; width: 32px; min-height: 38px; }
+#heritage-card[data-presentation="summary"] #heritage-title {
+  grid-area: 1/1; margin: 0;
+  font-size: 15px; line-height: 1.3; text-wrap: pretty;
+}
+#heritage-card[data-presentation="summary"] #heritage-read-more { grid-area: 1/2; min-height: 38px; }
+@media (prefers-reduced-motion: reduce) {
+  .heritage-sheet, .tile-label, #heritage-preloader, .hud-panel { animation: none !important; transition: none !important; }
+}

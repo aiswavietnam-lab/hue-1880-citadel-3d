@@ -23,13 +23,18 @@
     "app.js (Half-Life 120Hz Physics + High-Detail 1880 Character + Mobile Dual-Thumb Touch Controls + 5-Phase 360 Pure Skies)",
     "render_culling_engine.js (Occlusion Culling + Interior Culling + Multi-Tier Distance LOD + 2D CSR TileSpatialCollider)",
     "pbr_materials.js + assets/pbr/* + assets/sky/* (Poly Haven CC0 Shared PBR Material Pool + Photo Sky PMREM IBL)",
-    "hue_realism_shaders.js (GPU Hue Tropical Moss/Rain-Streak Weathering + Architectural Vertex AO aHueOcc + Courtyard Warm Bounce + Foliage Wind)"
+    "hue_realism_shaders.js (GPU Hue Tropical Moss/Rain-Streak Weathering + Architectural Vertex AO aHueOcc + Courtyard Warm Bounce + Foliage Wind)",
+    "heritage_ui.js",
+    "hue_atmosphere_water.js",
+    "hue_view_performance.js",
+    "hue_postfx.js",
+    "vendor/three/addons/"
   ],
   "completed_tiles": 30,
   "total_tiles": 30,
   "last_sync_backend": "rclone",
   "last_sync_applied_files": 3,
-  "last_sync_utc": "2026-11-24T16:01:34+00:00",
+  "last_sync_utc": "2026-11-25T01:49:12+00:00",
   "tile_versions": {
     "T01": {
       "version": 12,

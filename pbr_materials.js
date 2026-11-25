@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { HueAtmosphereWater, prepareGuideWater } from "./hue_atmosphere_water.js";
 import {
   attachHueRealismShader,
   setHueRealismQuality,
@@ -211,8 +212,14 @@ const SURFACE_SPECS = {
 };
 
 export class HuePbrMaterialLibrary {
+  bindAtmosphere(options) { this.atmosphere.bind(options); }
+  setLanternAnchors(globes) { this.atmosphere.setAnchors(globes); }
+  setLanternPower(power, maxLights) { this.atmosphere.setPower(power, maxLights); }
+  prepareTerrainGuide(group, groundMeshes) { prepareGuideWater(group, groundMeshes); }
+
   constructor(renderer, scene, assetRoot = ".") {
     this.renderer = renderer;
+    this.atmosphere = new HueAtmosphereWater(renderer);
     this.scene = scene;
     this.baseUrl = `${assetRoot || "."}/assets/pbr`;
     this.texLoader = new THREE.TextureLoader();
@@ -224,7 +231,6 @@ export class HuePbrMaterialLibrary {
     this.materialPool = new Map();
     this.upgradedMaterials = [];
     this.envBucketCache = new Map();
-    this.lastEnvBucket = "";
     this.pendingTextures = 0;
     if (typeof window !== "undefined") {
       window.__HUE_PBR__ = this;
@@ -293,7 +299,7 @@ export class HuePbrMaterialLibrary {
     const map = spec.albedo ? this.getTexture(spec.albedo, true, rep) : null;
     const normalMap =
       archetypeKey === "water_ripple"
-        ? this.getTexture("water_ripple_normal.jpg", false, rep)
+        ? this.waterNormalMap
         : spec.normal
           ? this.getTexture(spec.normal, false, rep)
           : null;
@@ -319,6 +325,14 @@ export class HuePbrMaterialLibrary {
     if (!extraOpts.transparent && archetypeKey !== "water_ripple") {
       attachHueRealismShader(mat, archetypeKey);
     }
+    const water = archetypeKey === "water_ripple";
+    this.atmosphere.attach(mat, water, water ? new THREE.Vector2(widthM, depthM) : null, archetypeKey === "stone_masonry");
+    if (water) {
+      mat.metalness = 0;
+      mat.polygonOffset = true;
+      mat.polygonOffsetFactor = 1;
+      mat.polygonOffsetUnits = 2;
+    }
     this.upgradedMaterials.push(mat);
     return mat;
   }
@@ -328,14 +342,13 @@ export class HuePbrMaterialLibrary {
    * Ưu tiên dùng ảnh bầu trời 360° thực tế (Pure Sky CC0) khi đã nạp xong, tự động dự phòng gradient
    */
   updateSkyEnvironment(topCol, midCol, horCol, sunCol, sunDir, hour, skyPhotoInfo = null) {
-    if (!this.pmremGenerator || !this.scene) return;
+    this.atmosphere.setHour(topCol, midCol, horCol, sunDir, hour, skyPhotoInfo, this.scene?.fog);
+    if (this.atmosphere.qa || !this.pmremGenerator || !this.scene) return;
     const hasPhoto = Boolean(skyPhotoInfo && skyPhotoInfo.texture && skyPhotoInfo.skyId);
     const bucket = `${hasPhoto ? "photo" : "proc"}:${Math.round(hour * 1.5)}:${hasPhoto ? skyPhotoInfo.skyId : "g"}`;
-    if (bucket === this.lastEnvBucket) return;
-    this.lastEnvBucket = bucket;
-
-    if (this.envBucketCache.has(bucket)) {
-      this.scene.environment = this.envBucketCache.get(bucket);
+    const cached = this.envBucketCache.get(bucket);
+    if (cached) {
+      this.scene.environment = cached.texture;
       return;
     }
 
@@ -380,30 +393,30 @@ export class HuePbrMaterialLibrary {
         envScene.add(new THREE.Mesh(geo, domeMat));
       }
 
+      let sunMesh;
       if (sunDir && sunDir.y > -0.08) {
-        const sunMesh = new THREE.Mesh(
+        sunMesh = new THREE.Mesh(
           new THREE.SphereGeometry(2.6, 10, 8),
           new THREE.MeshBasicMaterial({ color: sunCol.clone().multiplyScalar(hasPhoto ? 1.65 : 2.0) })
         );
         sunMesh.position.copy(sunDir).multiplyScalar(26);
         envScene.add(sunMesh);
-        const rt = this.pmremGenerator.fromScene(envScene, 0.035);
-        sunMesh.geometry.dispose();
-        sunMesh.material.dispose();
+      }
+      try {
+        const rt = this.pmremGenerator.fromScene(envScene, sunMesh ? 0.035 : 0.04);
+        this.envBucketCache.set(bucket, rt);
+        this.scene.environment = rt.texture;
+        const limit = this.atmosphere.mobile ? 2 : 3;
+        if (this.envBucketCache.size > limit) {
+          const oldest = this.envBucketCache.keys().next().value;
+          this.envBucketCache.get(oldest).dispose();
+          this.envBucketCache.delete(oldest);
+        }
+      } finally {
+        sunMesh?.geometry.dispose();
+        sunMesh?.material.dispose();
         geo.dispose();
         domeMat.dispose();
-        if (rt && rt.texture) {
-          this.envBucketCache.set(bucket, rt.texture);
-          this.scene.environment = rt.texture;
-        }
-      } else {
-        const rt = this.pmremGenerator.fromScene(envScene, 0.04);
-        geo.dispose();
-        domeMat.dispose();
-        if (rt && rt.texture) {
-          this.envBucketCache.set(bucket, rt.texture);
-          this.scene.environment = rt.texture;
-        }
       }
     } catch {
       // Giữ nguyên environment hiện hành nếu lỗi
@@ -414,6 +427,7 @@ export class HuePbrMaterialLibrary {
    * Tự động điều chỉnh mức chi tiết Normal & Anisotropy theo cấu hình đồ họa (Siêu mượt / Cân bằng / Cao)
    */
   applyQualityPreset(qualityKey) {
+    this.atmosphere.setQuality(qualityKey);
     setHueRealismQuality(qualityKey);
     if (qualityKey === "fast") {
       this.normalStrengthScale = 0.35;
@@ -625,27 +639,37 @@ export class HuePbrMaterialLibrary {
   upgradeMaterial(mat) {
     if (!mat) return { material: mat, tileScaleM: null };
 
+    const archetypeKey = this.classifyHueMaterial(mat);
+    const isWater = archetypeKey === "water_ripple";
+    if (isWater && (mat.map || mat.normalMap || mat.alphaMap)) {
+      mat.normalMap = this.waterNormalMap;
+      mat.metalness = 0;
+      this.atmosphere.attach(mat, true);
+      return { material: mat, tileScaleM: null };
+    }
+
     // Vật liệu đã có sẵn texture gốc hợp lệ trong GLB (hoành phi Thái Hòa, Pháp lam có ảnh, cửa bức bàn) -> giữ nguyên & tăng lọc nghiêng
     if ((mat.map && mat.map.image) || (mat.normalMap && mat.normalMap.image)) {
       if (mat.map) mat.map.anisotropy = this.currentAniso;
       if (mat.normalMap) mat.normalMap.anisotropy = this.currentAniso;
       mat.envMapIntensity = mat.envMapIntensity != null ? mat.envMapIntensity : 0.85;
+      this.atmosphere.attach(mat);
       return { material: mat, tileScaleM: null };
     }
 
-    if (mat.transparent && (typeof mat.opacity !== "number" || mat.opacity < 0.96)) {
+    if (!isWater && mat.transparent && (typeof mat.opacity !== "number" || mat.opacity < 0.96)) {
       mat.envMapIntensity = 1.25;
+      this.atmosphere.attach(mat);
       return { material: mat, tileScaleM: null };
     }
 
-    const archetypeKey = this.classifyHueMaterial(mat);
     if (!archetypeKey || !SURFACE_SPECS[archetypeKey]) {
+      this.atmosphere.attach(mat);
       return { material: mat, tileScaleM: null };
     }
 
     const spec = SURFACE_SPECS[archetypeKey];
     const calColor = this._calibrateColor(mat.color, spec);
-    const isWater = archetypeKey === "water_ripple";
     const forceSpecRough =
       archetypeKey === "glazed_roof" ||
       archetypeKey === "lacquered_wood" ||
@@ -671,6 +695,7 @@ export class HuePbrMaterialLibrary {
       Math.round(roughVal * 25),
       Math.round(metalVal * 25),
       sideVal,
+      isWater ? [mat.transparent, mat.opacity, mat.depthWrite, mat.alphaTest].join("/") : "",
     ].join("|");
 
     if (this.materialPool.has(poolKey)) {
@@ -696,7 +721,13 @@ export class HuePbrMaterialLibrary {
       ),
       roughnessMap: roughMap,
       roughness: roughVal,
-      metalness: metalVal,
+      metalness: isWater ? 0 : metalVal,
+      ...(isWater && {
+        transparent: mat.transparent,
+        opacity: mat.opacity,
+        depthWrite: mat.depthWrite,
+        alphaTest: mat.alphaTest,
+      }),
       side: sideVal,
       envMapIntensity: spec.envIntensity,
     });
@@ -706,6 +737,7 @@ export class HuePbrMaterialLibrary {
       attachHueRealismShader(pbrMat, archetypeKey);
     }
 
+    this.atmosphere.attach(pbrMat, isWater, null, archetypeKey === "stone_masonry");
     this.materialPool.set(poolKey, pbrMat);
     this.upgradedMaterials.push(pbrMat);
     return { material: pbrMat, tileScaleM: spec.tileScaleM };
@@ -715,10 +747,11 @@ export class HuePbrMaterialLibrary {
    * Gọi ngay đầu `optimizeTileRoot(rawRoot)` để toàn bộ khối con được nâng cấp PBR & bù UV
    * trước khi gộp theo `material.uuid` -> giữ nguyên số lượng draw call siêu thấp (~15–20 lệnh vẽ / ô)!
    */
-  upgradeTileHierarchy(rawRoot) {
+  upgradeTileHierarchy(rawRoot, tileWorldPos = null) {
     if (!rawRoot) return;
     rawRoot.traverse((obj) => {
       if (!obj.isMesh || !obj.geometry || !obj.material) return;
+      if (tileWorldPos && !this.atmosphere.qa) this.atmosphere.addTileLantern(obj, tileWorldPos);
       if (Array.isArray(obj.material)) {
         let chosenScale = null;
         obj.material = obj.material.map((m) => {
@@ -737,15 +770,6 @@ export class HuePbrMaterialLibrary {
 
   update(dt) {
     updateHueRealismTime(dt);
-    if (this.waterNormalMap) {
-      this.waterNormalMap.offset.x = (this.waterNormalMap.offset.x + dt * 0.015) % 1.0;
-      this.waterNormalMap.offset.y = (this.waterNormalMap.offset.y + dt * 0.01) % 1.0;
-    }
-    // Cập nhật đồng thời các bản clone lặp trên mặt Sông Hương & Hộ Thành Hà
-    for (const [k, tex] of this.textureCache.entries()) {
-      if (k.startsWith("water_ripple_normal.jpg|") && tex !== this.waterNormalMap) {
-        tex.offset.copy(this.waterNormalMap.offset);
-      }
-    }
+    this.atmosphere.update(dt);
   }
 }

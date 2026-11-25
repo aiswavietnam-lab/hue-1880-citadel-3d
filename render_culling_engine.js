@@ -1032,22 +1032,15 @@ export class HueRenderCullingEngine {
       DRACOLoader: null,
       KTX2Loader: null,
       MeshoptDecoder: null,
-      EffectComposer: null,
-      RenderPass: null,
-      GTAOPass: null,
-      UnrealBloomPass: null,
-      OutputPass: null,
     };
-
+    this.addonPromise = null;
     this.csm = null;
-    this.csmModeKey = null;
+    this.csmHooks = new WeakMap();
+    this.onCsmMaterialDisposed = ({ target }) => this.detachCsmMaterial(target);
+    this.sunElevation = 45;
     this.iblEnvRT = null;
-    this.composer = null;
-    this.renderPass = null;
-    this.gtaoPass = null;
-    this.bloomPass = null;
-    this.outputPass = null;
-    this.postProcessingBroken = false;
+    this.postFX = null;
+    this.postFXRequest = 0;
 
     this.occluderRaycaster = new THREE.Raycaster();
     this.occluderRaycaster.firstHitOnly = true;
@@ -1067,6 +1060,8 @@ export class HueRenderCullingEngine {
     this.stats = {
       csmActive: false,
       csmCascades: 0,
+      csmShadowSize: 0,
+      fxaaActive: false,
       postProcessingActive: false,
       bloomActive: false,
       saoActive: false,
@@ -1085,33 +1080,29 @@ export class HueRenderCullingEngine {
     this.skyDome = mesh;
   }
 
-  async initAddons(isFlatPublic = false) {
-    if (this.addons.loaded) return this.addons;
-    this.addons.loaded = true;
-
-    const specs = isFlatPublic
-      ? [["CSM", "three/addons/csm/CSM.js", "CSM"]]
-      : [
-          ["CSM", "three/addons/csm/CSM.js", "CSM"],
-          ["RoomEnvironment", "three/addons/environments/RoomEnvironment.js", "RoomEnvironment"],
-          ["DRACOLoader", "three/addons/loaders/DRACOLoader.js", "DRACOLoader"],
-          ["KTX2Loader", "three/addons/loaders/KTX2Loader.js", "KTX2Loader"],
-          ["MeshoptDecoder", "three/addons/libs/meshopt_decoder.module.js", "MeshoptDecoder"],
-          ["EffectComposer", "three/addons/postprocessing/EffectComposer.js", "EffectComposer"],
-          ["RenderPass", "three/addons/postprocessing/RenderPass.js", "RenderPass"],
-          ["GTAOPass", "three/addons/postprocessing/GTAOPass.js", "GTAOPass"],
-          ["UnrealBloomPass", "three/addons/postprocessing/UnrealBloomPass.js", "UnrealBloomPass"],
-          ["OutputPass", "three/addons/postprocessing/OutputPass.js", "OutputPass"],
-        ];
-
-    const settled = await Promise.allSettled(specs.map(([, path]) => import(path)));
-    settled.forEach((res, idx) => {
-      const [key, , exportName] = specs[idx];
-      if (res.status === "fulfilled" && res.value && res.value[exportName]) {
-        this.addons[key] = res.value[exportName];
+  initAddons(isFlatPublic = false) {
+    if (this.addonPromise) return this.addonPromise;
+    const specs = [["CSM", "three/addons/csm/CSM.js"]];
+    if (!isFlatPublic) {
+      specs.push(
+        ["RoomEnvironment", "three/addons/environments/RoomEnvironment.js"],
+        ["DRACOLoader", "three/addons/loaders/DRACOLoader.js"],
+        ["KTX2Loader", "three/addons/loaders/KTX2Loader.js"],
+        ["MeshoptDecoder", "three/addons/libs/meshopt_decoder.module.js"]
+      );
+    }
+    // Chuỗi hậu kỳ chỉ nạp khi một mức đồ họa cần dùng.
+    this.addonPromise = Promise.all(specs.map(async ([name, path]) => {
+      try {
+        this.addons[name] = (await import(path))[name];
+      } catch (error) {
+        console.warn("Huế 1880: chưa nạp được " + name, error);
       }
+    })).then(() => {
+      this.addons.loaded = true;
+      return this.addons;
     });
-    return this.addons;
+    return this.addonPromise;
   }
 
   configureGltfLoader(gltfLoader) {
@@ -1172,6 +1163,10 @@ export class HueRenderCullingEngine {
   }
 
   updateIblForSunElevation(presetIbl, sunElevDeg) {
+    if (Number.isFinite(sunElevDeg)) {
+      this.sunElevation = sunElevDeg;
+      this.postFX?.setSunElevation(sunElevDeg);
+    }
     if (!this.iblEnvRT || !("environmentIntensity" in this.scene)) return;
     const dayFactor = THREE.MathUtils.clamp((sunElevDeg + 4) / 26, 0.18, 1.0);
     this.scene.environmentIntensity = Number((presetIbl * dayFactor).toFixed(3));
@@ -1188,24 +1183,55 @@ export class HueRenderCullingEngine {
   }
 
   setupMaterialForCsm(mat) {
-    if (!this.csm || !this.isCsmEligibleMaterial(mat)) return;
-    if (mat.userData?.__hueCsmSetup) return;
-    mat.userData = mat.userData || {};
-    mat.userData.__hueCsmSetup = true;
-    try {
-      const customApply = mat.userData.__hueRealismApplyFn;
-      this.csm.setupMaterial(mat);
-      if (typeof customApply === "function") {
-        const csmBeforeCompile = mat.onBeforeCompile;
-        mat.onBeforeCompile = function (shader, renderer) {
-          if (csmBeforeCompile) csmBeforeCompile.call(this, shader, renderer);
-          customApply(shader);
-        };
-      }
-      mat.needsUpdate = true;
-    } catch {
-      // ignore unsupported custom material
+    const csm = this.csm;
+    if (!csm || !this.isCsmEligibleMaterial(mat) || this.csmHooks.has(mat)) return;
+    const original = mat.onBeforeCompile;
+    csm.setupMaterial(mat);
+    const binding = { original, applyCsm: mat.onBeforeCompile, combined: null };
+    // Khi r170 dùng lại chương trình đã biên dịch, onBeforeCompile sẽ không chạy.
+    // Nối bảng uniform đang dùng vào CSM mới trước khi đổi tầm bóng.
+    const uniforms = this.renderer.properties.get(mat).uniforms;
+    if (uniforms) binding.applyCsm.call(mat, { uniforms });
+    binding.combined = function (shader, renderer) {
+      original.call(this, shader, renderer);
+      if (binding.applyCsm) binding.applyCsm.call(this, shader, renderer);
+    };
+    // r170 dùng chuỗi của onBeforeCompile làm khóa chương trình mặc định.
+    binding.combined.toString = () => original.toString();
+    mat.onBeforeCompile = binding.combined;
+    this.csmHooks.set(mat, binding);
+    mat.addEventListener("dispose", this.onCsmMaterialDisposed);
+    mat.needsUpdate = true;
+  }
+
+  detachCsmMaterial(mat) {
+    const hooks = this.csmHooks.get(mat);
+    if (!hooks) return;
+    mat.removeEventListener("dispose", this.onCsmMaterialDisposed);
+    if (mat.onBeforeCompile === hooks.combined) mat.onBeforeCompile = hooks.original;
+    hooks.applyCsm = null;
+    this.csmHooks.delete(mat);
+    this.csm.shaders.delete(mat);
+    delete mat.defines.USE_CSM;
+    delete mat.defines.CSM_CASCADES;
+    delete mat.defines.CSM_FADE;
+    mat.needsUpdate = true;
+  }
+
+  releaseCsm() {
+    const csm = this.csm;
+    if (csm) {
+      this.sunLight.intensity = csm.lights[0].intensity;
+      this.sunLight.color.copy(csm.lights[0].color);
+      for (const mat of csm.shaders.keys()) this.detachCsmMaterial(mat);
+      csm.remove();
+      for (const light of csm.lights) light.dispose();
+      csm.dispose();
+      this.csm = null;
     }
+    this.stats.csmActive = false;
+    this.stats.csmCascades = 0;
+    this.stats.csmShadowSize = 0;
   }
 
   setupObjectForCsm(root) {
@@ -1227,21 +1253,13 @@ export class HueRenderCullingEngine {
       Boolean(this.addons.CSM);
 
     if (!wantsCsm) {
-      if (this.csm) {
-        for (let i = 0; i < this.csm.lights.length; i++) {
-          this.csm.lights[i].castShadow = false;
-        }
-        this.sunLight.castShadow = false;
-      } else {
-        this.sunLight.castShadow = Boolean(preset.shadows);
-      }
-      this.stats.csmActive = false;
-      this.stats.csmCascades = 0;
+      this.releaseCsm();
+      this.sunLight.castShadow = !isQaMode && Boolean(preset.shadows);
       return;
     }
 
     const cascades = 3;
-    const shadowSize = Number(preset.shadowSize || 1536);
+    const shadowSize = Math.min(this.renderer.capabilities.maxTextureSize, Number(preset.shadowSize || 1536));
     const maxFar = isGroundMode
       ? Number(preset.shadowFarGta || 520)
       : Number(preset.shadowFarBird || 1350);
@@ -1268,25 +1286,29 @@ export class HueRenderCullingEngine {
         lightFar: 3200,
         lightMargin: 280,
         lightDirection: sunDirToGround,
-        lightIntensity: this.sunLight.intensity || 2.0,
+        lightIntensity: this.sunLight.intensity,
       });
       this.csm.fade = true;
       for (const l of this.csm.lights) {
         l.shadow.normalBias = 0.035;
+        l.color.copy(this.sunLight.color);
+        l.intensity = this.sunLight.intensity;
       }
-      this.csmModeKey = "persistent_csm3";
+      this.sunLight.intensity = 0;
+      this.sunLight.shadow.dispose();
+      this.sunLight.shadow.map = null;
+      this.sunLight.shadow.mapPass = null;
       this.setupObjectForCsm(this.scene);
       this.csm.updateFrustums();
-    } else {
+    } else if (this.csm.maxFar !== maxFar || this.csm.shadowMapSize !== shadowSize) {
       this.csm.maxFar = maxFar;
       for (const l of this.csm.lights) {
         l.castShadow = true;
         if (l.shadow.mapSize.x !== shadowSize) {
           l.shadow.mapSize.set(shadowSize, shadowSize);
-          if (l.shadow.map) {
-            l.shadow.map.dispose();
-            l.shadow.map = null;
-          }
+          l.shadow.dispose();
+          l.shadow.map = null;
+          l.shadow.mapPass = null;
         }
       }
       this.csm.shadowMapSize = shadowSize;
@@ -1296,6 +1318,9 @@ export class HueRenderCullingEngine {
     this.sunLight.castShadow = false;
     this.stats.csmActive = true;
     this.stats.csmCascades = cascades;
+    this.stats.csmShadowSize = shadowSize;
+    this.csm.update();
+    this.renderer.shadowMap.needsUpdate = true;
   }
 
   syncSunLightState(color, intensity) {
@@ -1306,18 +1331,9 @@ export class HueRenderCullingEngine {
         dir.normalize();
         this.csm.lightDirection.copy(dir);
       }
-      if (this.stats.csmActive) {
-        for (const l of this.csm.lights) {
-          l.color.copy(color);
-          l.intensity = intensity;
-        }
-      } else {
-        // CSM stays attached cleanly in fast mode: light 0 acts as single directional sun
-        for (let i = 0; i < this.csm.lights.length; i++) {
-          this.csm.lights[i].color.copy(color);
-          this.csm.lights[i].intensity = i === 0 ? intensity : 0;
-        }
-        this.csm.update();
+      for (const light of this.csm.lights) {
+        light.color.copy(color);
+        light.intensity = intensity;
       }
       this.sunLight.intensity = 0;
       this.sunLight.castShadow = false;
@@ -1356,139 +1372,79 @@ export class HueRenderCullingEngine {
     }
   }
 
-  ensurePostProcessing(preset, isQaMode) {
-    const wantsBloom = Boolean(preset.bloom) && Boolean(this.addons.UnrealBloomPass);
-    const wantsSao = Boolean(preset.sao) && Boolean(this.addons.GTAOPass);
-    const wantsComposer =
-      !isQaMode &&
-      !this.postProcessingBroken &&
-      (wantsBloom || wantsSao) &&
-      Boolean(this.addons.EffectComposer) &&
-      Boolean(this.addons.RenderPass) &&
-      Boolean(this.addons.OutputPass);
-
-    if (!wantsComposer) {
-      this.stats.postProcessingActive = false;
-      this.stats.bloomActive = false;
-      this.stats.saoActive = false;
-      return;
+  async ensurePostProcessing(preset, isQaMode) {
+    const request = ++this.postFXRequest;
+    const cinematic = Boolean(preset.sao);
+    if (isQaMode || !(preset.bloom || cinematic)) {
+      this.releasePostFX();
+      return false;
     }
-
+    if (this.postFX?.cinematic === cinematic) return true;
+    this.releasePostFX();
+    const extensions = this.renderer.extensions;
+    if (!(extensions.has("EXT_color_buffer_float") || extensions.has("EXT_color_buffer_half_float"))) return false;
     try {
-      const size = this.renderer.getSize(new THREE.Vector2());
-      const dpr = this.renderer.getPixelRatio();
-      const w = Math.max(64, Math.floor(size.x));
-      const h = Math.max(64, Math.floor(size.y));
-
-      if (!this.composer) {
-        this.composer = new this.addons.EffectComposer(this.renderer);
-        this.composer.setPixelRatio(dpr);
-        this.composer.setSize(w, h);
-
-        this.renderPass = new this.addons.RenderPass(this.scene, this.camera);
-        this.composer.addPass(this.renderPass);
-
-        if (this.addons.GTAOPass) {
-          this.gtaoPass = new this.addons.GTAOPass(
-            this.scene,
-            this.camera,
-            Math.max(64, Math.floor(w * dpr)),
-            Math.max(64, Math.floor(h * dpr))
-          );
-          this.gtaoPass.output = 0; // GTAOPass.OUTPUT.Default
-          this.gtaoPass.blendIntensity = 0.72;
-          this.gtaoPass.updateGtaoMaterial({
-            radius: 1.8,
-            distanceExponent: 1.4,
-            thickness: 1.0,
-            distanceFallOff: 1.0,
-            scale: 1.0,
-            samples: 12,
-          });
-          this.gtaoPass.updatePdMaterial({
-            lumaPhi: 10,
-            depthPhi: 2,
-            normalPhi: 3,
-            radius: 6,
-            radiusExponent: 2,
-            rings: 2,
-            samples: 12,
-          });
-          const origOverrideVis = this.gtaoPass.overrideVisibility.bind(this.gtaoPass);
-          this.gtaoPass.overrideVisibility = () => {
-            origOverrideVis();
-            if (this.skyDome) this.skyDome.visible = false;
-          };
-          this.composer.addPass(this.gtaoPass);
-        }
-
-        if (this.addons.UnrealBloomPass) {
-          this.bloomPass = new this.addons.UnrealBloomPass(
-            new THREE.Vector2(w, h),
-            0.24,
-            0.42,
-            0.94
-          );
-          this.composer.addPass(this.bloomPass);
-        }
-
-        this.outputPass = new this.addons.OutputPass();
-        this.composer.addPass(this.outputPass);
-      }
-
-      if (this.gtaoPass) {
-        this.gtaoPass.enabled = wantsSao;
-      }
-      if (this.bloomPass) {
-        this.bloomPass.enabled = wantsBloom;
-        this.bloomPass.strength = preset.sao ? 0.28 : 0.22;
-      }
-
+      const { HuePostFX } = await import("./hue_postfx.js");
+      if (request !== this.postFXRequest) return false;
+      this.postFX = new HuePostFX(this.renderer, this.scene, this.camera, cinematic);
+      this.postFX.setSunElevation(this.sunElevation);
       this.stats.postProcessingActive = true;
-      this.stats.bloomActive = Boolean(this.bloomPass && this.bloomPass.enabled);
-      this.stats.saoActive = Boolean(this.gtaoPass && this.gtaoPass.enabled);
-    } catch {
-      this.postProcessingBroken = true;
-      this.stats.postProcessingActive = false;
-      this.stats.bloomActive = false;
-      this.stats.saoActive = false;
+      this.stats.bloomActive = true;
+      this.stats.fxaaActive = true;
+      this.stats.saoActive = cinematic;
+      return true;
+    } catch (error) {
+      if (request === this.postFXRequest) {
+        this.releasePostFX();
+        console.warn("Huế 1880: chuyển sang vẽ trực tiếp do lỗi khởi tạo hậu kỳ.", error);
+      }
+      return false;
     }
   }
 
-  resizePostProcessing(width, height, dpr) {
-    if (!this.composer) return;
+  releasePostFX() {
+    this.postFX?.dispose();
+    this.postFX = null;
+    this.stats.postProcessingActive = false;
+    this.stats.bloomActive = false;
+    this.stats.fxaaActive = false;
+    this.stats.saoActive = false;
+  }
+
+  resizePostProcessing(width, height, dpr = this.renderer.getPixelRatio()) {
+    if (!this.postFX) return;
     try {
-      this.composer.setPixelRatio(dpr);
-      this.composer.setSize(Math.max(64, width), Math.max(64, height));
-    } catch {
-      // ignore resize hiccup
+      this.postFX.resize(width, height, dpr);
+    } catch (error) {
+      this.releasePostFX();
+      console.warn("Huế 1880: chuyển sang vẽ trực tiếp do lỗi đổi kích thước.", error);
     }
   }
 
   renderSceneFrame(nowMs = performance.now(), isQaMode = false, forceImmediate = false) {
-    if (this.csm && this.stats.csmActive && forceImmediate) {
-      this.csm.update();
-    }
-    if (this.stats.postProcessingActive && this.composer && !this.postProcessingBroken && !isQaMode) {
+    if (this.csm && forceImmediate) this.csm.update();
+    if (this.postFX && !isQaMode) {
       try {
-        const prevAutoReset = this.renderer.info.autoReset;
-        this.renderer.info.autoReset = false;
-        this.renderer.info.reset();
-        try {
-          this.composer.render();
-        } finally {
-          this.renderer.info.autoReset = prevAutoReset;
-        }
+        this.postFX.render();
         return;
-      } catch (err) {
-        console.warn("[HuePostProcessing] Fallback to direct renderer:", err);
-        this.postProcessingBroken = true;
-        this.stats.postProcessingActive = false;
-        this.stats.bloomActive = false;
-        this.stats.saoActive = false;
+      } catch (error) {
+        this.releasePostFX();
+        console.warn("Huế 1880: chuyển sang vẽ trực tiếp do lỗi hậu kỳ.", error);
       }
     }
     this.renderer.render(this.scene, this.camera);
+  }
+
+  dispose() {
+    ++this.postFXRequest;
+    this.releasePostFX();
+    this.releaseCsm();
+    if (this.iblEnvRT) {
+      if (this.scene.environment === this.iblEnvRT.texture) this.scene.environment = null;
+      this.iblEnvRT.dispose();
+      this.iblEnvRT = null;
+      this.stats.iblActive = false;
+    }
   }
 
   invalidateOcclusion() {

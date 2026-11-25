@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
+import { heritageUI } from "./heritage_ui.js";
+import { registerLabel, layoutTileLabels, createShaderWarmup, createResolutionGovernor } from "./hue_view_performance.js";
 import { HuePbrMaterialLibrary } from "./pbr_materials.js";
 import { computeArchitecturalVertexOcclusion } from "./hue_realism_shaders.js";
 import {
@@ -118,9 +120,9 @@ const STATE = {
   hour: 9.5,
   selectedTileId: null,
   activeZoneFilter: "all",
-  showGrid: true,
+  showGrid: !IS_PUBLIC_MODE,
   showLabels: true,
-  showHumans: true,
+  showHumans: !IS_PUBLIC_MODE,
   smartCulling: true,
   autoPollTimer: null,
   ready: false,
@@ -182,6 +184,7 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.autoUpdate = false;
 renderer.shadowMap.needsUpdate = true;
 
+const resolutionGovernor = createResolutionGovernor();
 const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0xcbd5df, 0.00028);
 const huePbr = new HuePbrMaterialLibrary(renderer, scene, ".");
@@ -206,6 +209,9 @@ const humanScaleGroup = new THREE.Group();
 const loadedTilesGroup = new THREE.Group();
 const lanternGroup = new THREE.Group();
 scene.add(terrainGroup, gridOverlayGroup, humanScaleGroup, loadedTilesGroup, lanternGroup);
+gridOverlayGroup.visible = STATE.showGrid;
+humanScaleGroup.visible = STATE.showHumans;
+const warmTileShaders = createShaderWarmup(renderer, camera, scene);
 
 // Lưu trạng thái theo từng ô
 const tileObjects = new Map(); // tile_id -> { tile, overlayGroup, boxMesh, edgeLine, boxH, labelEl, glbGroup, loadedSha, worldSphere, colliderMeshes }
@@ -577,7 +583,8 @@ function applyQualityPreset(key, notifyUser = false) {
   STATE.quality = key;
   huePbr.applyQualityPreset(key);
 
-  const dpr = IS_QA_MODE ? 1 : Math.min(window.devicePixelRatio || 1, preset.dprMax);
+  resolutionGovernor.reset();
+  const dpr = IS_QA_MODE ? 1 : resolutionGovernor.ratio(preset.dprMax);
   renderer.setPixelRatio(dpr);
   renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -745,6 +752,7 @@ function buildMasterTerrainGuide() {
   addMoatStrip(332, 87, 22, 682, -1.5);
 
   addMoatStrip(0, -118, 128, 48, -1.2);
+  addMoatStrip(0, -561, 320, 42, -1.54);
 
   buildVaubanPerimeterGuide();
   buildWallPerimeter(-311, 311, -210, 394, 4.0, 1.4, 0xa38e78, [
@@ -1008,6 +1016,7 @@ function buildImperialLanternNetwork() {
   freezeStaticObject(postsInst);
   freezeStaticObject(globesInst);
   lanternGroup.add(postsInst, globesInst);
+  huePbr.setLanternAnchors(globesInst);
 
   const keyLightCoords = [
     [0, -185, 9],
@@ -1135,7 +1144,7 @@ function optimizeTileRoot(rawRoot, tile) {
   });
 
   // Nâng cấp toàn bộ bề mặt cung điện sang vật liệu PBR quét thật (Poly Haven CC0) dùng chung
-  huePbr.upgradeTileHierarchy(rawRoot);
+  huePbr.upgradeTileHierarchy(rawRoot, tileWorldPos);
 
   const instGroups = new Map();
   const passthrough = [];
@@ -1341,6 +1350,24 @@ function optimizeTileRoot(rawRoot, tile) {
 
 // --- Hàng đợi nạp GLB ưu tiên từ trung tâm ra ngoại vi (kèm bộ giải mã Draco/Meshopt/KTX2) ---
 const gltfLoader = new GLTFLoader();
+// Một số GLB cũ trỏ ảnh JPEG vào bộ đệm đỉnh. Cho thư viện PBR
+// tiếp quản vật liệu đó, đồng thời vẫn đọc ảnh hợp lệ ở bản đồng bộ mới.
+gltfLoader.register(parser => {
+  const geometryViews = new Set((parser.json.accessors || []).map(item => item.bufferView));
+  return {
+    name: "HueEmbeddedImageFallback",
+    loadTexture(index) {
+      const image = parser.json.images?.[parser.json.textures[index].source];
+      if (image?.mimeType !== "image/jpeg" || image.bufferView == null ||
+          !geometryViews.has(image.bufferView)) return null;
+      return parser.getDependency("bufferView", image.bufferView).then(buffer => {
+        const header = new Uint8Array(buffer, 0, Math.min(3, buffer.byteLength));
+        return header[0] === 255 && header[1] === 216 && header[2] === 255
+          ? parser.loadTexture(index) : null;
+      });
+    }
+  };
+});
 const engineReadyPromise = renderEngine
   .initAddons(IS_FLAT_PUBLIC)
   .then(() => {
@@ -1370,16 +1397,30 @@ function enqueueTileGlb(entry, versionKey) {
     existing.versionKey = versionKey;
     return;
   }
-  const distSq = entry.tile.center.x ** 2 + entry.tile.center.y ** 2;
-  glbLoadQueue.push({ entry, versionKey, distSq });
-  glbLoadQueue.sort((a, b) => a.distSq - b.distSq);
+  if (entry.loadingVersion === versionKey) return;
+  glbLoadQueue.push({ entry, versionKey });
   STATE.pendingLoads = glbLoadQueue.length + activeGlbLoads;
-  pumpGlbQueue();
 }
 
+const viewDirection = new THREE.Vector3();
 function pumpGlbQueue() {
+  if (!glbLoadQueue.length) return;
+  camera.getWorldDirection(viewDirection);
+  for (const job of glbLoadQueue) {
+    const { center, tile_id } = job.entry.tile;
+    const dx = center.x - camera.position.x, dz = -center.y - camera.position.z;
+    const dy = job.entry.boxH - camera.position.y;
+    const distance = Math.max(1, Math.hypot(dx, dy, dz));
+    const alignment = (dx * viewDirection.x + dy * viewDirection.y + dz * viewDirection.z) / distance;
+    job.priority = distance * (1.35 - 0.55 * alignment);
+    if (/^T0[1-5]$/.test(tile_id)) job.priority -= 100000;
+  }
+  glbLoadQueue.sort((a, b) => a.priority - b.priority);
   while (activeGlbLoads < MAX_CONCURRENT_GLB && glbLoadQueue.length > 0) {
-    const job = glbLoadQueue.shift();
+    const free = glbLoadQueue.findIndex(job => !job.entry.loadingVersion);
+    if (free < 0) break;
+    const [job] = glbLoadQueue.splice(free, 1);
+    job.entry.loadingVersion = job.versionKey;
     activeGlbLoads += 1;
     STATE.pendingLoads = glbLoadQueue.length + activeGlbLoads;
     loadTileGlbNow(job.entry, job.versionKey);
@@ -1396,79 +1437,76 @@ async function loadTileGlbNow(entry, versionKey) {
   const { tile } = entry;
   const url = `${ASSET_ROOT}/${tile.glb_path}?v=${encodeURIComponent(versionKey)}`;
 
-  gltfLoader.load(
-    url,
-    (gltf) => {
-      if (entry.glbGroup) {
-        loadedTilesGroup.remove(entry.glbGroup);
-        disposeObject3D(entry.glbGroup, renderEngine.csm);
-        STATE.totalRawNodes = Math.max(0, STATE.totalRawNodes - (entry.rawCount || 0));
-        STATE.totalOptNodes = Math.max(0, STATE.totalOptNodes - (entry.optCount || 0));
-      }
-      if (entry.occluderMesh) {
-        disposeObject3D(entry.occluderMesh);
-        entry.occluderMesh = null;
-      }
-      entry.spatialCollider = null;
-
-      const {
-        optGroup,
-        exteriorGroup,
-        interiorGroup,
-        fineDetailMeshes,
-        occluderMesh,
-        elevatedBox,
-        indoorZones,
-        spatialCollider,
-        rawCount,
-        optCount,
-      } = optimizeTileRoot(gltf.scene, tile);
-      loadedTilesGroup.add(optGroup);
-      renderEngine.setupObjectForCsm(optGroup);
-      entry.glbGroup = optGroup;
-      entry.exteriorGroup = exteriorGroup;
-      entry.interiorGroup = interiorGroup;
-      entry.fineDetailMeshes = fineDetailMeshes;
-      entry._lastFineVis = undefined;
-      entry._lastFullShadow = undefined;
-      entry.occluderMesh = occluderMesh;
-      entry.elevatedBox = elevatedBox;
-      entry.indoorZones = indoorZones;
-      entry.isOccluded = false;
-      entry.spatialCollider = spatialCollider;
-      entry.loadedSha = versionKey;
-      entry.rawCount = rawCount;
-      entry.optCount = optCount;
-      STATE.totalRawNodes += rawCount;
-      STATE.totalOptNodes += optCount;
-
-      entry.boxMesh.visible = false;
-      entry.edgeLine.material.opacity = 0.22;
-      if (typeof resnapPlayerToLoadedTileFloor === "function") {
-        resnapPlayerToLoadedTileFloor(tile);
-      }
-      renderEngine.invalidateOcclusion();
-      applyLanternPowerOnly();
-      requestShadowUpdate(false);
-
-      activeGlbLoads = Math.max(0, activeGlbLoads - 1);
-      STATE.pendingLoads = glbLoadQueue.length + activeGlbLoads;
-
-      if (IS_QA_MODE) {
-        pumpGlbQueue();
-      } else {
-        // Nhường 1 khung hình để giao diện không khựng khi nạp 30 cung điện
-        setTimeout(pumpGlbQueue, 16);
-      }
-    },
-    undefined,
-    (err) => {
-      console.warn(`[WebViewer] Không thể nạp ${url}:`, err);
-      activeGlbLoads = Math.max(0, activeGlbLoads - 1);
-      STATE.pendingLoads = glbLoadQueue.length + activeGlbLoads;
-      pumpGlbQueue();
+  try {
+    const gltf = await gltfLoader.loadAsync(url);
+    if (entry.tile.status !== "completed" || versionKey !== (entry.tile.sha256 || entry.tile.glb_path)) {
+      disposeObject3D(gltf.scene);
+      return;
     }
-  );
+    const {
+      optGroup,
+      exteriorGroup,
+      interiorGroup,
+      fineDetailMeshes,
+      occluderMesh,
+      elevatedBox,
+      indoorZones,
+      spatialCollider,
+      rawCount,
+      optCount,
+    } = optimizeTileRoot(gltf.scene, tile);
+    if (entry.glbGroup) {
+      loadedTilesGroup.remove(entry.glbGroup);
+      disposeObject3D(entry.glbGroup, renderEngine.csm);
+      STATE.totalRawNodes = Math.max(0, STATE.totalRawNodes - (entry.rawCount || 0));
+      STATE.totalOptNodes = Math.max(0, STATE.totalOptNodes - (entry.optCount || 0));
+    }
+    if (entry.occluderMesh) {
+      disposeObject3D(entry.occluderMesh);
+      entry.occluderMesh = null;
+    }
+    entry.spatialCollider = null;
+
+    loadedTilesGroup.add(optGroup);
+    renderEngine.setupObjectForCsm(optGroup);
+    entry.glbGroup = optGroup;
+    entry.exteriorGroup = exteriorGroup;
+    entry.interiorGroup = interiorGroup;
+    entry.fineDetailMeshes = fineDetailMeshes;
+    entry._lastFineVis = undefined;
+    entry._lastFullShadow = undefined;
+    entry.occluderMesh = occluderMesh;
+    entry.elevatedBox = elevatedBox;
+    entry.indoorZones = indoorZones;
+    entry.isOccluded = false;
+    entry.spatialCollider = spatialCollider;
+    entry.loadedSha = versionKey;
+    heritageUI.tileLoaded(tile.tile_id);
+    if (!IS_QA_MODE) warmTileShaders(optGroup);
+    entry.rawCount = rawCount;
+    entry.optCount = optCount;
+    STATE.totalRawNodes += rawCount;
+    STATE.totalOptNodes += optCount;
+
+    entry.boxMesh.visible = false;
+    entry.edgeLine.material.opacity = 0.22;
+    if (typeof resnapPlayerToLoadedTileFloor === "function") {
+      resnapPlayerToLoadedTileFloor(tile);
+    }
+    renderEngine.invalidateOcclusion();
+    applyLanternPowerOnly();
+    requestShadowUpdate(false);
+
+  } catch (err) {
+    console.warn(`[WebViewer] Không thể nạp ${url}`, err);
+  } finally {
+    entry.loadingVersion = null;
+    activeGlbLoads -= 1;
+    STATE.pendingLoads = glbLoadQueue.length + activeGlbLoads;
+    updateHudProgress();
+    if (IS_QA_MODE) pumpGlbQueue();
+    else setTimeout(pumpGlbQueue, 16);
+  }
 }
 
 // --- Dựng 30 khung quy hoạch 3D bán trong suốt & nhãn tên tiếng Việt ---
@@ -1516,12 +1554,14 @@ function rebuildGridFromManifest(manifest) {
 
       const labelEl = document.createElement("button");
       labelEl.type = "button";
+      labelEl.dataset.tileId = tile.tile_id;
       labelEl.className = "tile-label";
       labelEl.innerHTML = `<span class="dot"></span>${tile.short_label || tile.name_vi}`;
       labelEl.addEventListener("click", (ev) => {
         ev.stopPropagation();
         selectTile(tile.tile_id, true);
       });
+      registerLabel(labelEl);
       labelLayer.appendChild(labelEl);
 
       const worldSphere = new THREE.Sphere(
@@ -1569,6 +1609,8 @@ function rebuildGridFromManifest(manifest) {
       }
       entry.labelEl.classList.add("completed");
     } else {
+      const obsolete = glbLoadQueue.findIndex(job => job.entry === entry);
+      if (obsolete >= 0) glbLoadQueue.splice(obsolete, 1);
       entry.labelEl.classList.remove("completed");
       if (entry.glbGroup) {
         loadedTilesGroup.remove(entry.glbGroup);
@@ -1588,6 +1630,8 @@ function rebuildGridFromManifest(manifest) {
     }
   });
 
+  STATE.pendingLoads = activeGlbLoads + glbLoadQueue.length;
+  pumpGlbQueue();
   updateHudProgress();
   renderTileSidebar();
   if (STATE.selectedTileId) {
@@ -1604,26 +1648,8 @@ function lerpColorTriple(c1, c2, t) {
 }
 
 function applyLanternPowerOnly() {
-  dynamicLanternMaterials.forEach((m) => {
-    m.emissiveIntensity = currentLanternPower * 2.5;
-  });
   const preset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
-  const maxPts = currentLanternPower > 0.05 ? preset.maxPointLights : 0;
-  if (maxPts <= 0) {
-    lanternLights.forEach((pt) => {
-      pt.intensity = 0;
-      pt.visible = false;
-    });
-    return;
-  }
-  const ranked = lanternLights
-    .map((pt) => ({ pt, dSq: pt.position.distanceToSquared(camera.position) }))
-    .sort((a, b) => a.dSq - b.dSq);
-  ranked.forEach((item, idx) => {
-    const active = idx < maxPts;
-    item.pt.visible = active;
-    item.pt.intensity = active ? currentLanternPower * 42.0 : 0;
-  });
+  huePbr.setLanternPower(currentLanternPower, preset.maxPointLights);
 }
 
 function syncSunShadowAnchor(cx, cz, force = false) {
@@ -3933,7 +3959,7 @@ function syncMobileHudState() {
   const titleEl = document.querySelector("#hud-topbar .brand-text h1");
   if (titleEl) {
     if (!titleEl.dataset.fullTitle) titleEl.dataset.fullTitle = titleEl.textContent.trim();
-    titleEl.textContent = narrow ? "Huế 1880 3D" : titleEl.dataset.fullTitle;
+    titleEl.textContent = titleEl.dataset.fullTitle;
   }
   const sidebarLabelEl = document.querySelector("#btn-toggle-sidebar span");
   if (sidebarLabelEl) {
@@ -4031,6 +4057,7 @@ function syncMovementHudForMode(mode) {
 }
 
 function setCameraMode(mode, startPlan = null) {
+  cancelFlight();
   const prevMode = STATE.cameraMode;
   const wasGround = prevMode === "gta" || prevMode === "walk";
   const isGround = mode === "gta" || mode === "walk";
@@ -4472,6 +4499,8 @@ renderer.domElement.addEventListener("pointerup", (e) => {
 });
 
 function selectTile(tileId, flyTo = false) {
+  const tile = tileObjects.get(tileId)?.tile;
+  if (IS_PUBLIC_MODE && tile) heritageUI.selectTile(tileId, tile, ZONE_STYLE[tile.zone]?.label || "Kinh thành Huế");
   STATE.selectedTileId = tileId;
   tileObjects.forEach((entry, id) => {
     const isSel = id === tileId;
@@ -4487,7 +4516,11 @@ function selectTile(tileId, flyTo = false) {
   if (flyTo) flyToTile(tileId);
 }
 
-function flyToTile(tileId) {
+let flightId = 0;
+function cancelFlight() { flightId++; }
+controls.addEventListener("start", cancelFlight);
+
+function flyToTile(tileId, instant = false) {
   const entry = tileObjects.get(tileId);
   if (!entry) return;
   const t = entry.tile;
@@ -4495,9 +4528,22 @@ function flyToTile(tileId) {
   const target = planToThree(t.center.x, t.center.y, t.elevation_z + 4);
   const span = Math.max(t.dimensions.width, t.dimensions.depth);
   const dist = THREE.MathUtils.clamp(span * 1.15, 95, 520);
-  camera.position.set(target.x + dist * 0.55, target.y + dist * 0.62, target.z + dist * 0.75);
-  controls.target.copy(target);
-  controls.update();
+  const destination = new THREE.Vector3(target.x + dist * 0.55, target.y + dist * 0.62, target.z + dist * 0.75);
+  const start = camera.position.clone(), aim = controls.target.clone();
+  const token = ++flightId;
+  const began = performance.now();
+  const duration = instant || matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1050;
+  function travel(now) {
+    if (token !== flightId || STATE.cameraMode !== "bird") return;
+    const t = duration ? Math.min(1, (now - began) / duration) : 1;
+    const easing = t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2;
+    camera.position.lerpVectors(start, destination, easing);
+    controls.target.lerpVectors(aim, target, easing);
+    controls.update();
+    if (STATE.loopPaused) window.__HUE_VIEWER__.renderNow();
+    if (t < 1) requestAnimationFrame(travel);
+  }
+  travel(began);
   renderEngine.invalidateOcclusion();
 }
 
@@ -4604,60 +4650,12 @@ function renderInspector(tileId) {
 }
 
 // --- Chiếu nhãn 3D (dùng GPU transform, không reflow) & Cập nhật La bàn ---
-const projVec = new THREE.Vector3();
 const compassDirVec = new THREE.Vector3();
 let lastCompassUpdate = 0;
 
 function updateLabelsAndCompass(force = false) {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
   const isGround = STATE.cameraMode === "gta" || STATE.cameraMode === "walk";
-  const hideLabels =
-    !STATE.showLabels ||
-    isGround ||
-    document.body.classList.contains("hud-hidden");
-
-  for (const entry of tileObjects.values()) {
-    const el = entry.labelEl;
-    if (hideLabels || (STATE.smartCulling && entry.glbGroup && !entry.glbGroup.visible)) {
-      if (entry.labelVisible) {
-        el.style.display = "none";
-        entry.labelVisible = false;
-      }
-      continue;
-    }
-    const t = entry.tile;
-    projVec.set(t.center.x, t.elevation_z + entry.boxH + 3.0, -t.center.y);
-    const dist = camera.position.distanceTo(projVec);
-    projVec.project(camera);
-
-    const inFront = projVec.z >= -1 && projVec.z <= 1;
-    const isPriority = t.index <= 10 || STATE.selectedTileId === t.tile_id;
-    const tooFar = !isPriority && dist > 1450;
-
-    if (!inFront || tooFar) {
-      if (entry.labelVisible) {
-        el.style.display = "none";
-        entry.labelVisible = false;
-      }
-      continue;
-    }
-    const sx = (projVec.x * 0.5 + 0.5) * w;
-    const sy = (-projVec.y * 0.5 + 0.5) * h;
-    if (sx < -40 || sx > w + 40 || sy < 84 || sy > h - 88) {
-      if (entry.labelVisible) {
-        el.style.display = "none";
-        entry.labelVisible = false;
-      }
-      continue;
-    }
-    if (!entry.labelVisible) {
-      el.style.display = "block";
-      entry.labelVisible = true;
-    }
-    el.style.transform = `translate3d(${sx.toFixed(1)}px, ${sy.toFixed(1)}px, 0) translate(-50%, -100%)`;
-  }
-
+  layoutTileLabels(camera, tileObjects, STATE, renderEngine.stats.activeIndoorTileId, force);
   if (isGround) return;
   const now = performance.now();
   if (!force && now - lastCompassUpdate < 80) return;
@@ -4804,7 +4802,7 @@ function bindUiEvents() {
 
   const sidebarEl = document.getElementById("hud-sidebar");
   const toggleSidebarBtn = document.getElementById("btn-toggle-sidebar");
-  if (window.innerWidth <= 900 && sidebarEl) {
+  if ((IS_PUBLIC_MODE || window.innerWidth <= 900) && sidebarEl) {
     sidebarEl.classList.add("collapsed");
     if (toggleSidebarBtn) toggleSidebarBtn.setAttribute("aria-expanded", "false");
   }
@@ -4825,6 +4823,8 @@ function bindUiEvents() {
     });
   });
 
+  document.getElementById("chk-show-grid").checked = STATE.showGrid;
+  document.getElementById("chk-show-humans").checked = STATE.showHumans;
   document.getElementById("chk-show-grid").addEventListener("change", (e) => {
     STATE.showGrid = e.target.checked;
     gridOverlayGroup.visible = STATE.showGrid;
@@ -5144,7 +5144,7 @@ function bindUiEvents() {
 
   window.addEventListener("resize", () => {
     const preset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
-    const dpr = IS_QA_MODE ? 1 : Math.min(window.devicePixelRatio || 1, preset.dprMax);
+    const dpr = IS_QA_MODE ? 1 : resolutionGovernor.ratio(preset.dprMax);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setPixelRatio(dpr);
@@ -5158,8 +5158,32 @@ function bindUiEvents() {
   syncMobileHudState();
 }
 
+// Giữ nguyên góc máy và tỉ lệ khung hình khi xuất ảnh từ bộ đệm WebGL.
+async function captureScenePng() {
+  await engineReadyPromise;
+  await renderEngine.ensurePostProcessing(QUALITY_PRESETS[STATE.quality], IS_QA_MODE);
+  const width = innerWidth, height = innerHeight;
+  const previous = renderer.getPixelRatio();
+  const gl = renderer.getContext();
+  const limit = Math.min(2560, gl.getParameter(gl.MAX_RENDERBUFFER_SIZE), gl.getParameter(gl.MAX_TEXTURE_SIZE));
+  const ratio = Math.min(limit / Math.max(width, height), Math.max(previous, 2));
+  try {
+    renderer.setPixelRatio(ratio);
+    renderEngine.resizePostProcessing(width, height, ratio);
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return new Promise((resolve, reject) => canvas.toBlob(blob =>
+      blob ? resolve(blob) : reject(new Error("Trình duyệt chưa tạo được ảnh PNG.")), "image/png"));
+  } finally {
+    renderer.setPixelRatio(previous);
+    renderEngine.resizePostProcessing(width, height, previous);
+    if (STATE.loopPaused) renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+  }
+}
+
 // --- API điều khiển cho Playwright Headless QA (`ingest_and_audit.py`) ---
 window.__HUE_VIEWER__ = {
+  capturePng: captureScenePng,
   isReady: () => STATE.ready && STATE.pendingLoads === 0 && pendingSkyLoads === 0,
   waitForAssets: async (timeoutMs = 25000) => {
     await engineReadyPromise;
@@ -5218,6 +5242,9 @@ window.__HUE_VIEWER__ = {
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
     return s;
   },
+  teleportPlayerToPlan: (x, y, z = 0, yaw = 0) =>
+    STATE.cameraMode === "gta" ? window.__HUE_VIEWER__.teleportGtaToPlan(x, y, z, yaw) :
+      window.__HUE_VIEWER__.teleportHalfLifeToPlan(x, y, z, yaw),
   teleportHalfLifeToPlan: (planX, planY, planZ = 0, yaw = 0) => {
     if (STATE.cameraMode !== "walk") {
       setCameraMode("walk", { x: planX, y: planY, z: planZ, yaw });
@@ -5351,15 +5378,16 @@ window.__HUE_VIEWER__ = {
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
   focusTile: (tileId) => {
-    selectTile(tileId, true);
+    selectTile(tileId);
+    flyToTile(tileId, true);
     renderEngine.invalidateOcclusion();
     updateTileCulling(true);
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
   reloadManifest: () => loadPipelineState(false),
   renderNow: () => {
-    updateLabelsAndCompass(true);
     updateTileCulling(true);
+    updateLabelsAndCompass(true);
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
   pauseLoop: (paused) => {
@@ -5383,6 +5411,10 @@ window.__HUE_VIEWER__ = {
     triangles: renderer.info.render.triangles,
     pbrMaterials: huePbr.upgradedMaterials.length,
     pbrPendingTextures: huePbr.pendingTextures,
+    loadedTiles: Array.from(tileObjects.values()).filter(entry => entry.glbGroup).length,
+    pendingLoads: STATE.pendingLoads,
+    pixelRatio: renderer.getPixelRatio(),
+    rendererMemory: { ...renderer.info.memory, programs: renderer.info.programs.length },
     ...renderEngine.stats,
   }),
 };
@@ -5406,7 +5438,7 @@ function updateFpsHud(now) {
     el.textContent = extras.length
       ? `${fps} FPS · ${calls} draws · ${extras.join(" · ")}`
       : `${fps} FPS · ${calls} draws`;
-    el.title = `Hiển thị ${rs.visibleTiles} ô · Ngoài góc ${rs.frustumCulledTiles} · Khuất tầm nhìn ${rs.occludedTiles} · Nội thất bật ${rs.interiorVisibleTiles}/ẩn ${rs.interiorHiddenTiles} · CSM ${rs.csmActive ? rs.csmCascades + " tầng" : "tắt"} · Hậu kỳ ${rs.postProcessingActive ? "bật" : "tắt"}`;
+    el.title = `Tỉ lệ điểm ảnh ${renderer.getPixelRatio().toFixed(2)} · Hiển thị ${rs.visibleTiles} ô · Ngoài góc ${rs.frustumCulledTiles} · Khuất tầm nhìn ${rs.occludedTiles} · Nội thất bật ${rs.interiorVisibleTiles}/ẩn ${rs.interiorHiddenTiles} · CSM ${rs.csmActive ? rs.csmCascades + " tầng" : "tắt"} · Hậu kỳ ${rs.postProcessingActive ? "bật" : "tắt"}`;
     el.style.color = fps >= 45 ? "#6CE0C6" : fps >= 25 ? "#FCE29C" : "#FF8B7B";
   }
   fpsFrames = 0;
@@ -5417,8 +5449,15 @@ function updateFpsHud(now) {
 let lastTime = performance.now();
 function animate(now) {
   requestAnimationFrame(animate);
-  if (STATE.loopPaused) return;
-  const dt = Math.min((now - lastTime) / 1000, 0.08);
+  if (STATE.loopPaused) { lastTime = now; return; }
+  const elapsedMs = now - lastTime;
+  if (!IS_QA_MODE && (STATE.quality === "balanced" || STATE.quality === "high") &&
+      resolutionGovernor.sample(elapsedMs)) {
+    const dpr = resolutionGovernor.ratio(QUALITY_PRESETS[STATE.quality].dprMax);
+    renderer.setPixelRatio(dpr);
+    renderEngine.resizePostProcessing(innerWidth, innerHeight, dpr);
+  }
+  const dt = Math.min(elapsedMs / 1000, 0.08);
   lastTime = now;
 
   if (STATE.cameraMode === "bird") {
@@ -5438,13 +5477,22 @@ function animate(now) {
 
 // --- Khởi chạy toàn bộ trình xem ---
 loadSavedMoveSettings();
+huePbr.bindAtmosphere({ skyUniforms, camera, lanternLights, lanternMaterials: dynamicLanternMaterials, qa: IS_QA_MODE });
 buildMasterTerrainGuide();
+huePbr.prepareTerrainGuide(terrainGroup, terrainGroundMeshes);
 buildHumanScaleCheckpoints();
 buildImperialLanternNetwork();
 buildGtaCharacter();
 applyGtaOutfit(0);
 applyGtaCamPreset(0, false);
 bindUiEvents();
+heritageUI.connect({
+  camera, controls, setCameraMode, cancelViewerFlight: cancelFlight, capturePng: captureScenePng,
+  invalidate: () => {
+    renderEngine.invalidateOcclusion();
+    if (STATE.loopPaused) window.__HUE_VIEWER__.renderNow();
+  }
+});
 updateTimeOfDay(9.5);
 preloadHueSkyTextures();
 loadPipelineState(false);

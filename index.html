@@ -2,9 +2,9 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Kinh Thành &amp; Tử Cấm Thành Huế 1880 — Trình Xem Quy Hoạch WebGL</title>
-  <meta name="description" content="Hệ thống trình xem tổng hợp WebGL 30 ô quy hoạch độc lập cho dự án Phục Dựng Kinh Thành và Tử Cấm Thành Huế nguyên bản thế kỷ 19 (1880)." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Kinh thành Huế 1880 · Hành trình di sản</title>
+  <meta name="description" content="Tham quan Kinh thành Huế năm 1880 trong không gian 3D, từ bến sông Hương qua Ngọ Môn đến nhà hát Duyệt Thị Đường." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' rx='6' fill='%23181411'/%3E%3Cpath d='M4 21H24M6 18H22M8 14.5H20L14 7L8 14.5Z' fill='none' stroke='%23D4A017' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,6 +14,7 @@
     {
       "imports": {
         "three": "./three.module.js",
+        "three/addons/": "./vendor/three/addons/",
         "three/addons/controls/OrbitControls.js": "./OrbitControls.js",
         "three/addons/loaders/GLTFLoader.js": "./GLTFLoader.js",
         "three/addons/utils/BufferGeometryUtils.js": "./BufferGeometryUtils.js",
@@ -21,8 +22,12 @@
       }
     }
   </script>
+  <script>
+    if (new URLSearchParams(location.search).get("qa") === "1") document.documentElement.dataset.qa = "1";
+  </script>
 </head>
-<body>
+<body class="public-mode">
+  <svg class="heritage-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><symbol id="icon-route" viewBox="0 0 24 24"><path d="M5 19c4 0 9 0 11-4s-3-4-5-3-3 1-4-1 0-4 3-5 M17 5h4m-2-2v4 M4 17v4m-2-2h4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="icon-sliders" viewBox="0 0 24 24"><path d="M3 6h8m4 0h6M3 12h2m4 0h12M3 18h11m4 0h3 M11 3v6m-6 0v6m9 0v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="icon-photo" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v12H3z M16 13.5a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="icon-frame" viewBox="0 0 24 24"><path d="M4 9V4h5m6 0h5v5m0 6v5h-5m-6 0H4v-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="icon-gate" viewBox="0 0 24 24"><path d="M2 20h20M4 17h16M5 17v-5m4 5v-5m6 5v-5m4 5v-5M2 12q5-1 7-4h6q2 3 7 4H2zM6 7q4-1 6-4 2 3 6 4H6z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="icon-next" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></symbol><symbol id="icon-prev" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></symbol></defs></svg>
   <div id="viewport-root" aria-label="Khung nhìn 3D Kinh Thành Huế 1880">
     <canvas id="webgl-canvas" tabindex="0"></canvas>
     <div id="label-layer" aria-hidden="true"></div>
@@ -32,43 +37,18 @@
   <header id="hud-topbar" class="hud-panel">
     <div class="brand-block">
       <div class="brand-emblem" aria-hidden="true">
-        <svg viewBox="0 0 28 28" width="24" height="24" fill="none">
-          <path d="M4 21H24M6 18H22M8 14.5H20L14 7L8 14.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M3 14.5C6.5 14.5 9.5 12 14 7C18.5 12 21.5 14.5 25 14.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-          <line x1="14" y1="4" x2="14" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
+        <svg width="31" height="31" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-gate"/></svg>
       </div>
       <div class="brand-text">
-        <h1>Kinh Thành &amp; Tử Cấm Thành Huế 1880</h1>
-        <p class="subtitle">Hệ tọa độ thực 1:1 · Gốc (0, 0, 0) tại Điện Thái Hòa · Vĩ độ 16.47° Bắc</p>
+        <p class="subtitle">Triều Nguyễn · Năm 1880</p>
+        <h1>Kinh thành Huế</h1>
       </div>
     </div>
 
-    <div class="progress-strip">
-      <div class="stat-item">
-        <span class="stat-label">Tiến độ lắp ráp</span>
-        <strong id="stat-progress" class="stat-value mono">0 / 30 ô</strong>
-      </div>
-      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0">
-        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
-      </div>
-      <div class="stat-item">
-        <span class="stat-label">Đạo cụ thư viện</span>
-        <strong id="stat-props" class="stat-value mono">0 / 18 mẫu</strong>
-      </div>
-      <div class="stat-item stat-perf">
-        <span class="stat-label">Hiệu năng WebGL</span>
-        <strong id="stat-fps" class="stat-value mono">-- FPS</strong>
-      </div>
-    </div>
+    <div id="heritage-stream" aria-label="Tiến độ nạp mô hình"><i aria-hidden="true"></i><span id="heritage-stream-text">Đang mở cảnh</span></div>
 
     <div class="topbar-actions">
-      <select id="quality-select" class="quality-select" aria-label="Mức đồ họa tối ưu hiệu năng" title="Chọn mức đồ họa phù hợp cấu hình máy">
-        <option value="fast">Đồ họa: Siêu mượt</option>
-        <option value="balanced" selected>Đồ họa: Cân bằng (CSM 3 tầng)</option>
-        <option value="high">Đồ họa: Cao (CSM 1.5K · Bloom)</option>
-        <option value="cinematic">Đồ họa: Điện ảnh (CSM 2K · AO · Bloom)</option>
-      </select>
+      <button id="heritage-tour-toggle" class="museum-btn" type="button" aria-label="Hành trình" title="Hành trình" aria-controls="heritage-tour" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-route"/></svg><span>Hành trình</span></button>
       <button id="btn-open-orchestrator" class="btn-accent" type="button" title="Mở Bảng Điều Phối (Orchestrator), Lịch Khung Giờ & Đối Chiếu 1-1">
         <svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true">
           <rect x="2.5" y="3.5" width="6" height="5.5" rx="1" stroke="currentColor" stroke-width="1.5"/>
@@ -84,20 +64,62 @@
         </svg>
         <span>Nạp nóng dữ liệu</span>
       </button>
-      <button id="btn-toggle-sidebar" class="btn-ghost" type="button" title="Ẩn hoặc hiện bảng quy hoạch 30 ô" aria-expanded="true">
+      <button id="btn-toggle-sidebar" class="btn-ghost" type="button" title="Danh mục công trình" aria-controls="hud-sidebar" aria-label="Danh mục công trình" aria-expanded="false">
         <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
           <rect x="2.5" y="3.5" width="15" height="13" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
           <line x1="7.5" y1="3.5" x2="7.5" y2="16.5" stroke="currentColor" stroke-width="1.5"/>
         </svg>
-        <span>30 Ô quy hoạch</span>
+        <span>Danh mục</span>
       </button>
+      <button id="heritage-controls-toggle" class="museum-btn" type="button" aria-label="Điều khiển" title="Điều khiển" aria-controls="hud-bottombar" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-sliders"/></svg><span>Điều khiển</span></button>
+      <button id="heritage-photo-toggle" class="museum-btn" type="button" aria-label="Ẩn giao diện (H)" title="Ẩn giao diện (H)" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-frame"/></svg><span>Ẩn giao diện (H)</span></button>
+      <button id="heritage-png" class="museum-btn" type="button" aria-label="Chụp PNG" title="Chụp PNG" ><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-photo"/></svg><span>Chụp PNG</span></button>
     </div>
   </header>
 
+
+  <section id="heritage-preloader" aria-labelledby="heritage-loading-title">
+    <div class="heritage-welcome">
+      <svg width="76" height="76" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-gate"/></svg>
+      <p class="museum-kicker">Triều Nguyễn · Năm 1880</p>
+      <h2 id="heritage-loading-title">Kinh thành Huế</h2>
+      <p>Đang mở trục Thần đạo</p>
+      <progress id="heritage-core-progress" max="5" value="0" aria-label="Số ô trung tâm đã nạp"></progress>
+      <output id="heritage-core-count" class="mono">0 / 5</output>
+      <button id="heritage-enter" class="text-action" type="button">Vào tham quan</button>
+    </div>
+  </section>
+
+  <nav id="heritage-tour" class="hud-panel heritage-sheet" aria-labelledby="heritage-tour-heading" hidden>
+    <div class="museum-panel-head"><h2 id="heritage-tour-heading">Hành trình Di sản 1880</h2><button id="heritage-tour-close" class="museum-btn" type="button" aria-label="Đóng hành trình" title="Đóng hành trình" ><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-close"/></svg><span>Đóng hành trình</span></button></div>
+    <ol id="heritage-stops"></ol>
+  </nav>
+
+  <article id="heritage-card" class="hud-panel heritage-sheet" aria-labelledby="heritage-title" hidden>
+    <div class="museum-panel-head"><p id="heritage-location" class="museum-kicker"></p><button id="heritage-close" class="museum-btn" type="button" aria-label="Đóng thẻ di sản" title="Đóng thẻ di sản" ><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-close"/></svg><span>Đóng thẻ di sản</span></button></div>
+    <h2 id="heritage-title" tabindex="-1"></h2>
+    <button id="heritage-read-more" class="text-action" type="button" aria-expanded="false" aria-controls="heritage-narrative" hidden>Xem tiếp</button>
+    <div id="heritage-narrative">
+      <p id="heritage-date"></p><p id="heritage-story"></p>
+      <details id="heritage-sources"><summary>Tư liệu lịch sử</summary><div id="heritage-source-links"></div></details>
+      <div class="heritage-card-actions">
+        <button id="heritage-fly" class="museum-btn" type="button">Bay tới ngắm cảnh</button>
+        <button id="heritage-gate" class="museum-btn" type="button">Đặt nhân vật trước cổng</button>
+      </div>
+      <button id="heritage-model" type="button" class="text-action" hidden>Chi tiết ô mô hình</button>
+      <div class="heritage-pagination"><button id="heritage-prev" class="museum-btn" type="button" aria-label="Điểm trước" title="Điểm trước" ><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-prev"/></svg><span>Điểm trước</span></button><span id="heritage-step" class="mono"></span><button id="heritage-next" class="museum-btn" type="button" aria-label="Điểm sau" title="Điểm sau" ><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-next"/></svg><span>Điểm sau</span></button></div>
+    </div>
+  </article>
+  <div id="heritage-photo-tools" class="photo-tools" hidden>
+    <button id="heritage-photo-png" class="museum-btn" type="button">Chụp PNG</button>
+    <button id="heritage-photo-exit" class="museum-btn" type="button">Hiện giao diện (H)</button>
+  </div>
+  <div id="heritage-notice" class="sr-only" role="status"></div>
+
   <!-- Bảng danh sách 30 ô quy hoạch độc lập -->
-  <aside id="hud-sidebar" class="hud-panel" aria-label="Danh sách 30 ô quy hoạch độc lập">
+  <aside id="hud-sidebar" class="hud-panel collapsed" aria-label="Danh sách 30 ô quy hoạch độc lập">
     <div class="panel-header">
-      <h2>Phân vùng 30 Ô độc lập</h2>
+      <h2>Danh mục công trình</h2>
       <div class="filter-tabs" role="tablist" aria-label="Lọc theo phân khu">
         <button class="filter-chip active" data-zone="all" type="button">Tất cả</button>
         <button class="filter-chip" data-zone="truc_than_dao" type="button">Thần đạo</button>
@@ -111,7 +133,7 @@
 
     <div class="sidebar-footer">
       <label class="toggle-row">
-        <input id="chk-show-grid" type="checkbox" checked />
+        <input id="chk-show-grid" type="checkbox" />
         <span>Hiển thị khung ranh giới 3D</span>
       </label>
       <label class="toggle-row">
@@ -119,7 +141,7 @@
         <span>Hiển thị nhãn tên cung điện</span>
       </label>
       <label class="toggle-row">
-        <input id="chk-show-humans" type="checkbox" checked />
+        <input id="chk-show-humans" type="checkbox" />
         <span>Mốc đối chiếu người (1.70m)</span>
       </label>
       <label class="toggle-row" title="Tự động ẩn công trình khuất sau các khối kiến trúc lớn và ẩn nội thất của công trình khác khi đang ở bên trong">
@@ -147,6 +169,7 @@
       </button>
     </div>
 
+    <details class="model-details"><summary>Thông số mô hình</summary>
     <div class="inspector-grid mono">
       <div><span>Tâm (X, Y, Z)</span><strong id="insp-center">0, 0, 0 m</strong></div>
       <div><span>Kích thước</span><strong id="insp-dims">140 × 80 m</strong></div>
@@ -159,6 +182,7 @@
       <code id="insp-sha">Chưa nạp tệp .glb</code>
     </div>
 
+    </details>
     <p id="insp-brief" class="inspector-brief"></p>
 
     <div class="inspector-actions">
@@ -213,7 +237,8 @@
   </div>
 
   <!-- Thanh điều khiển Camera & Giờ Mặt Trời phía dưới -->
-  <footer id="hud-bottombar" class="hud-panel">
+  <footer id="hud-bottombar" class="hud-panel heritage-sheet" aria-label="Điều khiển khung cảnh" hidden>
+    <div class="museum-panel-head"><h2>Điều khiển khung cảnh</h2><button id="heritage-controls-close" class="museum-btn" type="button" aria-label="Đóng điều khiển" title="Đóng điều khiển" ><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-close"/></svg><span>Đóng điều khiển</span></button></div>
     <div class="control-group">
       <span class="group-label">Chế độ Góc máy</span>
       <div class="segmented" role="group" aria-label="Chế độ camera">
@@ -222,7 +247,7 @@
             <path d="M2.5 7.5L10 3.5L17.5 7.5L10 11.5L2.5 7.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
             <path d="M2.5 12L10 16L17.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          <span>Quy hoạch</span>
+          <span>Toàn cảnh</span>
         </button>
         <button id="mode-walk" class="seg-btn" type="button" data-mode="walk" title="Di chuyển góc nhìn thứ nhất kiểu Half-Life (Đi bộ, Chạy nhanh, Nhảy, Ngồi cúi)">
           <svg viewBox="0 0 20 20" width="15" height="15" fill="none">
@@ -244,7 +269,7 @@
             <rect x="2.5" y="5" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
             <path d="M13.5 8.5L17.5 6.5V13.5L13.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
           </svg>
-          <span>Time-lapse</span>
+          <span>Tua thời gian</span>
         </button>
       </div>
     </div>
@@ -253,7 +278,7 @@
 
     <div class="control-group time-group">
       <div class="time-header">
-        <span class="group-label">Quỹ đạo Mặt trời (Huế 16.47°N)</span>
+        <span class="group-label">Ánh sáng theo giờ</span>
         <div class="time-readout">
           <strong id="time-display" class="mono">09:30</strong>
           <span id="time-phase" class="phase-tag">Nắng sớm</span>
@@ -263,13 +288,40 @@
       <div class="time-controls">
         <input id="time-slider" type="range" min="5.5" max="20.5" step="0.05" value="9.5" aria-label="Giờ trong ngày tại Huế" />
         <div class="time-presets">
-          <button class="preset-btn" data-hour="5.5" type="button">05:30 Bình minh</button>
-          <button class="preset-btn" data-hour="12.0" type="button">12:00 Chính ngọ</button>
-          <button class="preset-btn" data-hour="17.75" type="button">17:45 Hoàng hôn tím</button>
-          <button class="preset-btn" data-hour="20.0" type="button">20:00 Đêm sao</button>
+          <button class="preset-btn" aria-label="05:30 Bình minh" data-hour="5.5" type="button">05:30 Bình minh</button>
+          <button class="preset-btn" aria-label="12:00 Chính ngọ" data-hour="12.0" type="button">12:00 Chính ngọ</button>
+          <button class="preset-btn" aria-label="17:45 Hoàng hôn" data-hour="17.75" type="button">17:45 Hoàng hôn tím</button>
+          <button class="preset-btn" aria-label="20:00 Đêm sao" data-hour="20.0" type="button">20:00 Đêm sao</button>
         </div>
       </div>
     </div>
+    <label class="quality-row" for="quality-select">Chất lượng hình ảnh
+      <select id="quality-select" class="quality-select" aria-label="Mức đồ họa tối ưu hiệu năng" title="Chọn mức đồ họa phù hợp cấu hình máy">
+        <option value="fast">Đồ họa: Siêu mượt</option>
+        <option value="balanced" selected>Đồ họa: Cân bằng (CSM 3 tầng)</option>
+        <option value="high">Đồ họa: Cao (CSM 1.5K · Bloom)</option>
+        <option value="cinematic">Đồ họa: Điện ảnh (CSM 2K · AO · Bloom)</option>
+      </select>
+    </label>
+    <details class="model-details"><summary>Thông số hiển thị</summary>
+<div class="progress-strip">
+      <div class="stat-item">
+        <span class="stat-label">Ô trong hồ sơ</span>
+        <strong id="stat-progress" class="stat-value mono">0 / 30 ô</strong>
+      </div>
+      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0">
+        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Thư viện đạo cụ</span>
+        <strong id="stat-props" class="stat-value mono">0 / 18 mẫu</strong>
+      </div>
+      <div class="stat-item stat-perf">
+        <span class="stat-label">Hiệu năng WebGL</span>
+        <strong id="stat-fps" class="stat-value mono">-- FPS</strong>
+      </div>
+    </div>
+    </details>
   </footer>
 
   <!-- Cửa sổ Bảng Điều Phối Web Orchestrator -->
@@ -400,8 +452,9 @@
       <span class="hl-ch-dot"></span>
     </div>
 
-    <div id="gta-topbar" class="hud-panel gta-topbar">
-      <div class="gta-keys-line">
+    <button id="heritage-help-toggle" class="museum-btn" type="button" aria-label="Hướng dẫn di chuyển" aria-expanded="false" aria-controls="gta-topbar">?</button>
+    <div id="gta-topbar" hidden class="hud-panel gta-topbar">
+      <div class="gta-keys-line"><span class="touch-help">Cần trái để đi, vuốt cảnh để nhìn. Dùng hai ngón để đổi cự ly ở góc nhìn thứ ba.</span>
         <strong id="gta-mode-tag" class="gta-tag">HALF-LIFE FPS · 1.70M</strong>
         <span id="gta-keys-hint"><code>W A S D</code> đi bộ · <code>Shift</code> chạy · <code>Space</code> nhảy · <code>Ctrl</code> ngồi · <strong>Bấm cảnh</strong> xoay chuột 360° · <code>V</code> góc nhìn 1/3 · <code>F</code> lướt nhanh · <code>M</code> cài đặt · <code>Esc</code> mở chuột</span>
       </div>
@@ -537,9 +590,10 @@
         banner.style.cssText = "position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:99;padding:10px 16px;border-radius:8px;background:#3a1714;border:1px solid #d4a017;color:#fff2d6;font:13px/1.4 sans-serif;max-width:90vw;";
         document.body.appendChild(banner);
       }
-      banner.textContent = "Thieu tep khi tai canh 3D: " + (ev.message || "Vui long kiem tra da upload du cac tep va thu muc assets/pbr.");
+      banner.textContent = "Lỗi khi mở cảnh 3D. " + (ev.message || "Vui lòng kiểm tra các tệp mô hình và vật liệu.");
     });
   </script>
+  <script type="module" src="./heritage_ui.js"></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>

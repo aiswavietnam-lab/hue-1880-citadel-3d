@@ -30,6 +30,10 @@ Trên Google Drive tồn tại các thư mục cũ trùng tên. Mọi script `rc
    - HUD điện thoại & cần điều khiển cảm ứng hai ngón `#hue-mobile-pad`.
    - Trong kho phẳng GitHub Pages này, `index.html` dùng `importmap` phẳng (`./three.module.js`, `./OrbitControls.js`, `./GLTFLoader.js`, `./BufferGeometryUtils.js`, `./CSM.js`) và `window.HUE_FLAT_PUBLIC = true`.
 4. `.github/workflows/daily-sync-drive.yml` & `scripts/sync_from_drive.py`: Tự động đồng bộ `.glb` mới từ Google Drive mỗi 6 giờ lên GitHub Pages mà không ghi đè code giao diện.
+5. `heritage_ui.js` điều khiển hành trình sáu điểm, thẻ thuyết minh và chế độ nhiếp ảnh. Tiến độ nạp trung tâm lấy từ các GLB đã gắn vào cảnh.
+6. `hue_view_performance.js` bố trí nhãn theo kích thước màn hình, điều chỉnh mật độ điểm ảnh và làm ấm shader.
+7. `hue_atmosphere_water.js` đồng bộ mặt nước, sương và đèn lồng theo giờ. `hue_postfx.js` dùng các addon r170 và giấy phép trong `vendor/three/`. Khi thay phiên bản Three.js, đồng bộ những phụ thuộc này với `three.module.js`.
+8. Kiểm tra `?qa=1` với đường vẽ trực tiếp. Kiểm tra riêng bản công khai ở mức Cao và Điện ảnh để xác nhận chuỗi hậu kỳ thực sự dựng khung hình.
 
 ## 4. Quy Trình Đồng Bộ Trước & Sau Mỗi Phiên Làm Việc
 ```bash
