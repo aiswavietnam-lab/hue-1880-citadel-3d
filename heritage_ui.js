@@ -127,6 +127,11 @@ function togglePanel(panel, toggle, open) {
 function closeMenus() {
   togglePanel(tour, "heritage-tour-toggle", false);
   togglePanel(drawer, "heritage-controls-toggle", false);
+  const audioSheet = $("court-audio-sheet");
+  if (audioSheet) {
+    audioSheet.hidden = true;
+    $("court-audio-panel-toggle")?.setAttribute("aria-expanded", "false");
+  }
 }
 
 function closeDirectory() {
@@ -229,6 +234,7 @@ function flyToHeritage(tileId) {
   const distance = startEye.distanceTo(endEye);
   const duration = reducedMotion.matches ? 0 : Math.min(1900, 850 + distance * 1.1);
   const lift = Math.min(90, distance * 0.13);
+  if (duration > 0) window.__HUE_AUDIO__?.notifyMotionImpulse?.("fly", 1);
   const start = performance.now();
   function frame(now) {
     if (!$("mode-bird").classList.contains("active")) { cancelFlight(); return; }
@@ -471,7 +477,9 @@ window.addEventListener("keydown", e => {
   } else if (e.key === "?" && !hidden && document.body.classList.contains("gta-active")) {
     $("heritage-help-toggle").click();
   } else if (e.key === "Escape") {
+    const audioSheet = $("court-audio-sheet");
     if (hidden) togglePhoto();
+    else if (audioSheet && !audioSheet.hidden) { audioSheet.hidden = true; $("court-audio-panel-toggle")?.setAttribute("aria-expanded", "false"); $("court-audio-panel-toggle")?.focus(); }
     else if (!drawer.hidden) $("heritage-controls-close").click();
     else if (!tour.hidden) $("heritage-tour-close").click();
     else if (!help.hidden) { setHelp(false); $("heritage-help-toggle").focus(); }

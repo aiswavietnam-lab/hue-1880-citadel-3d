@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0.0",
+  "project": "HUE_IMPERIAL_CITY_1880",
+  "title": "Hệ Thống Âm Thanh Cung Đình Huế 1880 (30 Ô Quy Hoạch & Không Gian 3D)",
+  "tracks": [
+    {
+      "id": "dang_dan_cung",
+      "title": "Đăng Đàn Cung (登壇宮)",
+      "subtitle": "Nhã nhạc Đại Triều Nghi Triều Nguyễn (1880)",
+      "category": "nha_nhac_dai_trieu",
+      "url": "./assets/audio/dang_dan_cung_nha_nhac.mp3",
+      "duration_sec": 66.98,
+      "cue_start_sec": 0.0,
+      "loop_gapless": true,
+      "zones": ["truc_than_dao", "thanh_vauban"],
+      "license": "CC BY 3.0",
+      "attribution": "Phục dựng bởi GS. Liam C. Kelley (Lê Minh Khải) qua Wikimedia Commons"
+    },
+    {
+      "id": "tu_dai_canh",
+      "title": "Tứ Đại Cảnh (Lời cổ)",
+      "subtitle": "Ca Cung Đình Huế — Vùng Tử Cấm Thành & Duyệt Thị Đường",
+      "category": "ca_cung_dinh_tieu_nhac",
+      "url": "./assets/audio/ca_cung_dinh_tu_dai_canh.mp3",
+      "duration_sec": 240.54,
+      "cue_start_sec": 33.5,
+      "loop_gapless": false,
+      "zones": ["tu_cam_thanh"],
+      "license": "CC BY-ND 4.0",
+      "attribution": "Saigon Audio - Hãng Phim Bông Sen (Album Ca Cung Đình Huế - Hương Xưa, nguyên bản)"
+    },
+    {
+      "id": "co_ban",
+      "title": "Cổ Bản (Lời cổ)",
+      "subtitle": "Ca Cung Đình Huế — Khu Thế Miếu & Cung Diên Thọ",
+      "category": "ca_cung_dinh_tieu_nhac",
+      "url": "./assets/audio/ca_cung_dinh_co_ban.mp3",
+      "duration_sec": 317.57,
+      "cue_start_sec": 27.5,
+      "loop_gapless": false,
+      "zones": ["hoang_thanh", "kinh_thanh_noi"],
+      "license": "CC BY-ND 4.0",
+      "attribution": "Saigon Audio - Hãng Phim Bông Sen (Album Ca Cung Đình Huế - Hương Xưa, nguyên bản)"
+    }
+  ],
+  "sfx": {
+    "chieng_ngomon": {
+      "id": "chieng_ngomon",
+      "title": "Chiêng Ngọ Môn (Nghi lễ Đại Triều)",
+      "url": "./assets/audio/chieng_ngomon.mp3",
+      "plan_xyz": [0.0, -185.0, 6.2],
+      "license": "CC0 1.0 (Public Domain)"
+    },
+    "dai_hong_chung": {
+      "id": "dai_hong_chung",
+      "title": "Đại Hồng Chung (Thế Tổ Miếu & Hiển Lâm Các)",
+      "url": "./assets/audio/dai_hong_chung.mp3",
+      "plan_xyz": [-135.0, -112.5, 11.5],
+      "license": "CC BY 2.1 JP"
+    },
+    "khanh_chime": {
+      "id": "khanh_chime",
+      "title": "Khánh Đồng Cung Đình",
+      "url": "./assets/audio/khanh_chime.mp3",
+      "plan_xyz": [0.0, 0.0, 4.0],
+      "license": "CC0 1.0 (Public Domain)"
+    }
+  },
+  "ambience": {
+    "song_huong_water": {
+      "id": "song_huong_water",
+      "title": "Tiếng nước Sông Hương & Hồ Thái Dịch",
+      "url": "./assets/audio/song_huong_water.mp3",
+      "license": "Public Domain"
+    },
+    "hue_binh_minh": {
+      "id": "hue_binh_minh",
+      "title": "Bình Minh Kinh Thành (Chim bìm bịp)",
+      "url": "./assets/audio/hue_binh_minh.mp3",
+      "license": "CC BY-SA 4.0"
+    },
+    "hue_dem_den_long": {
+      "id": "hue_dem_den_long",
+      "title": "Đêm Đèn Lồng Hoàng Thành (Côn trùng đêm)",
+      "url": "./assets/audio/hue_dem_den_long.mp3",
+      "license": "CC BY-SA 3.0"
+    }
+  },
+  "spatial_anchors": [
+    {
+      "id": "anchor_thai_hoa_ngo_mon",
+      "label": "Điện Thái Hòa & Ngọ Môn (Đại Triều Nghi)",
+      "tile_id": "T04",
+      "track_id": "dang_dan_cung",
+      "x": 0.0,
+      "y": -95.0,
+      "z": 4.0,
+      "radius_m": 460.0,
+      "base_weight": 1.05
+    },
+    {
+      "id": "anchor_duyet_thi_duong",
+      "label": "Nhà hát Duyệt Thị Đường & Cần Chánh (Tử Cấm Thành)",
+      "tile_id": "T15",
+      "track_id": "tu_dai_canh",
+      "x": 114.0,
+      "y": 215.0,
+      "z": 4.0,
+      "radius_m": 260.0,
+      "base_weight": 1.2
+    },
+    {
+      "id": "anchor_can_chanh_core",
+      "label": "Điện Cần Chánh & Càn Thành (Tử Cấm Thành)",
+      "tile_id": "T06",
+      "track_id": "tu_dai_canh",
+      "x": 0.0,
+      "y": 165.0,
+      "z": 4.0,
+      "radius_m": 180.0,
+      "base_weight": 1.1
+    },
+    {
+      "id": "anchor_the_mieu_dien_tho",
+      "label": "Thế Tổ Miếu, Hiển Lâm Các & Cung Diên Thọ",
+      "tile_id": "T09",
+      "track_id": "co_ban",
+      "x": -135.0,
+      "y": -30.0,
+      "z": 4.0,
+      "radius_m": 270.0,
+      "base_weight": 1.15
+    },
+    {
+      "id": "anchor_song_huong",
+      "label": "Dòng Sông Hương & Bến Nghênh Lương Đình",
+      "tile_id": "T29",
+      "ambience_id": "song_huong_water",
+      "x": 0.0,
+      "y": -920.0,
+      "z": -2.5,
+      "radius_m": 380.0,
+      "line_half_width_m": 1150.0,
+      "base_weight": 1.0
+    },
+    {
+      "id": "anchor_ho_thai_dich",
+      "label": "Hồ Thái Dịch & Cầu Trung Đạo",
+      "tile_id": "T03",
+      "ambience_id": "song_huong_water",
+      "x": 0.0,
+      "y": -112.0,
+      "z": -1.2,
+      "radius_m": 115.0,
+      "line_half_width_m": 60.0,
+      "base_weight": 0.65
+    },
+    {
+      "id": "anchor_ho_thanh_hao_nam",
+      "label": "Hộ Thành Hào Nam & Hào Kim Thủy",
+      "tile_id": "T28",
+      "ambience_id": "song_huong_water",
+      "x": 0.0,
+      "y": -640.0,
+      "z": -2.0,
+      "radius_m": 185.0,
+      "line_half_width_m": 840.0,
+      "base_weight": 0.62
+    },
+    {
+      "id": "anchor_tinh_tam",
+      "label": "Hồ Tịnh Tâm & Sông Ngự Hà",
+      "tile_id": "T24",
+      "ambience_id": "song_huong_water",
+      "x": 310.0,
+      "y": 460.0,
+      "z": -1.5,
+      "radius_m": 240.0,
+      "line_half_width_m": 380.0,
+      "base_weight": 0.68
+    }
+  ]
+}

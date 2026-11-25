@@ -6,6 +6,7 @@ import { heritageUI } from "./heritage_ui.js";
 import { registerLabel, layoutTileLabels, createShaderWarmup, createResolutionGovernor } from "./hue_view_performance.js";
 import { HuePbrMaterialLibrary } from "./pbr_materials.js";
 import { computeArchitecturalVertexOcclusion } from "./hue_realism_shaders.js";
+import { courtAudio } from "./court_audio.js";
 import {
   HueRenderCullingEngine,
   classifyMeshInterior,
@@ -4533,6 +4534,7 @@ function flyToTile(tileId, instant = false) {
   const token = ++flightId;
   const began = performance.now();
   const duration = instant || matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1050;
+  if (duration > 0) courtAudio.notifyMotionImpulse("fly", 1);
   function travel(now) {
     if (token !== flightId || STATE.cameraMode !== "bird") return;
     const t = duration ? Math.min(1, (now - began) / duration) : 1;
@@ -5154,6 +5156,38 @@ function bindUiEvents() {
     syncMobileHudState();
   });
 
+  renderer.domElement.addEventListener(
+    "wheel",
+    (e) => {
+      if (STATE.cameraMode === "bird" && Math.abs(e.deltaY) > 4) {
+        courtAudio.notifyMotionImpulse("zoom", e.deltaY < 0 ? 1 : -1);
+      }
+    },
+    { passive: true }
+  );
+
+  courtAudio.bindUI({
+    closeOtherMenus: () => {
+      const tourEl = document.getElementById("heritage-tour");
+      const bottomEl = document.getElementById("hud-bottombar");
+      const tourBtn = document.getElementById("heritage-tour-toggle");
+      const ctrlBtn = document.getElementById("heritage-controls-toggle");
+      const inspEl = document.getElementById("tile-inspector");
+      const movePanel = document.getElementById("move-settings-panel");
+      if (tourEl) tourEl.hidden = true;
+      if (bottomEl) bottomEl.hidden = true;
+      if (tourBtn) tourBtn.setAttribute("aria-expanded", "false");
+      if (ctrlBtn) ctrlBtn.setAttribute("aria-expanded", "false");
+      if (inspEl) inspEl.classList.add("hidden");
+      if (movePanel) movePanel.classList.add("hidden");
+      if (sidebarEl && !sidebarEl.classList.contains("collapsed")) {
+        sidebarEl.classList.add("collapsed");
+        if (toggleSidebarBtn) toggleSidebarBtn.setAttribute("aria-expanded", "false");
+        syncMobileHudState();
+      }
+    },
+  });
+
   syncMoveSettingsUi();
   syncMobileHudState();
 }
@@ -5260,8 +5294,24 @@ window.__HUE_VIEWER__ = {
   },
   stepPlayer: (dt = 1 / 60, steps = 1) => {
     const n = Math.max(1, Math.min(600, Math.floor(steps)));
+    let simNow = performance.now();
     for (let i = 0; i < n; i++) {
       updatePlayerSimulation(dt);
+      simNow += dt * 1000;
+      if (courtAudio.enabled) {
+        camera.updateMatrixWorld();
+        const curTile = getCurrentTileAt(gtaState.pos.x, gtaState.pos.z);
+        courtAudio.updateFrame({
+          camera,
+          controls,
+          cameraMode: STATE.cameraMode,
+          hour: STATE.hour,
+          currentTile: curTile,
+          activeIndoorTileId: renderEngine.stats.activeIndoorTileId,
+          player: gtaState,
+          nowMs: simNow,
+        });
+      }
     }
     updateTileCulling(true);
     renderGtaRadar(
@@ -5472,6 +5522,23 @@ function animate(now) {
   renderEngine.updateCsmAndShadowTrigger(now, IS_QA_MODE, requestShadowUpdate);
   updateLabelsAndCompass(false);
   renderEngine.renderSceneFrame(now, IS_QA_MODE, false);
+
+  const isGroundPlayer = STATE.cameraMode === "gta" || STATE.cameraMode === "walk";
+  const curAudioTile = getCurrentTileAt(
+    isGroundPlayer ? gtaState.pos.x : controls.target.x,
+    isGroundPlayer ? gtaState.pos.z : controls.target.z
+  );
+  courtAudio.updateFrame({
+    camera,
+    controls,
+    cameraMode: STATE.cameraMode,
+    hour: STATE.hour,
+    currentTile: curAudioTile,
+    activeIndoorTileId: renderEngine.stats.activeIndoorTileId,
+    player: isGroundPlayer ? gtaState : null,
+    nowMs: now,
+  });
+
   updateFpsHud(now);
 }
 
