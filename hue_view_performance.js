@@ -5,7 +5,7 @@ const point = new THREE.Vector3();
 const occupiedPanels = [
   "#hud-topbar", "#hud-bottombar", "#hud-sidebar:not(.collapsed)", "#tile-inspector",
   "#hud-compass", "#gta-topbar", "#gta-radar-card", "#walk-hint", "#hue-joy-base",
-  ".hue-touch-actions", "#heritage-tour", "#heritage-card"
+  ".hue-touch-actions", "#hue-bird-actions", "#hue-touch-dock", "#heritage-tour", "#heritage-card", "#court-audio-sheet"
 ].join(",");
 let lastLayout = -Infinity;
 function remeasureLabels() {

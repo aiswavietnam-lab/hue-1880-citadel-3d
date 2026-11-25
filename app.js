@@ -7,6 +7,7 @@ import { registerLabel, layoutTileLabels, createShaderWarmup, createResolutionGo
 import { HuePbrMaterialLibrary } from "./pbr_materials.js";
 import { computeArchitecturalVertexOcclusion } from "./hue_realism_shaders.js";
 import { courtAudio } from "./court_audio.js";
+import { createHueTouchController, isHueTouchDevice } from "./hue_touch_controls.js";
 import {
   HueRenderCullingEngine,
   classifyMeshInterior,
@@ -3910,8 +3911,10 @@ const touchControlState = {
   pinchDist: null,
 };
 
+let touchController = null;
+
 function isHueMobileUi() {
-  return window.innerWidth <= 900 || window.matchMedia("(pointer: coarse)").matches;
+  return isHueTouchDevice();
 }
 
 function resetTouchInputs() {
@@ -3922,10 +3925,14 @@ function resetTouchInputs() {
   touchControlState.jumpQueued = false;
   touchControlState.lookPointers.clear();
   touchControlState.pinchDist = null;
-  const joyBase = document.getElementById("hue-joy-base");
-  const joyKnob = document.getElementById("hue-joy-knob");
-  if (joyBase) joyBase.classList.remove("active");
-  if (joyKnob) joyKnob.style.transform = "translate(-50%, -50%)";
+  if (touchController) {
+    touchController.resetInputs();
+  } else {
+    const joyBase = document.getElementById("hue-joy-base");
+    const joyKnob = document.getElementById("hue-joy-knob");
+    if (joyBase) joyBase.classList.remove("active");
+    if (joyKnob) joyKnob.style.transform = "translate(-50%, -50%)";
+  }
 }
 
 function syncMobileHudState() {
@@ -3936,14 +3943,17 @@ function syncMobileHudState() {
   document.body.classList.toggle("hue-sidebar-open", sidebarOpen);
   document.body.classList.toggle("hue-inspector-open", inspectorOpen);
 
-  const mobilePad = document.getElementById("hue-mobile-pad");
+  if (touchController) {
+    touchController.syncHud();
+  } else {
+    const mobilePad = document.getElementById("hue-mobile-pad");
+    const showPad = isHueMobileUi() && (STATE.cameraMode === "bird" || STATE.cameraMode === "gta" || STATE.cameraMode === "walk");
+    if (mobilePad) mobilePad.classList.toggle("hidden", !showPad);
+  }
+
   const btnJump = document.getElementById("hue-touch-jump");
   const btnCrouch = document.getElementById("hue-touch-crouch");
   const btnTurbo = document.getElementById("hue-touch-turbo");
-  const isTouchMode = (STATE.cameraMode === "gta" || STATE.cameraMode === "walk") && isHueMobileUi();
-  if (mobilePad) {
-    mobilePad.classList.toggle("hidden", !isTouchMode);
-  }
   if (btnJump) {
     btnJump.classList.remove("hidden");
   }
@@ -3972,7 +3982,7 @@ function syncMobileHudState() {
     if (!btn.dataset.fullLabel) btn.dataset.fullLabel = btn.textContent.trim();
     const hr = parseFloat(btn.dataset.hour);
     if (narrow && !Number.isNaN(hr)) {
-      btn.textContent = hr < 9 ? "05:30" : hr < 15 ? "12:00" : "17:45";
+      btn.textContent = hr < 9 ? "05:30" : hr < 15 ? "12:00" : hr < 19 ? "17:45" : "20:00";
     } else {
       btn.textContent = btn.dataset.fullLabel;
     }
@@ -4084,7 +4094,7 @@ function setCameraMode(mode, startPlan = null) {
     if (gtaHud) gtaHud.classList.add("hidden");
     if (settingsPanel) settingsPanel.classList.add("hidden");
     if (gtaState.rig) gtaState.rig.root.visible = false;
-    if (!gtaState.cachedSidebarWasCollapsed && sidebar && window.innerWidth > 900) {
+    if (!gtaState.cachedSidebarWasCollapsed && sidebar && !isHueMobileUi()) {
       sidebar.classList.remove("collapsed");
     }
     camera.near = 0.25;
@@ -4405,7 +4415,7 @@ window.addEventListener("mouseup", () => {
 });
 
 renderer.domElement.addEventListener("pointerdown", (e) => {
-  if (e.pointerType !== "touch") return;
+  if (e.pointerType !== "touch" && e.pointerType !== "pen") return;
   if (STATE.cameraMode !== "gta" && STATE.cameraMode !== "walk") return;
   try {
     renderer.domElement.setPointerCapture(e.pointerId);
@@ -4420,7 +4430,7 @@ renderer.domElement.addEventListener("pointerdown", (e) => {
 });
 
 renderer.domElement.addEventListener("pointermove", (e) => {
-  if (e.pointerType !== "touch") return;
+  if (e.pointerType !== "touch" && e.pointerType !== "pen") return;
   if (STATE.cameraMode !== "gta" && STATE.cameraMode !== "walk") return;
   const prev = touchControlState.lookPointers.get(e.pointerId);
   if (!prev) return;
@@ -4451,7 +4461,7 @@ renderer.domElement.addEventListener("pointermove", (e) => {
 });
 
 function releaseTouchLookPointer(e) {
-  if (e.pointerType !== "touch") return;
+  if (e.pointerType !== "touch" && e.pointerType !== "pen") return;
   touchControlState.lookPointers.delete(e.pointerId);
   if (touchControlState.lookPointers.size < 2) {
     touchControlState.pinchDist = null;
@@ -4482,7 +4492,9 @@ renderer.domElement.addEventListener("pointerdown", (e) => {
 
 renderer.domElement.addEventListener("pointerup", (e) => {
   if (STATE.cameraMode !== "bird") return;
-  if (Math.hypot(e.clientX - pointerDown.x, e.clientY - pointerDown.y) > 5) return;
+  if (touchController?.wasRecentMultiTouch()) return;
+  const maxTapDist = e.pointerType === "touch" || e.pointerType === "pen" ? 8 : 5;
+  if (Math.hypot(e.clientX - pointerDown.x, e.clientY - pointerDown.y) > maxTapDist) return;
 
   const rect = renderer.domElement.getBoundingClientRect();
   const ndc = new THREE.Vector2(
@@ -4613,7 +4625,7 @@ function renderTileSidebar() {
     `;
     btn.addEventListener("click", () => {
       selectTile(t.tile_id, true);
-      if (window.innerWidth <= 900) {
+      if (isHueMobileUi()) {
         const sb = document.getElementById("hud-sidebar");
         const toggleBtn = document.getElementById("btn-toggle-sidebar");
         if (sb) sb.classList.add("collapsed");
@@ -4804,7 +4816,7 @@ function bindUiEvents() {
 
   const sidebarEl = document.getElementById("hud-sidebar");
   const toggleSidebarBtn = document.getElementById("btn-toggle-sidebar");
-  if ((IS_PUBLIC_MODE || window.innerWidth <= 900) && sidebarEl) {
+  if ((IS_PUBLIC_MODE || isHueMobileUi()) && sidebarEl) {
     sidebarEl.classList.add("collapsed");
     if (toggleSidebarBtn) toggleSidebarBtn.setAttribute("aria-expanded", "false");
   }
@@ -4885,7 +4897,7 @@ function bindUiEvents() {
 
   document.getElementById("btn-fly-tile").addEventListener("click", () => {
     if (STATE.selectedTileId) flyToTile(STATE.selectedTileId);
-    if (window.innerWidth <= 900 && sidebarEl) {
+    if (isHueMobileUi() && sidebarEl) {
       sidebarEl.classList.add("collapsed");
       if (toggleSidebarBtn) toggleSidebarBtn.setAttribute("aria-expanded", "false");
       syncMobileHudState();
@@ -4896,7 +4908,7 @@ function bindUiEvents() {
     const entry = tileObjects.get(STATE.selectedTileId);
     if (!entry) return;
     const t = entry.tile;
-    if (window.innerWidth <= 900 && sidebarEl) {
+    if (isHueMobileUi() && sidebarEl) {
       sidebarEl.classList.add("collapsed");
       if (toggleSidebarBtn) toggleSidebarBtn.setAttribute("aria-expanded", "false");
     }
@@ -5041,80 +5053,18 @@ function bindUiEvents() {
     btnExit.addEventListener("click", () => setCameraMode("bird"));
   }
 
-  // Điều khiển cảm ứng ảo cho điện thoại / máy tính bảng (Half-Life FPS & Góc nhìn thứ 3)
-  const joyBase = document.getElementById("hue-joy-base");
-  const joyKnob = document.getElementById("hue-joy-knob");
-  if (joyBase && joyKnob) {
-    let joyPointerId = null;
-    const updateJoyStick = (clientX, clientY) => {
-      const rect = joyBase.getBoundingClientRect();
-      const maxR = Math.max(24, rect.width * 0.36);
-      const cx = rect.left + rect.width * 0.5;
-      const cy = rect.top + rect.height * 0.5;
-      let dx = clientX - cx;
-      let dy = clientY - cy;
-      const dist = Math.hypot(dx, dy);
-      if (dist > maxR) {
-        dx = (dx / dist) * maxR;
-        dy = (dy / dist) * maxR;
-      }
-      touchControlState.joyX = dx / maxR;
-      touchControlState.joyY = dy / maxR;
-      joyKnob.style.transform = `translate(calc(-50% + ${dx.toFixed(1)}px), calc(-50% + ${dy.toFixed(1)}px))`;
-    };
-    const clearJoyStick = (e) => {
-      if (joyPointerId === null || (e && e.pointerId !== undefined && e.pointerId !== joyPointerId)) return;
-      joyPointerId = null;
-      touchControlState.joyX = 0;
-      touchControlState.joyY = 0;
-      joyBase.classList.remove("active");
-      joyKnob.style.transform = "translate(-50%, -50%)";
-    };
-    joyBase.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      joyPointerId = e.pointerId;
-      joyBase.classList.add("active");
-      try {
-        joyBase.setPointerCapture(e.pointerId);
-      } catch {
-        // ignore pointer capture restriction
-      }
-      updateJoyStick(e.clientX, e.clientY);
-    });
-    joyBase.addEventListener("pointermove", (e) => {
-      if (e.pointerId !== joyPointerId) return;
-      e.preventDefault();
-      updateJoyStick(e.clientX, e.clientY);
-    });
-    joyBase.addEventListener("pointerup", clearJoyStick);
-    joyBase.addEventListener("pointercancel", clearJoyStick);
-    joyBase.addEventListener("lostpointercapture", clearJoyStick);
-  }
-
-  const btnTouchJump = document.getElementById("hue-touch-jump");
-  if (btnTouchJump) {
-    btnTouchJump.addEventListener("pointerdown", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      touchControlState.jumpQueued = true;
-      gtaState.jumpBufferTimer = 0.12;
-    });
-  }
-
-  const btnTouchCrouch = document.getElementById("hue-touch-crouch");
-  if (btnTouchCrouch) {
-    btnTouchCrouch.addEventListener("click", (e) => {
-      e.stopPropagation();
-      touchControlState.crouch = !touchControlState.crouch;
-      syncMobileHudState();
-    });
-  }
-
-  const btnTouchTurbo = document.getElementById("hue-touch-turbo");
-  if (btnTouchTurbo) {
-    btnTouchTurbo.addEventListener("click", (e) => {
-      e.stopPropagation();
+  // Điều khiển cảm ứng đa năng cho điện thoại & máy tính bảng (Bản đồ 3D + Half-Life FPS + Góc nhìn thứ 3)
+  touchController = createHueTouchController({
+    camera,
+    controls,
+    canvas: renderer.domElement,
+    state: STATE,
+    touchControlState,
+    onSelectCameraMode: (mode) => {
+      setCameraMode(mode);
+      focusViewportCanvas();
+    },
+    onToggleSprint: () => {
       touchControlState.sprint = !touchControlState.sprint;
       showToast(
         touchControlState.sprint
@@ -5122,14 +5072,45 @@ function bindUiEvents() {
           : `Về tốc độ Đi bộ (${moveSettings.walkSpeed.toFixed(1)} m/s)`
       );
       syncMobileHudState();
-    });
-  }
+    },
+    onToggleCrouch: () => {
+      touchControlState.crouch = !touchControlState.crouch;
+      syncMobileHudState();
+    },
+    onJump: () => {
+      touchControlState.jumpQueued = true;
+      gtaState.jumpBufferTimer = 0.12;
+    },
+    onCycleOutfit: () => {
+      applyGtaOutfit(gtaState.outfitIdx + 1);
+      showToast(`Đã đổi trang phục: ${GTA_OUTFITS[gtaState.outfitIdx].name}`);
+      focusViewportCanvas();
+    },
+    onUnstuck: () => {
+      unstuckPlayerToSafeGround();
+      focusViewportCanvas();
+    },
+    onResetBirdView: () => {
+      cancelFlight();
+      setCameraMode("bird");
+      camera.position.set(265, 142, 485);
+      controls.target.set(0, 14, -35);
+      controls.update();
+      renderEngine.invalidateOcclusion();
+      updateLabelsAndCompass(true);
+      showToast("Đã đưa góc nhìn về trung tâm Hoàng thành Huế");
+    },
+    showToast,
+    onSyncHud: syncMobileHudState,
+  });
 
   const btnTouchExit = document.getElementById("hue-touch-exit");
   if (btnTouchExit) {
     btnTouchExit.addEventListener("click", (e) => {
       e.stopPropagation();
-      setCameraMode("bird");
+      const birdSeg = document.getElementById("mode-bird");
+      if (birdSeg) birdSeg.click();
+      else setCameraMode("bird");
     });
   }
 
@@ -5328,6 +5309,36 @@ window.__HUE_VIEWER__ = {
     touchControlState.crouch = Boolean(crouch);
     syncMobileHudState();
   },
+  stepBirdTouch: (dt = 1 / 60, steps = 1) => {
+    const n = Math.max(1, Math.min(600, Math.floor(steps)));
+    for (let i = 0; i < n; i++) {
+      touchController?.update(dt);
+      controls.update();
+    }
+    updateTileCulling(true);
+    updateLabelsAndCompass(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return {
+      camX: Number(camera.position.x.toFixed(2)),
+      camY: Number(camera.position.y.toFixed(2)),
+      camZ: Number(camera.position.z.toFixed(2)),
+      targetX: Number(controls.target.x.toFixed(2)),
+      targetY: Number(controls.target.y.toFixed(2)),
+      targetZ: Number(controls.target.z.toFixed(2)),
+    };
+  },
+  setBirdTouchGesture: (mode) => {
+    touchController?.setBirdGestureMode(mode, false);
+    return touchController?.getBirdGestureMode() || "pan";
+  },
+  getTouchUiState: () => ({
+    touchUi: isHueMobileUi(),
+    birdGestureMode: touchController?.getBirdGestureMode() || "pan",
+    joyX: Number(touchControlState.joyX.toFixed(3)),
+    joyY: Number(touchControlState.joyY.toFixed(3)),
+    cameraPos: [Number(camera.position.x.toFixed(2)), Number(camera.position.y.toFixed(2)), Number(camera.position.z.toFixed(2))],
+    targetPos: [Number(controls.target.x.toFixed(2)), Number(controls.target.y.toFixed(2)), Number(controls.target.z.toFixed(2))],
+  }),
   getPlayerState: () => {
     const plan = threeToPlan(gtaState.pos);
     const rig = gtaState.rig;
@@ -5511,6 +5522,7 @@ function animate(now) {
   lastTime = now;
 
   if (STATE.cameraMode === "bird") {
+    touchController?.update(dt);
     controls.update();
   } else if (STATE.cameraMode === "gta" || STATE.cameraMode === "walk") {
     updatePlayerSimulation(dt);

@@ -31,13 +31,14 @@
     "hue_atmosphere_water.js",
     "hue_postfx.js",
     "hue_realism_shaders.js",
-    "hue_view_performance.js"
+    "hue_view_performance.js",
+    "hue_touch_controls.js"
   ],
   "completed_tiles": 30,
   "total_tiles": 30,
   "last_sync_backend": "cli",
   "last_sync_applied_files": 24,
-  "last_sync_utc": "2026-11-25T13:35:28+00:00",
+  "last_sync_utc": "2026-11-25T14:58:55+00:00",
   "tile_versions": {
     "T01": {
       "version": 13,

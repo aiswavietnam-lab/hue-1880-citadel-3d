@@ -24,10 +24,10 @@ Trên Google Drive tồn tại các thư mục cũ trùng tên. Mọi script `rc
 ## 3. Các Module Cốt Lõi Phải Bảo Toàn (Không Ghi Đè Lùi Phiên Bản)
 1. `pbr_materials.js`, `hue_realism_shaders.js`, `assets/pbr/*` & `assets/sky/*`: Bể vật liệu PBR Poly Haven CC0 dùng chung, bầu trời 360° Pure Sky 5 pha, Shader thời tiết rêu phong / vệt mưa / nắng hắt / gió tự nhiên Cố đô & độ khuất sáng kiến trúc `aHueOcc` (Vertex AO).
 2. `render_culling_engine.js`: Tự ẩn khuất cảnh (Occlusion Culling), tự ẩn nội thất công trình khác (Interior Culling), Distance LOD đa tầng và lưới va chạm không gian 2D CSR (`TileSpatialCollider`) chống âm sàn / xuyên tường.
-3. `app.js`, `index.html`, `styles.css`:
+3. `app.js`, `hue_touch_controls.js`, `index.html`, `styles.css`:
    - Vật lý di chuyển Half-Life GoldSrc `120Hz` (đi, chạy, nhảy, ngồi, cài đặt `M`).
    - Nhân vật 1880 chi tiết cao (3 bộ trang phục cung đình, hướng tiến chuẩn `dot = 1.0`).
-   - HUD điện thoại & cần điều khiển cảm ứng hai ngón `#hue-mobile-pad`.
+   - Điều khiển cảm ứng đa năng cho máy tính bảng, thiết bị lai và điện thoại: thanh chuyển nhanh `#hue-touch-dock`, kéo trượt bản đồ ngang mặt đất (`screenSpacePanning = false`), cần điều khiển 4 hướng `#hue-mobile-pad` chống hủy cử chỉ mép màn hình.
    - Trong kho phẳng GitHub Pages này, `index.html` dùng `importmap` phẳng (`./three.module.js`, `./OrbitControls.js`, `./GLTFLoader.js`, `./BufferGeometryUtils.js`, `./CSM.js`) và `window.HUE_FLAT_PUBLIC = true`.
 4. `.github/workflows/daily-sync-drive.yml` & `scripts/sync_from_drive.py`: Tự động đồng bộ `.glb` mới từ Google Drive mỗi 6 giờ lên GitHub Pages mà không ghi đè code giao diện.
 5. `heritage_ui.js` điều khiển hành trình sáu điểm, thẻ thuyết minh và chế độ nhiếp ảnh. Tiến độ nạp trung tâm lấy từ các GLB đã gắn vào cảnh.

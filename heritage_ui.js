@@ -108,7 +108,7 @@ const loaded = new Set();
 const $ = id => document.getElementById(id);
 const viewer = () => window.__HUE_VIEWER__;
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-const compactScreen = matchMedia("(max-width: 900px), (pointer: coarse)");
+const compactScreen = matchMedia("(max-width: 1024px), (pointer: coarse), (any-pointer: coarse)");
 const card = $("heritage-card");
 const canvas = $("webgl-canvas");
 const tour = $("heritage-tour");
@@ -452,7 +452,7 @@ bind("heritage-help-toggle", () => {
   setHelp(open);
 });
 for (const id of ["btn-move-settings", "btn-gta-exit"]) bind(id, () => setHelp(false));
-for (const btn of document.querySelectorAll(".seg-btn")) btn.addEventListener("click", closeMenus);
+for (const btn of document.querySelectorAll(".seg-btn")) btn.addEventListener("click", () => { closeMenus(); setTimeout(syncMode, 0); });
 for (const type of ["pointerdown", "wheel"]) canvas.addEventListener(type, cancelFlight, { passive: true });
 canvas.addEventListener("click", e => {
   if (!document.body.classList.contains("hud-hidden")) return;

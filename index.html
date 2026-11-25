@@ -622,17 +622,56 @@
   <!-- Ghi chú điều khiển dự phòng (ẩn mặc định do đã tích hợp vào HUD Half-Life) -->
   <div id="walk-hint" class="walk-hint hidden" role="status"></div>
 
-  <!-- Cần điều khiển cảm ứng cho Chế độ Nhập vai Góc thứ 1 / Góc thứ 3 trên điện thoại & máy tính bảng -->
-  <div id="hue-mobile-pad" class="hue-mobile-pad hidden" aria-label="Điều khiển nhân vật cảm ứng">
-    <div id="hue-joy-base" class="hue-joy-base" role="application" aria-label="Joystick di chuyển nhân vật">
-      <div class="hue-joy-ring"></div>
-      <div id="hue-joy-knob" class="hue-joy-knob"></div>
+  <!-- Thanh chuyển nhanh chế độ tham quan tối ưu cho điện thoại & máy tính bảng -->
+  <nav id="hue-touch-dock" class="hue-touch-dock hidden" aria-label="Chuyển nhanh chế độ tham quan cảm ứng">
+    <button type="button" class="hue-dock-btn active" data-dock-mode="bird" aria-pressed="true">Bản đồ 3D</button>
+    <button type="button" class="hue-dock-btn" data-dock-mode="walk" aria-pressed="false">Đi bộ (FPS)</button>
+    <button type="button" class="hue-dock-btn" data-dock-mode="gta" aria-pressed="false">Nhập vai 3D</button>
+  </nav>
+
+  <!-- Cần điều khiển cảm ứng đa năng cho cả Bản đồ 3D lẫn Đi bộ / Nhập vai trên điện thoại & máy tính bảng -->
+  <div id="hue-mobile-pad" class="hue-mobile-pad hidden" data-pad-mode="bird" aria-label="Điều khiển cảm ứng di động và máy tính bảng">
+    <div class="hue-joy-wrap">
+      <div id="hue-joy-base" class="hue-joy-base" role="application" aria-label="Cần điều khiển di chuyển trái phải tiến lùi">
+        <div class="hue-joy-ring"></div>
+        <button type="button" class="hue-joy-arrow up" data-joy-step="up" tabindex="-1" aria-label="Tiến lên">
+          <svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true"><path d="M3.5 10L8 5.5L12.5 10" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="hue-joy-arrow right" data-joy-step="right" tabindex="-1" aria-label="Sang phải">
+          <svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true"><path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="hue-joy-arrow down" data-joy-step="down" tabindex="-1" aria-label="Lùi lại">
+          <svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true"><path d="M3.5 6L8 10.5L12.5 6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="hue-joy-arrow left" data-joy-step="left" tabindex="-1" aria-label="Sang trái">
+          <svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true"><path d="M10 3.5L5.5 8L10 12.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div id="hue-joy-knob" class="hue-joy-knob"></div>
+      </div>
+      <span id="hue-joy-caption" class="hue-joy-caption" aria-hidden="true">Trượt bản đồ</span>
     </div>
-    <div class="hue-touch-actions">
+
+    <div id="hue-bird-actions" class="hue-bird-actions">
+      <button id="hue-touch-pan-toggle" class="hue-touch-btn active" type="button" aria-pressed="true">
+        <svg viewBox="0 0 18 18" width="15" height="15" fill="none" aria-hidden="true">
+          <path d="M9 2.2V15.8M2.2 9H15.8M9 2.2L6.8 4.4M9 2.2L11.2 4.4M9 15.8L6.8 13.6M9 15.8L11.2 13.6M2.2 9L4.4 6.8M2.2 9L4.4 11.2M15.8 9L13.6 6.8M15.8 9L13.6 11.2" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span id="hue-touch-pan-label">Kéo: Di chuyển</span>
+      </button>
+      <div class="hue-bird-subrow">
+        <button id="hue-touch-zoom-in" class="hue-touch-btn icon-only" type="button" aria-label="Phóng to gần hơn" title="Phóng to gần hơn">+</button>
+        <button id="hue-touch-zoom-out" class="hue-touch-btn icon-only" type="button" aria-label="Thu nhỏ ra xa" title="Thu nhỏ ra xa">-</button>
+        <button id="hue-touch-recenter" class="hue-touch-btn" type="button" title="Đưa góc nhìn về trung tâm Hoàng thành">Về tâm</button>
+      </div>
+    </div>
+
+    <div id="hue-walk-actions" class="hue-touch-actions hidden">
       <button id="hue-touch-turbo" class="hue-touch-btn" type="button">Chạy</button>
       <button id="hue-touch-crouch" class="hue-touch-btn" type="button">Ngồi</button>
+      <button id="hue-touch-outfit" class="hue-touch-btn hidden" type="button">Y phục</button>
+      <button id="hue-touch-unstuck" class="hue-touch-btn" type="button">Đặt lại</button>
       <button id="hue-touch-jump" class="hue-touch-btn primary" type="button">Nhảy</button>
-      <button id="hue-touch-exit" class="hue-touch-btn danger" type="button">Thoát</button>
+      <button id="hue-touch-exit" class="hue-touch-btn danger" type="button">Bản đồ</button>
     </div>
   </div>
 

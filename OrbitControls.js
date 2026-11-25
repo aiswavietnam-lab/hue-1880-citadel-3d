@@ -1119,7 +1119,7 @@ function onPointerDown( event ) {
 
 	if ( this._pointers.length === 0 ) {
 
-		this.domElement.setPointerCapture( event.pointerId );
+		try { this.domElement.setPointerCapture( event.pointerId ); } catch ( _ ) {}
 
 		this.domElement.addEventListener( 'pointermove', this._onPointerMove );
 		this.domElement.addEventListener( 'pointerup', this._onPointerUp );
@@ -1170,7 +1170,7 @@ function onPointerUp( event ) {
 
 		case 0:
 
-			this.domElement.releasePointerCapture( event.pointerId );
+			try { this.domElement.releasePointerCapture( event.pointerId ); } catch ( _ ) {}
 
 			this.domElement.removeEventListener( 'pointermove', this._onPointerMove );
 			this.domElement.removeEventListener( 'pointerup', this._onPointerUp );

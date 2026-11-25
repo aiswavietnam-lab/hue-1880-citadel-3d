@@ -30,6 +30,8 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-touch-callout: none;
   background: var(--bg-obsidian);
   color: var(--text-primary);
   font-family: var(--font-sans);
@@ -1671,19 +1673,75 @@ body.public-mode #row-auto-poll {
   display: none !important;
 }
 
-/* Mobile Virtual Joystick & Touch Action Pad */
+/* Mobile & Tablet Touch Quick-Dock, Analog Joystick (4-Way) & Context Action Pad */
+.hue-touch-dock,
+#hue-touch-dock {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 14px));
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--lacquer, rgba(22, 24, 20, 0.96));
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.44);
+  z-index: 49;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.hue-touch-dock.hidden,
+#hue-touch-dock.hidden,
+body.hud-hidden #hue-touch-dock {
+  display: none !important;
+}
+
+.hue-dock-btn {
+  min-height: 36px;
+  padding: 5px 13px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font: 600 12px/1.2 var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.hue-dock-btn:hover {
+  color: var(--text-primary);
+  background: rgba(214, 182, 117, 0.12);
+}
+
+.hue-dock-btn.active {
+  background: #d9bd85;
+  color: #292015;
+  border-color: #ebd09b;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+}
+
 .hue-mobile-pad,
 #hue-mobile-pad {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: max(14px, env(safe-area-inset-bottom, 14px));
-  padding: 0 14px;
+  bottom: max(18px, calc(env(safe-area-inset-bottom, 0px) + 12px));
+  padding-left: max(28px, calc(env(safe-area-inset-left, 0px) + 20px));
+  padding-right: max(24px, calc(env(safe-area-inset-right, 0px) + 16px));
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
   pointer-events: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
   z-index: 48;
 }
 
@@ -1692,33 +1750,88 @@ body.public-mode #row-auto-poll {
   display: none !important;
 }
 
-body:not(.gta-active) #hue-mobile-pad {
-  bottom: calc(128px + env(safe-area-inset-bottom, 0px));
+.hue-joy-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  pointer-events: auto;
+  touch-action: none;
 }
 
-body.gta-active #hue-mobile-pad {
-  bottom: max(14px, env(safe-area-inset-bottom, 14px));
+.hue-joy-caption {
+  font: 600 10.5px/1.2 var(--font-sans);
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(18, 20, 17, 0.84);
+  border: 1px solid rgba(214, 182, 117, 0.28);
+  pointer-events: none;
+  white-space: nowrap;
 }
 
-.hue-joy-wrap,
 .hue-touch-actions,
+.hue-bird-actions,
 #hue-mobile-pad > * {
   pointer-events: auto;
+}
+
+.hue-bird-actions.hidden,
+.hue-touch-actions.hidden {
+  display: none !important;
 }
 
 .hue-joy-base,
 #hue-joy-base {
   position: relative;
-  width: 112px;
-  height: 112px;
+  width: 116px;
+  height: 116px;
   border-radius: 999px;
   touch-action: none;
   pointer-events: auto;
-  background: radial-gradient(circle at center, rgba(212, 160, 23, 0.16), rgba(16, 13, 10, 0.72));
-  border: 1.5px solid rgba(212, 160, 23, 0.5);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 0 18px rgba(212, 160, 23, 0.14);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: radial-gradient(circle at center, rgba(214, 182, 117, 0.16), rgba(18, 20, 17, 0.88));
+  border: 1.5px solid rgba(214, 182, 117, 0.56);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 0 18px rgba(214, 182, 117, 0.14);
+}
+
+.hue-joy-ring {
+  position: absolute;
+  inset: 22px;
+  border-radius: 999px;
+  border: 1px dashed rgba(214, 182, 117, 0.26);
+  pointer-events: none;
+}
+
+.hue-joy-arrow {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(243, 216, 154, 0.68);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  cursor: pointer;
+  transition: color 0.1s ease, background 0.1s ease, transform 0.1s ease;
+}
+
+.hue-joy-arrow.up { top: 2px; left: 50%; transform: translateX(-50%); }
+.hue-joy-arrow.down { bottom: 2px; left: 50%; transform: translateX(-50%); }
+.hue-joy-arrow.left { left: 2px; top: 50%; transform: translateY(-50%); }
+.hue-joy-arrow.right { right: 2px; top: 50%; transform: translateY(-50%); }
+
+#hue-joy-base[data-dir-up="1"] .hue-joy-arrow.up,
+#hue-joy-base[data-dir-down="1"] .hue-joy-arrow.down,
+#hue-joy-base[data-dir-left="1"] .hue-joy-arrow.left,
+#hue-joy-base[data-dir-right="1"] .hue-joy-arrow.right,
+.hue-joy-arrow:active {
+  color: #fff6dc;
+  background: rgba(214, 182, 117, 0.28);
 }
 
 .hue-joy-knob,
@@ -1732,8 +1845,8 @@ body.gta-active #hue-mobile-pad {
   transform: translate(-50%, -50%);
   pointer-events: none;
   background: radial-gradient(circle at 35% 35%, #FCE29C, #C89214 72%, #8A5E08);
-  border: 1.5px solid rgba(255, 245, 214, 0.75);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1.5px solid rgba(255, 245, 214, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.52);
   transition: transform 0.06s ease-out;
 }
 
@@ -1742,62 +1855,85 @@ body.gta-active #hue-mobile-pad {
   transition: none;
 }
 
-.hue-touch-actions,
-#hue-mobile-pad > div:last-child {
+.hue-bird-actions {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 8px;
+  gap: 7px;
+  pointer-events: none;
+}
+
+.hue-bird-subrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.hue-touch-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(68px, auto));
+  gap: 6px;
   pointer-events: none;
 }
 
 .hue-touch-btn,
-#hue-mobile-pad button {
+#hue-mobile-pad .hue-touch-btn {
   pointer-events: auto;
   touch-action: manipulation;
-  min-width: 74px;
-  height: 38px;
-  padding: 0 12px;
+  min-width: 72px;
+  min-height: 42px;
+  padding: 5px 12px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: #FAF2E1;
-  background: rgba(18, 15, 12, 0.78);
-  border: 1px solid rgba(212, 160, 23, 0.48);
+  background: rgba(20, 22, 18, 0.92);
+  border: 1px solid rgba(214, 182, 117, 0.48);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.42);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   user-select: none;
   -webkit-user-select: none;
 }
 
+#hue-mobile-pad .hue-touch-btn.icon-only {
+  min-width: 42px;
+  width: 42px;
+  padding: 0;
+  font: 700 17px/1 var(--font-mono);
+}
+
+#hue-touch-pan-toggle.active {
+  background: rgba(44, 138, 119, 0.34);
+  border-color: rgba(118, 182, 161, 0.82);
+  color: #e8fbf5;
+}
+
 #hue-touch-jump {
-  min-width: 82px;
-  height: 42px;
-  border-color: rgba(252, 226, 156, 0.62);
+  border-color: rgba(252, 226, 156, 0.72);
+  background: rgba(62, 49, 24, 0.9);
 }
 
 #hue-touch-exit {
   border-color: rgba(235, 120, 96, 0.55);
-  background: rgba(48, 20, 16, 0.78);
+  background: rgba(52, 24, 20, 0.88);
 }
 
 .hue-touch-btn.active,
 .hue-touch-btn:active,
-#hue-mobile-pad button.active,
-#hue-mobile-pad button:active {
+#hue-mobile-pad .hue-touch-btn.active,
+#hue-mobile-pad .hue-touch-btn:active {
   background: rgba(212, 160, 23, 0.34);
   border-color: #FCE29C;
   color: #FFF8E6;
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .hue-touch-btn.hidden,
-#hue-mobile-pad button.hidden {
+#hue-mobile-pad .hue-touch-btn.hidden {
   display: none !important;
 }
 
@@ -2140,126 +2276,319 @@ summary { cursor: pointer; color: var(--imperial-gold); padding-block: 4px; }
 }
 .gta-radar-frame, #gta-radar { width: 86px; height: 86px; }
 #move-settings-panel { z-index: 41; }
-#hue-joy-base, #hue-mobile-pad button, .orch-backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
-body.hud-hidden :is(#label-layer, #heritage-preloader, #hue-mobile-pad, #public-err-banner),
+#hue-joy-base, #hue-mobile-pad button, #hue-touch-dock, .orch-backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
+body.hud-hidden :is(#label-layer, #heritage-preloader, #hue-mobile-pad, #hue-touch-dock, #public-err-banner),
 body:not(.hud-hidden) #heritage-photo-tools { display: none !important; }
 .photo-tools {
   position: fixed; right: var(--edge-right); top: var(--edge-top); z-index: 52;
   display: flex; gap: 5px; padding: 5px; border-radius: 6px; background: var(--lacquer);
 }
 body.hud-hidden #webgl-canvas { cursor: crosshair; }
-.toast-bar { bottom: calc(var(--edge-bottom) + var(--pad-space)); max-width: min(460px, 80vw); }
+.toast-bar { bottom: calc(var(--edge-bottom) + var(--pad-space)); max-width: min(460px, 84vw); z-index: 55; }
 
-@media (max-width: 900px), (pointer: coarse) {
+/* Giao diện cảm ứng dùng chung cho Máy tính bảng (700px-1366px+), Thiết bị lai & Điện thoại */
+body.hue-touch-ui {
+  --pad-space: 152px;
+}
+body.hue-touch-ui #gta-keys-hint { display: none; }
+body.hue-touch-ui .touch-help { display: block; }
+body.hue-touch-ui #hud-topbar .museum-btn,
+body.hue-touch-ui #hud-topbar #btn-toggle-sidebar {
+  min-height: 40px;
+}
+body.hue-touch-ui #hud-bottombar .seg-btn,
+body.hue-touch-ui #hud-bottombar .preset-btn,
+body.hue-touch-ui .quality-select,
+body.hue-touch-ui .heritage-card-actions button {
+  min-height: 40px;
+}
+body.hue-touch-ui #time-slider,
+body.hue-touch-ui .move-setting-row input[type="range"] {
+  min-height: 28px;
+}
+body.hue-touch-ui #gta-topbar .gta-tp-btn {
+  min-height: 32px;
+  height: auto;
+  padding: 4px 10px;
+  font-size: 11.5px;
+}
+body.hue-touch-ui #hud-compass {
+  top: var(--header-bottom);
+  left: var(--edge-left);
+  right: auto;
+  bottom: auto;
+  padding: 5px 9px;
+  cursor: pointer;
+}
+body.hue-touch-ui #hud-compass svg { width: 38px; height: 38px; }
+body.hue-touch-ui:has(#heritage-tour:not([hidden])) #hud-compass,
+body.hue-touch-ui.hue-sidebar-open #hud-compass {
+  visibility: hidden;
+}
+body.hue-touch-ui #gta-radar-card {
+  top: var(--header-bottom);
+  left: var(--edge-left);
+  bottom: auto !important;
+  display: flex !important;
+  width: auto;
+  padding: 4px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+body.hue-touch-ui .gta-radar-frame,
+body.hue-touch-ui #gta-radar {
+  width: 66px;
+  height: 66px;
+}
+body.hue-touch-ui .gta-radar-info { display: none; }
+body.hue-touch-ui #heritage-help-toggle {
+  left: auto;
+  right: var(--edge-right);
+  width: 40px;
+  height: 40px;
+}
+body.hue-touch-ui #gta-topbar {
+  top: var(--header-bottom);
+  left: auto;
+  right: calc(var(--edge-right) + 48px);
+  width: min(390px, calc(100vw - var(--edge-left) - var(--edge-right) - 132px));
+}
+body.hue-touch-ui :is(#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet) {
+  top: var(--header-bottom);
+  bottom: auto;
+  max-height: calc(100dvh - var(--header-bottom) - var(--pad-space) - 14px);
+}
+body.hue-touch-ui #heritage-tour,
+body.hue-touch-ui #hud-sidebar {
+  left: var(--edge-left);
+  right: auto;
+}
+body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #court-audio-sheet) {
+  right: var(--edge-right);
+  left: auto;
+}
+
+@media (max-width: 1024px), (pointer: coarse), (any-pointer: coarse) {
+  :root {
+    --edge-left: max(12px, env(safe-area-inset-left));
+    --edge-right: max(12px, env(safe-area-inset-right));
+    --edge-top: max(8px, env(safe-area-inset-top));
+    --edge-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  body:has(#hue-mobile-pad:not(.hidden)) { --pad-space: 152px; }
+  #gta-keys-hint { display: none; }
+  .touch-help { display: block; }
+  #hud-topbar { gap: 10px; padding: 7px 10px; }
+  .topbar-actions { gap: 5px; }
+  .brand-text h1 { font-size: 18px; }
+  #hud-sidebar { width: min(360px, calc(100% - var(--edge-left) - var(--edge-right))); }
+}
+
+@media (max-width: 900px) {
+  #hud-topbar .museum-btn:not(#heritage-tour-toggle) span,
+  #hud-topbar #btn-toggle-sidebar span { display: none; }
+  #hud-topbar .museum-btn:not(#heritage-tour-toggle),
+  #hud-topbar #btn-toggle-sidebar { width: 38px; padding: 0; }
+}
+
+/* Bố cục Điện thoại Dọc (< 700px): Thanh chế độ gắn ngay dưới Header, tấm thông tin mở dạng Bottom Sheet không che cần điều khiển */
+@media (max-width: 699px) {
   :root {
     --edge-left: max(8px, env(safe-area-inset-left));
     --edge-right: max(8px, env(safe-area-inset-right));
     --edge-top: max(7px, env(safe-area-inset-top));
     --edge-bottom: max(8px, env(safe-area-inset-bottom));
   }
-  body:has(#hue-mobile-pad:not(.hidden)) { --pad-space: 122px; }
-  #hud-topbar { gap: 9px; padding: 6px 8px; }
-  .topbar-actions { gap: 4px; }
-  .brand-text h1 { font-size: 17px; }
-  #hud-sidebar { width: min(350px, calc(100% - var(--edge-left) - var(--edge-right))); }
-  #hud-bottombar, #heritage-tour, #heritage-card, #tile-inspector, #move-settings-panel, #court-audio-sheet {
-    top: auto; bottom: calc(var(--edge-bottom) + var(--pad-space));
-    right: var(--edge-right); left: auto;
-  }
-  #heritage-tour { left: var(--edge-left); right: auto; }
-  #hud-compass { padding: 4px 7px; }
-  #hud-compass svg { width: 37px; height: 37px; }
-  body:has(.heritage-sheet:not([hidden])) #hud-compass, body.hue-inspector-open #hud-compass { visibility: hidden; }
-  #gta-radar-card {
-    top: var(--header-bottom); left: var(--edge-left); bottom: auto !important;
-    display: flex !important; width: auto; padding: 3px; border-radius: 50%; pointer-events: none;
-  }
-  .gta-radar-frame, #gta-radar { width: 58px; height: 58px; }
-  .gta-radar-info { display: none; }
-  #heritage-help-toggle { left: auto; right: var(--edge-right); }
-  #gta-topbar {
-    left: auto; right: calc(var(--edge-right) + 44px);
-    width: min(360px, calc(100vw - var(--edge-left) - var(--edge-right) - 120px));
-  }
-  .hue-touch-actions, #hue-mobile-pad > div:last-child {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(56px, auto));
-    gap: 5px;
-  }
-  #hue-mobile-pad { padding: 0 var(--edge-right) 0 var(--edge-left); }
-  #hue-mobile-pad button { min-width: 0; min-height: 42px; height: auto; padding: 4px 8px; }
-  #hue-joy-base { width: 100px; height: 100px; flex: none; }
-  #hue-joy-knob { width: 42px; height: 42px; }
-}
-@media (pointer: coarse) {
-  #gta-keys-hint { display: none; }
-  .touch-help { display: block; }
-}
-@media (max-width: 740px) {
-  #hud-topbar .museum-btn:not(#heritage-tour-toggle) span, #hud-topbar #btn-toggle-sidebar span { display: none; }
-  #hud-topbar .museum-btn:not(#heritage-tour-toggle), #hud-topbar #btn-toggle-sidebar { width: 38px; padding: 0; }
-}
-@media (max-width: 600px) {
+  body:has(#hue-mobile-pad:not(.hidden)) { --pad-space: 134px; }
   #hud-topbar {
-    display: grid; grid-template-columns: minmax(0, 1fr) auto;
-    gap: 1px 6px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 5px 8px;
+    padding: 6px 8px;
   }
   #hud-topbar .brand-block { grid-area: 1/1; }
   #hud-topbar .brand-emblem, #hud-topbar .subtitle { display: none; }
-  #hud-topbar h1 { white-space: normal; overflow: visible; font-size: 15px; }
-  #heritage-stream { grid-area: 2/1; font-size: 9px; }
-  #hud-topbar .topbar-actions { grid-area: 1/2/3/3; gap: 2px; }
-  #hud-topbar .museum-btn, #hud-topbar #btn-toggle-sidebar { min-height: 40px; }
-  #hud-topbar .museum-btn:not(#heritage-tour-toggle), #hud-topbar #btn-toggle-sidebar { width: 33px; }
-  #heritage-tour-toggle { padding: 5px 7px; font-size: 11px; }
-  #heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet {
-    left: var(--edge-left); right: var(--edge-right); width: auto;
-    max-height: min(62dvh, calc(100dvh - var(--header-bottom) - var(--edge-bottom) - var(--pad-space)));
+  #hud-topbar h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 15.5px; }
+  #heritage-stream { grid-area: 1/2; font-size: 9.5px; justify-self: end; }
+  #hud-topbar .topbar-actions {
+    grid-area: 2/1/3/3;
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    flex-wrap: nowrap;
+    width: 100%;
   }
-  #hud-sidebar { top: auto; height: min(540px, 62dvh); bottom: calc(var(--edge-bottom) + var(--pad-space)); }
-  body.gta-active :is(#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet) {
-    max-height: min(55dvh, calc(100dvh - var(--header-bottom) - var(--edge-bottom) - var(--pad-space) - 72px));
+  #hud-topbar .museum-btn, #hud-topbar #btn-toggle-sidebar { min-height: 36px; }
+  #hud-topbar .museum-btn:not(#heritage-tour-toggle), #hud-topbar #btn-toggle-sidebar { width: 36px; flex: 0 0 auto; }
+  #heritage-tour-toggle { flex: 1 1 auto; padding: 4px 8px; font-size: 11.5px; gap: 5px; }
+
+  #hue-touch-dock {
+    top: var(--header-bottom);
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: calc(100vw - 16px);
+    padding: 3px;
+    gap: 2px;
   }
-  #heritage-card { padding: 9px 13px; }
+  .hue-dock-btn {
+    min-height: 33px;
+    padding: 4px 10px;
+    font-size: 11.5px;
+  }
+
+  #hud-compass,
+  body.hue-touch-ui #hud-compass {
+    top: calc(var(--header-bottom) + 46px);
+    left: var(--edge-left);
+    right: auto;
+    bottom: auto;
+    padding: 4px;
+    border-radius: 50%;
+  }
+  #hud-compass .compass-meta { display: none; }
+  #hud-compass svg,
+  body.hue-touch-ui #hud-compass svg { width: 32px; height: 32px; }
+
+  #gta-radar-card,
+  body.hue-touch-ui #gta-radar-card {
+    top: calc(var(--header-bottom) + 46px);
+    left: var(--edge-left);
+    padding: 3px;
+  }
+  .gta-radar-frame, #gta-radar,
+  body.hue-touch-ui .gta-radar-frame,
+  body.hue-touch-ui #gta-radar { width: 54px; height: 54px; }
+
+  #heritage-help-toggle,
+  body.hue-touch-ui #heritage-help-toggle {
+    top: calc(var(--header-bottom) + 46px);
+    right: var(--edge-right);
+    width: 38px;
+    height: 38px;
+  }
+  #gta-topbar,
+  body.hue-touch-ui #gta-topbar {
+    top: calc(var(--header-bottom) + 90px);
+    left: var(--edge-left);
+    right: var(--edge-right);
+    width: auto;
+    max-height: 46dvh;
+  }
+
+  #hue-mobile-pad {
+    bottom: max(12px, calc(env(safe-area-inset-bottom, 0px) + 8px));
+    padding-left: max(20px, calc(env(safe-area-inset-left, 0px) + 14px));
+    padding-right: max(12px, calc(env(safe-area-inset-right, 0px) + 10px));
+  }
+  #hue-joy-base { width: 96px; height: 96px; flex: none; }
+  #hue-joy-knob { width: 40px; height: 40px; }
+  .hue-joy-ring { inset: 18px; }
+  .hue-joy-arrow { width: 22px; height: 22px; }
+  #hue-mobile-pad .hue-touch-btn {
+    min-width: 62px;
+    min-height: 39px;
+    padding: 4px 9px;
+    font-size: 11.5px;
+  }
+  #hue-mobile-pad .hue-touch-btn.icon-only {
+    min-width: 39px;
+    width: 39px;
+  }
+
+  :is(#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet),
+  body.hue-touch-ui :is(#heritage-tour, #heritage-card, #hud-bottombar, #tile-inspector, #move-settings-panel, #hud-sidebar, #court-audio-sheet) {
+    top: auto;
+    bottom: var(--edge-bottom);
+    left: var(--edge-left);
+    right: var(--edge-right);
+    width: auto;
+    max-height: min(62dvh, calc(100dvh - var(--header-bottom) - 54px));
+    border-radius: 12px;
+    z-index: 51;
+  }
+  #hud-sidebar,
+  body.hue-touch-ui #hud-sidebar {
+    height: min(520px, 60dvh);
+  }
+  body:has(.heritage-sheet:not([hidden]):not([data-presentation="summary"])) #hue-mobile-pad,
+  body.hue-sidebar-open #hue-mobile-pad,
+  body.hue-inspector-open #hue-mobile-pad,
+  body:has(#move-settings-panel:not(.hidden)) #hue-mobile-pad {
+    opacity: 0;
+    pointer-events: none;
+  }
+  #heritage-card[data-presentation="summary"],
+  body.hue-touch-ui #heritage-card[data-presentation="summary"] {
+    bottom: calc(var(--edge-bottom) + var(--pad-space));
+    left: var(--edge-left);
+    right: var(--edge-right);
+    width: auto;
+  }
+  #heritage-card { padding: 11px 14px; }
   #heritage-title { font-size: 20px; }
-  #heritage-story { font-size: 12px; line-height: 1.55; }
-  .heritage-card-actions { margin-block: 7px; }
+  #heritage-story { font-size: 12.5px; line-height: 1.56; }
+  .heritage-card-actions { margin-block: 8px; }
   #hud-bottombar .time-readout { flex-wrap: wrap; }
   #hud-bottombar .preset-btn { font-size: 0; }
   #hud-bottombar .preset-btn::before { content: attr(aria-label); font-size: 11px; }
 }
-@media (max-width: 365px) {
-  #heritage-tour-toggle span { display: none; }
-  #heritage-tour-toggle { width: 36px; }
+
+@media (max-width: 380px) {
+  #hud-topbar .museum-btn:not(#heritage-tour-toggle), #hud-topbar #btn-toggle-sidebar { width: 33px; }
+  .hue-dock-btn { padding: 4px 8px; font-size: 11px; }
 }
+
 @media (orientation: landscape) and (max-height: 540px) {
-  body:has(#hue-mobile-pad:not(.hidden)) { --pad-space: 88px; }
+  body:has(#hue-mobile-pad:not(.hidden)),
+  body.hue-touch-ui { --pad-space: 98px; }
   #hud-topbar .brand-block .subtitle { display: none; }
   #hud-topbar .brand-emblem { width: 30px; height: 30px; }
-  #hud-topbar .museum-btn, #hud-topbar #btn-toggle-sidebar { min-height: 32px; }
-  #hue-joy-base { width: 76px; height: 76px; }
-  #hue-mobile-pad button { min-height: 34px; }
-  body.gta-active #gta-radar-card { width: fit-content; }
-  #heritage-card, #hud-bottombar, #move-settings-panel, #heritage-tour, #tile-inspector, #hud-sidebar, #court-audio-sheet {
-    left: auto; right: var(--edge-right); width: min(360px, 59vw);
-    top: var(--header-bottom); bottom: auto;
+  #hud-topbar .museum-btn, #hud-topbar #btn-toggle-sidebar { min-height: 34px; }
+  #hue-touch-dock {
+    top: auto;
+    bottom: max(10px, env(safe-area-inset-bottom, 8px));
+    padding: 3px;
   }
-  body.gta-active #heritage-help-toggle { right: auto; left: calc(var(--edge-left) + 70px); }
-  body.gta-active #gta-topbar { top: calc(var(--header-bottom) + 42px); left: var(--edge-left); right: auto; width: min(38vw, 310px); }
+  .hue-dock-btn { min-height: 31px; padding: 3px 10px; font-size: 11px; }
+  #hue-mobile-pad {
+    bottom: max(10px, env(safe-area-inset-bottom, 8px));
+    padding-left: max(22px, calc(env(safe-area-inset-left, 0px) + 14px));
+    padding-right: max(18px, calc(env(safe-area-inset-right, 0px) + 12px));
+  }
+  #hue-joy-base { width: 82px; height: 82px; }
+  #hue-joy-knob { width: 34px; height: 34px; }
+  .hue-joy-ring { inset: 15px; }
+  .hue-joy-caption { display: none; }
+  #hue-mobile-pad .hue-touch-btn { min-height: 34px; padding: 3px 9px; font-size: 11px; }
+  #hue-mobile-pad .hue-touch-btn.icon-only { min-width: 34px; width: 34px; }
+  body.gta-active #gta-radar-card { width: fit-content; }
+  #heritage-card, #hud-bottombar, #move-settings-panel, #heritage-tour, #tile-inspector, #hud-sidebar, #court-audio-sheet,
+  body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #move-settings-panel, #heritage-tour, #tile-inspector, #hud-sidebar, #court-audio-sheet) {
+    left: auto; right: var(--edge-right); width: min(360px, 56vw);
+    top: var(--header-bottom); bottom: auto;
+    max-height: calc(100dvh - var(--header-bottom) - 12px);
+    z-index: 51;
+  }
+  #heritage-tour, #hud-sidebar,
+  body.hue-touch-ui :is(#heritage-tour, #hud-sidebar) {
+    left: var(--edge-left); right: auto;
+  }
 }
-#heritage-read-more { margin: 0; padding: 5px 2px; font: 500 12px var(--font-sans); }
+
+#heritage-read-more { margin: 0; padding: 5px 4px; font: 500 12px var(--font-sans); }
 #heritage-card[data-presentation="summary"] {
   left: auto;
-  width: min(314px, calc(100vw - var(--edge-left) - var(--edge-right)));
+  width: min(326px, calc(100vw - var(--edge-left) - var(--edge-right)));
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto 32px;
+  grid-template-columns: minmax(0, 1fr) auto 34px;
   align-items: center;
   gap: 6px;
-  padding: 4px 7px 4px 12px;
+  padding: 5px 8px 5px 12px;
 }
 #heritage-card[data-presentation="summary"] .museum-panel-head { display: contents; }
 #heritage-card[data-presentation="summary"] #heritage-location { display: none; }
-#heritage-card[data-presentation="summary"] #heritage-close { grid-area: 1/3; width: 32px; min-height: 38px; }
+#heritage-card[data-presentation="summary"] #heritage-close { grid-area: 1/3; width: 34px; min-height: 38px; }
 #heritage-card[data-presentation="summary"] #heritage-title {
   grid-area: 1/1; margin: 0;
   font-size: 15px; line-height: 1.3; text-wrap: pretty;
