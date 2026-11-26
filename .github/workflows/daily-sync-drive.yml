@@ -2,12 +2,12 @@ name: Auto-Sync Hue 1880 3D from Google Drive (Every 6 Hours)
 
 on:
   schedule:
-    # Tự động đồng bộ 4 lần/ngày (00:15, 06:15, 12:15, 18:15 giờ Việt Nam GMT+7) khớp sau 4 khung giờ Gemini Tasks
-    - cron: "15 17,23,5,11 * * *"
+    # Tự động đồng bộ 8 lần/ngày mỗi 3 tiếng khớp chu kỳ 100 Task Neon (800 lượt/ngày)
+    - cron: "20 */3 * * *"
   workflow_dispatch:
     inputs:
       include_inbox:
-        description: "Lấy cả bản GLB mới hơn đã xác thực SHA-256 trong 03_assets_glb/inbox"
+        description: "Lấy cả bản GLB, Gameplay & Giọng đọc AI mới từ các hòm thư inbox"
         required: false
         default: true
         type: boolean
@@ -28,17 +28,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Python 3.12
+      - name: Setup Python 3.12 and Free Neural TTS
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Install edge-tts for voice_inbox synthesis
+        run: pip install --quiet edge-tts
 
       - name: Configure git bot author
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Sync Hue 1880 tiles and manifests from Google Drive
+      - name: Sync Hue 1880 tiles, props, quests and AI voices from Google Drive
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           GDRIVE_OAUTH_REFRESH_TOKEN: ${{ secrets.GDRIVE_OAUTH_REFRESH_TOKEN }}

@@ -584,9 +584,20 @@ def main():
     if not args.dry_run:
         STATE_FILE.write_text(json.dumps(new_state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
+    content_res = {"quests": 0, "voices": 0, "props": 0}
+    if not args.no_inbox:
+        try:
+            import sys as _sys
+            _sys.path.insert(0, str(ROOT / "scripts"))
+            from ingest_gameplay_and_voice_inboxes import run_all_content_inboxes
+            content_res = run_all_content_inboxes(client=client, dry_run=args.dry_run)
+        except Exception as exc:
+            print(f"  [WARN] Content inbox sync skipped: {exc}", flush=True)
+
+    extra_applied = content_res["quests"] + content_res["voices"] + content_res["props"]
     summary = [
         f"### Hue 1880 Citadel 3D — Drive Sync ({datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M UTC')})",
-        f"- Backend: `{client.mode}` | Checked: **{len(targets)}** | Applied: **{len(applied)}** | Skipped: **{len(skipped)}**",
+        f"- Backend: `{client.mode}` | Checked: **{len(targets)}** | Tiles Applied: **{len(applied)}** | Quests/Voices/Props: **{extra_applied}** | Skipped: **{len(skipped)}**",
     ]
     for rp, note in applied[:20]:
         summary.append(f"  - `{rp}` ({note})")
@@ -597,7 +608,7 @@ def main():
         if st:
             subprocess.check_call(["git", "add", "-A"], cwd=str(ROOT))
             subprocess.check_call(
-                ["git", "commit", "-m", f"chore(sync): update {len(applied)} Hue 1880 tiles/manifests from Google Drive"],
+                ["git", "commit", "-m", f"chore(sync): update {len(applied)} tiles & {extra_applied} quest/voice/prop packs from Drive"],
                 cwd=str(ROOT),
             )
             subprocess.check_call(["git", "pull", "--rebase", "origin", "main"], cwd=str(ROOT))
