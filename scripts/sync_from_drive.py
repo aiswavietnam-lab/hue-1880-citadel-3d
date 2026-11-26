@@ -272,10 +272,28 @@ def sha256_file(path: pathlib.Path) -> str:
 def is_valid_glb(path: pathlib.Path) -> bool:
     if not path.exists() or path.stat().st_size < 20:
         return False
-    with path.open("rb") as f:
-        head = f.read(12)
-    magic, version, length = struct.unpack("<4sII", head)
-    return magic == b"glTF" and version == 2 and length <= path.stat().st_size + 4
+    try:
+        with path.open("rb") as f:
+            head = f.read(12)
+            magic, version, length = struct.unpack("<4sII", head)
+            if not (magic == b"glTF" and version == 2 and length <= path.stat().st_size + 4):
+                return False
+            clen, ctype = struct.unpack("<II", f.read(8))
+            if ctype != 0x4E4F534A or clen <= 0:
+                return False
+            gltf = json.loads(f.read(clen).decode("utf-8"))
+        tex_count = len(gltf.get("textures") or [])
+        for mat in gltf.get("materials") or []:
+            pbr = mat.get("pbrMetallicRoughness") or {}
+            for k in ("baseColorTexture", "metallicRoughnessTexture"):
+                if k in pbr and pbr[k].get("index", -1) >= tex_count:
+                    return False
+            for k in ("normalTexture", "occlusionTexture", "emissiveTexture"):
+                if k in mat and mat[k].get("index", -1) >= tex_count:
+                    return False
+        return True
+    except Exception:
+        return False
 
 
 def parse_manifest_version(meta: dict):

@@ -5,7 +5,7 @@
   "coordinate_frame": "master_plan_z_up_meters",
   "total_tiles": 30,
   "completed_tiles": 30,
-  "last_updated_utc": "2026-11-26T07:17:33.104563+00:00",
+  "last_updated_utc": "2026-11-26T09:32:27.519634+00:00",
   "master_bounds_m": {
     "x_min": -980.0,
     "x_max": 980.0,
@@ -41,7 +41,7 @@
       "elevation_z": 0.0,
       "poly_budget": 340000,
       "glb_path": "T01_ky_dai_quang_truong.glb",
-      "sha256": "6ddac3dc42612a97d0c0418502e58bcfa2cf8a75986a2b1d7d7dc3a4148f8f6d",
+      "sha256": "77d298e02f8d1d9a2b692b2d2460a27cbf38549b0407bd3f90ff0a3317ef7d62",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -75,7 +75,7 @@
         "P10_linh_thi_ve_1880"
       ],
       "architectural_brief": "Bao gồm Kỳ Đài (pháo đài Nam Chánh tường gạch vồ & đá Thanh 3 tầng chóp cụt cao 17.5m + kỳ đài gỗ/cột cờ cao 37m dựng cờ vàng triều Nguyễn), đoạn tường Kinh Thành Vauban mặt Nam dài 320m, Cầu Kim Thủy đá vòm bắc qua Hào Kim Thủy (y=-255..-220m, cao độ nước -1.5m), và Quảng trường Ngọ Môn lát gạch/đá dẫn thẳng trục Thần đạo tới Ngọ Môn.",
-      "detail_stage": "L6_PHOTOREAL_AO_WEATHERED",
+      "detail_stage": "L5_HERITAGE_FINAL",
       "version": 21,
       "approved_stop": false,
       "orchestrator_note": "Mở thông nội thất Phu Văn Lâu (16 cột gỗ lim, vì kèo 2 tầng mái, bia Khuynh cái hạ mã) & hoàn thiện Kỳ Đài + Tả/Hữu Pháo Xưởng Cửu Vị Thần Công đúng 1880.",
@@ -231,11 +231,11 @@
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T03_ho_thai_dich_cau_trung_dao.glb",
-      "sha256": "9a3628d5c1693869f2f3a639f22335f0604c29111702b4e05b24c1d879b42706",
+      "sha256": "5c99d6315043e5165a7209f7430615fe0ef4aa24bca97c731538fb7c5e5cbe09",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 319984,
+        "triangle_count": 319994,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
@@ -266,8 +266,8 @@
         "P11_quan_van_vo_1880"
       ],
       "architectural_brief": "Hồ Thái Dịch kè đá Thanh chữ nhật trải ngang (cao độ mặt nước -1.20m) phủ cụm sen Huế; Cầu Trung Đạo đá vòm 3 nhịp bắc chính giữa trục Thần đạo hai đầu dựng cổng Tam Quan đồng thếp vàng (Ngưỡng Quan); tiếp nối là Sân Đại Triều Nghi 2 cấp lát đá Thanh & gạch Bát Tràng đặt hàng bia phẩm sơn (Chánh Nhất phẩm đến Cửu phẩm) hai bên Tả Văn - Hữu Võ.",
-      "detail_stage": "L6_PHOTOREAL_AO_WEATHERED",
-      "version": 21,
+      "detail_stage": "L5_HERITAGE_FINAL",
+      "version": 22,
       "approved_stop": false,
       "orchestrator_note": "Sắc nét lan can đá Thanh & 3 cổng Cầu Trung Đạo, Tả/Hữu Tùng & 4 góc sân Đại Triều Nghi, phẩm sơn Bát Tràng & đèn trụ đá.",
       "reference_photos": [
@@ -719,7 +719,7 @@
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T08_lau_kien_trung_vuon_co_ha.glb",
-      "sha256": "90ff3c69faf6ef8b85c027ee43c2b88892848478510e561e9bce5b130f0b5e58",
+      "sha256": "4d5afde8e17d65e81f0271f5f067b2020f102c969b2a79d10fb39f62c7b8c338",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -916,7 +916,7 @@
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T10_thai_to_mieu_trieu_mieu.glb",
-      "sha256": "ca210c6a204c8cc038bd819118a3625c96f867b52295c4c312e94316e2cabadf",
+      "sha256": "88e55a3c8bcead32ac85f3674366e7fca8737997046743dd24a828b3b778140f",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -956,7 +956,7 @@
       ],
       "architectural_brief": "Quần thể miếu thờ các Chúa Nguyễn phía Đông Nam Hoàng Thành: Thái Tổ Miếu Trùng thiềm điệp ốc mái Hoàng lưu ly, Tuy Thành Các, Triệu Tổ Miếu và sân lát gạch Bát Tràng.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 20,
+      "version": 21,
       "approved_stop": false,
       "orchestrator_note": "Mở thông Thái Tổ Miếu & Triệu Tổ Miếu cho GTA đi vào chiêm bái nội thất tôn miếu (cột gỗ lim, vì kèo, hương án, long vị, khám thờ) & chi tiết cổ diêm Pháp lam.",
       "reference_photos": [
@@ -1301,7 +1301,7 @@
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T14_cung_truong_sanh.glb",
-      "sha256": "c2abc96a2178a71624cd0e426e7b0d23b9d13c354d9fa1e67a4d507d578c4175",
+      "sha256": "481b6cf71ebc1f78388328d19b37920b094577fd644eb9ede14b917b43cee5ec",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -1674,7 +1674,7 @@
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T18_cua_the_nhon_than_cong_dong.glb",
-      "sha256": "11b6a32d5e3b3ade69f382a70cade32565f87f9761bb50a29245c3be2fa42fef",
+      "sha256": "da3885f2a4292e105d4612a9d68a399b21b6eea8f78055177fc68fcca9a3b057",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -1951,7 +1951,7 @@
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T21_kim_thuy_dong_nam_luc_bo.glb",
-      "sha256": "2d99cf6bc55f63d03c6034ec294f3f03090177cf5104d9e04e4adbe8867c65a8",
+      "sha256": "132b4caf59469820baa2f908ce673d58a5a5c7ac402aff1858b42f065c2f2a11",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -1985,7 +1985,7 @@
         "P11_quan_van_vo_1880"
       ],
       "architectural_brief": "Đoạn Hào Kim Thủy mặt Đông Nam và cụm công sở hành chính cao nhất triều Nguyễn bên ngoài Hoàng Thành: Khu Lục Bộ (Lại, Hộ, Lễ, Binh, Hình, Công), Viện Cơ Mật và Quốc Sử Quán kiến trúc nhà rường 3 gian 2 chái mái ngói liệt có sân vườn cân đối.",
-      "detail_stage": "L5_HERITAGE_V16_INTERIOR_AO",
+      "detail_stage": "L5_HERITAGE_FINAL",
       "version": 16,
       "approved_stop": false,
       "orchestrator_note": "Khu Lục Bộ & Cơ Mật Viện: bổ sung sảnh nha môn mở cửa bước vào được, bàn án công đường, mái ngói liệt.",
@@ -2417,7 +2417,7 @@
       "elevation_z": 0.0,
       "poly_budget": 220000,
       "glb_path": "T26_thanh_vauban_dong.glb",
-      "sha256": "3d6ca4b8d9f2eea0797e585cda3342629d0358599976cb87cc6af08c6ffe4e11",
+      "sha256": "c4c833a44f042038122bb50e350d9a9b28304dd225386494b53dfe9088ba3654",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -2450,7 +2450,7 @@
       ],
       "architectural_brief": "Tường Kinh Thành kiểu Vauban mặt Đông cao 6.6m với các pháo đài nhô sắc cạnh, Cửa Thượng Tứ (Đông Nam Môn) và Cửa Đông Ba (Chánh Đông Môn) có vọng lâu 2 tầng, Hộ Thành Hào Đông (sông Đông Ba cổ, cao độ nước -2.20m) cùng cầu đá dẫn sang phố cổ Gia Hội.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 12,
+      "version": 13,
       "approved_stop": false,
       "orchestrator_note": "Thành Vauban Đông, Hộ Thành Hào Đông & Cửa Đông Ba / Kẻ Trài: vòm gạch đi qua được, lan can cổ, nhà gác.",
       "reference_photos": [

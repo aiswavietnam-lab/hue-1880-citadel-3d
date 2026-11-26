@@ -38,21 +38,21 @@
   ],
   "completed_tiles": 30,
   "total_tiles": 30,
-  "last_sync_backend": "rclone",
-  "last_sync_applied_files": 5,
-  "last_sync_utc": "2026-11-26T07:17:33+00:00",
+  "last_sync_backend": "cli",
+  "last_sync_applied_files": 9,
+  "last_sync_utc": "2026-11-26T10:04:08+00:00",
   "tile_versions": {
     "T01": {
       "version": 21,
-      "sha256_12": "6ddac3dc4261"
+      "sha256_12": "77d298e02f8d"
     },
     "T02": {
       "version": 21,
       "sha256_12": "dc5a5654040d"
     },
     "T03": {
-      "version": 21,
-      "sha256_12": "9a3628d5c169"
+      "version": 22,
+      "sha256_12": "5c99d6315043"
     },
     "T04": {
       "version": 22,
@@ -72,15 +72,15 @@
     },
     "T08": {
       "version": 20,
-      "sha256_12": "90ff3c69faf6"
+      "sha256_12": "4d5afde8e17d"
     },
     "T09": {
       "version": 21,
       "sha256_12": "a9388dba43b7"
     },
     "T10": {
-      "version": 20,
-      "sha256_12": "ca210c6a204c"
+      "version": 21,
+      "sha256_12": "88e55a3c8bce"
     },
     "T11": {
       "version": 19,
@@ -96,7 +96,7 @@
     },
     "T14": {
       "version": 19,
-      "sha256_12": "c2abc96a2178"
+      "sha256_12": "481b6cf71ebc"
     },
     "T15": {
       "version": 20,
@@ -112,7 +112,7 @@
     },
     "T18": {
       "version": 16,
-      "sha256_12": "11b6a32d5e3b"
+      "sha256_12": "da3885f2a429"
     },
     "T19": {
       "version": 14,
@@ -124,7 +124,7 @@
     },
     "T21": {
       "version": 16,
-      "sha256_12": "2d99cf6bc55f"
+      "sha256_12": "132b4caf5946"
     },
     "T22": {
       "version": 15,
@@ -143,8 +143,8 @@
       "sha256_12": "5256d278cd17"
     },
     "T26": {
-      "version": 12,
-      "sha256_12": "3d6ca4b8d9f2"
+      "version": 13,
+      "sha256_12": "c4c833a44f04"
     },
     "T27": {
       "version": 12,
@@ -162,5 +162,7 @@
       "version": 7,
       "sha256_12": "8a713593ba89"
     }
-  }
+  },
+  "last_upgrade_summary": "Added 1:1 orthographic plan-view vs real Google Satellite overlay & 36-landmark deviation QA tool (plan_satellite_qa.html + assets/qa/*), hardened glTF material texture index validation in scripts/sync_from_drive.py, and synced latest valid GLBs (T01, T03, T08, T10, T14, T18, T21, T26).",
+  "plan_satellite_qa_url": "https://aiswavietnam-lab.github.io/hue-1880-citadel-3d/plan_satellite_qa.html"
 }

@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Đối Chiếu Hình Chiếu Bằng 3D ↔ Ảnh Vệ Tinh Thực Tế · Kinh Thành Huế 1880</title>
+  <meta name="description" content="Công cụ ghép đè hình chiếu bằng trực giao 1:1 toàn bộ 30 ô mô hình 3D Kinh thành Huế 1880 lên ảnh vệ tinh thực tế để đo sai lệch vị trí, tỷ lệ và góc phương vị." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Crect width='28' height='28' rx='6' fill='%23181411'/%3E%3Cpath d='M4 21H24M6 18H22M8 14.5H20L14 7L8 14.5Z' fill='none' stroke='%23D4A017' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1216;
+      --panel: #151a21;
+      --panel-2: #1b222c;
+      --border: #2a3442;
+      --gold: #e0b13a;
+      --gold-dim: rgba(224, 177, 58, 0.16);
+      --cyan: #22e3ff;
+      --green: #45e88c;
+      --orange: #ff9c38;
+      --red: #ff5454;
+      --text: #e9eef5;
+      --muted: #98a6b8;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; height: 100%; width: 100%;
+      background: var(--bg); color: var(--text);
+      font-family: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
+      overflow: hidden;
+    }
+    .app-shell {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      height: 100vh; height: 100dvh;
+    }
+    header.topbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 10px 16px;
+      background: linear-gradient(180deg, #171c24, #12161c);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      z-index: 20;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-icon {
+      width: 36px; height: 36px; border-radius: 9px;
+      background: var(--gold-dim); border: 1px solid rgba(224,177,58,0.45);
+      display: grid; place-items: center; flex-shrink: 0; color: var(--gold);
+    }
+    .brand h1 {
+      margin: 0; font-family: "Noto Serif", serif; font-size: 16px; font-weight: 700;
+      color: #f6dc8d; letter-spacing: 0.2px;
+    }
+    .brand p {
+      margin: 2px 0 0; font-size: 11.5px; color: var(--muted);
+    }
+    .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .badge-chip {
+      font-family: "JetBrains Mono", monospace; font-size: 11px;
+      padding: 5px 9px; border-radius: 6px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #cbd6e2;
+    }
+    .badge-chip b { color: var(--gold); }
+    .btn-link {
+      text-decoration: none; font-size: 12.5px; font-weight: 600;
+      padding: 7px 12px; border-radius: 7px;
+      background: var(--gold-dim); border: 1px solid rgba(224,177,58,0.5); color: #f6dc8d;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .btn-link:hover { background: rgba(224,177,58,0.28); }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 410px;
+      min-height: 0;
+      position: relative;
+    }
+    .stage-wrap {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-width: 0; min-height: 0;
+      background: #0b0e12;
+      position: relative;
+    }
+    .toolbar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding: 8px 12px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      z-index: 15;
+    }
+    .seg-group {
+      display: inline-flex; background: #0d1116; border: 1px solid var(--border);
+      border-radius: 7px; padding: 2px; gap: 2px;
+    }
+    .seg-btn {
+      border: none; background: transparent; color: var(--muted);
+      font-family: inherit; font-size: 12px; font-weight: 600;
+      padding: 5px 9px; border-radius: 5px; cursor: pointer;
+      transition: all 0.14s; white-space: nowrap;
+    }
+    .seg-btn:hover { color: var(--text); }
+    .seg-btn.active { background: var(--gold-dim); color: #f7de94; box-shadow: inset 0 0 0 1px rgba(224,177,58,0.45); }
+
+    .ctrl-inline {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--muted);
+      background: #0d1116; border: 1px solid var(--border);
+      border-radius: 7px; padding: 4px 9px;
+    }
+    .ctrl-inline input[type="range"] { width: 96px; accent-color: var(--gold); cursor: pointer; }
+    .ctrl-inline select {
+      background: #171d25; color: var(--text); border: 1px solid var(--border);
+      border-radius: 5px; padding: 2px 6px; font-size: 11.5px; font-family: inherit;
+    }
+    .ctrl-inline label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; color: #cfd8e4; font-size: 11.5px; }
+    .ctrl-inline input[type="checkbox"] { accent-color: var(--gold); cursor: pointer; }
+
+    .viewport {
+      position: relative; overflow: hidden; cursor: grab;
+      user-select: none; touch-action: none;
+      background: radial-gradient(circle at center, #141921 0%, #090c10 100%);
+    }
+    .viewport.dragging { cursor: grabbing; }
+    .map-world {
+      position: absolute; top: 0; left: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+    .map-layer {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      display: block;
+    }
+    #layer-model-wrap {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    #svg-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    #swipe-handle {
+      position: absolute; top: 0; bottom: 0; width: 3px;
+      background: var(--gold);
+      box-shadow: 0 0 12px rgba(224,177,58,0.8);
+      z-index: 12; cursor: ew-resize; display: none;
+    }
+    #swipe-knob {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 34px; height: 34px; border-radius: 50%;
+      background: #161b22; border: 2px solid var(--gold); color: var(--gold);
+      display: grid; place-items: center; font-size: 13px; font-weight: 700;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    }
+
+    .hud-bottom-left {
+      position: absolute; left: 12px; bottom: 12px; z-index: 14;
+      display: flex; flex-direction: column; gap: 6px; pointer-events: none;
+    }
+    .hud-pill {
+      background: rgba(14, 18, 24, 0.88); backdrop-filter: blur(8px);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 6px 10px; font-size: 11.5px; color: #d6e0ec;
+      font-family: "JetBrains Mono", monospace;
+    }
+    .hud-legend {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      font-family: "Be Vietnam Pro", sans-serif; font-size: 11px;
+    }
+    .lg-dot { display: inline-flex; align-items: center; gap: 5px; }
+    .lg-dot i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+    .zoom-controls {
+      position: absolute; right: 12px; bottom: 12px; z-index: 14;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .zoom-btn {
+      width: 34px; height: 34px; border-radius: 8px;
+      background: rgba(18, 23, 31, 0.92); border: 1px solid var(--border);
+      color: var(--text); font-size: 16px; font-weight: 700; cursor: pointer;
+      display: grid; place-items: center;
+    }
+    .zoom-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    aside.sidebar {
+      background: var(--panel);
+      border-left: 1px solid var(--border);
+      display: grid;
+      grid-template-rows: auto auto auto 1fr;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .kpi-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .kpi-card {
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 10px;
+    }
+    .kpi-card .k-label { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+    .kpi-card .k-val { font-family: "JetBrains Mono", monospace; font-size: 16px; font-weight: 700; margin-top: 2px; }
+    .kpi-card .k-sub { font-size: 10.5px; color: #b7c4d4; margin-top: 2px; line-height: 1.3; }
+    .c-red { color: var(--red); }
+    .c-orange { color: var(--orange); }
+    .c-gold { color: var(--gold); }
+    .c-cyan { color: var(--cyan); }
+    .c-green { color: var(--green); }
+
+    .selected-detail {
+      padding: 10px 12px;
+      background: rgba(224,177,58,0.07);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .selected-detail h3 { margin: 0 0 4px; font-size: 13.5px; color: #f7de94; }
+    .selected-detail .coords { font-family: "JetBrains Mono", monospace; font-size: 11px; color: #c7d4e4; line-height: 1.5; }
+    .selected-detail .note { margin-top: 5px; color: #ffd9d9; font-size: 11.5px; line-height: 1.4; }
+
+    .filter-bar {
+      display: flex; gap: 5px; flex-wrap: wrap;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+      background: #12161c;
+    }
+    .f-chip {
+      border: 1px solid var(--border); background: transparent; color: var(--muted);
+      font-family: inherit; font-size: 11px; font-weight: 600;
+      padding: 4px 8px; border-radius: 99px; cursor: pointer;
+    }
+    .f-chip.active { background: var(--gold-dim); border-color: var(--gold); color: #f6dc8d; }
+
+    .table-wrap { overflow-y: auto; min-height: 0; }
+    table.dev-table {
+      width: 100%; border-collapse: collapse; font-size: 11.5px;
+    }
+    table.dev-table thead th {
+      position: sticky; top: 0; z-index: 4;
+      background: #141920; color: var(--muted);
+      font-weight: 600; text-align: left; padding: 7px 8px;
+      border-bottom: 1px solid var(--border); cursor: pointer;
+      white-space: nowrap;
+    }
+    table.dev-table tbody tr {
+      border-bottom: 1px solid rgba(42, 52, 66, 0.55);
+      cursor: pointer; transition: background 0.12s;
+    }
+    table.dev-table tbody tr:hover { background: rgba(255,255,255,0.05); }
+    table.dev-table tbody tr.active { background: rgba(224,177,58,0.16); }
+    table.dev-table td { padding: 6px 8px; vertical-align: middle; }
+    .mono { font-family: "JetBrains Mono", monospace; }
+    .sev-pill {
+      display: inline-block; padding: 2px 6px; border-radius: 5px;
+      font-family: "JetBrains Mono", monospace; font-size: 11px; font-weight: 700;
+      text-align: right; min-width: 54px;
+    }
+    .sev-ok { background: rgba(69,232,140,0.15); color: var(--green); }
+    .sev-warn { background: rgba(224,177,58,0.18); color: #f6dc8d; }
+    .sev-high { background: rgba(255,156,56,0.2); color: var(--orange); }
+    .sev-crit { background: rgba(255,84,84,0.2); color: #ff7c7c; }
+
+    .mobile-toggle { display: none; }
+
+    @media (max-width: 1020px) {
+      .workspace { grid-template-columns: 1fr; }
+      aside.sidebar {
+        position: fixed; right: 0; top: 58px; bottom: 0; width: min(92vw, 390px);
+        z-index: 30; transform: translateX(100%); transition: transform 0.22s ease;
+        box-shadow: -8px 0 32px rgba(0,0,0,0.65);
+      }
+      aside.sidebar.open { transform: translateX(0); }
+      .mobile-toggle { display: inline-flex; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Kiểm Tra Sai Lệch Hình Chiếu Bằng 3D ↔ Ảnh Vệ Tinh Thực Tế</h1>
+        <p>Kinh Thành &amp; Tử Cấm Thành Huế 1880 · Đối chiếu trực giao 1:1 toàn bộ 30/30 ô GLB trên Google Satellite</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span class="badge-chip">Neo gốc: <b>Điện Thái Hòa (16.46879°N, 107.57834°E)</b></span>
+      <span class="badge-chip">Trục Thần đạo: <b>144.8°</b> (config: 148.0°, lệch 3.2°)</span>
+      <button id="btn-mobile-drawer" class="btn-link mobile-toggle" type="button">Bảng sai lệch (36)</button>
+      <a class="btn-link" href="./index.html">← Quay lại mô hình 3D</a>
+    </div>
+  </header>
+
+  <div class="workspace">
+    <main class="stage-wrap">
+      <div class="toolbar">
+        <div class="seg-group" role="group" aria-label="Góc nhìn bản đồ">
+          <button class="seg-btn active" data-view="north_full" type="button">Toàn cảnh · Bắc chuẩn</button>
+          <button class="seg-btn" data-view="axis_full" type="button">Toàn cảnh · Trục Thần đạo</button>
+          <button class="seg-btn" data-view="axis_ht" type="button">Cận cảnh Hoàng Thành HD</button>
+        </div>
+
+        <div class="seg-group" role="group" aria-label="Nền vệ tinh">
+          <button class="seg-btn active" data-basemap="sat" type="button">Vệ tinh sạch</button>
+          <button class="seg-btn" data-basemap="hyb" type="button">Vệ tinh + Địa danh</button>
+        </div>
+
+        <div class="seg-group" role="group" aria-label="Chế độ so sánh">
+          <button class="seg-btn active" data-compare="opacity" type="button">Độ mờ</button>
+          <button class="seg-btn" data-compare="swipe" type="button">Rèm kéo</button>
+        </div>
+
+        <div class="ctrl-inline" id="ctrl-opacity-box">
+          <span>Mô hình 3D:</span>
+          <input id="opacity-slider" type="range" min="0" max="100" value="62" />
+          <span id="opacity-val" class="mono">62%</span>
+        </div>
+
+        <div class="ctrl-inline">
+          <span>Hòa trộn:</span>
+          <select id="blend-select">
+            <option value="normal">Bình thường</option>
+            <option value="difference">Difference (So lệch)</option>
+            <option value="screen">Screen (Sáng)</option>
+            <option value="multiply">Multiply (Nhân)</option>
+          </select>
+        </div>
+
+        <div class="ctrl-inline" id="ctrl-az-box">
+          <span>Góc xoay:</span>
+          <select id="az-select">
+            <option value="144.8">Chuẩn vệ tinh (144.8°)</option>
+            <option value="148.0">Theo config.json (148.0° · +3.2°)</option>
+          </select>
+        </div>
+
+        <div class="ctrl-inline">
+          <label><input id="chk-vectors" type="checkbox" checked /> Vector sai lệch</label>
+          <label><input id="chk-perimeters" type="checkbox" checked /> Chu vi Thực/Mô hình</label>
+          <label><input id="chk-grid" type="checkbox" /> Lưới 30 ô + Lỗ trống</label>
+        </div>
+      </div>
+
+      <div id="viewport" class="viewport">
+        <div id="map-world" class="map-world">
+          <img id="img-sat" class="map-layer" alt="Ảnh vệ tinh thực tế Kinh Thành Huế" />
+          <div id="layer-model-wrap">
+            <img id="img-model" class="map-layer" alt="Hình chiếu bằng 30 ô 3D Kinh Thành Huế 1880" />
+          </div>
+          <svg id="svg-overlay" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <div id="swipe-handle" title="Kéo trái / phải để so sánh trực tiếp">
+          <div id="swipe-knob">⇆</div>
+        </div>
+
+        <div class="hud-bottom-left">
+          <div class="hud-pill hud-legend">
+            <span class="lg-dot"><i style="background:#f5c542"></i>Vị trí Mô hình 3D</span>
+            <span class="lg-dot"><i style="background:#22e3ff"></i>Vị trí Vệ tinh thực tế</span>
+            <span class="lg-dot"><i style="background:#ff4b4b"></i>Mũi tên sai lệch</span>
+            <span class="lg-dot"><i style="background:#45e88c; border-radius:2px"></i>Hoàng Thành thực</span>
+          </div>
+          <div id="cursor-readout" class="hud-pill">Di chuột lên bản đồ để xem tọa độ (X, Y) mét so với Điện Thái Hòa (0, 0)</div>
+        </div>
+
+        <div class="zoom-controls">
+          <button id="btn-zoom-in" class="zoom-btn" type="button" title="Phóng to">+</button>
+          <button id="btn-zoom-out" class="zoom-btn" type="button" title="Thu nhỏ">−</button>
+          <button id="btn-zoom-fit" class="zoom-btn" type="button" title="Vừa khung nhìn">⊡</button>
+        </div>
+      </div>
+    </main>
+
+    <aside id="sidebar" class="sidebar">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="k-label">Trục trước Ngọ Môn</div>
+          <div class="k-val c-orange">+165 → +225 m</div>
+          <div class="k-sub">Kỳ Đài lệch 165m · Phu Văn Lâu 225m · Bờ Bắc Sông Hương 205m</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Cánh Hoàng Thành</div>
+          <div class="k-val c-gold">86 → 157 m</div>
+          <div class="k-sub">Thế Miếu, Thái Miếu, Diên Thọ, Trường Sanh bị nén vào giữa</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Nửa Bắc Kinh Thành</div>
+          <div class="k-val c-red">Thiếu ~1.110 m</div>
+          <div class="k-sub">Hồ Tịnh Tâm lệch 510m · Tàng Thư Lâu 596m · Mang Cá 1.023m</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Lỗi nội tại lưới 30 ô</div>
+          <div class="k-val c-cyan">~48.400 m² trống</div>
+          <div class="k-sub">2 lỗ trống trong Hoàng Thành · Lệch config GPS 126m &amp; 3.2°</div>
+        </div>
+      </div>
+
+      <div id="selected-detail" class="selected-detail">
+        <h3>Chọn một công trình trong bảng bên dưới để phóng tới</h3>
+        <div class="coords">Tỷ lệ ghép đè <b>1:1 tuyệt đối</b> (không co giãn bóp méo) · Gốc neo tại tâm Điện Thái Hòa.</div>
+      </div>
+
+      <div id="filter-bar" class="filter-bar">
+        <button class="f-chip active" data-zone="ALL" type="button">Tất cả (36)</button>
+        <button class="f-chip" data-zone="AXIS" type="button">Trục Thần đạo &amp; TCT</button>
+        <button class="f-chip" data-zone="HT" type="button">Hoàng Thành</button>
+        <button class="f-chip" data-zone="INNER" type="button">Nội khu KT</button>
+        <button class="f-chip" data-zone="OUTER" type="button">Vauban &amp; Sông</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="dev-table">
+          <thead>
+            <tr>
+              <th data-sort="code">Mã</th>
+              <th data-sort="name">Công trình</th>
+              <th data-sort="tile_id">Ô</th>
+              <th data-sort="dx">ΔX</th>
+              <th data-sort="dy">ΔY</th>
+              <th data-sort="dist_m" style="text-align:right">Lệch ↓</th>
+            </tr>
+          </thead>
+          <tbody id="dev-tbody"></tbody>
+        </table>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(() => {
+  const ASSET_BASE = "./assets/qa";
+  let DATA = null;
+  let state = {
+    view: "north_full",
+    basemap: "sat",
+    compare: "opacity",
+    opacity: 0.62,
+    swipePct: 52,
+    blend: "normal",
+    az: "144.8",
+    showVectors: true,
+    showPerimeters: true,
+    showGrid: false,
+    zoneFilter: "ALL",
+    sortKey: "dist_m",
+    sortAsc: false,
+    selectedCode: null,
+    scale: 1,
+    tx: 0,
+    ty: 0,
+  };
+
+  const els = {
+    viewport: document.getElementById("viewport"),
+    world: document.getElementById("map-world"),
+    imgSat: document.getElementById("img-sat"),
+    modelWrap: document.getElementById("layer-model-wrap"),
+    imgModel: document.getElementById("img-model"),
+    svg: document.getElementById("svg-overlay"),
+    swipeHandle: document.getElementById("swipe-handle"),
+    opacitySlider: document.getElementById("opacity-slider"),
+    opacityVal: document.getElementById("opacity-val"),
+    opacityBox: document.getElementById("ctrl-opacity-box"),
+    blendSelect: document.getElementById("blend-select"),
+    azSelect: document.getElementById("az-select"),
+    azBox: document.getElementById("ctrl-az-box"),
+    chkVectors: document.getElementById("chk-vectors"),
+    chkPerimeters: document.getElementById("chk-perimeters"),
+    chkGrid: document.getElementById("chk-grid"),
+    cursorReadout: document.getElementById("cursor-readout"),
+    tbody: document.getElementById("dev-tbody"),
+    detail: document.getElementById("selected-detail"),
+    sidebar: document.getElementById("sidebar"),
+  };
+
+  const ORIGIN_LAT = 16.46879;
+  const ORIGIN_LON = 107.57834;
+  const M_PER_LAT = 110664.0;
+  const M_PER_LON = 111319.5 * Math.cos(ORIGIN_LAT * Math.PI / 180);
+
+  function gpsToEN(lat, lon) {
+    return [(lon - ORIGIN_LON) * M_PER_LON, (lat - ORIGIN_LAT) * M_PER_LAT];
+  }
+
+  function planToEN(x, y, azDeg = 144.8) {
+    const az = azDeg * Math.PI / 180;
+    return [
+      x * (-Math.cos(az)) + y * (-Math.sin(az)),
+      x * Math.sin(az) + y * (-Math.cos(az)),
+    ];
+  }
+
+  function enToPlan(e, n, azDeg = 144.8) {
+    const az = azDeg * Math.PI / 180;
+    return [
+      e * (-Math.cos(az)) + n * Math.sin(az),
+      e * (-Math.sin(az)) + n * (-Math.cos(az)),
+    ];
+  }
+
+  function viewMeta() {
+    return DATA.views[state.view];
+  }
+
+  function planToPx(x, y, modelAzDeg = 144.8) {
+    const m = viewMeta();
+    if (state.view === "north_full") {
+      const [e, n] = planToEN(x, y, modelAzDeg);
+      const px = (e - (m.center_e - m.span_e * 0.5)) / m.span_e * m.w;
+      const py = ((m.center_n + m.span_n * 0.5) - n) / m.span_n * m.h;
+      return [px, py];
+    }
+    // Axis views: if extra rotation for 148° on model points
+    let pxPlan = x, pyPlan = y;
+    if (Math.abs(modelAzDeg - 144.8) > 0.05 && state.view === "axis_full") {
+      const th = (modelAzDeg - 144.8) * Math.PI / 180;
+      const ct = Math.cos(th), st = Math.sin(th);
+      pxPlan = x * ct + y * st;
+      pyPlan = -x * st + y * ct;
+    }
+    const px = (pxPlan - m.x_min) / (m.x_max - m.x_min) * m.w;
+    const py = (m.y_max - pyPlan) / (m.y_max - m.y_min) * m.h;
+    return [px, py];
+  }
+
+  function realGpsToPx(lat, lon) {
+    const m = viewMeta();
+    const [e, n] = gpsToEN(lat, lon);
+    if (state.view === "north_full") {
+      const px = (e - (m.center_e - m.span_e * 0.5)) / m.span_e * m.w;
+      const py = ((m.center_n + m.span_n * 0.5) - n) / m.span_n * m.h;
+      return [px, py];
+    }
+    const [x, y] = enToPlan(e, n, 144.8);
+    return planToPx(x, y, 144.8);
+  }
+
+  function pxToPlan(px, py) {
+    const m = viewMeta();
+    if (state.view === "north_full") {
+      const e = (m.center_e - m.span_e * 0.5) + (px / m.w) * m.span_e;
+      const n = (m.center_n + m.span_n * 0.5) - (py / m.h) * m.span_n;
+      return enToPlan(e, n, 144.8);
+    }
+    const x = m.x_min + (px / m.w) * (m.x_max - m.x_min);
+    const y = m.y_max - (py / m.h) * (m.y_max - m.y_min);
+    return [x, y];
+  }
+
+  function applyTransform() {
+    els.world.style.transform = `translate(${state.tx}px, ${state.ty}px) scale(${state.scale})`;
+    updateSwipeClip();
+  }
+
+  function updateSwipeClip() {
+    if (state.compare === "swipe") {
+      els.swipeHandle.style.display = "block";
+      els.swipeHandle.style.left = `${state.swipePct}%`;
+      const vpRect = els.viewport.getBoundingClientRect();
+      const splitVpX = vpRect.width * (state.swipePct / 100);
+      const splitImgX = (splitVpX - state.tx) / state.scale;
+      const m = viewMeta();
+      const clamped = Math.max(0, Math.min(m.w, splitImgX));
+      const rightInset = Math.max(0, m.w - clamped);
+      els.modelWrap.style.clipPath = `inset(0 ${rightInset}px 0 0)`;
+      els.imgModel.style.opacity = "0.95";
+    } else {
+      els.swipeHandle.style.display = "none";
+      els.modelWrap.style.clipPath = "none";
+      els.imgModel.style.opacity = String(state.opacity);
+    }
+    els.imgModel.style.mixBlendMode = state.blend;
+  }
+
+  function fitView() {
+    if (!DATA) return;
+    const m = viewMeta();
+    const r = els.viewport.getBoundingClientRect();
+    const pad = 16;
+    const sx = (r.width - pad * 2) / m.w;
+    const sy = (r.height - pad * 2) / m.h;
+    state.scale = Math.min(sx, sy);
+    state.tx = (r.width - m.w * state.scale) * 0.5;
+    state.ty = (r.height - m.h * state.scale) * 0.5;
+    applyTransform();
+  }
+
+  function loadViewImages(shouldFit = true) {
+    const m = viewMeta();
+    els.world.style.width = `${m.w}px`;
+    els.world.style.height = `${m.h}px`;
+    els.svg.setAttribute("viewBox", `0 0 ${m.w} ${m.h}`);
+
+    const prefix = state.view;
+    const satFile = `${ASSET_BASE}/${prefix}_${state.basemap}.jpg`;
+    const use148 = state.az === "148.0" && state.view !== "axis_ht";
+    const modFile = `${ASSET_BASE}/${prefix}_model${use148 ? "_148" : ""}.png`;
+
+    els.azBox.style.display = state.view === "axis_ht" ? "none" : "inline-flex";
+    els.imgSat.src = satFile;
+    els.imgModel.src = modFile;
+
+    if (shouldFit) fitView();
+    renderSvgOverlay();
+  }
+
+  function renderSvgOverlay() {
+    if (!DATA) return;
+    const m = viewMeta();
+    const azNum = (state.az === "148.0" && state.view !== "axis_ht") ? 148.0 : 144.8;
+    const isClose = state.view === "axis_ht";
+    const sw = isClose ? 2.2 : 3.2;
+    const parts = [];
+
+    parts.push(`<defs>
+      <marker id="arr-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#ff4d4d"/>
+      </marker>
+      <marker id="arr-hi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#ffe14d"/>
+      </marker>
+    </defs>`);
+
+    // 1. 30-tile grid + 2 missing holes
+    if (state.showGrid) {
+      for (const t of DATA.tiles) {
+        const b = t.bounds;
+        const pts = [
+          planToPx(b.x_min, b.y_max, azNum),
+          planToPx(b.x_max, b.y_max, azNum),
+          planToPx(b.x_max, b.y_min, azNum),
+          planToPx(b.x_min, b.y_min, azNum),
+        ].map(p => p.map(v => v.toFixed(1)).join(",")).join(" ");
+        parts.push(`<polygon points="${pts}" fill="none" stroke="rgba(240,202,89,0.58)" stroke-width="${isClose ? 1.4 : 1.8}" />`);
+        const [cx, cy] = planToPx((b.x_min + b.x_max) * 0.5, (b.y_min + b.y_max) * 0.5, azNum);
+        parts.push(`<text x="${cx.toFixed(1)}" y="${cy.toFixed(1)}" fill="#ffe899" font-size="${isClose ? 14 : 16}" font-family="JetBrains Mono,monospace" font-weight="700" text-anchor="middle" dominant-baseline="middle" stroke="#0c0f14" stroke-width="3" paint-order="stroke">${t.id}</text>`);
+      }
+      // Missing Holes inside Hoang Thanh
+      const holes = [
+        { label: "LỖ TRỐNG #1 (130×80m)", pts: [[-200,40],[-70,40],[-70,-40],[-200,-40]] },
+        { label: "LỖ TRỐNG #2 (~38.000m²)", pts: [[240,200],[311,200],[311,-220],[70,-220],[70,-150],[220,-150],[220,40],[240,40]] },
+      ];
+      for (const h of holes) {
+        const poly = h.pts.map(([x, y]) => planToPx(x, y, azNum).map(v => v.toFixed(1)).join(",")).join(" ");
+        parts.push(`<polygon points="${poly}" fill="rgba(255,50,70,0.28)" stroke="#ff4d66" stroke-width="${sw}" stroke-dasharray="8 5"/>`);
+      }
+    }
+
+    // 2. Perimeters (Real vs Model)
+    if (state.showPerimeters) {
+      // Real Hoang Thanh (Green)
+      const realHt = [[16.46582,107.57678],[16.46924,107.58152],[16.47350,107.57828],[16.47010,107.57343]]
+        .map(([la, lo]) => realGpsToPx(la, lo).map(v => v.toFixed(1)).join(",")).join(" ");
+      parts.push(`<polygon points="${realHt}" fill="none" stroke="#45e88c" stroke-width="${sw}" />`);
+
+      // Model Hoang Thanh (Gold dashed)
+      const modHt = [[-311,-220],[311,-220],[311,394],[-311,394]]
+        .map(([x, y]) => planToPx(x, y, azNum).map(v => v.toFixed(1)).join(",")).join(" ");
+      parts.push(`<polygon points="${modHt}" fill="none" stroke="#f5c542" stroke-width="${sw}" stroke-dasharray="10 6"/>`);
+
+      if (!isClose) {
+        // Real Kinh Thanh Vauban (Cyan)
+        const realKt = [[16.46180,107.57040],[16.47300,107.58720],[16.48780,107.57460],[16.47760,107.55940]]
+          .map(([la, lo]) => realGpsToPx(la, lo).map(v => v.toFixed(1)).join(",")).join(" ");
+        parts.push(`<polygon points="${realKt}" fill="none" stroke="#22e3ff" stroke-width="${sw + 0.8}" />`);
+
+        // Model Vauban perimeter (Gold)
+        const modKt = [[-818,-520],[797,-520],[797,850],[-818,850]]
+          .map(([x, y]) => planToPx(x, y, azNum).map(v => v.toFixed(1)).join(",")).join(" ");
+        parts.push(`<polygon points="${modKt}" fill="none" stroke="#f5c542" stroke-width="${sw + 0.5}" />`);
+      }
+    }
+
+    // 3. Deviation Vectors
+    if (state.showVectors) {
+      for (const lm of DATA.landmarks) {
+        const [mx, my] = planToPx(lm.model_x, lm.model_y, azNum);
+        const [rx, ry] = realGpsToPx(lm.real_lat, lm.real_lon);
+        const inView = (rx >= -40 && rx <= m.w + 40 && ry >= -40 && ry <= m.h + 40) ||
+                       (mx >= -40 && mx <= m.w + 40 && my >= -40 && my <= m.h + 40);
+        if (!inView) continue;
+
+        const isSel = state.selectedCode === lm.code;
+        // On full view, show clean subset unless selected, so labels never turn into soup
+        const majorFull = ["TH","KD","PVL","SH_N","SH_S","HTT","TTL","DXT","KT_N","KT_W","KT_S","KT_E","TBD"];
+        const showLabel = isSel || isClose || majorFull.includes(lm.code);
+        const op = state.selectedCode ? (isSel ? 1 : 0.28) : (showLabel ? 0.96 : 0.42);
+        const dist = Math.hypot(rx - mx, ry - my);
+
+        parts.push(`<g opacity="${op}">`);
+        if (dist > 6) {
+          parts.push(`<line x1="${mx.toFixed(1)}" y1="${my.toFixed(1)}" x2="${rx.toFixed(1)}" y2="${ry.toFixed(1)}" stroke="${isSel ? "#ffe14d" : "#ff4d4d"}" stroke-width="${isSel ? sw + 2 : sw}" marker-end="url(#${isSel ? "arr-hi" : "arr-red"})" />`);
+        }
+        const rDot = isSel ? 7 : (isClose ? 5 : 5.5);
+        parts.push(`<circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="${rDot}" fill="#f5c542" stroke="#0c0f14" stroke-width="2"/>`);
+        parts.push(`<circle cx="${rx.toFixed(1)}" cy="${ry.toFixed(1)}" r="${rDot}" fill="#22e3ff" stroke="#0c0f14" stroke-width="2"/>`);
+        if (showLabel) {
+          const fs = isSel ? (isClose ? 17 : 20) : (isClose ? 13.5 : 15);
+          const lbl = lm.code === "TH" ? "TH (0m)" : `${lm.code} (${Math.round(lm.dist_m)}m)`;
+          parts.push(`<text x="${(rx + 10).toFixed(1)}" y="${(ry - 6).toFixed(1)}" fill="${isSel ? "#ffe866" : "#ffffff"}" font-size="${fs}" font-family="JetBrains Mono,monospace" font-weight="700" stroke="#0b0e13" stroke-width="4.5" paint-order="stroke">${lbl}</text>`);
+        }
+        parts.push(`</g>`);
+      }
+    }
+
+    els.svg.innerHTML = parts.join("");
+  }
+
+  function matchZone(lm, filter) {
+    if (filter === "ALL") return true;
+    if (filter === "AXIS") return lm.zone === "Trục Thần đạo" || lm.zone === "Tử Cấm Thành";
+    if (filter === "HT") return lm.zone.includes("Hoàng Thành");
+    if (filter === "INNER") return lm.zone.includes("Nội khu") || lm.zone.includes("Mặt Nam");
+    if (filter === "OUTER") return lm.zone.includes("Kinh Thành") || lm.zone === "Sông Hương";
+    return true;
+  }
+
+  function sevClass(d) {
+    if (d < 30) return "sev-ok";
+    if (d < 120) return "sev-warn";
+    if (d < 300) return "sev-high";
+    return "sev-crit";
+  }
+
+  function renderTable() {
+    const rows = DATA.landmarks
+      .filter(lm => matchZone(lm, state.zoneFilter))
+      .slice()
+      .sort((a, b) => {
+        const av = a[state.sortKey], bv = b[state.sortKey];
+        if (typeof av === "string") return state.sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
+        return state.sortAsc ? av - bv : bv - av;
+      });
+
+    els.tbody.innerHTML = rows.map(lm => `
+      <tr data-code="${lm.code}" class="${state.selectedCode === lm.code ? "active" : ""}">
+        <td class="mono" style="color:#f6dc8d;font-weight:700">${lm.code}</td>
+        <td>${lm.name}</td>
+        <td class="mono" style="color:#98a6b8">${lm.tile_id}</td>
+        <td class="mono">${lm.dx >= 0 ? "+" : ""}${Math.round(lm.dx)}</td>
+        <td class="mono">${lm.dy >= 0 ? "+" : ""}${Math.round(lm.dy)}</td>
+        <td style="text-align:right"><span class="sev-pill ${sevClass(lm.dist_m)}">${lm.dist_m.toFixed(0)} m</span></td>
+      </tr>
+    `).join("");
+
+    els.tbody.querySelectorAll("tr").forEach(tr => {
+      tr.addEventListener("click", () => selectLandmark(tr.dataset.code));
+    });
+  }
+
+  function selectLandmark(code) {
+    const lm = DATA.landmarks.find(x => x.code === code);
+    if (!lm) return;
+    state.selectedCode = code;
+
+    // Pick best view automatically if landmark is outside close-up bounds
+    const inHt = Math.abs(lm.real_x) < 420 && Math.abs(lm.model_x) < 420 && lm.real_y > -760 && lm.real_y < 490 && lm.model_y > -760 && lm.model_y < 490;
+    const targetView = inHt ? "axis_ht" : (state.view === "axis_ht" ? "north_full" : state.view);
+    if (targetView !== state.view) {
+      state.view = targetView;
+      document.querySelectorAll('[data-view]').forEach(b => b.classList.toggle("active", b.dataset.view === state.view));
+      loadViewImages(false);
+    }
+
+    // Smoothly center & zoom to midpoint of model & real pins
+    const azNum = (state.az === "148.0" && state.view !== "axis_ht") ? 148.0 : 144.8;
+    const [mx, my] = planToPx(lm.model_x, lm.model_y, azNum);
+    const [rx, ry] = realGpsToPx(lm.real_lat, lm.real_lon);
+    const cx = (mx + rx) * 0.5;
+    const cy = (my + ry) * 0.5;
+    const spanPx = Math.max(180, Math.hypot(rx - mx, ry - my) * 2.4);
+    const r = els.viewport.getBoundingClientRect();
+    state.scale = Math.max(0.45, Math.min(3.0, Math.min(r.width, r.height) / spanPx));
+    state.tx = r.width * 0.5 - cx * state.scale;
+    state.ty = r.height * 0.5 - cy * state.scale;
+    applyTransform();
+    renderSvgOverlay();
+    renderTable();
+
+    els.detail.innerHTML = `
+      <h3>${lm.code} · ${lm.name} <span class="sev-pill ${sevClass(lm.dist_m)}" style="float:right">Lệch ${lm.dist_m.toFixed(1)} m</span></h3>
+      <div class="coords">
+        Ô quy hoạch: <b>${lm.tile_id}</b> · GPS thật: ${lm.real_lat.toFixed(5)}°N, ${lm.real_lon.toFixed(5)}°E<br/>
+        Vệ tinh thực: (X=${lm.real_x}m, Y=${lm.real_y}m) · Mô hình 3D: (X=${lm.model_x}m, Y=${lm.model_y}m)<br/>
+        Sai lệch vector: <b>ΔX = ${lm.dx >= 0 ? "+" : ""}${lm.dx}m</b>, <b>ΔY = ${lm.dy >= 0 ? "+" : ""}${lm.dy}m</b>
+      </div>
+      <div class="note">↳ ${lm.note}</div>
+    `;
+    els.sidebar.classList.remove("open");
+  }
+
+  // Pan & Zoom interactions
+  let dragging = false, dragStart = null, swiping = false;
+  els.viewport.addEventListener("pointerdown", (e) => {
+    if (e.target.closest("#swipe-handle")) return;
+    dragging = true;
+    els.viewport.classList.add("dragging");
+    els.viewport.setPointerCapture(e.pointerId);
+    dragStart = { x: e.clientX, y: e.clientY, tx: state.tx, ty: state.ty };
+  });
+  els.viewport.addEventListener("pointermove", (e) => {
+    if (DATA) {
+      const r = els.viewport.getBoundingClientRect();
+      const ix = (e.clientX - r.left - state.tx) / state.scale;
+      const iy = (e.clientY - r.top - state.ty) / state.scale;
+      const m = viewMeta();
+      if (ix >= 0 && ix <= m.w && iy >= 0 && iy <= m.h) {
+        const [px, py] = pxToPlan(ix, iy);
+        els.cursorReadout.textContent = `Tọa độ Mặt bằng Huế (gốc Điện Thái Hòa): X = ${px >= 0 ? "+" : ""}${px.toFixed(0)} m (Đông Bắc) · Y = ${py >= 0 ? "+" : ""}${py.toFixed(0)} m (Tây Bắc)`;
+      }
+    }
+    if (!dragging || !dragStart) return;
+    state.tx = dragStart.tx + (e.clientX - dragStart.x);
+    state.ty = dragStart.ty + (e.clientY - dragStart.y);
+    applyTransform();
+  });
+  const endDrag = () => { dragging = false; els.viewport.classList.remove("dragging"); };
+  els.viewport.addEventListener("pointerup", endDrag);
+  els.viewport.addEventListener("pointercancel", endDrag);
+
+  els.viewport.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const r = els.viewport.getBoundingClientRect();
+    const mx = e.clientX - r.left;
+    const my = e.clientY - r.top;
+    const factor = e.deltaY < 0 ? 1.16 : 1 / 1.16;
+    const newScale = Math.max(0.25, Math.min(5.0, state.scale * factor));
+    const ratio = newScale / state.scale;
+    state.tx = mx - (mx - state.tx) * ratio;
+    state.ty = my - (my - state.ty) * ratio;
+    state.scale = newScale;
+    applyTransform();
+  }, { passive: false });
+
+  // Swipe handle drag
+  els.swipeHandle.addEventListener("pointerdown", (e) => {
+    e.stopPropagation();
+    swiping = true;
+    els.swipeHandle.setPointerCapture(e.pointerId);
+  });
+  els.swipeHandle.addEventListener("pointermove", (e) => {
+    if (!swiping) return;
+    const r = els.viewport.getBoundingClientRect();
+    state.swipePct = Math.max(2, Math.min(98, ((e.clientX - r.left) / r.width) * 100));
+    updateSwipeClip();
+  });
+  els.swipeHandle.addEventListener("pointerup", () => { swiping = false; });
+
+  // UI Controls
+  document.querySelectorAll("[data-view]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.view = btn.dataset.view;
+      document.querySelectorAll("[data-view]").forEach(b => b.classList.toggle("active", b === btn));
+      loadViewImages(true);
+    });
+  });
+  document.querySelectorAll("[data-basemap]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.basemap = btn.dataset.basemap;
+      document.querySelectorAll("[data-basemap]").forEach(b => b.classList.toggle("active", b === btn));
+      loadViewImages(false);
+    });
+  });
+  document.querySelectorAll("[data-compare]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.compare = btn.dataset.compare;
+      document.querySelectorAll("[data-compare]").forEach(b => b.classList.toggle("active", b === btn));
+      els.opacityBox.style.display = state.compare === "opacity" ? "inline-flex" : "none";
+      updateSwipeClip();
+    });
+  });
+
+  els.opacitySlider.addEventListener("input", () => {
+    state.opacity = Number(els.opacitySlider.value) / 100;
+    els.opacityVal.textContent = `${els.opacitySlider.value}%`;
+    updateSwipeClip();
+  });
+  els.blendSelect.addEventListener("change", () => { state.blend = els.blendSelect.value; updateSwipeClip(); });
+  els.azSelect.addEventListener("change", () => { state.az = els.azSelect.value; loadViewImages(false); });
+  els.chkVectors.addEventListener("change", () => { state.showVectors = els.chkVectors.checked; renderSvgOverlay(); });
+  els.chkPerimeters.addEventListener("change", () => { state.showPerimeters = els.chkPerimeters.checked; renderSvgOverlay(); });
+  els.chkGrid.addEventListener("change", () => { state.showGrid = els.chkGrid.checked; renderSvgOverlay(); });
+
+  document.getElementById("btn-zoom-in").addEventListener("click", () => {
+    const r = els.viewport.getBoundingClientRect();
+    const ns = Math.min(5, state.scale * 1.3);
+    const ratio = ns / state.scale;
+    state.tx = r.width * 0.5 - (r.width * 0.5 - state.tx) * ratio;
+    state.ty = r.height * 0.5 - (r.height * 0.5 - state.ty) * ratio;
+    state.scale = ns; applyTransform();
+  });
+  document.getElementById("btn-zoom-out").addEventListener("click", () => {
+    const r = els.viewport.getBoundingClientRect();
+    const ns = Math.max(0.25, state.scale / 1.3);
+    const ratio = ns / state.scale;
+    state.tx = r.width * 0.5 - (r.width * 0.5 - state.tx) * ratio;
+    state.ty = r.height * 0.5 - (r.height * 0.5 - state.ty) * ratio;
+    state.scale = ns; applyTransform();
+  });
+  document.getElementById("btn-zoom-fit").addEventListener("click", () => {
+    state.selectedCode = null; renderTable(); renderSvgOverlay(); fitView();
+  });
+
+  document.querySelectorAll("#filter-bar .f-chip").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.zoneFilter = btn.dataset.zone;
+      document.querySelectorAll("#filter-bar .f-chip").forEach(b => b.classList.toggle("active", b === btn));
+      renderTable();
+    });
+  });
+
+  document.querySelectorAll("table.dev-table thead th[data-sort]").forEach(th => {
+    th.addEventListener("click", () => {
+      const k = th.dataset.sort;
+      if (state.sortKey === k) state.sortAsc = !state.sortAsc;
+      else { state.sortKey = k; state.sortAsc = (k === "code" || k === "name" || k === "tile_id"); }
+      renderTable();
+    });
+  });
+
+  document.getElementById("btn-mobile-drawer").addEventListener("click", () => {
+    els.sidebar.classList.toggle("open");
+  });
+
+  window.addEventListener("resize", fitView);
+
+  fetch(`${ASSET_BASE}/deviation_data.json`)
+    .then(r => r.json())
+    .then(json => {
+      DATA = json;
+      renderTable();
+      loadViewImages(true);
+      window.__SAT_QA_READY = true;
+    })
+    .catch(err => {
+      els.detail.innerHTML = `<h3 style="color:#ff7c7c">Lỗi nạp dữ liệu đối chiếu</h3><div class="coords">${err}</div>`;
+    });
+})();
+</script>
+</body>
+</html>
