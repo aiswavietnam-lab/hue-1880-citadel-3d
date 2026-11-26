@@ -5,7 +5,7 @@
   "coordinate_frame": "master_plan_z_up_meters",
   "total_tiles": 30,
   "completed_tiles": 30,
-  "last_updated_utc": "2026-11-26T06:24:38.252342+00:00",
+  "last_updated_utc": "2026-11-26T07:17:33.104563+00:00",
   "master_bounds_m": {
     "x_min": -980.0,
     "x_max": 980.0,
@@ -818,7 +818,7 @@
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T09_the_to_mieu_hien_lam_cac.glb",
-      "sha256": "c052327b706fbb80de7ba3e53879c31c7238956013ac41f342fceeffa2faa688",
+      "sha256": "a9388dba43b79ffa10aa3cad82f56a6200360746cc1c6c60605500d72fa59e90",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -1110,7 +1110,7 @@
       "elevation_z": 0.0,
       "poly_budget": 480000,
       "glb_path": "T12_phu_noi_vu_hien_nhon_mon.glb",
-      "sha256": "97f51372ede91b7bb6d7cbf8fe514df7af0fc46e7e7e0ed69850a3cc6a04b744",
+      "sha256": "a90698293baf021620e2973cd5b6ad183abed3309e5ab1f826e2c187aef63523",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -1149,7 +1149,7 @@
       ],
       "architectural_brief": "Khu Đông Hoàng Thành: Cửa Hiển Nhơn nguyên bản 1880, Phủ Nội Vụ Trùng thiềm điệp ốc mái Thanh lưu ly, Điện Khâm Văn và kho tàng cung đình.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 19,
+      "version": 20,
       "approved_stop": false,
       "orchestrator_note": "Mở thông Cửa Hiển Nhơn khảm sành sứ Pháp lam & nội thất Phủ Nội Vụ + Điện Khâm Văn (kho báu, sảnh đường gỗ, cửa mở thông).",
       "reference_photos": [
@@ -1207,7 +1207,7 @@
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T13_cua_chuong_duc_tay_ht.glb",
-      "sha256": "721b6baec5cc4837f7c3dc46a74a700b55ea783bc9348056375b587a58a374b6",
+      "sha256": "045eb427476115285ae7cefa1cbf052584abaad07191f5ed949d8e6dd1802e82",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -1243,7 +1243,7 @@
       ],
       "architectural_brief": "Tuyến tường Tây Hoàng Thành cao 4.0m (x=-311m), Cửa Chương Đức 2 tầng tam quan, dải vườn & sân đệm phía Tây Thế Tổ Miếu và Cung Diên Thọ.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 16,
+      "version": 17,
       "approved_stop": false,
       "orchestrator_note": "Sắc nét chi tiết khảm sành sứ Cửa Chương Đức, cổng vòm đi bộ thông suốt + điếm canh & hành lang tường Tây Hoàng Thành.",
       "reference_photos": [
@@ -1674,7 +1674,7 @@
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T18_cua_the_nhon_than_cong_dong.glb",
-      "sha256": "8f01e137332481bd048cb32b66f8879d333e3bcf1ee6372fe24b1405c388dfbe",
+      "sha256": "11b6a32d5e3b3ade69f382a70cade32565f87f9761bb50a29245c3be2fa42fef",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -1708,7 +1708,7 @@
       ],
       "architectural_brief": "Cánh Đông Nam Kinh Thành: đoạn tường Vauban mặt Nam cao 6.6m, Cửa Thể Nhơn (Cửa Ngăn) 2 tầng vọng lâu, nhà súng Tả trưng bày 4 khẩu Thần Công (Tứ Thời: Xuân-Hạ-Thu-Đông) đúc đồng, Hào Kim Thủy Đông Nam và cầu đá đi vào Quốc Tử Giám / khu quan lại.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 15,
+      "version": 16,
       "approved_stop": false,
       "orchestrator_note": "Mở cổng vòm Cửa Thể Nhơn (Cửa Ngăn) đi qua được & hoàn thiện Hữu Pháo Xưởng / chòi gác góc Đông Nam.",
       "reference_photos": [
@@ -1951,7 +1951,7 @@
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T21_kim_thuy_dong_nam_luc_bo.glb",
-      "sha256": "063bef8a2c7a2b0b20d12402f50e5c2c8951d88a2029b655b4890423617c2a75",
+      "sha256": "2d99cf6bc55f63d03c6034ec294f3f03090177cf5104d9e04e4adbe8867c65a8",
       "audit": {
         "verified": true,
         "audited_at": "2026-11-24T16:08:21+00:00",
@@ -1985,8 +1985,8 @@
         "P11_quan_van_vo_1880"
       ],
       "architectural_brief": "Đoạn Hào Kim Thủy mặt Đông Nam và cụm công sở hành chính cao nhất triều Nguyễn bên ngoài Hoàng Thành: Khu Lục Bộ (Lại, Hộ, Lễ, Binh, Hình, Công), Viện Cơ Mật và Quốc Sử Quán kiến trúc nhà rường 3 gian 2 chái mái ngói liệt có sân vườn cân đối.",
-      "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 15,
+      "detail_stage": "L5_HERITAGE_V16_INTERIOR_AO",
+      "version": 16,
       "approved_stop": false,
       "orchestrator_note": "Khu Lục Bộ & Cơ Mật Viện: bổ sung sảnh nha môn mở cửa bước vào được, bàn án công đường, mái ngói liệt.",
       "reference_photos": [

@@ -39,8 +39,8 @@
   "completed_tiles": 30,
   "total_tiles": 30,
   "last_sync_backend": "rclone",
-  "last_sync_applied_files": 11,
-  "last_sync_utc": "2026-11-26T06:24:38+00:00",
+  "last_sync_applied_files": 5,
+  "last_sync_utc": "2026-11-26T07:17:33+00:00",
   "tile_versions": {
     "T01": {
       "version": 21,
@@ -76,7 +76,7 @@
     },
     "T09": {
       "version": 21,
-      "sha256_12": "c052327b706f"
+      "sha256_12": "a9388dba43b7"
     },
     "T10": {
       "version": 20,
@@ -87,12 +87,12 @@
       "sha256_12": "fc6f2d3cc8fd"
     },
     "T12": {
-      "version": 19,
-      "sha256_12": "97f51372ede9"
+      "version": 20,
+      "sha256_12": "a90698293baf"
     },
     "T13": {
-      "version": 16,
-      "sha256_12": "721b6baec5cc"
+      "version": 17,
+      "sha256_12": "045eb4274761"
     },
     "T14": {
       "version": 19,
@@ -111,8 +111,8 @@
       "sha256_12": "3d244f237db5"
     },
     "T18": {
-      "version": 15,
-      "sha256_12": "8f01e1373324"
+      "version": 16,
+      "sha256_12": "11b6a32d5e3b"
     },
     "T19": {
       "version": 14,
@@ -123,8 +123,8 @@
       "sha256_12": "4fa9cadbe1aa"
     },
     "T21": {
-      "version": 15,
-      "sha256_12": "063bef8a2c7a"
+      "version": 16,
+      "sha256_12": "2d99cf6bc55f"
     },
     "T22": {
       "version": 15,

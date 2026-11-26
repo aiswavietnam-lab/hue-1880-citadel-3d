@@ -79,7 +79,7 @@ def ingest_gameplay_packs(client: DriveClient, seen: Dict[str, str], dry_run: bo
         with tempfile.TemporaryDirectory() as td:
             tmp = pathlib.Path(td) / fname
             try:
-                client.download_file(meta["id"], tmp)
+                client.download(meta["id"], tmp)
                 pack = json.loads(tmp.read_text(encoding="utf-8"))
             except Exception:
                 continue
@@ -134,14 +134,15 @@ def ingest_voice_packs(client: DriveClient, seen: Dict[str, str], dry_run: bool 
         with tempfile.TemporaryDirectory() as td:
             tmp = pathlib.Path(td) / fname
             try:
-                client.download_file(meta["id"], tmp)
+                client.download(meta["id"], tmp)
                 pack = json.loads(tmp.read_text(encoding="utf-8"))
             except Exception:
                 continue
             pack_ok = False
             for clip in pack.get("clips", []):
                 cid = re.sub(r"[^A-Za-z0-9_\-]", "", str(clip.get("id", "")))
-                txt = str(clip.get("text", "")).strip()
+                raw_sentences = clip.get("sentences") if isinstance(clip.get("sentences"), list) else []
+                txt = str(clip.get("text") or " ".join(str(s).strip() for s in raw_sentences)).strip()
                 if not cid or len(txt) < 20 or len(txt) > 2200:
                     continue
                 voice = clip.get("voice") if clip.get("voice") in ALLOWED_VOICES else "vi-VN-HoaiMyNeural"
@@ -217,7 +218,7 @@ def ingest_props_inbox(client: DriveClient, seen: Dict[str, str], dry_run: bool 
         with tempfile.TemporaryDirectory() as td:
             tmp = pathlib.Path(td) / fname
             try:
-                client.download_file(meta["id"], tmp)
+                client.download(meta["id"], tmp)
             except Exception:
                 continue
             if not _valid_glb(tmp):

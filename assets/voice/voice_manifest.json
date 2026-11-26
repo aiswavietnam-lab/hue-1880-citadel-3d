@@ -16,7 +16,7 @@
       "speaker_label": "Quan Triều Đình · Tự Đức 1880"
     }
   },
-  "total_clips": 18,
+  "total_clips": 24,
   "total_bytes": 1895472,
   "clips": [
     {
@@ -72,35 +72,43 @@
       "id": "narration_T04",
       "category": "narration",
       "tile_ids": [
-        "T04",
-        "T03"
+        "T04"
       ],
-      "quest_id": null,
-      "speaker": "Thuyết minh Di sản",
-      "voice_model": "vi-VN-HoaiMyNeural",
-      "title": "Cầu Trung Đạo và Điện Thái Hòa",
-      "text": "Bước qua cầu Trung Đạo giữa mặt nước hồ Thái Dịch là sân Đại Triều Nghi hai tầng đá Thanh dẫn lên Điện Thái Hòa, trung tâm quyền lực tối cao của triều Nguyễn. Ngôi điện xây theo thức trùng thiềm điệp ốc lợp ngói Hoàng lưu ly, bên trong tám mươi cột gỗ lim sơn son thếp vàng nâng đỡ vòm trần và bệ Ngai vàng dưới Bửu tán cửu long.",
+      "voice": "vi-VN-HoaiMyNeural",
+      "speaker": "Thuyết minh Di sản · Hoài My",
+      "title": "Điện Thái Hòa",
       "url": "./assets/voice/narration_T04.mp3",
-      "bytes": 108288,
-      "duration_sec": 18.05,
-      "sha256_12": "1682c47cac70"
+      "bytes": 220320,
+      "sha256_12": "722e09f22bcf",
+      "text": "Điện Thái Hòa được vua Gia Long khởi công vào mùa xuân năm 1805, là biểu tượng quyền lực tối cao của triều Nguyễn. Đến năm 1833, vua Minh Mạng cho cải dựng ngôi điện về phía nam, rồi sơn son thếp vàng trang trọng vào năm 1839. Công trình dựng trên nền đá Thanh cao hơn hai mét theo thức trùng thiềm điệp ốc, gồm tiền điện nối liền chính điện. Bên trong có tám mươi cột gỗ lim vẽ rồng ẩn mây thếp vàng, mái lợp ngói hoàng lưu ly cùng cổ diêm pháp lam. Năm 1880 dưới triều Tự Đức, đây là trung tâm ngoại triều nơi cử hành lễ đăng quang và các buổi đại triều.",
+      "sentences": [
+        "Điện Thái Hòa được vua Gia Long khởi công vào mùa xuân năm 1805, là biểu tượng quyền lực tối cao của triều Nguyễn.",
+        "Đến năm 1833, vua Minh Mạng cho cải dựng ngôi điện về phía nam, rồi sơn son thếp vàng trang trọng vào năm 1839.",
+        "Công trình dựng trên nền đá Thanh cao hơn hai mét theo thức trùng thiềm điệp ốc, gồm tiền điện nối liền chính điện.",
+        "Bên trong có tám mươi cột gỗ lim vẽ rồng ẩn mây thếp vàng, mái lợp ngói hoàng lưu ly cùng cổ diêm pháp lam.",
+        "Năm 1880 dưới triều Tự Đức, đây là trung tâm ngoại triều nơi cử hành lễ đăng quang và các buổi đại triều."
+      ]
     },
     {
       "id": "narration_T06",
       "category": "narration",
       "tile_ids": [
-        "T06",
-        "T05"
+        "T06"
       ],
-      "quest_id": null,
-      "speaker": "Thuyết minh Di sản",
-      "voice_model": "vi-VN-HoaiMyNeural",
-      "title": "Đại Cung Môn và Điện Cần Chánh",
-      "text": "Qua khỏi Đại Cung Môn là không gian thâm nghiêm của Tử Cấm Thành với tâm điểm là Điện Cần Chánh dựng từ năm 1804. Nếu Điện Thái Hòa dành cho lễ Đại triều, thì Điện Cần Chánh là nơi Hoàng đế thiết thường triều, giải quyết chính sự hằng ngày cùng Nội các và khoản đãi các đoàn sứ bộ.",
+      "voice": "vi-VN-HoaiMyNeural",
+      "speaker": "Thuyết minh Di sản · Hoài My",
+      "title": "Điện Cần Chánh",
       "url": "./assets/voice/narration_T06.mp3",
-      "bytes": 102240,
-      "duration_sec": 17.04,
-      "sha256_12": "a2a2f2174921"
+      "bytes": 236160,
+      "sha256_12": "05bd6d4a27e0",
+      "text": "Nằm trên trục thần đạo sau sân Bái Mạng, Điện Cần Chánh là ngôi chính điện lớn bậc nhất bên trong Tử Cấm Thành. Công trình được vua Gia Long khởi dựng ngay từ năm 1804, sau đó liên tiếp tu bổ vào năm 1811, 1819 và 1827. Điện xây theo thức trùng thiềm điệp ốc trên nền đá Thanh cao hơn một mét, gồm tiền điện bảy gian và chính điện năm gian. Bên trong có tám mươi cột gỗ lim sơn son thếp vàng chạm trổ tinh xảo, mái lợp ngói hoàng lưu ly cùng cổ diêm pháp lam. Năm 1880 dưới triều Tự Đức, đây là nơi hoàng đế thiết thường triều hằng ngày, tiếp đón sứ bộ và ban yến tiệc hoàng gia.",
+      "sentences": [
+        "Nằm trên trục thần đạo sau sân Bái Mạng, Điện Cần Chánh là ngôi chính điện lớn bậc nhất bên trong Tử Cấm Thành.",
+        "Công trình được vua Gia Long khởi dựng ngay từ năm 1804, sau đó liên tiếp tu bổ vào năm 1811, 1819 và 1827.",
+        "Điện xây theo thức trùng thiềm điệp ốc trên nền đá Thanh cao hơn một mét, gồm tiền điện bảy gian và chính điện năm gian.",
+        "Bên trong có tám mươi cột gỗ lim sơn son thếp vàng chạm trổ tinh xảo, mái lợp ngói hoàng lưu ly cùng cổ diêm pháp lam.",
+        "Năm 1880 dưới triều Tự Đức, đây là nơi hoàng đế thiết thường triều hằng ngày, tiếp đón sứ bộ và ban yến tiệc hoàng gia."
+      ]
     },
     {
       "id": "narration_T09",
@@ -293,6 +301,125 @@
       "bytes": 103536,
       "duration_sec": 17.26,
       "sha256_12": "98eb04c9062a"
+    },
+    {
+      "id": "narration_T05",
+      "category": "narration",
+      "tile_ids": [
+        "T05"
+      ],
+      "voice": "vi-VN-HoaiMyNeural",
+      "speaker": "Thuyết minh Di sản · Hoài My",
+      "title": "Đại Cung Môn, Tả Vu và Hữu Vu",
+      "url": "./assets/voice/narration_T05.mp3",
+      "bytes": 221040,
+      "sha256_12": "2299306631e9",
+      "text": "Phía sau Điện Thái Hòa về hướng bắc là Đại Cung Môn, cánh cổng chính trang nghiêm mở lối tiến vào Tử Cấm Thành. Cổng do vua Minh Mạng cho dựng năm 1833 trên nền điện Thái Hòa cũ, gồm năm gian ba cửa lợp ngói hoàng lưu ly. Bên trong là sân Bái Mạng thanh tịnh cùng hai dãy hành lang lợp ngói thanh lưu ly nối liền Tả Vu và Hữu Vu. Hai tòa Tả Vu và Hữu Vu dựng từ năm 1819 thời Gia Long, mỗi tòa năm gian hai chái có cột lim cao bốn mét. Đến năm 1880 triều Tự Đức, Tả Vu dành cho quan văn chuẩn bị nghi lễ, còn Hữu Vu phục vụ quan võ và yến tiệc.",
+      "sentences": [
+        "Phía sau Điện Thái Hòa về hướng bắc là Đại Cung Môn, cánh cổng chính trang nghiêm mở lối tiến vào Tử Cấm Thành.",
+        "Cổng do vua Minh Mạng cho dựng năm 1833 trên nền điện Thái Hòa cũ, gồm năm gian ba cửa lợp ngói hoàng lưu ly.",
+        "Bên trong là sân Bái Mạng thanh tịnh cùng hai dãy hành lang lợp ngói thanh lưu ly nối liền Tả Vu và Hữu Vu.",
+        "Hai tòa Tả Vu và Hữu Vu dựng từ năm 1819 thời Gia Long, mỗi tòa năm gian hai chái có cột lim cao bốn mét.",
+        "Đến năm 1880 triều Tự Đức, Tả Vu dành cho quan văn chuẩn bị nghi lễ, còn Hữu Vu phục vụ quan võ và yến tiệc."
+      ]
+    },
+    {
+      "id": "prop_P03_cay_dai_su",
+      "category": "prop",
+      "tile_ids": [
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "voice": "vi-VN-HoaiMyNeural",
+      "speaker": "Thuyết minh Di sản · Hoài My",
+      "title": "Cây Đại cổ thụ cung đình",
+      "url": "./assets/voice/prop_P03_cay_dai_su.mp3",
+      "bytes": 187776,
+      "sha256_12": "5a4c362c20c2",
+      "text": "Cây Đại, hay còn gọi là cây Sứ, là loài cổ thụ gắn bó mật thiết với cung điện và sân miếu triều Nguyễn thế kỷ mười chín. Thân gỗ xám uốn lượn rẽ nhánh cổ kính, vươn cao khoảng sáu phẩy năm mét với tán lá xanh sẫm tỏa bóng mát xuống nền gạch. Mỗi độ nắng ấm về trên xứ Huế, từng chùm hoa trắng muốt điểm tâm vàng nở rộ, lan tỏa hương thơm thanh khiết khắp nội đình. Trải qua các triều Gia Long, Minh Mạng, Thiệu Trị đến năm 1880 thời Tự Đức, dáng cây trầm mặc ấy biểu trưng cho sự thanh cao.",
+      "sentences": [
+        "Cây Đại, hay còn gọi là cây Sứ, là loài cổ thụ gắn bó mật thiết với cung điện và sân miếu triều Nguyễn thế kỷ mười chín.",
+        "Thân gỗ xám uốn lượn rẽ nhánh cổ kính, vươn cao khoảng sáu phẩy năm mét với tán lá xanh sẫm tỏa bóng mát xuống nền gạch.",
+        "Mỗi độ nắng ấm về trên xứ Huế, từng chùm hoa trắng muốt điểm tâm vàng nở rộ, lan tỏa hương thơm thanh khiết khắp nội đình.",
+        "Trải qua các triều Gia Long, Minh Mạng, Thiệu Trị đến năm 1880 thời Tự Đức, dáng cây trầm mặc ấy biểu trưng cho sự thanh cao."
+      ]
+    },
+    {
+      "id": "prop_P04_cay_tung_bach",
+      "category": "prop",
+      "tile_ids": [
+        "T04",
+        "T05",
+        "T06"
+      ],
+      "voice": "vi-VN-HoaiMyNeural",
+      "speaker": "Thuyết minh Di sản · Hoài My",
+      "title": "Cây Tùng và Bách cổ thụ Hoàng Thành",
+      "url": "./assets/voice/prop_P04_cay_tung_bach.mp3",
+      "bytes": 178704,
+      "sha256_12": "7643e03cb203",
+      "text": "Dọc theo trục thần đạo và quanh các sân chầu trong Hoàng Thành Huế, những hàng cây Tùng và cây Bách đứng hiên ngang giữa thời gian. Thân cây nâu sẫm vảy nứt phong sương vươn cao gần chín phẩy năm mét, phân tầng tán lá kim xanh trầm vững chãi trước gió mưa. Trong mỹ học cung đình triều Nguyễn thế kỷ mười chín, cây Tùng đứng đầu trăm loài cây, tượng trưng cho khí tiết quân tử bền bỉ. Đến năm 1880 triều vua Tự Đức, sắc xanh trầm mặc của Tùng Bách hòa cùng ngói hoàng lưu ly tạo nên vẻ trang nghiêm cố đô.",
+      "sentences": [
+        "Dọc theo trục thần đạo và quanh các sân chầu trong Hoàng Thành Huế, những hàng cây Tùng và cây Bách đứng hiên ngang giữa thời gian.",
+        "Thân cây nâu sẫm vảy nứt phong sương vươn cao gần chín phẩy năm mét, phân tầng tán lá kim xanh trầm vững chãi trước gió mưa.",
+        "Trong mỹ học cung đình triều Nguyễn thế kỷ mười chín, cây Tùng đứng đầu trăm loài cây, tượng trưng cho khí tiết quân tử bền bỉ.",
+        "Đến năm 1880 triều vua Tự Đức, sắc xanh trầm mặc của Tùng Bách hòa cùng ngói hoàng lưu ly tạo nên vẻ trang nghiêm cố đô."
+      ]
+    },
+    {
+      "id": "voice_QZ02_01",
+      "category": "dialogue",
+      "tile_ids": [
+        "T04"
+      ],
+      "voice": "vi-VN-NamMinhNeural",
+      "speaker": "Quan Lễ Bộ · Nam Minh",
+      "title": "Hiệu lệnh Đại triều Điện Thái Hòa",
+      "url": "./assets/voice/voice_QZ02_01.mp3",
+      "bytes": 91728,
+      "sha256_12": "7c16f8626e61",
+      "text": "Bẩm chư vị văn võ bá quan, giờ thiết đại triều tại Điện Thái Hòa đã điểm, xin chỉnh đốn mũ áo đứng đúng phẩm hàm. Quan văn đứng hàng bên tả, quan võ đứng hàng bên hữu theo bia đá phẩm trật, hướng về ngai vàng chờ hoàng đế ngự giá.",
+      "sentences": [
+        "Bẩm chư vị văn võ bá quan, giờ thiết đại triều tại Điện Thái Hòa đã điểm, xin chỉnh đốn mũ áo đứng đúng phẩm hàm.",
+        "Quan văn đứng hàng bên tả, quan võ đứng hàng bên hữu theo bia đá phẩm trật, hướng về ngai vàng chờ hoàng đế ngự giá."
+      ]
+    },
+    {
+      "id": "voice_QZ02_02",
+      "category": "dialogue",
+      "tile_ids": [
+        "T05"
+      ],
+      "voice": "vi-VN-NamMinhNeural",
+      "speaker": "Quan Thị Vệ · Nam Minh",
+      "title": "Lệnh giữ cửa Đại Cung Môn",
+      "url": "./assets/voice/voice_QZ02_02.mp3",
+      "bytes": 86256,
+      "sha256_12": "b9ff6fea9bc0",
+      "text": "Phía trước là Đại Cung Môn dẫn vào Tử Cấm Thành, cửa chính giữa chỉ dành riêng cho hoàng đế ngự giá trong các dịp đại lễ. Các quan đại thần có chiếu chỉ triệu kiến xin đi hai cửa bên, dừng chân tại Tả Vu hoặc Hữu Vu chỉnh tề y phục.",
+      "sentences": [
+        "Phía trước là Đại Cung Môn dẫn vào Tử Cấm Thành, cửa chính giữa chỉ dành riêng cho hoàng đế ngự giá trong các dịp đại lễ.",
+        "Các quan đại thần có chiếu chỉ triệu kiến xin đi hai cửa bên, dừng chân tại Tả Vu hoặc Hữu Vu chỉnh tề y phục."
+      ]
+    },
+    {
+      "id": "voice_QZ02_03",
+      "category": "dialogue",
+      "tile_ids": [
+        "T06"
+      ],
+      "voice": "vi-VN-NamMinhNeural",
+      "speaker": "Quan Cơ Mật Viện · Nam Minh",
+      "title": "Truyền chỉ Thường triều Điện Cần Chánh",
+      "url": "./assets/voice/voice_QZ02_03.mp3",
+      "bytes": 91152,
+      "sha256_12": "6662aa9e53e7",
+      "text": "Hoàng thượng đang ngự tại Điện Cần Chánh xét duyệt quốc sự năm 1880, mọi bản tấu sớ mật phải được trình duyệt thật cẩn trọng. Xin mời các vị đại thần nhẹ bước qua sân Bái Mạng, giữ tuyệt đối trang nghiêm nơi chính điện để tâu bày việc triều chính.",
+      "sentences": [
+        "Hoàng thượng đang ngự tại Điện Cần Chánh xét duyệt quốc sự năm 1880, mọi bản tấu sớ mật phải được trình duyệt thật cẩn trọng.",
+        "Xin mời các vị đại thần nhẹ bước qua sân Bái Mạng, giữ tuyệt đối trang nghiêm nơi chính điện để tâu bày việc triều chính."
+      ]
     }
   ]
 }

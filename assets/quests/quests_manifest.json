@@ -14,8 +14,16 @@
       "location_label": "Phu Văn Lâu & Nghênh Lương Đình · Bờ Bắc Sông Hương",
       "npc_name": "Quan Truyền Lô Bộ Lễ",
       "npc_outfit": "official_blue",
-      "npc_plan": [4.5, -711.0, 3.1416],
-      "player_teleport_plan": [0.0, -722.0, 0.0],
+      "npc_plan": [
+        4.5,
+        -711.0,
+        3.1416
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -722.0,
+        0.0
+      ],
       "voice_id": "quest_01_intro",
       "objective_short": "Gặp Quan Truyền Lô trước Phu Văn Lâu để nhận Lệnh Bài Nhập Thành",
       "dialogue": "Chúc mừng tân khoa tiến sĩ vừa đỗ đạt Ân khoa năm Tự Đức thứ 33 (1880). Bảng vàng vừa được rước ra niêm yết tại Phu Văn Lâu trước bến sông Hương này. Hãy trả lời câu hỏi nghi điển để nhận Lệnh Bài Nhập Thành.",
@@ -39,8 +47,16 @@
       "location_label": "Kỳ Đài & Pháo Xưởng Cửu Vị Thần Công",
       "npc_name": "Đội Trưởng Cẩm Y Thị Vệ",
       "npc_outfit": "guard_red",
-      "npc_plan": [6.2, -525.0, 3.1416],
-      "player_teleport_plan": [0.0, -539.0, 0.0],
+      "npc_plan": [
+        6.2,
+        -525.0,
+        3.1416
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -539.0,
+        0.0
+      ],
       "voice_id": "quest_02_intro",
       "objective_short": "Tiến tới chân Kỳ Đài gặp Đội Trưởng Cẩm Y Thị Vệ khảo sát Cửu Vị Thần Công",
       "dialogue": "Tân khoa dừng bước trình lệnh bài! Trước mắt ngài là Kỳ Đài ba tầng trấn giữ mặt nam Kinh thành và chín cỗ Cửu Vị Thần Công đúc từ thời Đức Thế Tổ Gia Long.",
@@ -64,8 +80,16 @@
       "location_label": "Ngọ Môn & Lầu Ngũ Phụng · Cửa Nam Hoàng Thành",
       "npc_name": "Thị Vệ Trực Ngọ Môn",
       "npc_outfit": "guard_red",
-      "npc_plan": [5.8, -203.0, 3.1416],
-      "player_teleport_plan": [0.0, -214.0, 0.0],
+      "npc_plan": [
+        5.8,
+        -203.0,
+        3.1416
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -214.0,
+        0.0
+      ],
       "voice_id": "quest_03_intro",
       "objective_short": "Đến trước Ngọ Môn đối đáp phép tắc 5 cửa vòm để được mở lối vào Hoàng Thành",
       "dialogue": "Đây là Ngọ Môn Quan dưới chín bộ mái Lầu Ngũ Phụng. Năm lối đi mở dưới nền đài chữ U đều có phép tắc nghiêm ngặt, ngài hãy nêu rõ quy định dành cho bá quan.",
@@ -89,8 +113,16 @@
       "location_label": "Cầu Trung Đạo & Sân Đại Triều Nghi Điện Thái Hòa",
       "npc_name": "Quan Thượng Thư Bộ Lễ",
       "npc_outfit": "minister_purple",
-      "npc_plan": [5.2, -25.0, 3.1416],
-      "player_teleport_plan": [0.0, -35.0, 0.0],
+      "npc_plan": [
+        5.2,
+        -25.0,
+        3.1416
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -35.0,
+        0.0
+      ],
       "voice_id": "quest_04_intro",
       "objective_short": "Qua Cầu Trung Đạo tới thềm Điện Thái Hòa bái kiến và khảo cứu thức kiến trúc chính điện",
       "dialogue": "Khâm phụng Hoàng Thượng chuẩn ban ân điển! Tân khoa đã bước qua cầu Trung Đạo tới sân Đại Triều Nghi. Hãy ngước nhìn chính điện Điện Thái Hòa và giải đáp nét đặc trưng độc đáo của kiến trúc cung đình Huế.",
@@ -114,8 +146,16 @@
       "location_label": "Thế Tổ Miếu & Hiển Lâm Các · Tây Nam Hoàng Thành",
       "npc_name": "Quan Tự Khanh Thái Thường Tự",
       "npc_outfit": "official_blue",
-      "npc_plan": [-127.0, -172.0, 3.1416],
-      "player_teleport_plan": [-130.0, -184.0, 0.0],
+      "npc_plan": [
+        -127.0,
+        -172.0,
+        3.1416
+      ],
+      "player_teleport_plan": [
+        -130.0,
+        -184.0,
+        0.0
+      ],
       "voice_id": "quest_05_intro",
       "objective_short": "Sang sân Thế Tổ Miếu gặp Quan Thái Thường Tự khảo cứu 9 đỉnh đồng Cửu Đỉnh",
       "dialogue": "Giữa sân Thế Tổ Miếu và Hiển Lâm Các là chín đỉnh đồng Cửu Đỉnh đúc thời Minh Mạng (1835–1837), biểu trưng cho sự trường tồn của giang sơn Đại Nam.",
@@ -139,8 +179,16 @@
       "location_label": "Nhà Hát Duyệt Thị Đường · Tử Cấm Thành",
       "npc_name": "Nhạc Quan Thanh Bình Thự",
       "npc_outfit": "scholar_jade",
-      "npc_plan": [149.5, 236.0, 1.5708],
-      "player_teleport_plan": [158.0, 238.5, 1.5708],
+      "npc_plan": [
+        149.5,
+        236.0,
+        1.5708
+      ],
+      "player_teleport_plan": [
+        158.0,
+        238.5,
+        1.5708
+      ],
       "voice_id": "quest_06_intro",
       "objective_short": "Vào Tử Cấm Thành gặp Nhạc Quan trước nhà hát cổ Duyệt Thị Đường",
       "dialogue": "Hoan nghênh tân khoa tiến vào Duyệt Thị Đường trong Tử Cấm Thành. Sau buổi chầu, triều đình mở yến tiệc và diễn tuồng cung đình dưới vòm trần vẽ trăng sao.",
@@ -164,8 +212,16 @@
       "location_label": "Tàng Thư Lâu · Đảo Hồ Học Hải (Đông Bắc Kinh Thành)",
       "npc_name": "Quan Hàn Lâm Viện Biên Tu",
       "npc_outfit": "scholar_jade",
-      "npc_plan": [314.0, 526.0, 3.1416],
-      "player_teleport_plan": [310.0, 516.0, 0.0],
+      "npc_plan": [
+        314.0,
+        526.0,
+        3.1416
+      ],
+      "player_teleport_plan": [
+        310.0,
+        516.0,
+        0.0
+      ],
       "voice_id": "quest_07_intro",
       "objective_short": "Đến cầu đá Hồ Học Hải gặp Quan Hàn Lâm Viện tại Tàng Thư Lâu để hoàn tất sứ mệnh",
       "dialogue": "Ngài đã tới đích cuối tại Tàng Thư Lâu giữa hồ Học Hải. Mọi châu bản ngự phê và quốc sử Đại Nam đều được gìn giữ cẩn mật nơi đây.",
@@ -180,6 +236,120 @@
       "historical_note": "Tàng Thư Lâu gồm tầng dưới 11 gian và tầng trên 7 gian 2 chái xây gạch đá kiên cố, lưu giữ hơn 12.000 tập sổ sách hành chính và ngoại giao triều Nguyễn.",
       "seal_name": "Đại Ấn Khâm Sai Bác Cổ",
       "ceremony_sfx": "dai_hong_chung"
+    },
+    {
+      "id": "QZ02_01",
+      "chapter": 14,
+      "quest_type": "artifact_inspect",
+      "required_hour_range": [
+        5.5,
+        18.5
+      ],
+      "title": "Khảo cứu T04: Pháp lam Nhất thi nhất họa và Ngai vàng Điện Thái Hòa",
+      "tile_id": "T04",
+      "location_label": "Thềm đá Thanh trước Tiền điện Thái Hòa",
+      "npc_name": "Hàn lâm viện Thị độc học sĩ",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        6.0,
+        -21.0,
+        3.1416
+      ],
+      "player_teleport_plan": [
+        6.0,
+        -26.0,
+        0.0
+      ],
+      "voice_id": "voice_QZ02_01",
+      "ceremony_sfx": "chieng_ngomon",
+      "seal_name": "Ấn Thái Hòa Khảo Cổ",
+      "objective_short": "Quan sát cổ diêm pháp lam và 80 cột lim sơn son thếp vàng của Điện Thái Hòa.",
+      "dialogue": "Kính chào quý khách đã bước tới thềm đá Thanh trước Điện Thái Hòa vào năm Tự Đức thứ ba mươi ba. Tòa chính điện dựng theo chuẩn thức Trùng thiềm điệp ốc với tám mươi cột gỗ lim sơn son thếp vàng vẽ rồng ẩn mây, là nơi Hoàng đế ngự ngai vàng dưới bửu tán cử hành các buổi Đại triều trang nghiêm. Xin quý khách ngước nhìn dải cổ diêm giữa hai tầng mái ngói Hoàng lưu ly phía trên, nơi nghệ nhân cung đình khảm các ô hộc pháp lam ngũ sắc để lưu truyền điển tích vương triều.",
+      "question": "Bố cục trang trí đặc trưng trên dải cổ diêm pháp lam và liên ba gỗ của Điện Thái Hòa được gọi là lối gì?",
+      "choices": [
+        "Nhất thi nhất họa (một bài thơ xen kẽ một bức họa)",
+        "Tứ linh quần hội (chỉ khắc bốn linh vật không có chữ)",
+        "Bát tiên quá hải (chỉ vẽ tám vị tiên quanh mái điện)"
+      ],
+      "correct_index": 0,
+      "hint": "Hãy quan sát dải cổ diêm giữa hai tầng mái: cứ một ô hình vẽ phong cảnh hoặc điển tích lại đi kèm một ô thơ chữ Hán đối xứng.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Công) và Đại Nam Thực Lục (lần đại tu năm Minh Mạng thứ 14 - 1833 và năm 1839), Điện Thái Hòa có kết cấu Trùng thiềm điệp ốc gồm Tiền điện 7 gian 2 chái nối Chính điện 5 gian 2 chái, chống đỡ bằng 80 cột gỗ lim. Bờ nóc và cổ diêm mái điện trang trí pháp lam ngũ sắc theo lối nhất thi nhất họa (riêng bờ nóc tiền điện có 25 ô gồm 12 ô thơ, 12 ô họa và 1 ô trung tâm). Bên trong điện đặt Ngai vàng trên bệ gỗ 3 tầng sơn son thếp vàng dưới Bửu tán, nơi chỉ có Hoàng đế, Hoàng thân và Tứ trụ đại thần đứng chầu trong lễ Đại triều."
+    },
+    {
+      "id": "QZ02_02",
+      "chapter": 15,
+      "quest_type": "dawn_court",
+      "required_hour_range": [
+        5.0,
+        9.5
+      ],
+      "title": "Bình minh T05: Tề tựu Tả Vu - Hữu Vu sau Đại Cung Môn",
+      "tile_id": "T05",
+      "location_label": "Sân Bái Mạng trước nhà Tả Vu và Đại Cung Môn",
+      "npc_name": "Lễ bộ Lang trung đốc biện Triều nghi",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        14.0,
+        82.0,
+        3.1416
+      ],
+      "player_teleport_plan": [
+        14.0,
+        77.0,
+        0.0
+      ],
+      "voice_id": "voice_QZ02_02",
+      "ceremony_sfx": "chieng_ngomon",
+      "seal_name": "Ấn Tả Văn Hữu Võ",
+      "objective_short": "Gặp quan Bộ Lễ tại sân Bái Mạng để tìm hiểu quy chế phân ban Tả Vu và Hữu Vu.",
+      "dialogue": "Sương sớm năm Tự Đức thứ ba mươi ba vừa tan trên mái ngói Thanh lưu ly, tiếng chiêng báo giờ chầu sắp ngân vang khắp Hoàng thành. Bước qua năm gian ba cửa sơn son thếp vàng của Đại Cung Môn là sân Bái Mạng thuộc Tử Cấm Thành, nơi Tả Vu ở phía Đông và Hữu Vu ở phía Tây đứng đối xứng nhau. Trước giờ Hoàng đế ngự giá, các đại thần từ Tứ phẩm trở lên tề tựu tại đây chỉnh đốn phẩm phục, cầm hốt ngà và chờ điểm danh đúng lễ nghi.",
+      "question": "Theo điển chế triều Nguyễn, hai tòa nhà Tả Vu (phía Đông) và Hữu Vu (phía Tây) trong sân Bái Mạng được phân định cho đối tượng nào chuẩn bị trước khi thiết triều?",
+      "choices": [
+        "Tả Vu dành cho quan võ, Hữu Vu dành cho quan văn",
+        "Tả Vu dành cho quan văn, Hữu Vu dành cho quan võ",
+        "Cả hai tòa chỉ dành riêng cho binh lính Cấm vệ nghỉ ngơi"
+      ],
+      "correct_index": 1,
+      "hint": "Triều đình nhà Nguyễn tuân thủ nghiêm nguyên tắc Tả văn Hữu võ khi bài ban và sắp đặt công sở hai bên trục Thần đạo.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Lễ - quy thức Triều hội) và Đại Nam Thực Lục, Đại Cung Môn được dựng năm Minh Mạng thứ 14 (1833) gồm 5 gian 3 cửa, trong đó cửa giữa chỉ dành riêng cho Hoàng đế đi qua. Phía sau Đại Cung Môn là sân Bái Mạng với hai tòa nhà đối xứng Tả Vu (phía Đông, dành cho quan văn) và Hữu Vu (phía Tây, dành cho quan võ từ Tứ phẩm đến Nhất phẩm) làm nơi sửa soạn phẩm phục trước khi vào chầu, đồng thời là nơi tổ chức yến tiệc cung đình và làm việc của các cơ quan cơ mật."
+    },
+    {
+      "id": "QZ02_03",
+      "chapter": 16,
+      "quest_type": "night_lantern",
+      "required_hour_range": [
+        18.0,
+        23.5
+      ],
+      "title": "Đêm Đèn lồng T06: Canh tuần Thường triều Điện Cần Chánh",
+      "tile_id": "T06",
+      "location_label": "Sân trước Điện Cần Chánh dưới ánh đèn lồng",
+      "npc_name": "Thị vệ xứ Chưởng vệ trực đêm",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        -8.0,
+        126.0,
+        3.1416
+      ],
+      "player_teleport_plan": [
+        -8.0,
+        121.0,
+        0.0
+      ],
+      "voice_id": "voice_QZ02_03",
+      "ceremony_sfx": "dai_hong_chung",
+      "seal_name": "Ấn Cần Chánh Canh Tuần",
+      "objective_short": "Tuần tra sân Điện Cần Chánh dưới ánh đèn lồng lục giác và nắm rõ lịch Thường triều.",
+      "dialogue": "Canh một đã điểm, hàng đèn lồng lục giác sơn son thếp vàng dọc trường lang Điện Cần Chánh đã bừng sáng giữa đêm Tử Cấm Thành tĩnh mịch. Bản chức phụng lệnh tuần tra quanh nền đá Thanh, kiểm tra cửa bức bàn và dãy vạc đồng trước thềm điện, bởi sáng mai Hoàng đế Tự Đức sẽ ngự tại đây nghị bàn quốc sự cùng đại thần Nội các và Lục bộ. Khác với lễ Đại triều ở Điện Thái Hòa, Điện Cần Chánh là nơi thiết Thường triều hằng tháng; xin hỏi quý khách có rõ lệ định ấy chăng?",
+      "question": "Theo điển chế triều Nguyễn ấn định từ năm Gia Long thứ 5 (1806) và duy trì dưới triều Tự Đức, Hoàng đế thiết lễ Thường triều tại Điện Cần Chánh vào những ngày nào mỗi tháng âm lịch?",
+      "choices": [
+        "Ngày mồng 1 và ngày 15 (ngày Rằm) hằng tháng",
+        "Ngày mồng 5, 10, 20 và 25 hằng tháng",
+        "Chỉ tổ chức duy nhất vào ngày mồng 1 Tết Nguyên đán"
+      ],
+      "correct_index": 1,
+      "hint": "Ngày mồng 1 và ngày Rằm là lịch thiết Đại triều tại Điện Thái Hòa; còn Thường triều tại Điện Cần Chánh diễn ra bốn kỳ cách đều nhau mỗi tháng.",
+      "historical_note": "Theo Đại Nam Thực Lục chính biên (tháng 5 năm Gia Long thứ 5 - 1806) và Khâm Định Đại Nam Hội Điển Sự Lệ (quyển về Triều hội - Bộ Lễ), triều Nguyễn phân biệt rõ Đại triều tại Điện Thái Hòa (ngày mồng 1 và ngày Rằm) với Thường triều tại Điện Cần Chánh (vào các ngày mồng 5, 10, 20 và 25 âm lịch hằng tháng). Tại Điện Cần Chánh, Hoàng đế trực tiếp bàn bạc chính sự với quan văn võ từ Tứ phẩm trở lên, tiếp đón sứ thần và tổ chức các buổi ngự yến trọng thể trong Tử Cấm Thành."
     }
   ]
 }
