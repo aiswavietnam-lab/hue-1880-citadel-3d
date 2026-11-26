@@ -48,14 +48,14 @@
       "id": "chieng_ngomon",
       "title": "Chiêng Ngọ Môn (Nghi lễ Đại Triều)",
       "url": "./assets/audio/chieng_ngomon.mp3",
-      "plan_xyz": [0.0, -185.0, 6.2],
+      "plan_xyz": [0.0, -136.0, 6.2],
       "license": "CC0 1.0 (Public Domain)"
     },
     "dai_hong_chung": {
       "id": "dai_hong_chung",
       "title": "Đại Hồng Chung (Thế Tổ Miếu & Hiển Lâm Các)",
       "url": "./assets/audio/dai_hong_chung.mp3",
-      "plan_xyz": [-135.0, -112.5, 11.5],
+      "plan_xyz": [-228.0, -75.0, 11.5],
       "license": "CC BY 2.1 JP"
     },
     "khanh_chime": {
@@ -93,9 +93,9 @@
       "tile_id": "T04",
       "track_id": "dang_dan_cung",
       "x": 0.0,
-      "y": -95.0,
+      "y": -75.0,
       "z": 4.0,
-      "radius_m": 460.0,
+      "radius_m": 440.0,
       "base_weight": 1.05
     },
     {
@@ -103,8 +103,8 @@
       "label": "Nhà hát Duyệt Thị Đường & Cần Chánh (Tử Cấm Thành)",
       "tile_id": "T15",
       "track_id": "tu_dai_canh",
-      "x": 114.0,
-      "y": 215.0,
+      "x": 130.0,
+      "y": 132.0,
       "z": 4.0,
       "radius_m": 260.0,
       "base_weight": 1.2
@@ -115,7 +115,7 @@
       "tile_id": "T06",
       "track_id": "tu_dai_canh",
       "x": 0.0,
-      "y": 165.0,
+      "y": 156.0,
       "z": 4.0,
       "radius_m": 180.0,
       "base_weight": 1.1
@@ -125,10 +125,10 @@
       "label": "Thế Tổ Miếu, Hiển Lâm Các & Cung Diên Thọ",
       "tile_id": "T09",
       "track_id": "co_ban",
-      "x": -135.0,
-      "y": -30.0,
+      "x": -235.0,
+      "y": 30.0,
       "z": 4.0,
-      "radius_m": 270.0,
+      "radius_m": 280.0,
       "base_weight": 1.15
     },
     {
@@ -137,10 +137,10 @@
       "tile_id": "T29",
       "ambience_id": "song_huong_water",
       "x": 0.0,
-      "y": -920.0,
+      "y": -760.0,
       "z": -2.5,
-      "radius_m": 380.0,
-      "line_half_width_m": 1150.0,
+      "radius_m": 420.0,
+      "line_half_width_m": 1350.0,
       "base_weight": 1.0
     },
     {
@@ -149,7 +149,7 @@
       "tile_id": "T03",
       "ambience_id": "song_huong_water",
       "x": 0.0,
-      "y": -112.0,
+      "y": -90.0,
       "z": -1.2,
       "radius_m": 115.0,
       "line_half_width_m": 60.0,
@@ -161,22 +161,22 @@
       "tile_id": "T28",
       "ambience_id": "song_huong_water",
       "x": 0.0,
-      "y": -640.0,
+      "y": -365.0,
       "z": -2.0,
       "radius_m": 185.0,
-      "line_half_width_m": 840.0,
+      "line_half_width_m": 1050.0,
       "base_weight": 0.62
     },
     {
       "id": "anchor_tinh_tam",
       "label": "Hồ Tịnh Tâm & Sông Ngự Hà",
-      "tile_id": "T24",
+      "tile_id": "T22",
       "ambience_id": "song_huong_water",
-      "x": 310.0,
-      "y": 460.0,
+      "x": 434.0,
+      "y": 900.0,
       "z": -1.5,
-      "radius_m": 240.0,
-      "line_half_width_m": 380.0,
+      "radius_m": 320.0,
+      "line_half_width_m": 420.0,
       "base_weight": 0.68
     }
   ]

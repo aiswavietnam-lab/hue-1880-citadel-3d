@@ -906,8 +906,8 @@ export class HueCourtAudioController {
     if (waterProx >= 0.45 || (tile && (tile.tile_id === "T28" || tile.tile_id === "T29"))) {
       return { type: "water_dock", label: SURFACE_LABELS.water_dock };
     }
-    // Trục Thần Đạo & sân lát đá Thanh / gạch Bát Tràng trung tâm
-    const onSacredAxis = Math.abs(planX) <= 18 && planY >= -585 && planY <= 394;
+    // Trục Thần Đạo & sân lát đá Thanh / gạch Bát Tràng trung tâm (hệ tọa độ v2 chuẩn vệ tinh)
+    const onSacredAxis = Math.abs(planX) <= 18 && planY >= -575 && planY <= 466;
     const onStoneCourtTile =
       tile && ["T01", "T02", "T03", "T04", "T05", "T06", "T07", "T09", "T10", "T11", "T12", "T13"].includes(tile.tile_id);
     if (onSacredAxis || onStoneCourtTile) {

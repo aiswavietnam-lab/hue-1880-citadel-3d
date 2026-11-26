@@ -1,0 +1,986 @@
+{
+  "origin_real_gps": {
+    "lat": 16.46879,
+    "lon": 107.57834
+  },
+  "origin_config_gps": {
+    "lat": 16.4698,
+    "lon": 107.5778,
+    "offset_m": 125.8
+  },
+  "true_azimuth_deg": 144.8,
+  "config_azimuth_deg": 148.0,
+  "azimuth_error_deg": 3.2,
+  "views": {
+    "axis_full": {
+      "x_min": -1400.0,
+      "x_max": 1400.0,
+      "y_min": -1450.0,
+      "y_max": 2150.0,
+      "w": 1400,
+      "h": 1800
+    },
+    "north_full": {
+      "center_e": -320.0,
+      "center_n": 480.0,
+      "span_e": 3800.0,
+      "span_n": 3800.0,
+      "w": 1520,
+      "h": 1520
+    },
+    "axis_ht": {
+      "x_min": -450.0,
+      "x_max": 450.0,
+      "y_min": -800.0,
+      "y_max": 520.0,
+      "w": 1350,
+      "h": 1980
+    }
+  },
+  "tiles": [
+    {
+      "id": "T01",
+      "label": "01 · Kỳ Đài & Quảng trường",
+      "zone": "truc_than_dao",
+      "bounds": {
+        "x_min": -160.0,
+        "x_max": 160.0,
+        "y_min": -600.0,
+        "y_max": -220.0
+      }
+    },
+    {
+      "id": "T02",
+      "label": "02 · Ngọ Môn & Ngũ Phụng",
+      "zone": "truc_than_dao",
+      "bounds": {
+        "x_min": -70.0,
+        "x_max": 70.0,
+        "y_min": -220.0,
+        "y_max": -150.0
+      }
+    },
+    {
+      "id": "T03",
+      "label": "03 · Hồ Thái Dịch & Cầu Trung Đạo",
+      "zone": "truc_than_dao",
+      "bounds": {
+        "x_min": -70.0,
+        "x_max": 70.0,
+        "y_min": -150.0,
+        "y_max": -40.0
+      }
+    },
+    {
+      "id": "T04",
+      "label": "04 · Điện Thái Hòa",
+      "zone": "truc_than_dao",
+      "bounds": {
+        "x_min": -70.0,
+        "x_max": 70.0,
+        "y_min": -40.0,
+        "y_max": 40.0
+      }
+    },
+    {
+      "id": "T05",
+      "label": "05 · Đại Cung Môn & Tả/Hữu Vu",
+      "zone": "tu_cam_thanh",
+      "bounds": {
+        "x_min": -70.0,
+        "x_max": 70.0,
+        "y_min": 40.0,
+        "y_max": 110.0
+      }
+    },
+    {
+      "id": "T06",
+      "label": "06 · Điện Cần Chánh",
+      "zone": "tu_cam_thanh",
+      "bounds": {
+        "x_min": -70.0,
+        "x_max": 70.0,
+        "y_min": 110.0,
+        "y_max": 185.0
+      }
+    },
+    {
+      "id": "T07",
+      "label": "07 · Càn Thành & Khôn Thái",
+      "zone": "tu_cam_thanh",
+      "bounds": {
+        "x_min": -70.0,
+        "x_max": 70.0,
+        "y_min": 185.0,
+        "y_max": 270.0
+      }
+    },
+    {
+      "id": "T08",
+      "label": "08 · Kiến Trung & Vườn Cơ Hạ",
+      "zone": "tu_cam_thanh",
+      "bounds": {
+        "x_min": -70.0,
+        "x_max": 70.0,
+        "y_min": 270.0,
+        "y_max": 330.0
+      }
+    },
+    {
+      "id": "T09",
+      "label": "09 · Thế Tổ Miếu & Cửu Đỉnh",
+      "zone": "hoang_thanh",
+      "bounds": {
+        "x_min": -200.0,
+        "x_max": -70.0,
+        "y_min": -185.0,
+        "y_max": -40.0
+      }
+    },
+    {
+      "id": "T10",
+      "label": "10 · Thái Miếu & Triệu Miếu",
+      "zone": "hoang_thanh",
+      "bounds": {
+        "x_min": 70.0,
+        "x_max": 220.0,
+        "y_min": -150.0,
+        "y_max": 40.0
+      }
+    },
+    {
+      "id": "T11",
+      "label": "11 · Cung Diên Thọ",
+      "zone": "tu_cam_thanh",
+      "bounds": {
+        "x_min": -200.0,
+        "x_max": -70.0,
+        "y_min": 40.0,
+        "y_max": 185.0
+      }
+    },
+    {
+      "id": "T12",
+      "label": "12 · Phủ Nội Vụ & Hiển Nhơn",
+      "zone": "tu_cam_thanh",
+      "bounds": {
+        "x_min": 70.0,
+        "x_max": 240.0,
+        "y_min": 40.0,
+        "y_max": 200.0
+      }
+    },
+    {
+      "id": "T13",
+      "label": "13 · Cửa Chương Đức & Tây HT",
+      "zone": "hoang_thanh",
+      "bounds": {
+        "x_min": -311.0,
+        "x_max": -200.0,
+        "y_min": -220.0,
+        "y_max": 394.0
+      }
+    },
+    {
+      "id": "T14",
+      "label": "14 · Cung Trường Sanh",
+      "zone": "hoang_thanh",
+      "bounds": {
+        "x_min": -200.0,
+        "x_max": -70.0,
+        "y_min": 185.0,
+        "y_max": 394.0
+      }
+    },
+    {
+      "id": "T15",
+      "label": "15 · Cơ Hạ & Duyệt Thị Đường",
+      "zone": "hoang_thanh",
+      "bounds": {
+        "x_min": 70.0,
+        "x_max": 311.0,
+        "y_min": 200.0,
+        "y_max": 394.0
+      }
+    },
+    {
+      "id": "T16",
+      "label": "16 · Cửa Hòa Bình & Thiệu Phương",
+      "zone": "hoang_thanh",
+      "bounds": {
+        "x_min": -70.0,
+        "x_max": 70.0,
+        "y_min": 330.0,
+        "y_max": 394.0
+      }
+    },
+    {
+      "id": "T17",
+      "label": "17 · Cửa Quảng Đức & Thần Công Tây",
+      "zone": "kinh_thanh_noi",
+      "bounds": {
+        "x_min": -620.0,
+        "x_max": -160.0,
+        "y_min": -600.0,
+        "y_max": -220.0
+      }
+    },
+    {
+      "id": "T18",
+      "label": "18 · Cửa Thể Nhơn & Thần Công Đông",
+      "zone": "kinh_thanh_noi",
+      "bounds": {
+        "x_min": 160.0,
+        "x_max": 620.0,
+        "y_min": -600.0,
+        "y_max": -220.0
+      }
+    },
+    {
+      "id": "T19",
+      "label": "19 · Hào Kim Thủy Tây Nam",
+      "zone": "kinh_thanh_noi",
+      "bounds": {
+        "x_min": -620.0,
+        "x_max": -311.0,
+        "y_min": -220.0,
+        "y_max": 90.0
+      }
+    },
+    {
+      "id": "T20",
+      "label": "20 · Hào Kim Thủy & Đàn Xã Tắc",
+      "zone": "kinh_thanh_noi",
+      "bounds": {
+        "x_min": -620.0,
+        "x_max": -311.0,
+        "y_min": 90.0,
+        "y_max": 394.0
+      }
+    },
+    {
+      "id": "T21",
+      "label": "21 · Khu Lục Bộ & Cơ Mật Viện",
+      "zone": "kinh_thanh_noi",
+      "bounds": {
+        "x_min": 311.0,
+        "x_max": 620.0,
+        "y_min": -220.0,
+        "y_max": 90.0
+      }
+    },
+    {
+      "id": "T22",
+      "label": "22 · Hồ Tịnh Tâm (Nam)",
+      "zone": "kinh_thanh_noi",
+      "bounds": {
+        "x_min": 311.0,
+        "x_max": 620.0,
+        "y_min": 90.0,
+        "y_max": 394.0
+      }
+    },
+    {
+      "id": "T23",
+      "label": "23 · Doanh Trại Tây Bắc",
+      "zone": "kinh_thanh_noi",
+      "bounds": {
+        "x_min": -620.0,
+        "x_max": 0.0,
+        "y_min": 394.0,
+        "y_max": 720.0
+      }
+    },
+    {
+      "id": "T24",
+      "label": "24 · Tàng Thư Lâu & Tịnh Tâm Bắc",
+      "zone": "kinh_thanh_noi",
+      "bounds": {
+        "x_min": 0.0,
+        "x_max": 620.0,
+        "y_min": 394.0,
+        "y_max": 720.0
+      }
+    },
+    {
+      "id": "T25",
+      "label": "25 · Thành Vauban Tây",
+      "zone": "thanh_vauban",
+      "bounds": {
+        "x_min": -980.0,
+        "x_max": -620.0,
+        "y_min": -600.0,
+        "y_max": 720.0
+      }
+    },
+    {
+      "id": "T26",
+      "label": "26 · Thành Vauban Đông",
+      "zone": "thanh_vauban",
+      "bounds": {
+        "x_min": 620.0,
+        "x_max": 980.0,
+        "y_min": -600.0,
+        "y_max": 720.0
+      }
+    },
+    {
+      "id": "T27",
+      "label": "27 · Thành Vauban Bắc",
+      "zone": "thanh_vauban",
+      "bounds": {
+        "x_min": -980.0,
+        "x_max": 980.0,
+        "y_min": 720.0,
+        "y_max": 1040.0
+      }
+    },
+    {
+      "id": "T28",
+      "label": "28 · Phu Văn Lâu & Hào Nam",
+      "zone": "song_huong",
+      "bounds": {
+        "x_min": -980.0,
+        "x_max": 980.0,
+        "y_min": -780.0,
+        "y_max": -600.0
+      }
+    },
+    {
+      "id": "T29",
+      "label": "29 · Sông Hương & Thuyền Rồng",
+      "zone": "song_huong",
+      "bounds": {
+        "x_min": -980.0,
+        "x_max": 980.0,
+        "y_min": -1060.0,
+        "y_max": -780.0
+      }
+    },
+    {
+      "id": "T30",
+      "label": "30 · Bờ Nam & Tiền Án Ngự Bình",
+      "zone": "song_huong",
+      "bounds": {
+        "x_min": -980.0,
+        "x_max": 980.0,
+        "y_min": -1360.0,
+        "y_max": -1060.0
+      }
+    }
+  ],
+  "landmarks": [
+    {
+      "code": "TH",
+      "name": "Điện Thái Hòa (Gốc 0,0)",
+      "zone": "Trục Thần đạo",
+      "tile_id": "T04",
+      "real_lat": 16.46879,
+      "real_lon": 107.57834,
+      "real_x": 0.0,
+      "real_y": 0.0,
+      "model_x": 0.0,
+      "model_y": -0.1,
+      "dx": 0.0,
+      "dy": -0.1,
+      "dist_m": 0.1,
+      "dist_m_az148": 0.1,
+      "note": "Điểm neo gốc tọa độ (0, 0) — khớp tuyệt đối"
+    },
+    {
+      "code": "CTD",
+      "name": "Cầu Trung Đạo · Hồ Thái Dịch",
+      "zone": "Trục Thần đạo",
+      "tile_id": "T03",
+      "real_lat": 16.46812,
+      "real_lon": 107.57882,
+      "real_x": -0.9,
+      "real_y": -90.1,
+      "model_x": 0.0,
+      "model_y": -97.0,
+      "dx": 0.9,
+      "dy": -6.9,
+      "dist_m": 6.9,
+      "dist_m_az148": 8.1,
+      "note": "Lệch nhẹ về Nam ~7m"
+    },
+    {
+      "code": "NM",
+      "name": "Ngọ Môn · Lầu Ngũ Phụng",
+      "zone": "Trục Thần đạo",
+      "tile_id": "T02",
+      "real_lat": 16.46778,
+      "real_lon": 107.57906,
+      "real_x": -1.6,
+      "real_y": -135.6,
+      "model_x": 0.0,
+      "model_y": -187.4,
+      "dx": 1.6,
+      "dy": -51.8,
+      "dist_m": 51.8,
+      "dist_m_az148": 52.2,
+      "note": "Bị đẩy lùi ra Nam ~52m so với thực tế"
+    },
+    {
+      "code": "KD",
+      "name": "Kỳ Đài (Cột cờ Kinh Thành)",
+      "zone": "Trục Thần đạo",
+      "tile_id": "T01",
+      "real_lat": 16.46636,
+      "real_lon": 107.5801,
+      "real_x": -1.5,
+      "real_y": -328.0,
+      "model_x": 0.0,
+      "model_y": -493.4,
+      "dx": 1.5,
+      "dy": -165.4,
+      "dist_m": 165.4,
+      "dist_m_az148": 166.6,
+      "note": "Bị kéo giãn xa Ngọ Môn — lệch Nam ~165m"
+    },
+    {
+      "code": "PVL",
+      "name": "Phu Văn Lâu",
+      "zone": "Trục Thần đạo",
+      "tile_id": "T28",
+      "real_lat": 16.46553,
+      "real_lon": 107.58075,
+      "real_x": 2.3,
+      "real_y": -443.1,
+      "model_x": 0.0,
+      "model_y": -668.0,
+      "dx": -2.3,
+      "dy": -224.9,
+      "dist_m": 224.9,
+      "dist_m_az148": 227.3,
+      "note": "Lệch Nam ~225m do T01 kéo giãn trục trước"
+    },
+    {
+      "code": "NLD",
+      "name": "Nghênh Lương Đình",
+      "zone": "Trục Thần đạo",
+      "tile_id": "T28",
+      "real_lat": 16.46478,
+      "real_lon": 107.58129,
+      "real_x": 1.5,
+      "real_y": -544.1,
+      "model_x": 0.0,
+      "model_y": -732.0,
+      "dx": -1.5,
+      "dy": -187.9,
+      "dist_m": 187.9,
+      "dist_m_az148": 191.5,
+      "note": "Lệch Nam ~188m ra sát bờ sông mô hình"
+    },
+    {
+      "code": "DCM",
+      "name": "Đại Cung Môn",
+      "zone": "Tử Cấm Thành",
+      "tile_id": "T05",
+      "real_lat": 16.46928,
+      "real_lon": 107.57798,
+      "real_x": -0.1,
+      "real_y": 66.5,
+      "model_x": 0.0,
+      "model_y": 46.0,
+      "dx": 0.1,
+      "dy": -20.5,
+      "dist_m": 20.5,
+      "dist_m_az148": 20.7,
+      "note": "Nằm gần Điện Thái Hòa hơn thực tế ~21m"
+    },
+    {
+      "code": "CC",
+      "name": "Điện Cần Chánh",
+      "zone": "Tử Cấm Thành",
+      "tile_id": "T06",
+      "real_lat": 16.46972,
+      "real_lon": 107.57766,
+      "real_x": 0.0,
+      "real_y": 125.9,
+      "model_x": 0.0,
+      "model_y": 150.3,
+      "dx": -0.0,
+      "dy": 24.4,
+      "dist_m": 24.4,
+      "dist_m_az148": 25.5,
+      "note": "Lệch Bắc ~24m so với nền cũ"
+    },
+    {
+      "code": "CT",
+      "name": "Điện Càn Thành",
+      "zone": "Tử Cấm Thành",
+      "tile_id": "T07",
+      "real_lat": 16.47018,
+      "real_lon": 107.57733,
+      "real_x": 0.6,
+      "real_y": 187.8,
+      "model_x": 0.0,
+      "model_y": 214.9,
+      "dx": -0.6,
+      "dy": 27.1,
+      "dist_m": 27.1,
+      "dist_m_az148": 29.1,
+      "note": "Lệch Bắc ~27m"
+    },
+    {
+      "code": "KT",
+      "name": "Điện Kiến Trung",
+      "zone": "Tử Cấm Thành",
+      "tile_id": "T08",
+      "real_lat": 16.4711,
+      "real_lon": 107.57666,
+      "real_x": 0.8,
+      "real_y": 312.3,
+      "model_x": 0.0,
+      "model_y": 302.0,
+      "dx": -0.8,
+      "dy": -10.3,
+      "dist_m": 10.3,
+      "dist_m_az148": 19.3,
+      "note": "Khớp rất sát thực tế (chỉ lệch ~10m!)"
+    },
+    {
+      "code": "HB",
+      "name": "Cửa Hòa Bình (Cửa Bắc HT)",
+      "zone": "Hoàng Thành",
+      "tile_id": "T16",
+      "real_lat": 16.47218,
+      "real_lon": 107.57592,
+      "real_x": 5.1,
+      "real_y": 455.5,
+      "model_x": 0.0,
+      "model_y": 387.4,
+      "dx": -5.1,
+      "dy": -68.1,
+      "dist_m": 68.3,
+      "dist_m_az148": 70.6,
+      "note": "Tường Bắc Hoàng Thành ngắn hơn thực tế ~68m"
+    },
+    {
+      "code": "TTM",
+      "name": "Thế Tổ Miếu",
+      "zone": "Hoàng Thành (Tây)",
+      "tile_id": "T09",
+      "real_lat": 16.46722,
+      "real_lon": 107.57688,
+      "real_x": -227.5,
+      "real_y": -52.1,
+      "model_x": -135.0,
+      "model_y": -94.0,
+      "dx": 92.5,
+      "dy": -41.9,
+      "dist_m": 101.5,
+      "dist_m_az148": 93.9,
+      "note": "Nén sát trục giữa ~93m & lệch Nam ~42m"
+    },
+    {
+      "code": "HLC",
+      "name": "Hiển Lâm Các",
+      "zone": "Hoàng Thành (Tây)",
+      "tile_id": "T09",
+      "real_lat": 16.46688,
+      "real_lon": 107.57712,
+      "real_x": -228.3,
+      "real_y": -97.6,
+      "model_x": -135.0,
+      "model_y": -158.0,
+      "dx": 93.3,
+      "dy": -60.4,
+      "dist_m": 111.1,
+      "dist_m_az148": 99.6,
+      "note": "Nén sát trục giữa ~93m & lệch Nam ~60m"
+    },
+    {
+      "code": "TM",
+      "name": "Thái Tổ Miếu",
+      "zone": "Hoàng Thành (Đông)",
+      "tile_id": "T10",
+      "real_lat": 16.46962,
+      "real_lon": 107.58038,
+      "real_x": 230.9,
+      "real_y": -50.5,
+      "model_x": 145.0,
+      "model_y": -55.0,
+      "dx": -85.9,
+      "dy": -4.5,
+      "dist_m": 86.0,
+      "dist_m_az148": 90.1,
+      "note": "Đúng trục Y (~4m) nhưng nén vào trong ~86m"
+    },
+    {
+      "code": "DT",
+      "name": "Cung Diên Thọ",
+      "zone": "Hoàng Thành (Tây)",
+      "tile_id": "T11",
+      "real_lat": 16.46894,
+      "real_lon": 107.5753,
+      "real_x": -255.6,
+      "real_y": 200.6,
+      "model_x": -135.0,
+      "model_y": 100.0,
+      "dx": 120.6,
+      "dy": -100.6,
+      "dist_m": 157.1,
+      "dist_m_az148": 157.1,
+      "note": "Nén vào trong ~121m & lệch Nam ~101m"
+    },
+    {
+      "code": "TS",
+      "name": "Cung Trường Sanh",
+      "zone": "Hoàng Thành (Tây)",
+      "tile_id": "T14",
+      "real_lat": 16.46985,
+      "real_lon": 107.57468,
+      "real_x": -251.7,
+      "real_y": 321.1,
+      "model_x": -142.0,
+      "model_y": 318.0,
+      "dx": 109.7,
+      "dy": -3.1,
+      "dist_m": 109.7,
+      "dist_m_az148": 127.7,
+      "note": "Đúng trục Y (~3m) nhưng nén vào trong ~110m"
+    },
+    {
+      "code": "DTD",
+      "name": "Nhà hát Duyệt Thị Đường",
+      "zone": "Hoàng Thành (Đông)",
+      "tile_id": "T15",
+      "real_lat": 16.47044,
+      "real_lon": 107.57862,
+      "real_x": 129.7,
+      "real_y": 132.0,
+      "model_x": 114.0,
+      "model_y": 242.0,
+      "dx": -15.7,
+      "dy": 110.0,
+      "dist_m": 111.1,
+      "dist_m_az148": 103.3,
+      "note": "Bị đặt lên ô T15 (lệch Bắc ~110m so với thực tế)"
+    },
+    {
+      "code": "PNV",
+      "name": "Phủ Nội Vụ",
+      "zone": "Hoàng Thành (Đông)",
+      "tile_id": "T12",
+      "real_lat": 16.47095,
+      "real_lon": 107.57945,
+      "real_x": 234.6,
+      "real_y": 127.0,
+      "model_x": 142.0,
+      "model_y": 162.0,
+      "dx": -92.6,
+      "dy": 35.0,
+      "dist_m": 99.0,
+      "dist_m_az148": 88.0,
+      "note": "Nén vào trong ~93m & lệch Bắc ~35m"
+    },
+    {
+      "code": "HN",
+      "name": "Cửa Hiển Nhơn (Cửa Đông HT)",
+      "zone": "Hoàng Thành (Đông)",
+      "tile_id": "T12",
+      "real_lat": 16.47078,
+      "real_lon": 107.58042,
+      "real_x": 308.4,
+      "real_y": 52.0,
+      "model_x": 210.0,
+      "model_y": 120.0,
+      "dx": -98.4,
+      "dy": 68.0,
+      "dist_m": 119.6,
+      "dist_m_az148": 107.8,
+      "note": "Nằm thụt vào trong tường Đông ~98m do lỗ trống ô"
+    },
+    {
+      "code": "CD",
+      "name": "Cửa Chương Đức (Cửa Tây HT)",
+      "zone": "Hoàng Thành (Tây)",
+      "tile_id": "T13",
+      "real_lat": 16.46738,
+      "real_lon": 107.57566,
+      "real_x": -323.7,
+      "real_y": 37.4,
+      "model_x": -300.0,
+      "model_y": 91.0,
+      "dx": 23.7,
+      "dy": 53.6,
+      "dist_m": 58.6,
+      "dist_m_az148": 76.1,
+      "note": "Khá sát tường Tây (~24m) nhưng lệch Bắc ~54m"
+    },
+    {
+      "code": "QD",
+      "name": "Cửa Quảng Đức (Cửa Sập)",
+      "zone": "Kinh Thành (Mặt Nam)",
+      "tile_id": "T17",
+      "real_lat": 16.46572,
+      "real_lon": 107.5786,
+      "real_x": -173.2,
+      "real_y": -293.6,
+      "model_x": -308.0,
+      "model_y": -518.0,
+      "dx": -134.8,
+      "dy": -224.4,
+      "dist_m": 261.8,
+      "dist_m_az148": 263.2,
+      "note": "Bị đẩy xa về Nam ~224m & lệch Tây ~135m"
+    },
+    {
+      "code": "TN",
+      "name": "Cửa Thể Nhơn (Cửa Ngăn)",
+      "zone": "Kinh Thành (Mặt Nam)",
+      "tile_id": "T18",
+      "real_lat": 16.46768,
+      "real_lon": 107.58126,
+      "real_x": 183.9,
+      "real_y": -280.1,
+      "model_x": 275.0,
+      "model_y": -518.0,
+      "dx": 91.1,
+      "dy": -237.9,
+      "dist_m": 254.8,
+      "dist_m_az148": 259.9,
+      "note": "Bị đẩy xa về Nam ~238m & lệch Đông ~91m"
+    },
+    {
+      "code": "DXT",
+      "name": "Đàn Xã Tắc",
+      "zone": "Nội khu Kinh Thành",
+      "tile_id": "T20",
+      "real_lat": 16.4666,
+      "real_lon": 107.5701,
+      "real_x": -858.5,
+      "real_y": 309.0,
+      "model_x": -470.0,
+      "model_y": 242.0,
+      "dx": 388.5,
+      "dy": -67.0,
+      "dist_m": 394.2,
+      "dist_m_az148": 404.8,
+      "note": "Nén về Đông ~389m vào sát Hào Kim Thủy"
+    },
+    {
+      "code": "HTT",
+      "name": "Hồ Tịnh Tâm",
+      "zone": "Nội khu Kinh Thành",
+      "tile_id": "T22/T24",
+      "real_lat": 16.4777,
+      "real_lon": 107.5768,
+      "real_x": 434.0,
+      "real_y": 900.5,
+      "model_x": 495.0,
+      "model_y": 394.0,
+      "dx": 61.0,
+      "dy": -506.5,
+      "dist_m": 510.1,
+      "dist_m_az148": 541.0,
+      "note": "Đúng trục X (~61m) nhưng bị kéo lùi Nam ~507m"
+    },
+    {
+      "code": "TTL",
+      "name": "Tàng Thư Lâu · Hồ Học Hải",
+      "zone": "Nội khu Kinh Thành",
+      "tile_id": "T24",
+      "real_lat": 16.4794,
+      "real_lon": 107.5755,
+      "real_x": 429.1,
+      "real_y": 1134.2,
+      "model_x": 210.0,
+      "model_y": 580.0,
+      "dx": -219.1,
+      "dy": -554.2,
+      "dist_m": 595.9,
+      "dist_m_az148": 596.9,
+      "note": "Bị nén lùi về Nam ~554m & lệch Tây ~219m"
+    },
+    {
+      "code": "HT_S",
+      "name": "Góc Nam Hoàng Thành",
+      "zone": "Chu vi Hoàng Thành",
+      "tile_id": "T13",
+      "real_lat": 16.46582,
+      "real_lon": 107.57678,
+      "real_x": -325.5,
+      "real_y": -172.6,
+      "model_x": -311.0,
+      "model_y": -220.0,
+      "dx": 14.5,
+      "dy": -47.4,
+      "dist_m": 49.6,
+      "dist_m_az148": 29.8,
+      "note": "Khớp ngang X (~15m), tường Nam lệch sâu ~47m"
+    },
+    {
+      "code": "HT_E",
+      "name": "Góc Đông Hoàng Thành",
+      "zone": "Chu vi Hoàng Thành",
+      "tile_id": "T10/T21",
+      "real_lat": 16.46924,
+      "real_lon": 107.58152,
+      "real_x": 306.1,
+      "real_y": -155.0,
+      "model_x": 311.0,
+      "model_y": -220.0,
+      "dx": 4.9,
+      "dy": -65.0,
+      "dist_m": 65.2,
+      "dist_m_az148": 82.4,
+      "note": "Khớp ngang X (~5m), thiếu ô phủ & lệch Nam ~65m"
+    },
+    {
+      "code": "HT_N",
+      "name": "Góc Bắc Hoàng Thành",
+      "zone": "Chu vi Hoàng Thành",
+      "tile_id": "T15",
+      "real_lat": 16.4735,
+      "real_lon": 107.57828,
+      "real_x": 295.2,
+      "real_y": 429.6,
+      "model_x": 311.0,
+      "model_y": 394.0,
+      "dx": 15.8,
+      "dy": -35.6,
+      "dist_m": 39.0,
+      "dist_m_az148": 65.3,
+      "note": "Khớp ngang X (~16m), tường Bắc thiếu ~36m"
+    },
+    {
+      "code": "HT_W",
+      "name": "Góc Tây Hoàng Thành",
+      "zone": "Chu vi Hoàng Thành",
+      "tile_id": "T13",
+      "real_lat": 16.4701,
+      "real_lon": 107.57343,
+      "real_x": -344.7,
+      "real_y": 420.6,
+      "model_x": -311.0,
+      "model_y": 394.0,
+      "dx": 33.7,
+      "dy": -26.6,
+      "dist_m": 43.0,
+      "dist_m_az148": 57.1,
+      "note": "Gần khớp thực tế (chỉ lệch ~43m)"
+    },
+    {
+      "code": "KT_S",
+      "name": "Góc Nam Kinh Thành Vauban",
+      "zone": "Chu vi Kinh Thành",
+      "tile_id": "T25",
+      "real_lat": 16.4618,
+      "real_lon": 107.5704,
+      "real_x": -1138.5,
+      "real_y": -143.5,
+      "model_x": -818.0,
+      "model_y": -520.0,
+      "dx": 320.5,
+      "dy": -376.5,
+      "dist_m": 494.5,
+      "dist_m_az148": 441.2,
+      "note": "Thành thu hẹp ~321m & mặt Nam đẩy xa ~377m"
+    },
+    {
+      "code": "KT_E",
+      "name": "Góc Đông Kinh Thành Vauban",
+      "zone": "Chu vi Kinh Thành",
+      "tile_id": "T26",
+      "real_lat": 16.473,
+      "real_lon": 107.5872,
+      "real_x": 1041.4,
+      "real_y": -164.5,
+      "model_x": 797.0,
+      "model_y": -520.0,
+      "dx": -244.4,
+      "dy": -355.5,
+      "dist_m": 431.4,
+      "dist_m_az148": 484.6,
+      "note": "Thành thu hẹp ~244m & mặt Nam đẩy xa ~356m"
+    },
+    {
+      "code": "KT_W",
+      "name": "Góc Tây Kinh Thành Vauban",
+      "zone": "Chu vi Kinh Thành",
+      "tile_id": "T25/T27",
+      "real_lat": 16.4776,
+      "real_lon": 107.5594,
+      "real_x": -1090.2,
+      "real_y": 1962.2,
+      "model_x": -818.0,
+      "model_y": 850.0,
+      "dx": 272.2,
+      "dy": -1112.2,
+      "dist_m": 1145.0,
+      "dist_m_az148": 1115.0,
+      "note": "Thiếu hẳn nửa Bắc Kinh Thành (~1.112m!)"
+    },
+    {
+      "code": "KT_N",
+      "name": "Góc Bắc Kinh Thành Vauban",
+      "zone": "Chu vi Kinh Thành",
+      "tile_id": "T27",
+      "real_lat": 16.4878,
+      "real_lon": 107.5746,
+      "real_x": 886.4,
+      "real_y": 1949.2,
+      "model_x": 740.0,
+      "model_y": 850.0,
+      "dx": -146.4,
+      "dy": -1099.2,
+      "dist_m": 1108.9,
+      "dist_m_az148": 1146.2,
+      "note": "Thiếu hẳn nửa Bắc Kinh Thành (~1.099m!)"
+    },
+    {
+      "code": "TBD",
+      "name": "Trấn Bình Đài (Đồn Mang Cá)",
+      "zone": "Chu vi Kinh Thành",
+      "tile_id": "T27",
+      "real_lat": 16.4888,
+      "real_lon": 107.5778,
+      "real_x": 1229.3,
+      "real_y": 1842.7,
+      "model_x": 852.0,
+      "model_y": 892.0,
+      "dx": -377.3,
+      "dy": -950.7,
+      "dist_m": 1022.9,
+      "dist_m_az148": 1052.4,
+      "note": "Nằm thụt vào trong ~1.023m so với vị trí thật"
+    },
+    {
+      "code": "SH_N",
+      "name": "Sông Hương (Bờ Bắc · Bến Ngự)",
+      "zone": "Sông Hương",
+      "tile_id": "T29",
+      "real_lat": 16.46455,
+      "real_lon": 107.58145,
+      "real_x": 0.8,
+      "real_y": -574.8,
+      "model_x": 0.0,
+      "model_y": -780.0,
+      "dx": -0.8,
+      "dy": -205.2,
+      "dist_m": 205.2,
+      "dist_m_az148": 208.8,
+      "note": "Bờ Bắc bị đẩy ra xa thêm ~205m"
+    },
+    {
+      "code": "SH_S",
+      "name": "Sông Hương (Bờ Nam)",
+      "zone": "Sông Hương",
+      "tile_id": "T29",
+      "real_lat": 16.46185,
+      "real_lon": 107.58345,
+      "real_x": 3.1,
+      "real_y": -942.0,
+      "model_x": 0.0,
+      "model_y": -1060.0,
+      "dx": -3.1,
+      "dy": -118.0,
+      "dist_m": 118.0,
+      "dist_m_az148": 131.9,
+      "note": "Bờ Nam lệch Nam ~118m; lòng sông hẹp ~87m"
+    }
+  ]
+}

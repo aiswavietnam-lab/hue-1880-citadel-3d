@@ -194,7 +194,7 @@ scene.fog = new THREE.FogExp2(0xcbd5df, 0.00028);
 const huePbr = new HuePbrMaterialLibrary(renderer, scene, ".");
 huePbr.applyQualityPreset(STATE.quality);
 
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 6500);
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 9500);
 camera.position.set(265, 142, 485);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -202,7 +202,7 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.07;
 controls.maxPolarAngle = Math.PI * 0.488;
 controls.minDistance = 8;
-controls.maxDistance = 2400;
+controls.maxDistance = 3600;
 controls.target.set(0, 14, -35);
 controls.update();
 
@@ -634,30 +634,30 @@ function applyQualityPreset(key, notifyUser = false) {
   if (notifyUser) showToast(`Đã chuyển mức đồ họa: ${preset.label}`);
 }
 
-// --- Dựng nền địa hình tổng thể Tam Trùng Thành Quách (PBR Thực Tế) ---
+// --- Dựng nền địa hình tổng thể Tam Trùng Thành Quách (PBR Thực Tế · Chuẩn Vệ Tinh v2.0) ---
 function buildMasterTerrainGuide() {
-  const groundMat = huePbr.createTiledSurfaceMaterial("lush_grass", 0x6b7c59, 2320, 2320, {
+  const groundMat = huePbr.createTiledSurfaceMaterial("lush_grass", 0x6b7c59, 3600, 3600, {
     roughness: 0.92,
     normalScale: 0.75,
   });
 
-  const ground = new THREE.Mesh(new THREE.CircleGeometry(5800, 64), groundMat);
+  const ground = new THREE.Mesh(new THREE.CircleGeometry(8200, 64), groundMat);
   ground.rotation.x = -Math.PI / 2;
-  ground.position.set(0, -0.08, 120);
+  ground.position.set(0, -0.09, -450);
   ground.receiveShadow = true;
   freezeStaticObject(ground);
   terrainGroup.add(ground);
   terrainGroundMeshes.push(ground);
 
   const hoangThanhBase = new THREE.Mesh(
-    new THREE.PlaneGeometry(622, 614),
-    huePbr.createTiledSurfaceMaterial("terracotta_paver", 0x9b836c, 622, 614, {
+    new THREE.PlaneGeometry(666, 642),
+    huePbr.createTiledSurfaceMaterial("terracotta_paver", 0x9b836c, 666, 642, {
       roughness: 0.82,
       normalScale: 0.8,
     })
   );
   hoangThanhBase.rotation.x = -Math.PI / 2;
-  hoangThanhBase.position.copy(planToThree(0, 87, -0.04));
+  hoangThanhBase.position.copy(planToThree(-17, 145, -0.06));
   hoangThanhBase.receiveShadow = true;
   freezeStaticObject(hoangThanhBase);
   terrainGroup.add(hoangThanhBase);
@@ -671,27 +671,27 @@ function buildMasterTerrainGuide() {
     })
   );
   tuCamThanhBase.rotation.x = -Math.PI / 2;
-  tuCamThanhBase.position.copy(planToThree(0, 185, -0.02));
+  tuCamThanhBase.position.copy(planToThree(0, 211, -0.04));
   tuCamThanhBase.receiveShadow = true;
   freezeStaticObject(tuCamThanhBase);
   terrainGroup.add(tuCamThanhBase);
   terrainGroundMeshes.push(tuCamThanhBase);
 
   const axisRoad = new THREE.Mesh(
-    new THREE.PlaneGeometry(16, 1174),
-    huePbr.createTiledSurfaceMaterial("granite_paver", 0xb3aba0, 16, 1174, {
+    new THREE.PlaneGeometry(16, 1041),
+    huePbr.createTiledSurfaceMaterial("granite_paver", 0xb3aba0, 16, 1041, {
       roughness: 0.72,
       normalScale: 0.82,
     })
   );
   axisRoad.rotation.x = -Math.PI / 2;
-  axisRoad.position.copy(planToThree(0, -193, 0.02));
+  axisRoad.position.copy(planToThree(0, -54.5, 0.01));
   axisRoad.receiveShadow = true;
   freezeStaticObject(axisRoad);
   terrainGroup.add(axisRoad);
   terrainGroundMeshes.push(axisRoad);
 
-  const axisLinePts = [planToThree(0, 394, 0.08), planToThree(0, -1100, 0.08)];
+  const axisLinePts = [planToThree(0, 466, 0.08), planToThree(0, -960, 0.08)];
   const axisLine = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints(axisLinePts),
     new THREE.LineDashedMaterial({
@@ -706,15 +706,15 @@ function buildMasterTerrainGuide() {
   freezeStaticObject(axisLine);
   terrainGroup.add(axisLine);
 
-  riverMaterial = huePbr.createTiledSurfaceMaterial("water_ripple", 0x26525b, 3400, 280, {
+  riverMaterial = huePbr.createTiledSurfaceMaterial("water_ripple", 0x26525b, 4800, 370, {
     roughness: 0.12,
     metalness: 0.26,
     normalScale: 0.58,
     envIntensity: 1.38,
   });
-  const songHuong = new THREE.Mesh(new THREE.PlaneGeometry(3400, 280), riverMaterial);
+  const songHuong = new THREE.Mesh(new THREE.PlaneGeometry(4800, 370), riverMaterial);
   songHuong.rotation.x = -Math.PI / 2;
-  songHuong.position.copy(planToThree(0, -920, -2.5));
+  songHuong.position.copy(planToThree(70, -760, -2.52));
   songHuong.receiveShadow = true;
   freezeStaticObject(songHuong);
   terrainGroup.add(songHuong);
@@ -722,12 +722,12 @@ function buildMasterTerrainGuide() {
   const bankMat = huePbr.createTiledSurfaceMaterial("stone_masonry", 0x7b766a, 4, 4, {
     roughness: 0.86,
   });
-  [-780, -1060].forEach((yEdge) => {
-    const bankGeo = new THREE.BoxGeometry(2400, 2.6, 8);
+  [-575, -945].forEach((yEdge) => {
+    const bankGeo = new THREE.BoxGeometry(3600, 2.6, 8);
     bankGeo.deleteAttribute("uv");
     huePbr.ensureMetricUVs(bankGeo, 3.0);
     const bank = new THREE.Mesh(bankGeo, bankMat);
-    bank.position.copy(planToThree(0, yEdge, -1.25));
+    bank.position.copy(planToThree(70, yEdge, -1.25));
     freezeStaticObject(bank);
     terrainGroup.add(bank);
   });
@@ -745,40 +745,43 @@ function buildMasterTerrainGuide() {
     freezeStaticObject(m);
     terrainGroup.add(m);
   };
-  addMoatStrip(0, -640, 1680, 44, -2.2);
-  addMoatStrip(0, 845, 1680, 44, -2.2);
-  addMoatStrip(-818, 102, 44, 1528, -2.2);
-  addMoatStrip(818, 102, 44, 1528, -2.2);
+  // Hộ Thành Hào ngoài (chuẩn vệ tinh 2,2 × 2,2 km)
+  addMoatStrip(-50, -372, 2240, 44, -2.25);
+  addMoatStrip(-100, 2005, 2080, 44, -2.25);
+  addMoatStrip(-1162, 910, 44, 2180, -2.25);
+  addMoatStrip(1030, 910, 44, 2180, -2.25);
 
-  addMoatStrip(0, -242, 684, 24, -1.5);
-  addMoatStrip(0, 416, 684, 24, -1.5);
-  addMoatStrip(-332, 87, 22, 682, -1.5);
-  addMoatStrip(332, 87, 22, 682, -1.5);
+  // Hào Kim Thủy (quanh Hoàng Thành chuẩn vệ tinh)
+  addMoatStrip(-17, -196, 720, 26, -1.55);
+  addMoatStrip(-17, 480, 720, 26, -1.55);
+  addMoatStrip(-364, 145, 26, 680, -1.55);
+  addMoatStrip(330, 145, 26, 680, -1.55);
 
-  addMoatStrip(0, -118, 128, 48, -1.2);
-  addMoatStrip(0, -561, 320, 42, -1.54);
+  // Hồ Thái Dịch
+  addMoatStrip(0, -90, 128, 48, -1.25);
 
   buildVaubanPerimeterGuide();
-  buildWallPerimeter(-311, 311, -210, 394, 4.0, 1.4, 0xa38e78, [
-    { side: "south", center: 0, width: 60 },
-    { side: "north", center: 0, width: 14 },
+  buildWallPerimeter(-326, 312, -172, 430, 4.0, 1.4, 0xa38e78, [
+    { side: "south", center: 0, width: 64 },
+    { side: "north", center: 0, width: 16 },
   ]);
-  buildWallPerimeter(-162, 162, 40, 330, 3.7, 1.0, 0xa65e48, [
+  buildWallPerimeter(-162, 162, 66, 356, 3.7, 1.0, 0xa65e48, [
     { side: "south", center: 0, width: 22 },
   ]);
 
-  const nguBinhGeo = new THREE.CylinderGeometry(160, 460, 105, 12, 2);
-  nguBinhGeo.scale(2.1, 1.0, 0.72);
+  // Tiền Án Núi Ngự Bình ở đúng cự ly thực tế (~3.800m Đông Nam Điện Thái Hòa)
+  const nguBinhGeo = new THREE.CylinderGeometry(280, 820, 135, 16, 2);
+  nguBinhGeo.scale(2.2, 1.0, 0.78);
   nguBinhGeo.deleteAttribute("uv");
-  huePbr.ensureMetricUVs(nguBinhGeo, 16.0);
+  huePbr.ensureMetricUVs(nguBinhGeo, 24.0);
   const nguBinh = new THREE.Mesh(
     nguBinhGeo,
-    huePbr.createTiledSurfaceMaterial("foliage_canopy", 0x465f49, 16, 16, {
+    huePbr.createTiledSurfaceMaterial("foliage_canopy", 0x465f49, 24, 24, {
       roughness: 0.88,
       normalScale: 0.85,
     })
   );
-  nguBinh.position.copy(planToThree(0, -1680, 48));
+  nguBinh.position.copy(planToThree(0, -3800, 62));
   freezeStaticObject(nguBinh);
   terrainGroup.add(nguBinh);
 
@@ -798,34 +801,20 @@ function buildMasterTerrainGuide() {
 }
 
 function buildVaubanPerimeterGuide() {
-  const pts2D = [];
-  const xHalf = 740;
-  const yMin = -585;
-  const yMax = 790;
-
-  pts2D.push([-xHalf, yMin], [-460, yMin], [-420, yMin - 38], [-340, yMin - 38], [-300, yMin]);
-  pts2D.push([-52, yMin], [-42, yMin - 44], [42, yMin - 44], [52, yMin]);
-  pts2D.push([300, yMin], [340, yMin - 38], [420, yMin - 38], [460, yMin], [xHalf, yMin]);
-
-  for (let y = -350; y <= 550; y += 300) {
-    pts2D.push([xHalf, y - 55], [xHalf + 40, y - 28], [xHalf + 40, y + 28], [xHalf, y + 55]);
-  }
-  pts2D.push([xHalf, yMax]);
-
-  for (let x = 440; x >= -440; x -= 440) {
-    pts2D.push([x + 55, yMax], [x + 28, yMax + 40], [x - 28, yMax + 40], [x - 55, yMax]);
-  }
-  pts2D.push([-xHalf, yMax]);
-
-  for (let y = 550; y >= -350; y -= 300) {
-    pts2D.push([-xHalf, y + 55], [-xHalf - 40, y + 28], [-xHalf - 40, y - 28], [-xHalf, y - 55]);
-  }
-  pts2D.push([-xHalf, yMin]);
+  // Chu vi Kinh Thành Huế thực tế 2.180m × 2.110m (24 pháo đài Vauban, mặt Nam cong theo Sông Hương)
+  const pts2D = [
+    [-1138, -144], [-600, -240], [-210, -290], [-173, -315], [-136, -296],
+    [-46, -328], [-38, -366], [38, -366], [46, -328],
+    [146, -288], [184, -305], [220, -276], [600, -225], [1041, -164],
+    [1020, 180], [995, 520], [970, 860], [945, 1200], [920, 1540], [886, 1949],
+    [600, 1951], [260, 1954], [-80, 1956], [-420, 1958], [-760, 1960], [-1090, 1962],
+    [-1098, 1540], [-1106, 1200], [-1114, 860], [-1122, 520], [-1130, 180], [-1138, -144],
+  ];
 
   const wallMat = huePbr.createTiledSurfaceMaterial("stone_masonry", 0x7c766b, 3, 3, {
     roughness: 0.86,
     transparent: true,
-    opacity: 0.72,
+    opacity: 0.65,
   });
 
   const segGeos = [];
@@ -837,8 +826,8 @@ function buildVaubanPerimeterGuide() {
     const dy = y2 - y1;
     const len = Math.hypot(dx, dy);
     if (len < 0.1) continue;
-    const g = new THREE.BoxGeometry(len, 6.6, 12);
-    const mid = planToThree((x1 + x2) / 2, (y1 + y2) / 2, 3.3);
+    const g = new THREE.BoxGeometry(len, 6.2, 10);
+    const mid = planToThree((x1 + x2) / 2, (y1 + y2) / 2, 3.0);
     const m = new THREE.Matrix4()
       .makeTranslation(mid.x, mid.y, mid.z)
       .multiply(new THREE.Matrix4().makeRotationY(Math.atan2(dy, dx)));
@@ -965,11 +954,11 @@ function createHumanReferenceFigure(labelText) {
 function buildHumanScaleCheckpoints() {
   const checkpoints = [
     { x: 0, y: -16, z: 0, label: "Mốc 1.70m · Điện Thái Hòa" },
-    { x: 4, y: -95, z: 0, label: "Mốc 1.70m · Cầu Trung Đạo" },
-    { x: 0, y: -172, z: 0, label: "Mốc 1.70m · Ngọ Môn" },
-    { x: 0, y: 48, z: 0, label: "Mốc 1.70m · Đại Cung Môn" },
+    { x: 4, y: -90, z: 0, label: "Mốc 1.70m · Cầu Trung Đạo" },
+    { x: 0, y: -158, z: 0, label: "Mốc 1.70m · Ngọ Môn" },
+    { x: 0, y: 66, z: 0, label: "Mốc 1.70m · Đại Cung Môn" },
     { x: 0, y: 126, z: 0, label: "Mốc 1.70m · Điện Cần Chánh" },
-    { x: 0, y: -440, z: 0, label: "Mốc 1.70m · Quảng trường Kỳ Đài" },
+    { x: 0, y: -328, z: 0, label: "Mốc 1.70m · Kỳ Đài" },
   ];
   checkpoints.forEach((cp) => {
     const fig = createHumanReferenceFigure(cp.label);
@@ -991,10 +980,10 @@ function buildImperialLanternNetwork() {
   dynamicLanternMaterials.add(globeMat);
 
   const lanternPositions = [];
-  for (let y = -205; y <= 265; y += 38) {
+  for (let y = -165; y <= 315; y += 38) {
     lanternPositions.push([-12, y, 0], [12, y, 0]);
   }
-  [-410, -490, -685].forEach((y) => {
+  [-260, -328, -443].forEach((y) => {
     lanternPositions.push([-18, y, 0], [18, y, 0]);
   });
 
@@ -1023,12 +1012,12 @@ function buildImperialLanternNetwork() {
   huePbr.setLanternAnchors(globesInst);
 
   const keyLightCoords = [
-    [0, -185, 9],
-    [0, -95, 7],
+    [0, -136, 9],
+    [0, -90, 7],
     [0, 0, 10],
-    [0, 75, 8],
-    [0, 148, 8],
-    [0, -410, 11],
+    [0, 66, 8],
+    [0, 126, 8],
+    [0, -328, 11],
   ];
   keyLightCoords.forEach(([x, y, z]) => {
     const pt = new THREE.PointLight(0xffa438, 0.0, 145, 1.5);
@@ -1643,7 +1632,7 @@ function rebuildGridFromManifest(manifest) {
   }
 }
 
-// --- Quỹ đạo Mặt trời Huế (16.47° Bắc, Trục Thần Đạo Đông Nam 148°) ---
+// --- Quỹ đạo Mặt trời Huế (16.46879° Bắc, Trục Thần Đạo Đông Nam 144.8° / Tây Bắc 324.8°) ---
 let currentLanternPower = 0.0;
 const currentSunDir = new THREE.Vector3(0.4, 0.7, 0.5).normalize();
 
@@ -1676,7 +1665,7 @@ function updateTimeOfDay(hour) {
   STATE.hour = Math.min(20.5, Math.max(5.5, Number(hour)));
   const h = STATE.hour;
 
-  const latRad = THREE.MathUtils.degToRad(16.4698);
+  const latRad = THREE.MathUtils.degToRad(16.46879);
   const declRad = THREE.MathUtils.degToRad(12.0);
   const hourAngle = THREE.MathUtils.degToRad((h - 12.0) * 15.0);
 
@@ -1691,7 +1680,7 @@ function updateTimeOfDay(hour) {
   let az = Math.acos(THREE.MathUtils.clamp(cosAz, -1, 1));
   if (hourAngle > 0) az = 2 * Math.PI - az;
 
-  const axisAzRad = THREE.MathUtils.degToRad(328.0);
+  const axisAzRad = THREE.MathUtils.degToRad(324.8);
   const localAz = az - axisAzRad;
   currentSunDir.set(
     Math.sin(localAz) * Math.cos(alt),
@@ -1963,7 +1952,7 @@ function shortestAngleDiff(fromRad, toRad) {
 }
 
 const gtaState = {
-  pos: planToThree(0, -95, 0), // Mặc định đứng trên Cầu Trung Đạo nhìn thẳng Điện Thái Hòa
+  pos: planToThree(0, -90, 0), // Mặc định đứng trên Cầu Trung Đạo nhìn thẳng Điện Thái Hòa
   velX: 0,
   velY: 0,
   velZ: 0,
@@ -3051,11 +3040,11 @@ function applyGtaCamPreset(idx, notify = false) {
 function sampleBaseTerrainGroundY(threeX, threeZ) {
   const planX = threeX;
   const planY = -threeZ;
-  if (planY <= -784 && planY >= -1056) return -1.8;
-  if (Math.abs(planX) <= 8.0 && planY >= -780 && planY <= 394) return 0.02;
-  if (Math.abs(planX) <= 162 && planY >= 40 && planY <= 330) return -0.02;
-  if (Math.abs(planX) <= 311 && planY >= -220 && planY <= 394) return -0.04;
-  return -0.08;
+  if (planY <= -578 && planY >= -942) return -1.8;
+  if (Math.abs(planX) <= 8.0 && planY >= -575 && planY <= 466) return 0.01;
+  if (Math.abs(planX) <= 162 && planY >= 66 && planY <= 356) return -0.04;
+  if (planX >= -350 && planX <= 316 && planY >= -176 && planY <= 466) return -0.06;
+  return -0.09;
 }
 
 const _nearbyColliderList = [];
@@ -3901,7 +3890,7 @@ function renderGtaRadar(isMoving, isSprinting, horizSpeed = 0) {
   const size = radarCanvas.width;
   const cx = size / 2;
   const cy = size / 2;
-  const scale = 0.24;
+  const scale = 0.16;
 
   const pPlan = threeToPlan(gtaState.pos);
   ctx.clearRect(0, 0, size, size);
@@ -3915,35 +3904,35 @@ function renderGtaRadar(isMoving, isSprinting, horizSpeed = 0) {
 
   const toRadar = (wx, wy) => [(wx - pPlan.x) * scale, -(wy - pPlan.y) * scale];
 
-  const [rx1, ry1] = toRadar(-1200, -780);
+  const [rx1, ry1] = toRadar(-1500, -575);
   ctx.fillStyle = "#1d444d";
-  ctx.fillRect(rx1, ry1, 2400 * scale, 280 * scale);
+  ctx.fillRect(rx1, ry1, 3200 * scale, 370 * scale);
 
   ctx.strokeStyle = "#20515a";
   ctx.lineWidth = 4;
-  const [hx, hy] = toRadar(-332, 416);
-  ctx.strokeRect(hx, hy, 664 * scale, 658 * scale);
+  const [hx, hy] = toRadar(-364, 480);
+  ctx.strokeRect(hx, hy, 694 * scale, 676 * scale);
 
-  ctx.strokeStyle = "rgba(183, 167, 142, 0.45)";
+  ctx.strokeStyle = "rgba(183, 167, 142, 0.55)";
   ctx.lineWidth = 2;
-  const [vx, vy] = toRadar(-740, 790);
-  ctx.strokeRect(vx, vy, 1480 * scale, 1375 * scale);
+  const [vx, vy] = toRadar(-1115, 1955);
+  ctx.strokeRect(vx, vy, 2115 * scale, 2283 * scale);
 
-  ctx.strokeStyle = "rgba(38, 138, 119, 0.72)";
+  ctx.strokeStyle = "rgba(38, 138, 119, 0.78)";
   ctx.lineWidth = 1.6;
-  const [htx, hty] = toRadar(-311, 394);
-  ctx.strokeRect(htx, hty, 622 * scale, 604 * scale);
+  const [htx, hty] = toRadar(-326, 430);
+  ctx.strokeRect(htx, hty, 638 * scale, 602 * scale);
 
   ctx.strokeStyle = "rgba(196, 60, 47, 0.85)";
   ctx.lineWidth = 1.6;
-  const [tcx, tcy] = toRadar(-162, 330);
+  const [tcx, tcy] = toRadar(-162, 356);
   ctx.strokeRect(tcx, tcy, 324 * scale, 290 * scale);
 
   ctx.strokeStyle = "rgba(212, 160, 23, 0.8)";
   ctx.lineWidth = 2;
   ctx.beginPath();
-  const [ax1, ay1] = toRadar(0, 394);
-  const [ax2, ay2] = toRadar(0, -780);
+  const [ax1, ay1] = toRadar(0, 466);
+  const [ax2, ay2] = toRadar(0, -575);
   ctx.moveTo(ax1, ay1);
   ctx.lineTo(ax2, ay2);
   ctx.stroke();
@@ -3969,7 +3958,7 @@ function renderGtaRadar(isMoving, isSprinting, horizSpeed = 0) {
   ctx.arc(cx, cy, 44, 0, Math.PI * 2);
   ctx.stroke();
 
-  const northAng = gtaState.camYaw + THREE.MathUtils.degToRad(32);
+  const northAng = gtaState.camYaw + THREE.MathUtils.degToRad(35.2);
   const nx = cx + Math.sin(northAng) * (cx - 12);
   const ny = cy - Math.cos(northAng) * (cy - 12);
   ctx.fillStyle = "#17130f";

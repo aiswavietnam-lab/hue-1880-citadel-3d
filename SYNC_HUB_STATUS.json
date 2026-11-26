@@ -1,6 +1,7 @@
 {
   "project_id": "HUE_IMPERIAL_CITY_1880",
   "architecture": "30_DISJOINT_TILES_AND_18_PROPS",
+  "grid_epoch": "v2_satellite_1to1",
   "canonical_github_repo": "https://github.com/aiswavietnam-lab/hue-1880-citadel-3d.git",
   "canonical_live_url": "https://aiswavietnam-lab.github.io/hue-1880-citadel-3d/",
   "forbid_localhost_links": true,
@@ -38,131 +39,129 @@
   ],
   "completed_tiles": 30,
   "total_tiles": 30,
-  "last_sync_backend": "cli",
-  "last_sync_applied_files": 9,
-  "last_sync_utc": "2026-11-26T10:04:08+00:00",
+  "last_sync_backend": "cli_v2_realign",
+  "last_sync_applied_files": 30,
+  "last_sync_utc": "2026-11-26T13:52:43+00:00",
   "tile_versions": {
     "T01": {
-      "version": 21,
-      "sha256_12": "77d298e02f8d"
+      "version": 30,
+      "sha256_12": "93975510e6e1"
     },
     "T02": {
-      "version": 21,
-      "sha256_12": "dc5a5654040d"
+      "version": 30,
+      "sha256_12": "cfe1c3d46d4f"
     },
     "T03": {
-      "version": 22,
-      "sha256_12": "5c99d6315043"
+      "version": 30,
+      "sha256_12": "a59a9f7f661e"
     },
     "T04": {
-      "version": 22,
-      "sha256_12": "dee1892de146"
+      "version": 30,
+      "sha256_12": "633140b7b89e"
     },
     "T05": {
-      "version": 21,
-      "sha256_12": "bed469352e6e"
+      "version": 30,
+      "sha256_12": "463b76ba0a33"
     },
     "T06": {
-      "version": 19,
-      "sha256_12": "8e637508c591"
+      "version": 30,
+      "sha256_12": "f6c4a32c2867"
     },
     "T07": {
-      "version": 21,
-      "sha256_12": "1f34773597f8"
+      "version": 30,
+      "sha256_12": "497082f52c63"
     },
     "T08": {
-      "version": 20,
-      "sha256_12": "4d5afde8e17d"
+      "version": 30,
+      "sha256_12": "7f6b38795bfa"
     },
     "T09": {
-      "version": 21,
-      "sha256_12": "a9388dba43b7"
+      "version": 30,
+      "sha256_12": "6936bfd959af"
     },
     "T10": {
-      "version": 21,
-      "sha256_12": "88e55a3c8bce"
+      "version": 30,
+      "sha256_12": "8342885dcb62"
     },
     "T11": {
-      "version": 19,
-      "sha256_12": "fc6f2d3cc8fd"
+      "version": 30,
+      "sha256_12": "5ca08c9e60a5"
     },
     "T12": {
-      "version": 20,
-      "sha256_12": "a90698293baf"
+      "version": 30,
+      "sha256_12": "467dfe9887dd"
     },
     "T13": {
-      "version": 17,
-      "sha256_12": "045eb4274761"
+      "version": 30,
+      "sha256_12": "e059a9ecfac6"
     },
     "T14": {
-      "version": 19,
-      "sha256_12": "481b6cf71ebc"
+      "version": 30,
+      "sha256_12": "298b6b59a4e1"
     },
     "T15": {
-      "version": 20,
-      "sha256_12": "3e2ada3b2019"
+      "version": 30,
+      "sha256_12": "fcc0514c294d"
     },
     "T16": {
-      "version": 16,
-      "sha256_12": "7563f6acf46b"
+      "version": 30,
+      "sha256_12": "072a80815f81"
     },
     "T17": {
-      "version": 16,
-      "sha256_12": "3d244f237db5"
+      "version": 30,
+      "sha256_12": "87a58d474777"
     },
     "T18": {
-      "version": 16,
-      "sha256_12": "da3885f2a429"
+      "version": 30,
+      "sha256_12": "7cee738abe00"
     },
     "T19": {
-      "version": 14,
-      "sha256_12": "e44f845319d2"
+      "version": 30,
+      "sha256_12": "16beb63ffb4d"
     },
     "T20": {
-      "version": 16,
-      "sha256_12": "4fa9cadbe1aa"
+      "version": 30,
+      "sha256_12": "3bdbf671caa0"
     },
     "T21": {
-      "version": 16,
-      "sha256_12": "132b4caf5946"
+      "version": 30,
+      "sha256_12": "54d0f3733c21"
     },
     "T22": {
-      "version": 15,
-      "sha256_12": "0c9977c123cd"
+      "version": 30,
+      "sha256_12": "7756ec203ba6"
     },
     "T23": {
-      "version": 13,
-      "sha256_12": "e467c249974b"
+      "version": 30,
+      "sha256_12": "c21bfd9a4e80"
     },
     "T24": {
-      "version": 15,
-      "sha256_12": "46884537c257"
+      "version": 30,
+      "sha256_12": "8323bbc52db5"
     },
     "T25": {
-      "version": 13,
-      "sha256_12": "5256d278cd17"
+      "version": 30,
+      "sha256_12": "9e7dafad26df"
     },
     "T26": {
-      "version": 13,
-      "sha256_12": "c4c833a44f04"
+      "version": 30,
+      "sha256_12": "b3ab81b78656"
     },
     "T27": {
-      "version": 12,
-      "sha256_12": "d6e09481a263"
+      "version": 30,
+      "sha256_12": "5f12bad4c35a"
     },
     "T28": {
-      "version": 8,
-      "sha256_12": "c83b9f08d5d8"
+      "version": 30,
+      "sha256_12": "5d20d951a6fe"
     },
     "T29": {
-      "version": 7,
-      "sha256_12": "727009689bf1"
+      "version": 30,
+      "sha256_12": "df0d80601142"
     },
     "T30": {
-      "version": 7,
-      "sha256_12": "8a713593ba89"
+      "version": 30,
+      "sha256_12": "8e07900bb598"
     }
-  },
-  "last_upgrade_summary": "Added 1:1 orthographic plan-view vs real Google Satellite overlay & 36-landmark deviation QA tool (plan_satellite_qa.html + assets/qa/*), hardened glTF material texture index validation in scripts/sync_from_drive.py, and synced latest valid GLBs (T01, T03, T08, T10, T14, T18, T21, T26).",
-  "plan_satellite_qa_url": "https://aiswavietnam-lab.github.io/hue-1880-citadel-3d/plan_satellite_qa.html"
+  }
 }

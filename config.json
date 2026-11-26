@@ -32,11 +32,11 @@
       "note": "Blender glTF 2.0 exporter mặc định bật export_yup=True. Mọi file .glb được kiểm định ở không gian Y-up (Pivot đáy tại y_min = 0.0, tâm x ≈ 0, z ≈ 0) tương đương tuyệt đối với (0, 0, min_z) trong Blender Z-up."
     },
     "geo_astronomy": {
-      "latitude_deg": 16.4698,
-      "longitude_deg": 107.5778,
-      "sacred_axis_azimuth_deg": 148.0,
+      "latitude_deg": 16.46879,
+      "longitude_deg": 107.57834,
+      "sacred_axis_azimuth_deg": 144.8,
       "timezone_utc_offset": 7,
-      "note": "Trục Thần đạo lệch 32 độ về phía Đông so với hướng Nam chính, thẳng tâm Sông Hương và Tiền Án Núi Ngự Bình."
+      "note": "Đo xác thực trên Google Satellite z=19 tại tâm mái Điện Thái Hòa (16.46879°N, 107.57834°E). Trục Thần đạo lệch 35.2 độ về phía Đông so với hướng Nam chính (phương vị 144.8°), thẳng tâm Ngọ Môn, Kỳ Đài, Phu Văn Lâu, Nghênh Lương Đình và Tiền Án Núi Ngự Bình."
     }
   },
   "architectural_standards": {
@@ -57,8 +57,11 @@
       "tu_cam_thanh_depth_y": 290.0,
       "hoang_thanh_wall_height": 4.0,
       "hoang_thanh_wall_thickness": 1.05,
-      "hoang_thanh_width_x": 622.0,
-      "hoang_thanh_depth_y": 604.0,
+      "hoang_thanh_width_x": 666.0,
+      "hoang_thanh_depth_y": 642.0,
+      "kinh_thanh_width_x": 2180.0,
+      "kinh_thanh_depth_y": 2110.0,
+      "song_huong_width_y": 370.0,
       "ngo_mon_platform_height": 5.6,
       "ngo_mon_platform_width": 57.77,
       "ngo_mon_platform_depth": 27.6,

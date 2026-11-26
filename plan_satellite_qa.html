@@ -295,7 +295,7 @@
     </div>
     <div class="header-actions">
       <span class="badge-chip">Neo gốc: <b>Điện Thái Hòa (16.46879°N, 107.57834°E)</b></span>
-      <span class="badge-chip">Trục Thần đạo: <b>144.8°</b> (config: 148.0°, lệch 3.2°)</span>
+      <span id="badge-epoch" class="badge-chip">Trục Thần đạo: <b style="color:#45e88c">144.8° (v2.0 Chuẩn vệ tinh · 0 m² trống)</b></span>
       <button id="btn-mobile-drawer" class="btn-link mobile-toggle" type="button">Bảng sai lệch (36)</button>
       <a class="btn-link" href="./index.html">← Quay lại mô hình 3D</a>
     </div>
@@ -304,6 +304,11 @@
   <div class="workspace">
     <main class="stage-wrap">
       <div class="toolbar">
+        <div class="seg-group" role="group" aria-label="Phiên bản mô hình">
+          <button class="seg-btn active" data-epoch="v2" type="button">v2.0 Chuẩn vệ tinh</button>
+          <button class="seg-btn" data-epoch="v1" type="button">v1.0 Cũ (Trước sửa)</button>
+        </div>
+
         <div class="seg-group" role="group" aria-label="Góc nhìn bản đồ">
           <button class="seg-btn active" data-view="north_full" type="button">Toàn cảnh · Bắc chuẩn</button>
           <button class="seg-btn" data-view="axis_full" type="button">Toàn cảnh · Trục Thần đạo</button>
@@ -340,14 +345,14 @@
           <span>Góc xoay:</span>
           <select id="az-select">
             <option value="144.8">Chuẩn vệ tinh (144.8°)</option>
-            <option value="148.0">Theo config.json (148.0° · +3.2°)</option>
+            <option value="148.0">So với góc cũ (148.0° · +3.2°)</option>
           </select>
         </div>
 
         <div class="ctrl-inline">
           <label><input id="chk-vectors" type="checkbox" checked /> Vector sai lệch</label>
           <label><input id="chk-perimeters" type="checkbox" checked /> Chu vi Thực/Mô hình</label>
-          <label><input id="chk-grid" type="checkbox" /> Lưới 30 ô + Lỗ trống</label>
+          <label><input id="chk-grid" type="checkbox" /> Lưới 30 ô</label>
         </div>
       </div>
 
@@ -367,8 +372,8 @@
           <div class="hud-pill hud-legend">
             <span class="lg-dot"><i style="background:#f5c542"></i>Vị trí Mô hình 3D</span>
             <span class="lg-dot"><i style="background:#22e3ff"></i>Vị trí Vệ tinh thực tế</span>
+            <span class="lg-dot"><i style="background:#45e88c"></i>Khớp chuẩn (&lt;15m) / Hoàng Thành thực</span>
             <span class="lg-dot"><i style="background:#ff4b4b"></i>Mũi tên sai lệch</span>
-            <span class="lg-dot"><i style="background:#45e88c; border-radius:2px"></i>Hoàng Thành thực</span>
           </div>
           <div id="cursor-readout" class="hud-pill">Di chuột lên bản đồ để xem tọa độ (X, Y) mét so với Điện Thái Hòa (0, 0)</div>
         </div>
@@ -382,32 +387,11 @@
     </main>
 
     <aside id="sidebar" class="sidebar">
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="k-label">Trục trước Ngọ Môn</div>
-          <div class="k-val c-orange">+165 → +225 m</div>
-          <div class="k-sub">Kỳ Đài lệch 165m · Phu Văn Lâu 225m · Bờ Bắc Sông Hương 205m</div>
-        </div>
-        <div class="kpi-card">
-          <div class="k-label">Cánh Hoàng Thành</div>
-          <div class="k-val c-gold">86 → 157 m</div>
-          <div class="k-sub">Thế Miếu, Thái Miếu, Diên Thọ, Trường Sanh bị nén vào giữa</div>
-        </div>
-        <div class="kpi-card">
-          <div class="k-label">Nửa Bắc Kinh Thành</div>
-          <div class="k-val c-red">Thiếu ~1.110 m</div>
-          <div class="k-sub">Hồ Tịnh Tâm lệch 510m · Tàng Thư Lâu 596m · Mang Cá 1.023m</div>
-        </div>
-        <div class="kpi-card">
-          <div class="k-label">Lỗi nội tại lưới 30 ô</div>
-          <div class="k-val c-cyan">~48.400 m² trống</div>
-          <div class="k-sub">2 lỗ trống trong Hoàng Thành · Lệch config GPS 126m &amp; 3.2°</div>
-        </div>
-      </div>
+      <div id="kpi-grid" class="kpi-grid"></div>
 
       <div id="selected-detail" class="selected-detail">
         <h3>Chọn một công trình trong bảng bên dưới để phóng tới</h3>
-        <div class="coords">Tỷ lệ ghép đè <b>1:1 tuyệt đối</b> (không co giãn bóp méo) · Gốc neo tại tâm Điện Thái Hòa.</div>
+        <div class="coords">Bấm <b>v2.0 Chuẩn vệ tinh ↔ v1.0 Cũ</b> trên thanh công cụ để bật/tắt đối chiếu tức thì tại cùng góc zoom!</div>
       </div>
 
       <div id="filter-bar" class="filter-bar">
@@ -440,8 +424,10 @@
 <script>
 (() => {
   const ASSET_BASE = "./assets/qa";
+  let DATASETS = { v2: null, v1: null };
   let DATA = null;
   let state = {
+    epoch: "v2",
     view: "north_full",
     basemap: "sat",
     compare: "opacity",
@@ -482,6 +468,8 @@
     tbody: document.getElementById("dev-tbody"),
     detail: document.getElementById("selected-detail"),
     sidebar: document.getElementById("sidebar"),
+    kpiGrid: document.getElementById("kpi-grid"),
+    badgeEpoch: document.getElementById("badge-epoch"),
   };
 
   const ORIGIN_LAT = 16.46879;
@@ -521,7 +509,6 @@
       const py = ((m.center_n + m.span_n * 0.5) - n) / m.span_n * m.h;
       return [px, py];
     }
-    // Axis views: if extra rotation for 148° on model points
     let pxPlan = x, pyPlan = y;
     if (Math.abs(modelAzDeg - 144.8) > 0.05 && state.view === "axis_full") {
       const th = (modelAzDeg - 144.8) * Math.PI / 180;
@@ -596,6 +583,56 @@
     applyTransform();
   }
 
+  function renderKpis() {
+    if (state.epoch === "v2") {
+      els.badgeEpoch.innerHTML = `Trục Thần đạo: <b style="color:#45e88c">144.8° (v2.0 Chuẩn vệ tinh · 0 m² trống)</b>`;
+      els.kpiGrid.innerHTML = `
+        <div class="kpi-card">
+          <div class="k-label">Trục Thần đạo &amp; Sông</div>
+          <div class="k-val c-green">0.1 → 8.5 m</div>
+          <div class="k-sub">Kỳ Đài 1.5m (cũ 165m) · Phu Văn Lâu 2.3m (cũ 225m) · Bờ Sông 0.8m</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Hoàng Thành &amp; Lỗ trống</div>
+          <div class="k-val c-green">0 m² trống</div>
+          <div class="k-sub">Thế Miếu 0.1m · Thái Miếu 0.5m · Duyệt Thị Đường 0.3m · Kín tường 4 mặt</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Kinh Thành Vauban</div>
+          <div class="k-val c-green">Đủ 2.2×2.2 km</div>
+          <div class="k-sub">Tịnh Tâm 0.5m · Tàng Thư Lâu 0.2m · Xã Tắc 0.5m · Mang Cá 0.4m</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Trung vị sai số (v1→v2)</div>
+          <div class="k-val c-cyan">111.1m → 0.8m</div>
+          <div class="k-sub">Giảm 99.3% sai lệch công trình · 30/30 ô v30 · 0 giao cắt, 0 khe hở</div>
+        </div>`;
+    } else {
+      els.badgeEpoch.innerHTML = `Trục Thần đạo: <b style="color:#ff9c38">144.8° (v1.0 Cũ · config lệch 3.2° &amp; 126m)</b>`;
+      els.kpiGrid.innerHTML = `
+        <div class="kpi-card">
+          <div class="k-label">Trục trước Ngọ Môn (v1)</div>
+          <div class="k-val c-orange">+165 → +225 m</div>
+          <div class="k-sub">Kỳ Đài lệch 165m · Phu Văn Lâu 225m · Bờ Bắc Sông Hương 205m</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Cánh Hoàng Thành (v1)</div>
+          <div class="k-val c-gold">86 → 157 m</div>
+          <div class="k-sub">Thế Miếu, Thái Miếu, Diên Thọ, Trường Sanh bị nén vào giữa</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Nửa Bắc Kinh Thành (v1)</div>
+          <div class="k-val c-red">Thiếu ~1.110 m</div>
+          <div class="k-sub">Hồ Tịnh Tâm lệch 510m · Tàng Thư Lâu 596m · Mang Cá 1.023m</div>
+        </div>
+        <div class="kpi-card">
+          <div class="k-label">Lỗi nội tại lưới 30 ô (v1)</div>
+          <div class="k-val c-cyan">~48.400 m² trống</div>
+          <div class="k-sub">2 lỗ trống trong Hoàng Thành · Lệch config GPS 126m &amp; 3.2°</div>
+        </div>`;
+    }
+  }
+
   function loadViewImages(shouldFit = true) {
     const m = viewMeta();
     els.world.style.width = `${m.w}px`;
@@ -604,10 +641,12 @@
 
     const prefix = state.view;
     const satFile = `${ASSET_BASE}/${prefix}_${state.basemap}.jpg`;
-    const use148 = state.az === "148.0" && state.view !== "axis_ht";
-    const modFile = `${ASSET_BASE}/${prefix}_model${use148 ? "_148" : ""}.png`;
+    const allow148 = state.epoch === "v2" && state.view !== "axis_ht";
+    const use148 = allow148 && state.az === "148.0";
+    const modDir = state.epoch === "v1" ? `${ASSET_BASE}/v1` : ASSET_BASE;
+    const modFile = `${modDir}/${prefix}_model${use148 ? "_148" : ""}.png`;
 
-    els.azBox.style.display = state.view === "axis_ht" ? "none" : "inline-flex";
+    els.azBox.style.display = allow148 ? "inline-flex" : "none";
     els.imgSat.src = satFile;
     els.imgModel.src = modFile;
 
@@ -618,7 +657,7 @@
   function renderSvgOverlay() {
     if (!DATA) return;
     const m = viewMeta();
-    const azNum = (state.az === "148.0" && state.view !== "axis_ht") ? 148.0 : 144.8;
+    const azNum = (state.epoch === "v2" && state.az === "148.0" && state.view !== "axis_ht") ? 148.0 : 144.8;
     const isClose = state.view === "axis_ht";
     const sw = isClose ? 2.2 : 3.2;
     const parts = [];
@@ -632,7 +671,7 @@
       </marker>
     </defs>`);
 
-    // 1. 30-tile grid + 2 missing holes
+    // 1. 30-tile grid (+ 2 missing holes only in v1)
     if (state.showGrid) {
       for (const t of DATA.tiles) {
         const b = t.bounds;
@@ -646,37 +685,36 @@
         const [cx, cy] = planToPx((b.x_min + b.x_max) * 0.5, (b.y_min + b.y_max) * 0.5, azNum);
         parts.push(`<text x="${cx.toFixed(1)}" y="${cy.toFixed(1)}" fill="#ffe899" font-size="${isClose ? 14 : 16}" font-family="JetBrains Mono,monospace" font-weight="700" text-anchor="middle" dominant-baseline="middle" stroke="#0c0f14" stroke-width="3" paint-order="stroke">${t.id}</text>`);
       }
-      // Missing Holes inside Hoang Thanh
-      const holes = [
-        { label: "LỖ TRỐNG #1 (130×80m)", pts: [[-200,40],[-70,40],[-70,-40],[-200,-40]] },
-        { label: "LỖ TRỐNG #2 (~38.000m²)", pts: [[240,200],[311,200],[311,-220],[70,-220],[70,-150],[220,-150],[220,40],[240,40]] },
-      ];
-      for (const h of holes) {
-        const poly = h.pts.map(([x, y]) => planToPx(x, y, azNum).map(v => v.toFixed(1)).join(",")).join(" ");
-        parts.push(`<polygon points="${poly}" fill="rgba(255,50,70,0.28)" stroke="#ff4d66" stroke-width="${sw}" stroke-dasharray="8 5"/>`);
+      if (state.epoch === "v1") {
+        const holes = [
+          { pts: [[-200,40],[-70,40],[-70,-40],[-200,-40]] },
+          { pts: [[240,200],[311,200],[311,-220],[70,-220],[70,-150],[220,-150],[220,40],[240,40]] },
+        ];
+        for (const h of holes) {
+          const poly = h.pts.map(([x, y]) => planToPx(x, y, azNum).map(v => v.toFixed(1)).join(",")).join(" ");
+          parts.push(`<polygon points="${poly}" fill="rgba(255,50,70,0.28)" stroke="#ff4d66" stroke-width="${sw}" stroke-dasharray="8 5"/>`);
+        }
       }
     }
 
     // 2. Perimeters (Real vs Model)
     if (state.showPerimeters) {
-      // Real Hoang Thanh (Green)
       const realHt = [[16.46582,107.57678],[16.46924,107.58152],[16.47350,107.57828],[16.47010,107.57343]]
         .map(([la, lo]) => realGpsToPx(la, lo).map(v => v.toFixed(1)).join(",")).join(" ");
       parts.push(`<polygon points="${realHt}" fill="none" stroke="#45e88c" stroke-width="${sw}" />`);
 
-      // Model Hoang Thanh (Gold dashed)
-      const modHt = [[-311,-220],[311,-220],[311,394],[-311,394]]
+      const [hx0, hy0, hx1, hy1] = DATA.model_ht_box || [-311, -220, 311, 394];
+      const modHt = [[hx0, hy0],[hx1, hy0],[hx1, hy1],[hx0, hy1]]
         .map(([x, y]) => planToPx(x, y, azNum).map(v => v.toFixed(1)).join(",")).join(" ");
       parts.push(`<polygon points="${modHt}" fill="none" stroke="#f5c542" stroke-width="${sw}" stroke-dasharray="10 6"/>`);
 
       if (!isClose) {
-        // Real Kinh Thanh Vauban (Cyan)
         const realKt = [[16.46180,107.57040],[16.47300,107.58720],[16.48780,107.57460],[16.47760,107.55940]]
           .map(([la, lo]) => realGpsToPx(la, lo).map(v => v.toFixed(1)).join(",")).join(" ");
         parts.push(`<polygon points="${realKt}" fill="none" stroke="#22e3ff" stroke-width="${sw + 0.8}" />`);
 
-        // Model Vauban perimeter (Gold)
-        const modKt = [[-818,-520],[797,-520],[797,850],[-818,850]]
+        const [kx0, ky0, kx1, ky1] = DATA.model_kt_box || [-818, -520, 797, 850];
+        const modKt = [[kx0, ky0],[kx1, ky0],[kx1, ky1],[kx0, ky1]]
           .map(([x, y]) => planToPx(x, y, azNum).map(v => v.toFixed(1)).join(",")).join(" ");
         parts.push(`<polygon points="${modKt}" fill="none" stroke="#f5c542" stroke-width="${sw + 0.5}" />`);
       }
@@ -692,23 +730,27 @@
         if (!inView) continue;
 
         const isSel = state.selectedCode === lm.code;
-        // On full view, show clean subset unless selected, so labels never turn into soup
         const majorFull = ["TH","KD","PVL","SH_N","SH_S","HTT","TTL","DXT","KT_N","KT_W","KT_S","KT_E","TBD"];
         const showLabel = isSel || isClose || majorFull.includes(lm.code);
         const op = state.selectedCode ? (isSel ? 1 : 0.28) : (showLabel ? 0.96 : 0.42);
-        const dist = Math.hypot(rx - mx, ry - my);
+        const distPx = Math.hypot(rx - mx, ry - my);
+        const isAligned = lm.dist_m < 15;
 
         parts.push(`<g opacity="${op}">`);
-        if (dist > 6) {
-          parts.push(`<line x1="${mx.toFixed(1)}" y1="${my.toFixed(1)}" x2="${rx.toFixed(1)}" y2="${ry.toFixed(1)}" stroke="${isSel ? "#ffe14d" : "#ff4d4d"}" stroke-width="${isSel ? sw + 2 : sw}" marker-end="url(#${isSel ? "arr-hi" : "arr-red"})" />`);
+        if (distPx > 6) {
+          parts.push(`<line x1="${mx.toFixed(1)}" y1="${my.toFixed(1)}" x2="${rx.toFixed(1)}" y2="${ry.toFixed(1)}" stroke="${isSel ? "#ffe14d" : (isAligned ? "#45e88c" : "#ff4d4d")}" stroke-width="${isSel ? sw + 2 : sw}" marker-end="url(#${isSel ? "arr-hi" : "arr-red"})" />`);
         }
         const rDot = isSel ? 7 : (isClose ? 5 : 5.5);
-        parts.push(`<circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="${rDot}" fill="#f5c542" stroke="#0c0f14" stroke-width="2"/>`);
-        parts.push(`<circle cx="${rx.toFixed(1)}" cy="${ry.toFixed(1)}" r="${rDot}" fill="#22e3ff" stroke="#0c0f14" stroke-width="2"/>`);
+        if (isAligned && state.epoch === "v2") {
+          parts.push(`<circle cx="${rx.toFixed(1)}" cy="${ry.toFixed(1)}" r="${rDot}" fill="#45e88c" stroke="#0c0f14" stroke-width="2"/>`);
+        } else {
+          parts.push(`<circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="${rDot}" fill="#f5c542" stroke="#0c0f14" stroke-width="2"/>`);
+          parts.push(`<circle cx="${rx.toFixed(1)}" cy="${ry.toFixed(1)}" r="${rDot}" fill="#22e3ff" stroke="#0c0f14" stroke-width="2"/>`);
+        }
         if (showLabel) {
           const fs = isSel ? (isClose ? 17 : 20) : (isClose ? 13.5 : 15);
-          const lbl = lm.code === "TH" ? "TH (0m)" : `${lm.code} (${Math.round(lm.dist_m)}m)`;
-          parts.push(`<text x="${(rx + 10).toFixed(1)}" y="${(ry - 6).toFixed(1)}" fill="${isSel ? "#ffe866" : "#ffffff"}" font-size="${fs}" font-family="JetBrains Mono,monospace" font-weight="700" stroke="#0b0e13" stroke-width="4.5" paint-order="stroke">${lbl}</text>`);
+          const lbl = lm.dist_m < 10 ? `${lm.code} (${lm.dist_m.toFixed(1)}m)` : `${lm.code} (${Math.round(lm.dist_m)}m)`;
+          parts.push(`<text x="${(rx + 10).toFixed(1)}" y="${(ry - 6).toFixed(1)}" fill="${isSel ? "#ffe866" : (isAligned && state.epoch === "v2" ? "#9effc6" : "#ffffff")}" font-size="${fs}" font-family="JetBrains Mono,monospace" font-weight="700" stroke="#0b0e13" stroke-width="4.5" paint-order="stroke">${lbl}</text>`);
         }
         parts.push(`</g>`);
       }
@@ -727,8 +769,8 @@
   }
 
   function sevClass(d) {
-    if (d < 30) return "sev-ok";
-    if (d < 120) return "sev-warn";
+    if (d < 25) return "sev-ok";
+    if (d < 100) return "sev-warn";
     if (d < 300) return "sev-high";
     return "sev-crit";
   }
@@ -750,7 +792,7 @@
         <td class="mono" style="color:#98a6b8">${lm.tile_id}</td>
         <td class="mono">${lm.dx >= 0 ? "+" : ""}${Math.round(lm.dx)}</td>
         <td class="mono">${lm.dy >= 0 ? "+" : ""}${Math.round(lm.dy)}</td>
-        <td style="text-align:right"><span class="sev-pill ${sevClass(lm.dist_m)}">${lm.dist_m.toFixed(0)} m</span></td>
+        <td style="text-align:right"><span class="sev-pill ${sevClass(lm.dist_m)}">${lm.dist_m < 10 ? lm.dist_m.toFixed(1) : lm.dist_m.toFixed(0)} m</span></td>
       </tr>
     `).join("");
 
@@ -759,12 +801,26 @@
     });
   }
 
+  function updateDetailCard(lm) {
+    if (!lm) return;
+    const v1Tag = (state.epoch === "v2" && typeof lm.dist_m_v1 === "number")
+      ? ` <span style="color:#98a6b8;font-size:11px">(v1 cũ: ${lm.dist_m_v1.toFixed(0)}m)</span>` : "";
+    els.detail.innerHTML = `
+      <h3>${lm.code} · ${lm.name} <span class="sev-pill ${sevClass(lm.dist_m)}" style="float:right">Lệch ${lm.dist_m.toFixed(1)} m</span></h3>
+      <div class="coords">
+        Ô quy hoạch: <b>${lm.tile_id}</b>${v1Tag} · GPS thật: ${lm.real_lat.toFixed(5)}°N, ${lm.real_lon.toFixed(5)}°E<br/>
+        Vệ tinh thực: (X=${lm.real_x}m, Y=${lm.real_y}m) · Mô hình ${state.epoch.toUpperCase()}: (X=${lm.model_x}m, Y=${lm.model_y}m)<br/>
+        Sai lệch vector: <b>ΔX = ${lm.dx >= 0 ? "+" : ""}${lm.dx}m</b>, <b>ΔY = ${lm.dy >= 0 ? "+" : ""}${lm.dy}m</b>
+      </div>
+      <div class="note" style="color:${lm.dist_m < 25 ? "#b9ffd6" : "#ffd9d9"}">↳ ${lm.note}</div>
+    `;
+  }
+
   function selectLandmark(code) {
     const lm = DATA.landmarks.find(x => x.code === code);
     if (!lm) return;
     state.selectedCode = code;
 
-    // Pick best view automatically if landmark is outside close-up bounds
     const inHt = Math.abs(lm.real_x) < 420 && Math.abs(lm.model_x) < 420 && lm.real_y > -760 && lm.real_y < 490 && lm.model_y > -760 && lm.model_y < 490;
     const targetView = inHt ? "axis_ht" : (state.view === "axis_ht" ? "north_full" : state.view);
     if (targetView !== state.view) {
@@ -773,8 +829,7 @@
       loadViewImages(false);
     }
 
-    // Smoothly center & zoom to midpoint of model & real pins
-    const azNum = (state.az === "148.0" && state.view !== "axis_ht") ? 148.0 : 144.8;
+    const azNum = (state.epoch === "v2" && state.az === "148.0" && state.view !== "axis_ht") ? 148.0 : 144.8;
     const [mx, my] = planToPx(lm.model_x, lm.model_y, azNum);
     const [rx, ry] = realGpsToPx(lm.real_lat, lm.real_lon);
     const cx = (mx + rx) * 0.5;
@@ -787,17 +842,22 @@
     applyTransform();
     renderSvgOverlay();
     renderTable();
-
-    els.detail.innerHTML = `
-      <h3>${lm.code} · ${lm.name} <span class="sev-pill ${sevClass(lm.dist_m)}" style="float:right">Lệch ${lm.dist_m.toFixed(1)} m</span></h3>
-      <div class="coords">
-        Ô quy hoạch: <b>${lm.tile_id}</b> · GPS thật: ${lm.real_lat.toFixed(5)}°N, ${lm.real_lon.toFixed(5)}°E<br/>
-        Vệ tinh thực: (X=${lm.real_x}m, Y=${lm.real_y}m) · Mô hình 3D: (X=${lm.model_x}m, Y=${lm.model_y}m)<br/>
-        Sai lệch vector: <b>ΔX = ${lm.dx >= 0 ? "+" : ""}${lm.dx}m</b>, <b>ΔY = ${lm.dy >= 0 ? "+" : ""}${lm.dy}m</b>
-      </div>
-      <div class="note">↳ ${lm.note}</div>
-    `;
+    updateDetailCard(lm);
     els.sidebar.classList.remove("open");
+  }
+
+  function switchEpoch(epoch) {
+    if (!DATASETS[epoch]) return;
+    state.epoch = epoch;
+    DATA = DATASETS[epoch];
+    document.querySelectorAll("[data-epoch]").forEach(b => b.classList.toggle("active", b.dataset.epoch === epoch));
+    renderKpis();
+    renderTable();
+    loadViewImages(false);
+    if (state.selectedCode) {
+      const lm = DATA.landmarks.find(x => x.code === state.selectedCode);
+      if (lm) updateDetailCard(lm);
+    }
   }
 
   // Pan & Zoom interactions
@@ -817,7 +877,7 @@
       const m = viewMeta();
       if (ix >= 0 && ix <= m.w && iy >= 0 && iy <= m.h) {
         const [px, py] = pxToPlan(ix, iy);
-        els.cursorReadout.textContent = `Tọa độ Mặt bằng Huế (gốc Điện Thái Hòa): X = ${px >= 0 ? "+" : ""}${px.toFixed(0)} m (Đông Bắc) · Y = ${py >= 0 ? "+" : ""}${py.toFixed(0)} m (Tây Bắc)`;
+        els.cursorReadout.textContent = `Tọa độ Mặt bằng Huế (${state.epoch.toUpperCase()} · gốc Điện Thái Hòa): X = ${px >= 0 ? "+" : ""}${px.toFixed(0)} m (Đông Bắc) · Y = ${py >= 0 ? "+" : ""}${py.toFixed(0)} m (Tây Bắc)`;
       }
     }
     if (!dragging || !dragStart) return;
@@ -858,6 +918,9 @@
   els.swipeHandle.addEventListener("pointerup", () => { swiping = false; });
 
   // UI Controls
+  document.querySelectorAll("[data-epoch]").forEach(btn => {
+    btn.addEventListener("click", () => switchEpoch(btn.dataset.epoch));
+  });
   document.querySelectorAll("[data-view]").forEach(btn => {
     btn.addEventListener("click", () => {
       state.view = btn.dataset.view;
@@ -935,10 +998,15 @@
 
   window.addEventListener("resize", fitView);
 
-  fetch(`${ASSET_BASE}/deviation_data.json`)
-    .then(r => r.json())
-    .then(json => {
-      DATA = json;
+  Promise.all([
+    fetch(`${ASSET_BASE}/deviation_data.json`).then(r => r.json()),
+    fetch(`${ASSET_BASE}/v1/deviation_data.json`).then(r => r.json()).catch(() => null),
+  ])
+    .then(([v2Json, v1Json]) => {
+      DATASETS.v2 = v2Json;
+      DATASETS.v1 = v1Json;
+      DATA = v2Json;
+      renderKpis();
       renderTable();
       loadViewImages(true);
       window.__SAT_QA_READY = true;

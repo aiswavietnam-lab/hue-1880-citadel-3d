@@ -7,8 +7,8 @@ const stops = [
     id: "T28", name: "Bến Nghênh Lương Đình & Phu Văn Lâu", short: "Bến sông Hương",
     place: "Bờ bắc sông Hương", date: "Phu Văn Lâu · 1819 / Nghênh Lương Tạ · 1852",
     story: "Từ bến ngự nhìn lên, hai mái lầu nối dòng sông với trục Kinh thành. Phu Văn Lâu dưới triều Gia Long là nơi niêm yết chiếu chỉ và bảng khoa cử. Thời Tự Đức, nhà vua dừng chân bên sông tại Nghênh Lương Tạ, tên gọi của đình vào năm 1880.",
-    gate: [0, -717, Math.PI], look: [0, 6, 698], eye: [68, 41, 783],
-    near: [[0, -738], [0, -668]], sources: [
+    gate: [0, -518, Math.PI], look: [0, 6, 480], eye: [68, 41, 565],
+    near: [[0, -544], [0, -443]], sources: [
       ["Cục Văn thư và Lưu trữ nhà nước · Phu Văn Lâu", "https://luutru.gov.vn/tin-tong-hop/phu-van-lau-mot-di-tich-van-hoa-va-lich-su--1743-vtlt.htm"],
       ["Đại học Huế · Công trình ven sông Hương", "https://csdlkhoahoc.hueuni.edu.vn/data/2021/7/1-BAO_CAO_DE_TAI_KHOA_HOC_BO_SONG_HUONG_CANH_-_2021.pdf"]
     ]
@@ -16,8 +16,8 @@ const stops = [
   {
     id: "T01", name: "Kỳ Đài", short: "Kỳ Đài", place: "Mặt nam Kinh thành", date: "Gia Long · 1807",
     story: "Ba tầng đài xây thu nhỏ dần nâng cột cờ lên trên mặt thành. Nhìn từ chân đài, cột cờ và lối vào Hoàng thành cùng nằm trên một trục. Vào thế kỷ XIX, thân cột được làm bằng gỗ.",
-    gate: [0, -540, 0], look: [0, 20, 492], eye: [63, 45, 598],
-    near: [[0, -492]], sources: [
+    gate: [0, -365, 0], look: [0, 20, 328], eye: [63, 45, 425],
+    near: [[0, -328]], sources: [
       ["Sở Văn hóa, Thể thao và Du lịch Huế · Kỳ Đài", "https://svhttdl.hue.gov.vn/tin-trong-tinh/hue-duong-dua-di-san-giua-long-co-do.html"],
       ["Bộ Văn hóa, Thể thao và Du lịch · Đài cờ", "https://bvhttdl.gov.vn/diem-bao-hoat-dong-nganh-van-hoa-the-thao-va-du-lich-ngay-18-5-2023-20230518113806346.htm"]
     ]
@@ -25,14 +25,14 @@ const stops = [
   {
     id: "T02", name: "Ngọ Môn", short: "Ngọ Môn", place: "Cửa nam Hoàng thành", date: "Minh Mạng · 1833",
     story: "Trên nền đài chữ U, Lầu Ngũ Phụng trải mái qua ba mặt của cửa nam. Từ sân phía trước có thể nhìn rõ lối chính giữa dành cho vua và hai cánh đài vươn ra hai bên.",
-    gate: [0, -210, 0], look: [0, 9, 185], eye: [39, 27, 266], near: [[0, -185]],
+    gate: [0, -162, 0], look: [0, 9, 136], eye: [39, 27, 215], near: [[0, -136]],
     sources: [["Cục Di sản văn hóa · Kiến trúc Ngọ Môn", "https://dsvh.gov.vn/Upload/files/5013_Ngo%20Mon%20bieu%20tuong%20vinh%20hang%20cua%20co%20do%20hue.pdf"]]
   },
   {
     id: "T04", name: "Cầu Trung Đạo & Điện Thái Hòa", short: "Cầu Trung Đạo & Điện Thái Hòa",
     place: "Trục Thần đạo", date: "Điện Thái Hòa · Gia Long 1805 / Minh Mạng 1833",
     story: "Qua cầu Trung Đạo giữa hồ Thái Dịch là sân đại triều và điện đặt ngai vua. Hai nếp nhà của điện nối nhau dưới mái hoàng lưu ly. Điện được dựng năm 1805 rồi dời dựng tại vị trí này năm 1833.",
-    gate: [0, -32, 0], look: [0, 6, 35], eye: [57, 48, 153], near: [[0, -95], [0, -14]],
+    gate: [0, -32, 0], look: [0, 6, 30], eye: [57, 48, 140], near: [[0, -90], [0, -12]],
     sources: [["Cục Văn thư và Lưu trữ nhà nước · Châu bản về điện Thái Hòa", "https://luutru.gov.vn/cong-bo-gioi-thieu-tai-lieu/dien-thai-hoa-cung-dien-mot-thuo-vang-son.htm"],
       ["Sở Du lịch Huế · Kiến trúc điện", "https://huetourism.gov.vn/Dien-Thai-Hoa.html/?pid=MjAzMDN8Y3NkbGRs0"]]
   },
@@ -40,22 +40,22 @@ const stops = [
     id: "T09", name: "Thế Tổ Miếu & Cửu Đỉnh", short: "Thế Tổ Miếu & Cửu Đỉnh",
     place: "Tây nam Hoàng thành", date: "Minh Mạng · Miếu 1821 / Cửu Đỉnh 1835–1837",
     story: "Qua miếu môn, chín đỉnh đồng đứng trong sân giữa Hiển Lâm Các và nơi thờ các vua Nguyễn. Trên thân đỉnh, núi sông, cây cỏ và muông thú được thể hiện thành những hình đúc nổi.",
-    gate: [-130, -183, 0], look: [-135, 7, 114], eye: [-80, 44, 192], near: [[-135, -114]],
+    gate: [-228, -118, 0], look: [-228, 7, 52], eye: [-172, 44, 132], near: [[-228, -52]],
     sources: [["Sở Du lịch Huế · Thế Tổ Miếu", "https://huetourism.gov.vn/The-To-Mieu.html/?pid=MjAzMDd8Y3NkbGRs0"],
       ["Kho dữ liệu Văn hóa số Quốc gia · Cửu Đỉnh", "https://cdt.gov.vn/data/cuu-dinh-cua-nha-nguyen"]]
   },
   {
     id: "T15", name: "Duyệt Thị Đường", short: "Duyệt Thị Đường", place: "Tử Cấm Thành", date: "Minh Mạng · 1826",
     story: "Từ cửa phía đông, lối vào dẫn đến nhà hát trong Tử Cấm Thành. Giữa những cung điện dành cho việc thiết triều và sinh hoạt, đây là không gian để vua và triều đình thưởng thức tuồng cùng âm nhạc cung đình.",
-    gate: [156, 238.5, Math.PI / 2], look: [114, 5, -238.5], eye: [173, 30, -206],
-    near: [[114, 238.5]], sources: [["Cục Du lịch Quốc gia Việt Nam · Duyệt Thị Đường", "https://csdl.vietnamtourism.gov.vn/vcgt/?item=189"]]
+    gate: [162, 132, Math.PI / 2], look: [130, 5, -132], eye: [188, 30, -98],
+    near: [[130, 132]], sources: [["Cục Du lịch Quốc gia Việt Nam · Duyệt Thị Đường", "https://csdl.vietnamtourism.gov.vn/vcgt/?item=189"]]
   }
 ];
 
 const canChanh = {
   id: "T06", name: "Điện Cần Chánh", place: "Tử Cấm Thành", date: "Gia Long · 1804",
   story: "Qua Đại Cung Môn là nơi nhà vua làm việc hằng ngày và thiết thường triều. Từ sân điện, hai lớp mái nối tiếp nhau dẫn mắt vào chính điện.",
-  gate: [0, 117, 0], look: [0, 5, -147.5], eye: [55, 36, -80], near: [[0, 147.5]],
+  gate: [0, 102, 0], look: [0, 5, -126], eye: [55, 36, -65], near: [[0, 126]],
   sources: [["Báo Chính phủ · Điện Cần Chánh", "https://baochinhphu.vn/tu-bo-phuc-hoi-di-tich-dien-can-chanh-noi-vua-lam-viec-hang-ngay-102241217174950047.htm"]]
 };
 const landmarks = [...stops, canChanh];

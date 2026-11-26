@@ -359,6 +359,7 @@ def write_sync_hub_status(gm: dict, backend_mode: str, applied_count: int) -> No
     hub = {
         "project_id": "HUE_IMPERIAL_CITY_1880",
         "architecture": "30_DISJOINT_TILES_AND_18_PROPS",
+        "grid_epoch": gm.get("grid_epoch", "v2_satellite_1to1"),
         "canonical_github_repo": "https://github.com/aiswavietnam-lab/hue-1880-citadel-3d.git",
         "canonical_live_url": "https://aiswavietnam-lab.github.io/hue-1880-citadel-3d/",
         "forbid_localhost_links": True,
@@ -456,16 +457,68 @@ def main():
         return 1 if os.environ.get("REQUIRE_DRIVE_AUTH") == "1" else 0
 
     prev_versions = {}
+    prev_dims = {}
     gm_existing = ROOT / "grid_manifest.json"
+    local_grid_epoch = ""
     if gm_existing.exists():
         try:
-            for t in json.loads(gm_existing.read_text(encoding="utf-8")).get("tiles", []):
+            gm_cur_data = json.loads(gm_existing.read_text(encoding="utf-8"))
+            local_grid_epoch = str(gm_cur_data.get("grid_epoch") or "")
+            for t in gm_cur_data.get("tiles", []):
                 prev_versions[t["tile_id"]] = {
-                    "version": t.get("version", 1),
+                    "version": int(t.get("version") or 1),
                     "detail_stage": t.get("detail_stage", ""),
                 }
+                dims = t.get("dimensions") or {}
+                if "width" in dims and "depth" in dims:
+                    prev_dims[t["tile_id"]] = (float(dims["width"]), float(dims["depth"]))
         except Exception:
             prev_versions = {}
+
+    def glb_matches_expected_dims(g_path: pathlib.Path, tid: str, tol: float = 8.0) -> tuple[bool, str]:
+        if tid not in prev_dims:
+            return True, "ok"
+        exp_w, exp_d = prev_dims[tid]
+        try:
+            with g_path.open("rb") as f:
+                f.read(12)
+                clen, _ = struct.unpack("<II", f.read(8))
+                gltf = json.loads(f.read(clen).decode("utf-8"))
+            accs = gltf.get("accessors") or []
+            nodes = gltf.get("nodes") or []
+            meshes = gltf.get("meshes") or []
+            roots = (gltf.get("scenes") or [{}])[gltf.get("scene", 0)].get("nodes") or []
+            reachable = set()
+            stack = list(roots)
+            while stack:
+                idx = stack.pop()
+                if idx in reachable or not (0 <= idx < len(nodes)):
+                    continue
+                reachable.add(idx)
+                for ch in nodes[idx].get("children") or []:
+                    stack.append(ch)
+            xmin = zmin = 1e9
+            xmax = zmax = -1e9
+            for ni in reachable:
+                n = nodes[ni]
+                if "mesh" not in n:
+                    continue
+                tvec = n.get("translation") or (n["matrix"][12:15] if "matrix" in n else [0.0, 0.0, 0.0])
+                for prim in meshes[n["mesh"]].get("primitives") or []:
+                    acc = accs[prim["attributes"]["POSITION"]]
+                    if "min" in acc and "max" in acc:
+                        xmin = min(xmin, acc["min"][0] + tvec[0])
+                        xmax = max(xmax, acc["max"][0] + tvec[0])
+                        zmin = min(zmin, acc["min"][2] + tvec[2])
+                        zmax = max(zmax, acc["max"][2] + tvec[2])
+            if xmin > xmax:
+                return True, "no_bounds"
+            sw, sd = xmax - xmin, zmax - zmin
+            if abs(sw - exp_w) > tol or abs(sd - exp_d) > tol:
+                return False, f"v2 bbox mismatch ({sw:.0f}x{sd:.0f} != {exp_w:.0f}x{exp_d:.0f})"
+            return True, "ok"
+        except Exception as exc:
+            return False, f"bbox parse err: {exc}"
 
     old_state = json.loads(STATE_FILE.read_text(encoding="utf-8")) if STATE_FILE.exists() else {}
     new_state = {}
@@ -490,7 +543,7 @@ def main():
                 tile_by_tid[tid] = it
                 targets[fn] = ("tiles", it, None)
 
-    # Kiểm tra các bản GLB mới hơn (v10..v14+) trong 03_assets_glb/inbox có manifest xác thực kèm theo
+    # Kiểm tra các bản GLB mới hơn (v31+ đối với v2_satellite_1to1) trong 03_assets_glb/inbox có manifest xác thực kèm theo
     inbox_glbs_by_tid = {}
     inbox_manifests_by_stem = {}
     for fn, it in inbox_items.items():
@@ -545,6 +598,9 @@ def main():
         def dl_job(job):
             rel_path, src, it, manifest_it = job
             dest = ROOT / rel_path
+            m_tid = TILE_ID_RE.match(rel_path)
+            tid = m_tid.group(1) if m_tid else ""
+            cur_ver = int(prev_versions.get(tid, {}).get("version") or 0) if tid else 0
             if src == "inbox" and manifest_it is not None:
                 with tempfile.TemporaryDirectory() as td:
                     tdp = pathlib.Path(td)
@@ -555,24 +611,38 @@ def main():
                     ready, reason = is_manifest_ready(meta)
                     if not ready:
                         return (rel_path, False, f"inbox manifest {reason}", None)
+                    ver = parse_manifest_version(meta)
+                    if local_grid_epoch == "v2_satellite_1to1" and ver is not None and ver <= cur_ver:
+                        return (rel_path, False, f"stale inbox v{ver} <= v2 baseline v{cur_ver}", None)
                     client.download(it["id"], g_path)
                     if not is_valid_glb(g_path):
-                        return (rel_path, False, "invalid glTF 2.0 header", None)
+                        return (rel_path, False, "invalid glTF 2.0 header/textures", None)
+                    if local_grid_epoch == "v2_satellite_1to1" and tid:
+                        dim_ok, dim_reason = glb_matches_expected_dims(g_path, tid)
+                        if not dim_ok:
+                            return (rel_path, False, dim_reason, None)
                     expected_sha = find_manifest_sha256(meta)
                     actual_sha = sha256_file(g_path).lower()
                     if expected_sha and actual_sha != expected_sha:
                         return (rel_path, False, f"sha256 mismatch ({actual_sha[:8]} != {expected_sha[:8]})", None)
                     shutil.move(str(g_path), str(dest))
-                    ver = parse_manifest_version(meta)
                     return (rel_path, True, f"inbox v{ver if ver is not None else '?'}", meta)
             else:
                 with tempfile.TemporaryDirectory() as td:
                     tmp_path = pathlib.Path(td) / rel_path
                     client.download(it["id"], tmp_path)
-                    if rel_path.endswith(".glb") and not is_valid_glb(tmp_path):
-                        return (rel_path, False, "invalid glTF 2.0 header", None)
+                    if rel_path.endswith(".glb"):
+                        if not is_valid_glb(tmp_path):
+                            return (rel_path, False, "invalid glTF 2.0 header/textures", None)
+                        if local_grid_epoch == "v2_satellite_1to1" and tid:
+                            dim_ok, dim_reason = glb_matches_expected_dims(tmp_path, tid)
+                            if not dim_ok:
+                                return (rel_path, False, dim_reason, None)
                     if rel_path.endswith(".json"):
-                        json.loads(tmp_path.read_text(encoding="utf-8"))
+                        parsed_j = json.loads(tmp_path.read_text(encoding="utf-8"))
+                        if rel_path == "grid_manifest.json" and local_grid_epoch == "v2_satellite_1to1":
+                            if parsed_j.get("grid_epoch") != "v2_satellite_1to1":
+                                return (rel_path, False, "refuse v1 grid_manifest downgrade over v2_satellite_1to1", None)
                     shutil.move(str(tmp_path), str(dest))
                     return (rel_path, True, src, None)
 

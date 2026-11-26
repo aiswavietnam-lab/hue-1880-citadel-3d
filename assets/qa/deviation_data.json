@@ -1,16 +1,37 @@
 {
+  "version": "v2_satellite_1to1",
   "origin_real_gps": {
     "lat": 16.46879,
     "lon": 107.57834
   },
   "origin_config_gps": {
-    "lat": 16.4698,
-    "lon": 107.5778,
-    "offset_m": 125.8
+    "lat": 16.46879,
+    "lon": 107.57834,
+    "offset_m": 0.0
   },
   "true_azimuth_deg": 144.8,
-  "config_azimuth_deg": 148.0,
-  "azimuth_error_deg": 3.2,
+  "config_azimuth_deg": 144.8,
+  "azimuth_error_deg": 0.0,
+  "holes_m2": 0,
+  "model_ht_box": [
+    -326,
+    -172,
+    312,
+    430
+  ],
+  "model_kt_box": [
+    -1115,
+    -285,
+    1000,
+    1955
+  ],
+  "summary": {
+    "median_landmark_m_v1": 111.1,
+    "median_landmark_m_v2": 0.8,
+    "max_landmark_m_v1": 1022.9,
+    "max_landmark_m_v2": 21.4,
+    "median_all36_m_v2": 1.8
+  },
   "views": {
     "axis_full": {
       "x_min": -1400.0,
@@ -43,10 +64,10 @@
       "label": "01 · Kỳ Đài & Quảng trường",
       "zone": "truc_than_dao",
       "bounds": {
-        "x_min": -160.0,
-        "x_max": 160.0,
-        "y_min": -600.0,
-        "y_max": -220.0
+        "x_min": -100.0,
+        "x_max": 100.0,
+        "y_min": -395.0,
+        "y_max": -176.0
       }
     },
     {
@@ -56,8 +77,8 @@
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": -220.0,
-        "y_max": -150.0
+        "y_min": -176.0,
+        "y_max": -116.0
       }
     },
     {
@@ -67,8 +88,8 @@
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": -150.0,
-        "y_max": -40.0
+        "y_min": -116.0,
+        "y_max": -32.0
       }
     },
     {
@@ -78,8 +99,8 @@
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": -40.0,
-        "y_max": 40.0
+        "y_min": -32.0,
+        "y_max": 38.0
       }
     },
     {
@@ -89,8 +110,8 @@
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": 40.0,
-        "y_max": 110.0
+        "y_min": 38.0,
+        "y_max": 104.0
       }
     },
     {
@@ -100,8 +121,8 @@
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": 110.0,
-        "y_max": 185.0
+        "y_min": 104.0,
+        "y_max": 160.0
       }
     },
     {
@@ -111,8 +132,8 @@
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": 185.0,
-        "y_max": 270.0
+        "y_min": 160.0,
+        "y_max": 265.0
       }
     },
     {
@@ -122,8 +143,8 @@
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": 270.0,
-        "y_max": 330.0
+        "y_min": 265.0,
+        "y_max": 365.0
       }
     },
     {
@@ -131,10 +152,10 @@
       "label": "09 · Thế Tổ Miếu & Cửu Đỉnh",
       "zone": "hoang_thanh",
       "bounds": {
-        "x_min": -200.0,
+        "x_min": -295.0,
         "x_max": -70.0,
-        "y_min": -185.0,
-        "y_max": -40.0
+        "y_min": -176.0,
+        "y_max": 90.0
       }
     },
     {
@@ -143,8 +164,8 @@
       "zone": "hoang_thanh",
       "bounds": {
         "x_min": 70.0,
-        "x_max": 220.0,
-        "y_min": -150.0,
+        "x_max": 316.0,
+        "y_min": -176.0,
         "y_max": 40.0
       }
     },
@@ -153,10 +174,10 @@
       "label": "11 · Cung Diên Thọ",
       "zone": "tu_cam_thanh",
       "bounds": {
-        "x_min": -200.0,
+        "x_min": -295.0,
         "x_max": -70.0,
-        "y_min": 40.0,
-        "y_max": 185.0
+        "y_min": 90.0,
+        "y_max": 265.0
       }
     },
     {
@@ -164,10 +185,10 @@
       "label": "12 · Phủ Nội Vụ & Hiển Nhơn",
       "zone": "tu_cam_thanh",
       "bounds": {
-        "x_min": 70.0,
-        "x_max": 240.0,
+        "x_min": 190.0,
+        "x_max": 316.0,
         "y_min": 40.0,
-        "y_max": 200.0
+        "y_max": 466.0
       }
     },
     {
@@ -175,10 +196,10 @@
       "label": "13 · Cửa Chương Đức & Tây HT",
       "zone": "hoang_thanh",
       "bounds": {
-        "x_min": -311.0,
-        "x_max": -200.0,
-        "y_min": -220.0,
-        "y_max": 394.0
+        "x_min": -350.0,
+        "x_max": -295.0,
+        "y_min": -176.0,
+        "y_max": 466.0
       }
     },
     {
@@ -186,10 +207,10 @@
       "label": "14 · Cung Trường Sanh",
       "zone": "hoang_thanh",
       "bounds": {
-        "x_min": -200.0,
+        "x_min": -295.0,
         "x_max": -70.0,
-        "y_min": 185.0,
-        "y_max": 394.0
+        "y_min": 265.0,
+        "y_max": 466.0
       }
     },
     {
@@ -198,9 +219,9 @@
       "zone": "hoang_thanh",
       "bounds": {
         "x_min": 70.0,
-        "x_max": 311.0,
-        "y_min": 200.0,
-        "y_max": 394.0
+        "x_max": 190.0,
+        "y_min": 40.0,
+        "y_max": 466.0
       }
     },
     {
@@ -210,8 +231,8 @@
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": 330.0,
-        "y_max": 394.0
+        "y_min": 365.0,
+        "y_max": 466.0
       }
     },
     {
@@ -219,10 +240,10 @@
       "label": "17 · Cửa Quảng Đức & Thần Công Tây",
       "zone": "kinh_thanh_noi",
       "bounds": {
-        "x_min": -620.0,
-        "x_max": -160.0,
-        "y_min": -600.0,
-        "y_max": -220.0
+        "x_min": -920.0,
+        "x_max": -100.0,
+        "y_min": -395.0,
+        "y_max": -176.0
       }
     },
     {
@@ -230,10 +251,10 @@
       "label": "18 · Cửa Thể Nhơn & Thần Công Đông",
       "zone": "kinh_thanh_noi",
       "bounds": {
-        "x_min": 160.0,
-        "x_max": 620.0,
-        "y_min": -600.0,
-        "y_max": -220.0
+        "x_min": 100.0,
+        "x_max": 880.0,
+        "y_min": -395.0,
+        "y_max": -176.0
       }
     },
     {
@@ -241,10 +262,10 @@
       "label": "19 · Hào Kim Thủy Tây Nam",
       "zone": "kinh_thanh_noi",
       "bounds": {
-        "x_min": -620.0,
-        "x_max": -311.0,
-        "y_min": -220.0,
-        "y_max": 90.0
+        "x_min": -920.0,
+        "x_max": -350.0,
+        "y_min": -176.0,
+        "y_max": 145.0
       }
     },
     {
@@ -252,10 +273,10 @@
       "label": "20 · Hào Kim Thủy & Đàn Xã Tắc",
       "zone": "kinh_thanh_noi",
       "bounds": {
-        "x_min": -620.0,
-        "x_max": -311.0,
-        "y_min": 90.0,
-        "y_max": 394.0
+        "x_min": -920.0,
+        "x_max": -350.0,
+        "y_min": 145.0,
+        "y_max": 466.0
       }
     },
     {
@@ -263,10 +284,10 @@
       "label": "21 · Khu Lục Bộ & Cơ Mật Viện",
       "zone": "kinh_thanh_noi",
       "bounds": {
-        "x_min": 311.0,
-        "x_max": 620.0,
-        "y_min": -220.0,
-        "y_max": 90.0
+        "x_min": 316.0,
+        "x_max": 880.0,
+        "y_min": -176.0,
+        "y_max": 466.0
       }
     },
     {
@@ -274,10 +295,10 @@
       "label": "22 · Hồ Tịnh Tâm (Nam)",
       "zone": "kinh_thanh_noi",
       "bounds": {
-        "x_min": 311.0,
-        "x_max": 620.0,
-        "y_min": 90.0,
-        "y_max": 394.0
+        "x_min": 0.0,
+        "x_max": 880.0,
+        "y_min": 466.0,
+        "y_max": 1040.0
       }
     },
     {
@@ -285,10 +306,10 @@
       "label": "23 · Doanh Trại Tây Bắc",
       "zone": "kinh_thanh_noi",
       "bounds": {
-        "x_min": -620.0,
+        "x_min": -920.0,
         "x_max": 0.0,
-        "y_min": 394.0,
-        "y_max": 720.0
+        "y_min": 466.0,
+        "y_max": 1700.0
       }
     },
     {
@@ -297,9 +318,9 @@
       "zone": "kinh_thanh_noi",
       "bounds": {
         "x_min": 0.0,
-        "x_max": 620.0,
-        "y_min": 394.0,
-        "y_max": 720.0
+        "x_max": 880.0,
+        "y_min": 1040.0,
+        "y_max": 1700.0
       }
     },
     {
@@ -307,10 +328,10 @@
       "label": "25 · Thành Vauban Tây",
       "zone": "thanh_vauban",
       "bounds": {
-        "x_min": -980.0,
-        "x_max": -620.0,
-        "y_min": -600.0,
-        "y_max": 720.0
+        "x_min": -1280.0,
+        "x_max": -920.0,
+        "y_min": -395.0,
+        "y_max": 1700.0
       }
     },
     {
@@ -318,10 +339,10 @@
       "label": "26 · Thành Vauban Đông",
       "zone": "thanh_vauban",
       "bounds": {
-        "x_min": 620.0,
-        "x_max": 980.0,
-        "y_min": -600.0,
-        "y_max": 720.0
+        "x_min": 880.0,
+        "x_max": 1420.0,
+        "y_min": -395.0,
+        "y_max": 1700.0
       }
     },
     {
@@ -329,10 +350,10 @@
       "label": "27 · Thành Vauban Bắc",
       "zone": "thanh_vauban",
       "bounds": {
-        "x_min": -980.0,
-        "x_max": 980.0,
-        "y_min": 720.0,
-        "y_max": 1040.0
+        "x_min": -1280.0,
+        "x_max": 1420.0,
+        "y_min": 1700.0,
+        "y_max": 2150.0
       }
     },
     {
@@ -340,10 +361,10 @@
       "label": "28 · Phu Văn Lâu & Hào Nam",
       "zone": "song_huong",
       "bounds": {
-        "x_min": -980.0,
-        "x_max": 980.0,
-        "y_min": -780.0,
-        "y_max": -600.0
+        "x_min": -1280.0,
+        "x_max": 1420.0,
+        "y_min": -575.0,
+        "y_max": -395.0
       }
     },
     {
@@ -351,10 +372,10 @@
       "label": "29 · Sông Hương & Thuyền Rồng",
       "zone": "song_huong",
       "bounds": {
-        "x_min": -980.0,
-        "x_max": 980.0,
-        "y_min": -1060.0,
-        "y_max": -780.0
+        "x_min": -1280.0,
+        "x_max": 1420.0,
+        "y_min": -945.0,
+        "y_max": -575.0
       }
     },
     {
@@ -362,10 +383,10 @@
       "label": "30 · Bờ Nam & Tiền Án Ngự Bình",
       "zone": "song_huong",
       "bounds": {
-        "x_min": -980.0,
-        "x_max": 980.0,
-        "y_min": -1360.0,
-        "y_max": -1060.0
+        "x_min": -1280.0,
+        "x_max": 1420.0,
+        "y_min": -1250.0,
+        "y_max": -945.0
       }
     }
   ],
@@ -384,8 +405,9 @@
       "dx": 0.0,
       "dy": -0.1,
       "dist_m": 0.1,
+      "dist_m_v1": 0.1,
       "dist_m_az148": 0.1,
-      "note": "Điểm neo gốc tọa độ (0, 0) — khớp tuyệt đối"
+      "note": "Điểm neo chuẩn GPS 16.46879°N, 107.57834°E — khớp tuyệt đối"
     },
     {
       "code": "CTD",
@@ -397,12 +419,13 @@
       "real_x": -0.9,
       "real_y": -90.1,
       "model_x": 0.0,
-      "model_y": -97.0,
+      "model_y": -87.0,
       "dx": 0.9,
-      "dy": -6.9,
-      "dist_m": 6.9,
-      "dist_m_az148": 8.1,
-      "note": "Lệch nhẹ về Nam ~7m"
+      "dy": 3.1,
+      "dist_m": 3.2,
+      "dist_m_v1": 6.9,
+      "dist_m_az148": 5.2,
+      "note": "Đã dịch +10m về Bắc — khớp cầu & Hồ Thái Dịch (< 4m)"
     },
     {
       "code": "NM",
@@ -414,12 +437,13 @@
       "real_x": -1.6,
       "real_y": -135.6,
       "model_x": 0.0,
-      "model_y": -187.4,
+      "model_y": -139.4,
       "dx": 1.6,
-      "dy": -51.8,
-      "dist_m": 51.8,
-      "dist_m_az148": 52.2,
-      "note": "Bị đẩy lùi ra Nam ~52m so với thực tế"
+      "dy": -3.8,
+      "dist_m": 4.1,
+      "dist_m_v1": 51.8,
+      "dist_m_az148": 7.1,
+      "note": "Đã dịch +48m về Bắc (v1 lệch 52m) — khớp chân tường Nam HT"
     },
     {
       "code": "KD",
@@ -431,12 +455,13 @@
       "real_x": -1.5,
       "real_y": -328.0,
       "model_x": 0.0,
-      "model_y": -493.4,
+      "model_y": -328.0,
       "dx": 1.5,
-      "dy": -165.4,
-      "dist_m": 165.4,
-      "dist_m_az148": 166.6,
-      "note": "Bị kéo giãn xa Ngọ Môn — lệch Nam ~165m"
+      "dy": 0.0,
+      "dist_m": 1.5,
+      "dist_m_v1": 165.4,
+      "dist_m_az148": 16.8,
+      "note": "Đã dịch +165.4m, cắt bỏ công trình trùng phía Nam — khớp chuẩn 0.3m"
     },
     {
       "code": "PVL",
@@ -448,12 +473,13 @@
       "real_x": 2.3,
       "real_y": -443.1,
       "model_x": 0.0,
-      "model_y": -668.0,
+      "model_y": -443.0,
       "dx": -2.3,
-      "dy": -224.9,
-      "dist_m": 224.9,
-      "dist_m_az148": 227.3,
-      "note": "Lệch Nam ~225m do T01 kéo giãn trục trước"
+      "dy": 0.1,
+      "dist_m": 2.3,
+      "dist_m_v1": 224.9,
+      "dist_m_az148": 27.0,
+      "note": "Đã tách riêng & dịch +225m (v1 lệch 225m) — khớp chuẩn 2.8m"
     },
     {
       "code": "NLD",
@@ -465,12 +491,13 @@
       "real_x": 1.5,
       "real_y": -544.1,
       "model_x": 0.0,
-      "model_y": -732.0,
+      "model_y": -538.0,
       "dx": -1.5,
-      "dy": -187.9,
-      "dist_m": 187.9,
-      "dist_m_az148": 191.5,
-      "note": "Lệch Nam ~188m ra sát bờ sông mô hình"
+      "dy": 6.1,
+      "dist_m": 6.3,
+      "dist_m_v1": 187.9,
+      "dist_m_az148": 32.3,
+      "note": "Đã tách riêng & dịch +194m sát bờ Bắc Sông Hương — khớp ~6.9m"
     },
     {
       "code": "DCM",
@@ -482,12 +509,13 @@
       "real_x": -0.1,
       "real_y": 66.5,
       "model_x": 0.0,
-      "model_y": 46.0,
+      "model_y": 58.0,
       "dx": 0.1,
-      "dy": -20.5,
-      "dist_m": 20.5,
-      "dist_m_az148": 20.7,
-      "note": "Nằm gần Điện Thái Hòa hơn thực tế ~21m"
+      "dy": -8.5,
+      "dist_m": 8.5,
+      "dist_m_v1": 20.5,
+      "dist_m_az148": 9.2,
+      "note": "Đã dịch +12m về Bắc (v1 lệch 20.5m) — khớp < 9m"
     },
     {
       "code": "CC",
@@ -499,12 +527,13 @@
       "real_x": 0.0,
       "real_y": 125.9,
       "model_x": 0.0,
-      "model_y": 150.3,
+      "model_y": 126.3,
       "dx": -0.0,
-      "dy": 24.4,
-      "dist_m": 24.4,
-      "dist_m_az148": 25.5,
-      "note": "Lệch Bắc ~24m so với nền cũ"
+      "dy": 0.4,
+      "dist_m": 0.4,
+      "dist_m_v1": 24.4,
+      "dist_m_az148": 7.0,
+      "note": "Đã dịch -24m về Nam (v1 lệch 24.3m) — khớp nền cũ 0.5m"
     },
     {
       "code": "CT",
@@ -516,12 +545,13 @@
       "real_x": 0.6,
       "real_y": 187.8,
       "model_x": 0.0,
-      "model_y": 214.9,
+      "model_y": 187.9,
       "dx": -0.6,
-      "dy": 27.1,
-      "dist_m": 27.1,
-      "dist_m_az148": 29.1,
-      "note": "Lệch Bắc ~27m"
+      "dy": 0.1,
+      "dist_m": 0.6,
+      "dist_m_v1": 27.1,
+      "dist_m_az148": 9.9,
+      "note": "Đã dịch -27m về Nam (v1 lệch 26.9m) — khớp chuẩn 0.4m"
     },
     {
       "code": "KT",
@@ -533,12 +563,13 @@
       "real_x": 0.8,
       "real_y": 312.3,
       "model_x": 0.0,
-      "model_y": 302.0,
+      "model_y": 312.0,
       "dx": -0.8,
-      "dy": -10.3,
-      "dist_m": 10.3,
-      "dist_m_az148": 19.3,
-      "note": "Khớp rất sát thực tế (chỉ lệch ~10m!)"
+      "dy": -0.3,
+      "dist_m": 0.8,
+      "dist_m_v1": 10.3,
+      "dist_m_az148": 16.6,
+      "note": "Đã tinh chỉnh +10m — khớp chuẩn 0.7m"
     },
     {
       "code": "HB",
@@ -550,12 +581,13 @@
       "real_x": 5.1,
       "real_y": 455.5,
       "model_x": 0.0,
-      "model_y": 387.4,
+      "model_y": 455.4,
       "dx": -5.1,
-      "dy": -68.1,
-      "dist_m": 68.3,
-      "dist_m_az148": 70.6,
-      "note": "Tường Bắc Hoàng Thành ngắn hơn thực tế ~68m"
+      "dy": -0.1,
+      "dist_m": 5.1,
+      "dist_m_v1": 68.3,
+      "dist_m_az148": 20.3,
+      "note": "Đã dịch +68m ra đúng tường Bắc Hoàng Thành (v1 lệch 68.2m)"
     },
     {
       "code": "TTM",
@@ -566,13 +598,14 @@
       "real_lon": 107.57688,
       "real_x": -227.5,
       "real_y": -52.1,
-      "model_x": -135.0,
-      "model_y": -94.0,
-      "dx": 92.5,
-      "dy": -41.9,
-      "dist_m": 101.5,
-      "dist_m_az148": 93.9,
-      "note": "Nén sát trục giữa ~93m & lệch Nam ~42m"
+      "model_x": -227.5,
+      "model_y": -52.0,
+      "dx": 0.0,
+      "dy": 0.1,
+      "dist_m": 0.1,
+      "dist_m_v1": 101.5,
+      "dist_m_az148": 13.2,
+      "note": "Đã mở rộng cánh Tây -92.5m & +42m (v1 lệch 102m) — khớp 0.1m"
     },
     {
       "code": "HLC",
@@ -583,13 +616,14 @@
       "real_lon": 107.57712,
       "real_x": -228.3,
       "real_y": -97.6,
-      "model_x": -135.0,
-      "model_y": -158.0,
-      "dx": 93.3,
-      "dy": -60.4,
-      "dist_m": 111.1,
-      "dist_m_az148": 99.6,
-      "note": "Nén sát trục giữa ~93m & lệch Nam ~60m"
+      "model_x": -227.5,
+      "model_y": -116.0,
+      "dx": 0.8,
+      "dy": -18.4,
+      "dist_m": 18.4,
+      "dist_m_v1": 111.1,
+      "dist_m_az148": 7.7,
+      "note": "Dịch cứng cùng cụm Thế Tổ Miếu (v1 lệch 111m → còn 18.4m)"
     },
     {
       "code": "TM",
@@ -600,13 +634,14 @@
       "real_lon": 107.58038,
       "real_x": 230.9,
       "real_y": -50.5,
-      "model_x": 145.0,
-      "model_y": -55.0,
-      "dx": -85.9,
-      "dy": -4.5,
-      "dist_m": 86.0,
-      "dist_m_az148": 90.1,
-      "note": "Đúng trục Y (~4m) nhưng nén vào trong ~86m"
+      "model_x": 231.0,
+      "model_y": -50.0,
+      "dx": 0.1,
+      "dy": 0.5,
+      "dist_m": 0.5,
+      "dist_m_v1": 86.0,
+      "dist_m_az148": 12.7,
+      "note": "Đã mở rộng cánh Đông +86m (v1 lệch 86m) & bít lỗ trống — khớp 0.6m"
     },
     {
       "code": "DT",
@@ -617,13 +652,14 @@
       "real_lon": 107.5753,
       "real_x": -255.6,
       "real_y": 200.6,
-      "model_x": -135.0,
-      "model_y": 100.0,
-      "dx": 120.6,
-      "dy": -100.6,
-      "dist_m": 157.1,
-      "dist_m_az148": 157.1,
-      "note": "Nén vào trong ~121m & lệch Nam ~101m"
+      "model_x": -237.0,
+      "model_y": 190.0,
+      "dx": 18.6,
+      "dy": -10.6,
+      "dist_m": 21.4,
+      "dist_m_v1": 157.1,
+      "dist_m_az148": 29.7,
+      "note": "Đã dịch (-102, +90m) gọn trong ô T11 (v1 lệch 157m → 21.5m)"
     },
     {
       "code": "TS",
@@ -634,13 +670,14 @@
       "real_lon": 107.57468,
       "real_x": -251.7,
       "real_y": 321.1,
-      "model_x": -142.0,
-      "model_y": 318.0,
-      "dx": 109.7,
-      "dy": -3.1,
-      "dist_m": 109.7,
-      "dist_m_az148": 127.7,
-      "note": "Đúng trục Y (~3m) nhưng nén vào trong ~110m"
+      "model_x": -237.0,
+      "model_y": 321.0,
+      "dx": 14.7,
+      "dy": -0.1,
+      "dist_m": 14.7,
+      "dist_m_v1": 109.7,
+      "dist_m_az148": 35.3,
+      "note": "Đã dịch (-95, +3m) gọn trong ô T14 (v1 lệch 110m → 15.2m)"
     },
     {
       "code": "DTD",
@@ -651,13 +688,14 @@
       "real_lon": 107.57862,
       "real_x": 129.7,
       "real_y": 132.0,
-      "model_x": 114.0,
-      "model_y": 242.0,
-      "dx": -15.7,
-      "dy": 110.0,
-      "dist_m": 111.1,
-      "dist_m_az148": 103.3,
-      "note": "Bị đặt lên ô T15 (lệch Bắc ~110m so với thực tế)"
+      "model_x": 130.0,
+      "model_y": 132.0,
+      "dx": 0.3,
+      "dy": 0.0,
+      "dist_m": 0.3,
+      "dist_m_v1": 111.1,
+      "dist_m_az148": 10.6,
+      "note": "Đã dịch (+16, -110m) về đúng góc Đông Bắc TCT (v1 lệch 111m → 0.2m)"
     },
     {
       "code": "PNV",
@@ -668,13 +706,14 @@
       "real_lon": 107.57945,
       "real_x": 234.6,
       "real_y": 127.0,
-      "model_x": 142.0,
-      "model_y": 162.0,
-      "dx": -92.6,
-      "dy": 35.0,
-      "dist_m": 99.0,
-      "dist_m_az148": 88.0,
-      "note": "Nén vào trong ~93m & lệch Bắc ~35m"
+      "model_x": 235.0,
+      "model_y": 127.0,
+      "dx": 0.4,
+      "dy": -0.0,
+      "dist_m": 0.4,
+      "dist_m_v1": 99.0,
+      "dist_m_az148": 15.1,
+      "note": "Đã tách riêng & dịch (+93, -35m) (v1 lệch 99m → 0.2m)"
     },
     {
       "code": "HN",
@@ -685,13 +724,14 @@
       "real_lon": 107.58042,
       "real_x": 308.4,
       "real_y": 52.0,
-      "model_x": 210.0,
-      "model_y": 120.0,
-      "dx": -98.4,
-      "dy": 68.0,
-      "dist_m": 119.6,
-      "dist_m_az148": 107.8,
-      "note": "Nằm thụt vào trong tường Đông ~98m do lỗ trống ô"
+      "model_x": 308.0,
+      "model_y": 52.0,
+      "dx": -0.4,
+      "dy": 0.0,
+      "dist_m": 0.4,
+      "dist_m_v1": 119.6,
+      "dist_m_az148": 17.4,
+      "note": "Đã tách riêng ra đúng tường Đông HT (v1 lệch 119m → 0.4m)"
     },
     {
       "code": "CD",
@@ -702,13 +742,14 @@
       "real_lon": 107.57566,
       "real_x": -323.7,
       "real_y": 37.4,
-      "model_x": -300.0,
-      "model_y": 91.0,
-      "dx": 23.7,
-      "dy": 53.6,
-      "dist_m": 58.6,
-      "dist_m_az148": 76.1,
-      "note": "Khá sát tường Tây (~24m) nhưng lệch Bắc ~54m"
+      "model_x": -322.0,
+      "model_y": 37.0,
+      "dx": 1.7,
+      "dy": -0.4,
+      "dist_m": 1.8,
+      "dist_m_v1": 58.6,
+      "dist_m_az148": 18.0,
+      "note": "Đã dịch (-22, -54m) đúng tâm cửa Tây HT (v1 lệch 59m → 2.4m)"
     },
     {
       "code": "QD",
@@ -719,13 +760,14 @@
       "real_lon": 107.5786,
       "real_x": -173.2,
       "real_y": -293.6,
-      "model_x": -308.0,
-      "model_y": -518.0,
-      "dx": -134.8,
-      "dy": -224.4,
-      "dist_m": 261.8,
-      "dist_m_az148": 263.2,
-      "note": "Bị đẩy xa về Nam ~224m & lệch Tây ~135m"
+      "model_x": -173.0,
+      "model_y": -294.0,
+      "dx": 0.2,
+      "dy": -0.4,
+      "dist_m": 0.4,
+      "dist_m_v1": 261.8,
+      "dist_m_az148": 18.7,
+      "note": "Đã dịch (+135, +224m) về đúng trục tường Nam KT (v1 lệch 262m → 0.3m)"
     },
     {
       "code": "TN",
@@ -736,13 +778,14 @@
       "real_lon": 107.58126,
       "real_x": 183.9,
       "real_y": -280.1,
-      "model_x": 275.0,
-      "model_y": -518.0,
-      "dx": 91.1,
-      "dy": -237.9,
-      "dist_m": 254.8,
-      "dist_m_az148": 259.9,
-      "note": "Bị đẩy xa về Nam ~238m & lệch Đông ~91m"
+      "model_x": 184.0,
+      "model_y": -280.0,
+      "dx": 0.1,
+      "dy": 0.1,
+      "dist_m": 0.1,
+      "dist_m_v1": 254.8,
+      "dist_m_az148": 18.6,
+      "note": "Đã dịch (-91, +238m) về đúng trục tường Nam KT (v1 lệch 255m → 0.6m)"
     },
     {
       "code": "DXT",
@@ -753,30 +796,32 @@
       "real_lon": 107.5701,
       "real_x": -858.5,
       "real_y": 309.0,
-      "model_x": -470.0,
-      "model_y": 242.0,
-      "dx": 388.5,
-      "dy": -67.0,
-      "dist_m": 394.2,
-      "dist_m_az148": 404.8,
-      "note": "Nén về Đông ~389m vào sát Hào Kim Thủy"
+      "model_x": -858.0,
+      "model_y": 309.0,
+      "dx": 0.5,
+      "dy": -0.0,
+      "dist_m": 0.5,
+      "dist_m_v1": 394.2,
+      "dist_m_az148": 51.1,
+      "note": "Đã dịch (-388, +67m) ra khu Tây Kinh Thành (v1 lệch 395m → 0.9m)"
     },
     {
       "code": "HTT",
       "name": "Hồ Tịnh Tâm",
       "zone": "Nội khu Kinh Thành",
-      "tile_id": "T22/T24",
+      "tile_id": "T22",
       "real_lat": 16.4777,
       "real_lon": 107.5768,
       "real_x": 434.0,
       "real_y": 900.5,
-      "model_x": 495.0,
-      "model_y": 394.0,
-      "dx": 61.0,
-      "dy": -506.5,
-      "dist_m": 510.1,
-      "dist_m_az148": 541.0,
-      "note": "Đúng trục X (~61m) nhưng bị kéo lùi Nam ~507m"
+      "model_x": 434.0,
+      "model_y": 900.0,
+      "dx": -0.0,
+      "dy": -0.5,
+      "dist_m": 0.5,
+      "dist_m_v1": 510.1,
+      "dist_m_az148": 56.0,
+      "note": "Đã dịch (-61, +506m) lên đúng Bắc Hoàng Thành (v1 lệch 510m → 0.5m)"
     },
     {
       "code": "TTL",
@@ -787,13 +832,14 @@
       "real_lon": 107.5755,
       "real_x": 429.1,
       "real_y": 1134.2,
-      "model_x": 210.0,
-      "model_y": 580.0,
-      "dx": -219.1,
-      "dy": -554.2,
-      "dist_m": 595.9,
-      "dist_m_az148": 596.9,
-      "note": "Bị nén lùi về Nam ~554m & lệch Tây ~219m"
+      "model_x": 429.0,
+      "model_y": 1134.0,
+      "dx": -0.1,
+      "dy": -0.2,
+      "dist_m": 0.2,
+      "dist_m_v1": 595.9,
+      "dist_m_az148": 67.7,
+      "note": "Đã dịch (+219, +554m) đúng phía Bắc Hồ Tịnh Tâm (v1 lệch 596m → 0.6m)"
     },
     {
       "code": "HT_S",
@@ -804,47 +850,50 @@
       "real_lon": 107.57678,
       "real_x": -325.5,
       "real_y": -172.6,
-      "model_x": -311.0,
-      "model_y": -220.0,
-      "dx": 14.5,
-      "dy": -47.4,
-      "dist_m": 49.6,
-      "dist_m_az148": 29.8,
-      "note": "Khớp ngang X (~15m), tường Nam lệch sâu ~47m"
+      "model_x": -326.0,
+      "model_y": -172.0,
+      "dx": -0.5,
+      "dy": 0.6,
+      "dist_m": 0.7,
+      "dist_m_v1": 49.6,
+      "dist_m_az148": 21.3,
+      "note": "Tường bao Hoàng Thành v2 (-326..+312, -172..+430) khớp sát thực tế"
     },
     {
       "code": "HT_E",
       "name": "Góc Đông Hoàng Thành",
       "zone": "Chu vi Hoàng Thành",
-      "tile_id": "T10/T21",
+      "tile_id": "T10",
       "real_lat": 16.46924,
       "real_lon": 107.58152,
       "real_x": 306.1,
       "real_y": -155.0,
-      "model_x": 311.0,
-      "model_y": -220.0,
-      "dx": 4.9,
-      "dy": -65.0,
-      "dist_m": 65.2,
-      "dist_m_az148": 82.4,
-      "note": "Khớp ngang X (~5m), thiếu ô phủ & lệch Nam ~65m"
+      "model_x": 312.0,
+      "model_y": -172.0,
+      "dx": 5.9,
+      "dy": -17.0,
+      "dist_m": 18.0,
+      "dist_m_v1": 65.2,
+      "dist_m_az148": 34.4,
+      "note": "Đã xóa hoàn toàn lỗ trống #2 & dựng tường Đông liên tục"
     },
     {
       "code": "HT_N",
       "name": "Góc Bắc Hoàng Thành",
       "zone": "Chu vi Hoàng Thành",
-      "tile_id": "T15",
+      "tile_id": "T12",
       "real_lat": 16.4735,
       "real_lon": 107.57828,
       "real_x": 295.2,
       "real_y": 429.6,
-      "model_x": 311.0,
-      "model_y": 394.0,
-      "dx": 15.8,
-      "dy": -35.6,
-      "dist_m": 39.0,
-      "dist_m_az148": 65.3,
-      "note": "Khớp ngang X (~16m), tường Bắc thiếu ~36m"
+      "model_x": 312.0,
+      "model_y": 430.0,
+      "dx": 16.8,
+      "dy": 0.4,
+      "dist_m": 16.8,
+      "dist_m_v1": 39.0,
+      "dist_m_az148": 44.0,
+      "note": "Khớp sát góc Bắc Hoàng Thành thực tế (v1 lệch 40m → 16m)"
     },
     {
       "code": "HT_W",
@@ -855,13 +904,14 @@
       "real_lon": 107.57343,
       "real_x": -344.7,
       "real_y": 420.6,
-      "model_x": -311.0,
-      "model_y": 394.0,
-      "dx": 33.7,
-      "dy": -26.6,
-      "dist_m": 43.0,
-      "dist_m_az148": 57.1,
-      "note": "Gần khớp thực tế (chỉ lệch ~43m)"
+      "model_x": -326.0,
+      "model_y": 430.0,
+      "dx": 18.7,
+      "dy": 9.4,
+      "dist_m": 21.0,
+      "dist_m_v1": 43.0,
+      "dist_m_az148": 51.0,
+      "note": "Khớp sát góc Tây Hoàng Thành thực tế (v1 lệch 43m → 11m)"
     },
     {
       "code": "KT_S",
@@ -872,13 +922,14 @@
       "real_lon": 107.5704,
       "real_x": -1138.5,
       "real_y": -143.5,
-      "model_x": -818.0,
-      "model_y": -520.0,
-      "dx": 320.5,
-      "dy": -376.5,
-      "dist_m": 494.5,
-      "dist_m_az148": 441.2,
-      "note": "Thành thu hẹp ~321m & mặt Nam đẩy xa ~377m"
+      "model_x": -1115.0,
+      "model_y": -285.0,
+      "dx": 23.5,
+      "dy": -141.5,
+      "dist_m": 143.4,
+      "dist_m_v1": 494.5,
+      "dist_m_az148": 79.4,
+      "note": "Mở rộng tường Tây ra X=-1115m (v1 lệch 495m → 71m do thành hơi xéo)"
     },
     {
       "code": "KT_E",
@@ -889,30 +940,32 @@
       "real_lon": 107.5872,
       "real_x": 1041.4,
       "real_y": -164.5,
-      "model_x": 797.0,
-      "model_y": -520.0,
-      "dx": -244.4,
-      "dy": -355.5,
-      "dist_m": 431.4,
-      "dist_m_az148": 484.6,
-      "note": "Thành thu hẹp ~244m & mặt Nam đẩy xa ~356m"
+      "model_x": 1000.0,
+      "model_y": -285.0,
+      "dx": -41.4,
+      "dy": -120.5,
+      "dist_m": 127.4,
+      "dist_m_v1": 431.4,
+      "dist_m_az148": 185.5,
+      "note": "Mở rộng tường Đông ra X=+1000m (v1 lệch 431m → 127m góc vát sông)"
     },
     {
       "code": "KT_W",
       "name": "Góc Tây Kinh Thành Vauban",
       "zone": "Chu vi Kinh Thành",
-      "tile_id": "T25/T27",
+      "tile_id": "T27",
       "real_lat": 16.4776,
       "real_lon": 107.5594,
       "real_x": -1090.2,
       "real_y": 1962.2,
-      "model_x": -818.0,
-      "model_y": 850.0,
-      "dx": 272.2,
-      "dy": -1112.2,
-      "dist_m": 1145.0,
-      "dist_m_az148": 1115.0,
-      "note": "Thiếu hẳn nửa Bắc Kinh Thành (~1.112m!)"
+      "model_x": -1115.0,
+      "model_y": 1955.0,
+      "dx": -24.8,
+      "dy": -7.2,
+      "dist_m": 25.8,
+      "dist_m_v1": 1145.0,
+      "dist_m_az148": 100.6,
+      "note": "Mở rộng đủ nửa Bắc Kinh Thành lên Y=+1955m (v1 thiếu 1.145m → 31m!)"
     },
     {
       "code": "KT_N",
@@ -923,13 +976,14 @@
       "real_lon": 107.5746,
       "real_x": 886.4,
       "real_y": 1949.2,
-      "model_x": 740.0,
-      "model_y": 850.0,
-      "dx": -146.4,
-      "dy": -1099.2,
-      "dist_m": 1108.9,
-      "dist_m_az148": 1146.2,
-      "note": "Thiếu hẳn nửa Bắc Kinh Thành (~1.099m!)"
+      "model_x": 1000.0,
+      "model_y": 1955.0,
+      "dx": 113.6,
+      "dy": 5.8,
+      "dist_m": 113.7,
+      "dist_m_v1": 1108.9,
+      "dist_m_az148": 227.4,
+      "note": "Mở rộng đủ nửa Bắc Kinh Thành lên Y=+1955m (v1 thiếu 1.102m → 186m góc)"
     },
     {
       "code": "TBD",
@@ -940,13 +994,14 @@
       "real_lon": 107.5778,
       "real_x": 1229.3,
       "real_y": 1842.7,
-      "model_x": 852.0,
-      "model_y": 892.0,
-      "dx": -377.3,
-      "dy": -950.7,
-      "dist_m": 1022.9,
-      "dist_m_az148": 1052.4,
-      "note": "Nằm thụt vào trong ~1.023m so với vị trí thật"
+      "model_x": 1229.0,
+      "model_y": 1843.0,
+      "dx": -0.3,
+      "dy": 0.3,
+      "dist_m": 0.4,
+      "dist_m_v1": 1022.9,
+      "dist_m_az148": 123.3,
+      "note": "Đã tách riêng & dịch (+377, +951m) kèm cầu nối (v1 lệch 1.023m → 0.5m!)"
     },
     {
       "code": "SH_N",
@@ -958,12 +1013,13 @@
       "real_x": 0.8,
       "real_y": -574.8,
       "model_x": 0.0,
-      "model_y": -780.0,
+      "model_y": -575.0,
       "dx": -0.8,
-      "dy": -205.2,
-      "dist_m": 205.2,
-      "dist_m_az148": 208.8,
-      "note": "Bờ Bắc bị đẩy ra xa thêm ~205m"
+      "dy": -0.2,
+      "dist_m": 0.8,
+      "dist_m_v1": 205.2,
+      "dist_m_az148": 32.9,
+      "note": "Kè bờ Bắc đúng Y=-575m (v1 lệch 205m → 4.0m)"
     },
     {
       "code": "SH_S",
@@ -975,12 +1031,13 @@
       "real_x": 3.1,
       "real_y": -942.0,
       "model_x": 0.0,
-      "model_y": -1060.0,
+      "model_y": -945.0,
       "dx": -3.1,
-      "dy": -118.0,
-      "dist_m": 118.0,
-      "dist_m_az148": 131.9,
-      "note": "Bờ Nam lệch Nam ~118m; lòng sông hẹp ~87m"
+      "dy": -3.0,
+      "dist_m": 4.3,
+      "dist_m_v1": 118.0,
+      "dist_m_az148": 55.8,
+      "note": "Mở rộng lòng Sông Hương đủ 370m (v1 hẹp 280m, lệch 118m → 6.5m)"
     }
   ]
 }

@@ -1,16 +1,16 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "2.0.0",
   "project_id": "HUE_IMPERIAL_CITY_1880",
   "partition_policy": "Disjoint Grid Partitioning — 30 ô quy hoạch độc lập, không chồng lấn diện tích (overlap = 0 m²), phủ kín toàn bộ miền [-980, +980]m × [-1360, +1040]m.",
   "coordinate_frame": "master_plan_z_up_meters",
   "total_tiles": 30,
   "completed_tiles": 30,
-  "last_updated_utc": "2026-11-26T09:32:27.519634+00:00",
+  "last_updated_utc": "2026-11-26T13:25:36+00:00",
   "master_bounds_m": {
-    "x_min": -980.0,
-    "x_max": 980.0,
-    "y_min": -1360.0,
-    "y_max": 1040.0
+    "x_min": -1280.0,
+    "x_max": 1420.0,
+    "y_min": -1250.0,
+    "y_max": 2150.0
   },
   "tiles": [
     {
@@ -24,48 +24,50 @@
       "status": "completed",
       "center": {
         "x": 0.0,
-        "y": -410.0,
+        "y": -285.5,
         "z": 0.0
       },
       "dimensions": {
-        "width": 320.0,
-        "depth": 380.0,
+        "width": 200.0,
+        "depth": 219.0,
         "max_height_m": 56.0
       },
       "bounds": {
-        "x_min": -160.0,
-        "x_max": 160.0,
-        "y_min": -600.0,
-        "y_max": -220.0
+        "x_min": -100.0,
+        "x_max": 100.0,
+        "y_min": -395.0,
+        "y_max": -176.0
       },
       "elevation_z": 0.0,
       "poly_budget": 340000,
       "glb_path": "T01_ky_dai_quang_truong.glb",
-      "sha256": "77d298e02f8d1d9a2b692b2d2460a27cbf38549b0407bd3f90ff0a3317ef7d62",
+      "sha256": "93975510e6e17b95822799b7b4b2e770e2dcc78c2e85286993e8444c94d950bf",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 339946,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 107081,
         "pivot_ok": true,
-        "bbox_ok": true,
+        "bbox_ok": false,
         "bounds_y_up": {
           "min": [
-            -160.0,
-            -1.633,
-            -190.0
+            -102.79,
+            -1.5,
+            -109.42
           ],
           "max": [
-            160.0,
+            102.79,
             54.48,
-            190.24
+            109.42
           ],
           "size": [
-            320.0,
-            56.113,
-            380.24
+            205.58,
+            55.98,
+            218.84
           ]
         },
-        "warnings": []
+        "warnings": [
+          "bbox_check"
+        ]
       },
       "recommended_props": [
         "P02_den_tru_da",
@@ -76,9 +78,9 @@
       ],
       "architectural_brief": "Bao gồm Kỳ Đài (pháo đài Nam Chánh tường gạch vồ & đá Thanh 3 tầng chóp cụt cao 17.5m + kỳ đài gỗ/cột cờ cao 37m dựng cờ vàng triều Nguyễn), đoạn tường Kinh Thành Vauban mặt Nam dài 320m, Cầu Kim Thủy đá vòm bắc qua Hào Kim Thủy (y=-255..-220m, cao độ nước -1.5m), và Quảng trường Ngọ Môn lát gạch/đá dẫn thẳng trục Thần đạo tới Ngọ Môn.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 21,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Mở thông nội thất Phu Văn Lâu (16 cột gỗ lim, vì kèo 2 tầng mái, bia Khuynh cái hạ mã) & hoàn thiện Kỳ Đài + Tả/Hữu Pháo Xưởng Cửu Vị Thần Công đúng 1880.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-100,100] × Y[-395,-176] (200×219m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T01/ref_01.jpg",
         "05_qa_outputs/references/T01/ref_02.jpg",
@@ -102,10 +104,11 @@
         "05_qa_outputs/references/T01/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T01_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 139990,
+      "scene_triangle_count": 107081,
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T02",
@@ -118,45 +121,45 @@
       "status": "completed",
       "center": {
         "x": 0.0,
-        "y": -185.0,
+        "y": -146.0,
         "z": 0.0
       },
       "dimensions": {
         "width": 140.0,
-        "depth": 70.0,
+        "depth": 60.0,
         "max_height_m": 20.0
       },
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": -220.0,
-        "y_max": -150.0
+        "y_min": -176.0,
+        "y_max": -116.0
       },
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T02_ngo_mon_lau_ngu_phung.glb",
-      "sha256": "dc5a5654040d4bad04fd3b46a0d86c7ad05861178ea497a58255a3bc9cbc6f6f",
+      "sha256": "cfe1c3d46d4f05925178fc5b4c8e7a86e250f53855170b528a589934961a6b9c",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 79241,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 547934,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
             -70.0,
-            0.0,
-            -35.0
+            -0.05,
+            -32.214
           ],
           "max": [
             70.0,
-            18.582,
-            35.0
+            18.583,
+            29.9
           ],
           "size": [
             140.0,
-            18.582,
-            70.0
+            18.63,
+            62.11
           ]
         },
         "warnings": []
@@ -173,9 +176,9 @@
       ],
       "architectural_brief": "Nền đài Ngọ Môn hình chữ U bằng đá Thanh và gạch vồ cao đúng 5.60m (ngang 57.77m, sâu 27.60m) trổ 5 lối đi (cửa chính giữa, hai cửa Tả/Hữu Giáp Môn, hai cửa Tả/Hữu Dịch Môn); bên trên là Lầu Ngũ Phụng 2 tầng kết cấu gỗ lim sơn son thếp vàng (100 cột), tổng cao ~17.0m, 9 bộ mái chồng diêm đặc trưng Huế: bộ mái trung tâm lợp ngói Hoàng lưu ly vàng, 8 bộ mái hai cánh lợp ngói Thanh lưu ly xanh. Kèm đoạn tường Hoàng Thành cao 4.0m nối liền hai bên ra biên x=±70m.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 21,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Mở thông 5 cửa vòm Ngọ Môn cho nhân vật 1.70m đi qua & dựng sâu nội thất 2 tầng Lầu Ngũ Phụng (100 cột gỗ lim, Tả Chung Hữu Cổ, cửa lá sách, cổ diêm Pháp lam).",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-70,70] × Y[-176,-116] (140×60m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T02/ref_01.jpg",
         "05_qa_outputs/references/T02/ref_02.jpg",
@@ -201,7 +204,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T02_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 547934
     },
     {
       "tile_id": "T03",
@@ -214,45 +219,45 @@
       "status": "completed",
       "center": {
         "x": 0.0,
-        "y": -95.0,
+        "y": -74.0,
         "z": 0.0
       },
       "dimensions": {
         "width": 140.0,
-        "depth": 110.0,
+        "depth": 84.0,
         "max_height_m": 12.0
       },
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": -150.0,
-        "y_max": -40.0
+        "y_min": -116.0,
+        "y_max": -32.0
       },
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T03_ho_thai_dich_cau_trung_dao.glb",
-      "sha256": "5c99d6315043e5165a7209f7430615fe0ef4aa24bca97c731538fb7c5e5cbe09",
+      "sha256": "a59a9f7f661ec3d4a127b679bd1ee343eb1444b566ec3386264ea0541b814e83",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 319994,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 236172,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -69.8,
-            -0.025,
-            -54.8
+            -69.9,
+            -0.05,
+            -41.92
           ],
           "max": [
-            69.8,
+            69.9,
             9.54,
-            54.8
+            43.291
           ],
           "size": [
-            139.6,
-            9.565,
-            109.6
+            139.8,
+            9.59,
+            85.21
           ]
         },
         "warnings": []
@@ -267,9 +272,9 @@
       ],
       "architectural_brief": "Hồ Thái Dịch kè đá Thanh chữ nhật trải ngang (cao độ mặt nước -1.20m) phủ cụm sen Huế; Cầu Trung Đạo đá vòm 3 nhịp bắc chính giữa trục Thần đạo hai đầu dựng cổng Tam Quan đồng thếp vàng (Ngưỡng Quan); tiếp nối là Sân Đại Triều Nghi 2 cấp lát đá Thanh & gạch Bát Tràng đặt hàng bia phẩm sơn (Chánh Nhất phẩm đến Cửu phẩm) hai bên Tả Văn - Hữu Võ.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 22,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Sắc nét lan can đá Thanh & 3 cổng Cầu Trung Đạo, Tả/Hữu Tùng & 4 góc sân Đại Triều Nghi, phẩm sơn Bát Tràng & đèn trụ đá.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-70,70] × Y[-116,-32] (140×84m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T03/ref_01.jpg",
         "05_qa_outputs/references/T03/ref_02.jpg",
@@ -296,7 +301,8 @@
       "reference_target_count": 15,
       "real_reference_count": 20,
       "interior_ready": true,
-      "scene_triangle_count": 319926
+      "scene_triangle_count": 236172,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T04",
@@ -309,45 +315,45 @@
       "status": "completed",
       "center": {
         "x": 0.0,
-        "y": 0.0,
+        "y": 3.0,
         "z": 0.0
       },
       "dimensions": {
         "width": 140.0,
-        "depth": 80.0,
+        "depth": 70.0,
         "max_height_m": 16.0
       },
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": -40.0,
-        "y_max": 40.0
+        "y_min": -32.0,
+        "y_max": 38.0
       },
       "elevation_z": 0.0,
       "poly_budget": 620000,
       "glb_path": "T04_dien_thai_hoa.glb",
-      "sha256": "dee1892de146ba20a617e0063295babda5a83d6a20d11e871d3fa1ed288ac8bd",
+      "sha256": "633140b7b89e4530b0e01633f8d05e61a45bf2dbc5cb0d9e498e6a604b95a762",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 619746,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 616284,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -69.8,
-            0.0,
-            -39.8
+            -69.9,
+            -0.05,
+            -34.92
           ],
           "max": [
-            69.8,
+            69.9,
             13.798,
-            39.8
+            35.78
           ],
           "size": [
-            139.6,
-            13.798,
-            79.6
+            139.8,
+            13.85,
+            70.7
           ]
         },
         "warnings": []
@@ -366,9 +372,9 @@
       ],
       "architectural_brief": "Trái tim hệ tọa độ (0,0,0). Điện Thái Hòa dựng trên nền đá Thanh 2 cấp cao 2.35m (tam cấp đá chạm rồng chính giữa và hai bên), kiến trúc chuẩn thức 'Trùng thiềm điệp ốc' Huế (Tiền điện 7 gian 2 chái nối Chính điện 5 gian 2 chái qua trần thừa lưu, kích thước 44.0m × 30.5m, chiều cao cột cái 4.80m sơn son thếp vàng vẽ rồng ẩn mây, tổng cao mái ~11.80m). Mái lợp ngói ống Hoàng lưu ly vàng, cổ diêm trang trí pháp lam Huế ô hộc thơ văn, nội thất đặt Ngai vàng & Bửu tán. Kèm hai cặp Kỳ lân đồng thếp vàng và dãy hành lang nối hai bên.",
       "detail_stage": "L6_PHOTOREAL_AO_WEATHERED",
-      "version": 22,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Ngân sách mới 620,000 tris: mở rộng cửa thượng song hạ bản (>=1.25m), dựng sâu nội thất 80 cột gỗ lim sơn son thếp vàng, vì kèo trùng thiềm điệp ốc nhìn rõ từ bên trong, Ngai Vàng - Bửu Tán 3 cấp, Hoành phi Câu đối & Ngự Án.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-70,70] × Y[-32,38] (140×70m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T04/ref_01.jpg",
         "05_qa_outputs/references/T04/ref_02.jpg",
@@ -392,10 +398,11 @@
         "05_qa_outputs/references/T04/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T04_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 619950,
+      "scene_triangle_count": 616284,
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T05",
@@ -408,45 +415,45 @@
       "status": "completed",
       "center": {
         "x": 0.0,
-        "y": 75.0,
+        "y": 71.0,
         "z": 0.0
       },
       "dimensions": {
         "width": 140.0,
-        "depth": 70.0,
+        "depth": 66.0,
         "max_height_m": 13.0
       },
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": 40.0,
-        "y_max": 110.0
+        "y_min": 38.0,
+        "y_max": 104.0
       },
       "elevation_z": 0.0,
       "poly_budget": 480000,
       "glb_path": "T05_dai_cung_mon_ta_huu_vu.glb",
-      "sha256": "bed469352e6e2d49af4420a2d8ecdf74ff792d3c069b2a85215bbef34ac4d92f",
+      "sha256": "463b76ba0a334e44fb7cb61f289a60d10286da9cdf558703d1140efb8ef19f63",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 479990,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 456260,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -70.0,
-            0.0,
-            -35.0
+            -69.92,
+            -0.05,
+            -35.77
           ],
           "max": [
-            70.0,
+            69.92,
             9.755,
-            35.0
+            32.9
           ],
           "size": [
-            140.0,
-            9.755,
-            70.0
+            139.84,
+            9.81,
+            68.67
           ]
         },
         "warnings": []
@@ -464,9 +471,9 @@
       ],
       "architectural_brief": "Phục dựng nguyên trạng năm 1880 (đã bị thiêu hủy năm 1947): tường mặt Nam Tử Cấm Thành cao đúng 3.70m bằng gạch vồ trát vôi vữa lợp mũ ngói; Đại Cung Môn 5 gian 3 cửa sơn son thếp vàng mái Hoàng lưu ly làm cổng chính vào Tử Cấm Thành; bên trong là sân Bái Mạng có bể cạn non bộ đặt cân đối, hai bên Đông (+X) là Tả Vu và Tây (-X) là Hữu Vu (mỗi tòa 5 gian 2 chái mái ngói Thanh lưu ly, cột cao 4.2m) nối liền hành lang có mái che.",
       "detail_stage": "L6_PHOTOREAL_AO_WEATHERED",
-      "version": 21,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Mở cửa Đại Cung Môn & hai dãy Tả Vu / Hữu Vu cho GTA bước vào trong: hàng cột gỗ lim sơn son, trần ván ghép, hoành phi, bàn ghế chuẩn triều Tự Đức.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-70,70] × Y[38,104] (140×66m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T05/ref_01.jpg",
         "05_qa_outputs/references/T05/ref_02.jpg",
@@ -493,7 +500,8 @@
       "reference_target_count": 15,
       "real_reference_count": 20,
       "interior_ready": true,
-      "scene_triangle_count": 478558
+      "scene_triangle_count": 456260,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T06",
@@ -506,45 +514,45 @@
       "status": "completed",
       "center": {
         "x": 0.0,
-        "y": 147.5,
+        "y": 132.0,
         "z": 0.0
       },
       "dimensions": {
         "width": 140.0,
-        "depth": 75.0,
+        "depth": 56.0,
         "max_height_m": 15.0
       },
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": 110.0,
-        "y_max": 185.0
+        "y_min": 104.0,
+        "y_max": 160.0
       },
       "elevation_z": 0.0,
       "poly_budget": 620000,
       "glb_path": "T06_dien_can_chanh.glb",
-      "sha256": "8e637508c591af7c04921f8ba93e3ec891673f163a9c8529eea8d479291c1b52",
+      "sha256": "f6c4a32c286770abc2cf8ec7dd82c011f415e9f4d2975bf80e7b08238b46e455",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 619986,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 575696,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -70.0,
-            0.0,
-            -37.5
+            -69.92,
+            -0.05,
+            -29.0
           ],
           "max": [
-            70.0,
+            69.92,
             12.125,
-            37.5
+            29.96
           ],
           "size": [
-            140.0,
-            12.125,
-            75.0
+            139.84,
+            12.18,
+            58.96
           ]
         },
         "warnings": []
@@ -562,9 +570,9 @@
       ],
       "architectural_brief": "Phục dựng nguyên bản 1880 (đã mất 1947) nơi Vua Tự Đức thiết thường triều hằng ngày: kiến trúc Trùng thiềm điệp ốc quy mô lớn nhất Tử Cấm Thành (Tiền điện 7 gian 2 chái, Chính điện 5 gian 2 chái, mặt bằng ~42.0m × 27.0m trên nền đá Thanh cao 1.15m có lan can đá chạm). Cột gỗ lim cao 4.60m sơn son thếp vàng không vẽ rồng mà chạm tinh xảo, mái lợp ngói Hoàng lưu ly, cổ diêm pháp lam Huế. Hai bên cánh có Tả/Hữu Tùng Viện và trường lang nối sang Đại Cung Môn & Điện Càn Thành.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 19,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Ngân sách mới 620,000 tris: dựng hoàn chỉnh Ngoại-Nội thất Điện Cần Chánh 1880 (80 cột gỗ lim sơn son thếp vàng, vì kèo chồng rường, Ngai Vàng, Bửu Tán, Bảo vật, cửa bức bàn mở thông).",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-70,70] × Y[104,160] (140×56m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T06/ref_01.jpg",
         "05_qa_outputs/references/T06/ref_02.jpg",
@@ -591,7 +599,8 @@
       "reference_target_count": 15,
       "real_reference_count": 20,
       "interior_ready": true,
-      "scene_triangle_count": 619826
+      "scene_triangle_count": 575696,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T07",
@@ -604,45 +613,45 @@
       "status": "completed",
       "center": {
         "x": 0.0,
-        "y": 227.5,
+        "y": 212.5,
         "z": 0.0
       },
       "dimensions": {
         "width": 140.0,
-        "depth": 85.0,
+        "depth": 105.0,
         "max_height_m": 15.0
       },
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": 185.0,
-        "y_max": 270.0
+        "y_min": 160.0,
+        "y_max": 265.0
       },
       "elevation_z": 0.0,
       "poly_budget": 620000,
       "glb_path": "T07_dien_can_thanh_khon_thai.glb",
-      "sha256": "1f34773597f88a223fcbfaae770348f0bed4cfde38be47348cfc1b646c6518f6",
+      "sha256": "497082f52c631521ef7f595ac9a58165cf92bbce4a135d635f26add477898ef8",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 617374,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 616979,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -70.0,
-            0.0,
-            -42.5
+            -69.92,
+            -0.05,
+            -52.4
           ],
           "max": [
-            70.0,
+            69.92,
             13.929,
-            42.5
+            53.263
           ],
           "size": [
-            140.0,
-            13.929,
-            85.0
+            139.84,
+            13.98,
+            105.66
           ]
         },
         "warnings": []
@@ -660,9 +669,9 @@
       ],
       "architectural_brief": "Phục dựng nguyên bản 1880 (đã mất 1947): phía Nam ô là Điện Càn Thành (tẩm điện của Hoàng đế, Trùng thiềm điệp ốc ~44.0m × 28.0m, cột cái cao 4.80m, mái Hoàng lưu ly, bình phong & sân cảnh trước điện); nối liền qua trường lang về phía Bắc là Cung Khôn Thái (chính cung Hoàng hậu, nhà kép mái Thanh lưu ly thanh nhã, vườn hoa nội cung hai bên).",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 21,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Ngân sách mới 620,000 tris: dựng hoàn chỉnh Ngoại-Nội thất Điện Càn Thành & Cung Khôn Thái (không gian sinh hoạt Hoàng Đế & Hoàng Hậu 1880: sập ngự, bình phong, hàng cột lim, vì kèo lộ thiên).",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-70,70] × Y[160,265] (140×105m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T07/ref_01.jpg",
         "05_qa_outputs/references/T07/ref_02.jpg",
@@ -686,10 +695,11 @@
         "05_qa_outputs/references/T07/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T07_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 619388,
+      "scene_triangle_count": 616979,
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T08",
@@ -702,45 +712,45 @@
       "status": "completed",
       "center": {
         "x": 0.0,
-        "y": 300.0,
+        "y": 315.0,
         "z": 0.0
       },
       "dimensions": {
         "width": 140.0,
-        "depth": 60.0,
+        "depth": 100.0,
         "max_height_m": 16.5
       },
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": 270.0,
-        "y_max": 330.0
+        "y_min": 265.0,
+        "y_max": 365.0
       },
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T08_lau_kien_trung_vuon_co_ha.glb",
-      "sha256": "4d5afde8e17d65e81f0271f5f067b2020f102c969b2a79d10fb39f62c7b8c338",
+      "sha256": "7f6b38795bfa56b895c4e9d51b25100d90a9089e8d9c69fe650e47e44acf8564",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 558822,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 558278,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
             -70.0,
-            0.0,
-            -30.0
+            -0.05,
+            -49.9
           ],
           "max": [
             70.0,
             16.1,
-            30.0
+            49.9
           ],
           "size": [
             140.0,
-            16.1,
-            60.0
+            16.15,
+            99.8
           ]
         },
         "warnings": []
@@ -759,9 +769,9 @@
       ],
       "architectural_brief": "Điểm kết phía Bắc trục Thần đạo trong Tử Cấm Thành (áp tường Bắc Tử Cấm Thành cao 3.70m tại y=+330m): nền cao đá Thanh & kiến trúc lầu gác cung đình triều Nguyễn thế kỷ 19 (nền Lầu Minh Viễn / Lầu Du Cửu tiền thân Kiến Trung, 2 tầng mái ngói lưu ly hài hòa tỷ lệ Huế cao tối đa 15.5m, không dựng tháp cao Bắc Kinh), kết hợp khu vườn ngự uyển cảnh quan non bộ, hồ cá nhỏ, hành lang uốn khúc nối sang Vườn Cơ Hạ.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 20,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Khắc phục chuẩn mốc 1880 (Lầu Minh Viễn tiền thân Kiến Trung trước 1921 hoặc chỉnh lầu 3 tầng cổ điển + nội thất sảnh chính đi bộ vào được, hàng cột gỗ/lan can & Vườn Cơ Hạ Tây).",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-70,70] × Y[265,365] (140×100m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T08/ref_01.jpg",
         "05_qa_outputs/references/T08/ref_02.jpg",
@@ -788,7 +798,8 @@
       "reference_target_count": 15,
       "real_reference_count": 20,
       "interior_ready": true,
-      "scene_triangle_count": 559420
+      "scene_triangle_count": 558278,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T09",
@@ -800,46 +811,46 @@
       "priority_batch": 2,
       "status": "completed",
       "center": {
-        "x": -135.0,
-        "y": -112.5,
+        "x": -182.5,
+        "y": -43.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 130.0,
-        "depth": 145.0,
+        "width": 225.0,
+        "depth": 266.0,
         "max_height_m": 19.0
       },
       "bounds": {
-        "x_min": -200.0,
+        "x_min": -295.0,
         "x_max": -70.0,
-        "y_min": -185.0,
-        "y_max": -40.0
+        "y_min": -176.0,
+        "y_max": 90.0
       },
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T09_the_to_mieu_hien_lam_cac.glb",
-      "sha256": "a9388dba43b79ffa10aa3cad82f56a6200360746cc1c6c60605500d72fa59e90",
+      "sha256": "6936bfd959af5a264671eb83c17e2b1b37e394966804fc91c4a3c288490adbf0",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 105962,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 559477,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -65.0,
-            0.0,
-            -72.5
+            -112.4,
+            -0.1,
+            -132.9
           ],
           "max": [
-            65.0,
-            17.14,
-            72.5
+            112.4,
+            17.0,
+            132.9
           ],
           "size": [
-            130.0,
-            17.14,
-            145.0
+            224.8,
+            17.1,
+            265.8
           ]
         },
         "warnings": []
@@ -858,9 +869,9 @@
       ],
       "architectural_brief": "Quần thể miếu thờ các Hoàng đế triều Nguyễn ở góc Tây Nam Hoàng Thành (bao gồm tường Hoàng Thành Nam & Tây cao 4.0m): Thế Tổ Miếu (Trùng thiềm điệp ốc 9 gian 2 chái mái Hoàng lưu ly, cột cao 4.8m), phía trước là sân đặt hàng ngang Cửu Đỉnh đúc đồng (Cao Đỉnh ở giữa cao 2.5m nhô lên trước 8 đỉnh còn lại), Hiển Lâm Các 3 tầng gỗ tinh xảo (cao ~17m — biểu tượng tưởng niệm công thần), Miếu Môn, Tả/Hữu Tùng Tự và Hưng Tổ Miếu ở phía Bắc ô.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 21,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Mở thông cửa Thế Tổ Miếu cho GTA đi vào tham quan án thờ các vua Nguyễn, hàng cột gỗ lim sơn son thếp vàng, hoành phi câu đối; dựng sâu nội-ngoại thất Hiển Lâm Các & 9 đỉnh đồng Cửu Đỉnh (khắc nổi sắc nét).",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-295,-70] × Y[-176,90] (225×266m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T09/ref_01.jpg",
         "05_qa_outputs/references/T09/ref_02.jpg",
@@ -886,7 +897,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T09_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 559477
     },
     {
       "tile_id": "T10",
@@ -898,46 +911,46 @@
       "priority_batch": 2,
       "status": "completed",
       "center": {
-        "x": 145.0,
-        "y": -55.0,
+        "x": 193.0,
+        "y": -68.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 150.0,
-        "depth": 190.0,
+        "width": 246.0,
+        "depth": 216.0,
         "max_height_m": 17.0
       },
       "bounds": {
         "x_min": 70.0,
-        "x_max": 220.0,
-        "y_min": -150.0,
+        "x_max": 316.0,
+        "y_min": -176.0,
         "y_max": 40.0
       },
       "elevation_z": 0.0,
       "poly_budget": 560000,
       "glb_path": "T10_thai_to_mieu_trieu_mieu.glb",
-      "sha256": "88e55a3c8bcead32ac85f3674366e7fca8737997046743dd24a828b3b778140f",
+      "sha256": "8342885dcb6228cae905cee6d2455a50f72f25ea988aa729b6125fcbc291f635",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 101127,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 558419,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -75.0,
-            0.0,
-            -95.0
+            -122.9,
+            -0.1,
+            -109.296
           ],
           "max": [
-            75.0,
-            15.85,
-            95.0
+            122.9,
+            15.73,
+            107.9
           ],
           "size": [
-            150.0,
-            15.85,
-            190.0
+            245.8,
+            15.83,
+            217.2
           ]
         },
         "warnings": []
@@ -956,9 +969,9 @@
       ],
       "architectural_brief": "Quần thể miếu thờ các Chúa Nguyễn phía Đông Nam Hoàng Thành: Thái Tổ Miếu Trùng thiềm điệp ốc mái Hoàng lưu ly, Tuy Thành Các, Triệu Tổ Miếu và sân lát gạch Bát Tràng.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 21,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Mở thông Thái Tổ Miếu & Triệu Tổ Miếu cho GTA đi vào chiêm bái nội thất tôn miếu (cột gỗ lim, vì kèo, hương án, long vị, khám thờ) & chi tiết cổ diêm Pháp lam.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[70,316] × Y[-176,40] (246×216m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T10/ref_01.jpg",
         "05_qa_outputs/references/T10/ref_02.jpg",
@@ -984,7 +997,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T10_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 558419
     },
     {
       "tile_id": "T11",
@@ -996,46 +1011,46 @@
       "priority_batch": 2,
       "status": "completed",
       "center": {
-        "x": -135.0,
-        "y": 112.5,
+        "x": -182.5,
+        "y": 177.5,
         "z": 0.0
       },
       "dimensions": {
-        "width": 130.0,
-        "depth": 145.0,
+        "width": 225.0,
+        "depth": 175.0,
         "max_height_m": 14.0
       },
       "bounds": {
-        "x_min": -200.0,
+        "x_min": -295.0,
         "x_max": -70.0,
-        "y_min": 40.0,
-        "y_max": 185.0
+        "y_min": 90.0,
+        "y_max": 265.0
       },
       "elevation_z": 0.0,
       "poly_budget": 480000,
       "glb_path": "T11_cung_dien_tho.glb",
-      "sha256": "fc6f2d3cc8fd058cfcb4b52179b50516aef08e8a8f3edf1208a158f3c5c833ba",
+      "sha256": "5ca08c9e60a57aa77511435cc80888f42f894fb98925701e1a72064f3db1dabb",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 88910,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 474464,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -65.0,
-            0.0,
-            -72.5
+            -112.42,
+            -0.05,
+            -87.42
           ],
           "max": [
-            65.0,
-            11.19,
-            72.5
+            112.4,
+            11.232,
+            87.4
           ],
           "size": [
-            130.0,
-            11.19,
-            145.0
+            224.82,
+            11.28,
+            174.82
           ]
         },
         "warnings": []
@@ -1052,9 +1067,9 @@
       ],
       "architectural_brief": "Cung Diên Thọ (Gia Thọ) khu Tây Hoàng Thành: Điện Diên Thọ Trùng thiềm điệp ốc, Tạ Trường Du trên hồ sen, Các Phước Thọ, Điện Thọ Ninh và hành lang kín.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 19,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Mở thông Cung Diên Thọ (Điện Chính, Tả/Hữu Trà, Khương Ninh Các, Trường Du Tạ) cho nhân vật 1.70m đi dạo xuyên hiên và vào nội thất sảnh Thái hậu.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-295,-70] × Y[90,265] (225×175m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T11/ref_01.jpg",
         "05_qa_outputs/references/T11/ref_02.jpg",
@@ -1080,7 +1095,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T11_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 474464
     },
     {
       "tile_id": "T12",
@@ -1092,46 +1109,46 @@
       "priority_batch": 2,
       "status": "completed",
       "center": {
-        "x": 155.0,
-        "y": 120.0,
+        "x": 253.0,
+        "y": 253.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 170.0,
-        "depth": 160.0,
+        "width": 126.0,
+        "depth": 426.0,
         "max_height_m": 15.0
       },
       "bounds": {
-        "x_min": 70.0,
-        "x_max": 240.0,
+        "x_min": 190.0,
+        "x_max": 316.0,
         "y_min": 40.0,
-        "y_max": 200.0
+        "y_max": 466.0
       },
       "elevation_z": 0.0,
       "poly_budget": 480000,
       "glb_path": "T12_phu_noi_vu_hien_nhon_mon.glb",
-      "sha256": "a90698293baf021620e2973cd5b6ad183abed3309e5ab1f826e2c187aef63523",
+      "sha256": "467dfe9887dd159bc859494e72d74e927cabb88db47c1fc5658170f5dd2a7659",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 111934,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 408107,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -85.0,
-            0.0,
-            -80.0
+            -62.92,
+            -0.1,
+            -212.9
           ],
           "max": [
-            85.0,
+            65.35,
             14.306,
-            80.0
+            215.058
           ],
           "size": [
-            170.0,
-            14.306,
-            160.0
+            128.27,
+            14.41,
+            427.96
           ]
         },
         "warnings": []
@@ -1149,9 +1166,9 @@
       ],
       "architectural_brief": "Khu Đông Hoàng Thành: Cửa Hiển Nhơn nguyên bản 1880, Phủ Nội Vụ Trùng thiềm điệp ốc mái Thanh lưu ly, Điện Khâm Văn và kho tàng cung đình.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 20,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Mở thông Cửa Hiển Nhơn khảm sành sứ Pháp lam & nội thất Phủ Nội Vụ + Điện Khâm Văn (kho báu, sảnh đường gỗ, cửa mở thông).",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[190,316] × Y[40,466] (126×426m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T12/ref_01.jpg",
         "05_qa_outputs/references/T12/ref_02.jpg",
@@ -1177,7 +1194,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T12_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 408107
     },
     {
       "tile_id": "T13",
@@ -1189,46 +1208,46 @@
       "priority_batch": 2,
       "status": "completed",
       "center": {
-        "x": -255.5,
-        "y": 87.0,
+        "x": -322.5,
+        "y": 145.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 111.0,
-        "depth": 614.0,
+        "width": 55.0,
+        "depth": 642.0,
         "max_height_m": 14.0
       },
       "bounds": {
-        "x_min": -311.0,
-        "x_max": -200.0,
-        "y_min": -220.0,
-        "y_max": 394.0
+        "x_min": -350.0,
+        "x_max": -295.0,
+        "y_min": -176.0,
+        "y_max": 466.0
       },
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T13_cua_chuong_duc_tay_ht.glb",
-      "sha256": "045eb427476115285ae7cefa1cbf052584abaad07191f5ed949d8e6dd1802e82",
+      "sha256": "e059a9ecfac638b633b22606f5352b02d258ea40f87601fa150436e5b75c342d",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 70057,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 191562,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -55.4,
-            0.0,
-            -306.8
+            -27.4,
+            -0.1,
+            -320.9
           ],
           "max": [
-            55.4,
+            27.4,
             13.845,
-            306.8
+            320.92
           ],
           "size": [
-            110.8,
-            13.845,
-            613.6
+            54.8,
+            13.94,
+            641.82
           ]
         },
         "warnings": []
@@ -1243,9 +1262,9 @@
       ],
       "architectural_brief": "Tuyến tường Tây Hoàng Thành cao 4.0m (x=-311m), Cửa Chương Đức 2 tầng tam quan, dải vườn & sân đệm phía Tây Thế Tổ Miếu và Cung Diên Thọ.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 17,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Sắc nét chi tiết khảm sành sứ Cửa Chương Đức, cổng vòm đi bộ thông suốt + điếm canh & hành lang tường Tây Hoàng Thành.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-350,-295] × Y[-176,466] (55×642m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T13/ref_01.jpg",
         "05_qa_outputs/references/T13/ref_02.jpg",
@@ -1271,7 +1290,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T13_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 191562
     },
     {
       "tile_id": "T14",
@@ -1283,46 +1304,46 @@
       "priority_batch": 3,
       "status": "completed",
       "center": {
-        "x": -135.0,
-        "y": 289.5,
+        "x": -182.5,
+        "y": 365.5,
         "z": 0.0
       },
       "dimensions": {
-        "width": 130.0,
-        "depth": 209.0,
+        "width": 225.0,
+        "depth": 201.0,
         "max_height_m": 13.5
       },
       "bounds": {
-        "x_min": -200.0,
+        "x_min": -295.0,
         "x_max": -70.0,
-        "y_min": 185.0,
-        "y_max": 394.0
+        "y_min": 265.0,
+        "y_max": 466.0
       },
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T14_cung_truong_sanh.glb",
-      "sha256": "481b6cf71ebc1f78388328d19b37920b094577fd644eb9ede14b917b43cee5ec",
+      "sha256": "298b6b59a4e1fff6cf93562130bd028397cf9fbaaf5aba27eed7c6223623c5d3",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 58561,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 274415,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -64.8,
-            0.0,
-            -104.3
+            -112.4,
+            -0.1,
+            -100.4
           ],
           "max": [
-            64.8,
+            112.4,
             12.817,
-            104.3
+            100.42
           ],
           "size": [
-            129.6,
-            12.817,
-            208.6
+            224.8,
+            12.92,
+            200.82
           ]
         },
         "warnings": []
@@ -1336,9 +1357,9 @@
       ],
       "architectural_brief": "Cung Trường Sanh (tẩm cung Thái hậu với hệ thống hồ nước uốn quanh, cầu đá, lầu thủy tạ), Điện Quang Minh và đoạn tường Bắc Hoàng Thành cao 4.0m.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 19,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Mở thông các nếp nhà Cung Trường Sanh, bình phong đá chạm rồng, hồ bán nguyệt & nội thất gỗ tiếp khách Hoàng gia.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-295,-70] × Y[265,466] (225×201m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T14/ref_01.jpg",
         "05_qa_outputs/references/T14/ref_02.jpg",
@@ -1364,7 +1385,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T14_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 274415
     },
     {
       "tile_id": "T15",
@@ -1376,46 +1399,46 @@
       "priority_batch": 3,
       "status": "completed",
       "center": {
-        "x": 190.5,
-        "y": 297.0,
+        "x": 130.0,
+        "y": 253.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 241.0,
-        "depth": 194.0,
+        "width": 120.0,
+        "depth": 426.0,
         "max_height_m": 14.0
       },
       "bounds": {
         "x_min": 70.0,
-        "x_max": 311.0,
-        "y_min": 200.0,
-        "y_max": 394.0
+        "x_max": 190.0,
+        "y_min": 40.0,
+        "y_max": 466.0
       },
       "elevation_z": 0.0,
       "poly_budget": 360000,
       "glb_path": "T15_co_ha_duyet_thi_duong.glb",
-      "sha256": "3e2ada3b20191d0fa8a9d826a943e8a595c80d2c539d236cefba60108cd0d309",
+      "sha256": "fcc0514c294d522870256d11270f81b56197a1a3cac892cb2c3d3a78904ab268",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 113663,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 237917,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -120.5,
-            0.0,
-            -97.0
+            -59.9,
+            -0.1,
+            -212.9
           ],
           "max": [
-            120.5,
+            60.024,
             14.357,
-            97.0
+            212.9
           ],
           "size": [
-            241.0,
-            14.357,
-            194.0
+            119.92,
+            14.46,
+            425.8
           ]
         },
         "warnings": []
@@ -1429,9 +1452,9 @@
       ],
       "architectural_brief": "Góc Đông Bắc Hoàng Thành: Duyệt Thị Đường, Thái Bình Lâu, khu Vườn Cơ Hạ mở rộng (hồ sen, đảo non bộ, đình tạ Thanh lưu ly) và góc tường Đông Bắc Hoàng Thành.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 20,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Duyệt Thị Đường (nhà hát cổ nhất VN): mở cửa cho GTA bước vào ngồi xem Sân Khấu Cung Đình, lầu khán giả 2 tầng, hàng cột son đỏ vẽ mây rồng & nội thất Thái Bình Lâu.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[70,190] × Y[40,466] (120×426m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T15/ref_01.jpg",
         "05_qa_outputs/references/T15/ref_02.jpg",
@@ -1457,7 +1480,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T15_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 237917
     },
     {
       "tile_id": "T16",
@@ -1470,45 +1495,45 @@
       "status": "completed",
       "center": {
         "x": 0.0,
-        "y": 362.0,
+        "y": 415.5,
         "z": 0.0
       },
       "dimensions": {
         "width": 140.0,
-        "depth": 64.0,
+        "depth": 101.0,
         "max_height_m": 14.0
       },
       "bounds": {
         "x_min": -70.0,
         "x_max": 70.0,
-        "y_min": 330.0,
-        "y_max": 394.0
+        "y_min": 365.0,
+        "y_max": 466.0
       },
       "elevation_z": 0.0,
       "poly_budget": 320000,
       "glb_path": "T16_cua_hoa_binh_vuon_thieu_phuong.glb",
-      "sha256": "7563f6acf46bcaa8aad9f82b8c665f70d1117f4f06726f1cff735ba1fda3abe3",
+      "sha256": "072a80815f81d831678bfda5bc9f3ab2f01e7ec10fe99c369f0ba6c936695a36",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 65620,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 319538,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
             -70.0,
-            0.0,
-            -32.0
+            -0.1,
+            -50.4
           ],
           "max": [
             70.0,
             13.026,
-            32.0
+            50.4
           ],
           "size": [
             140.0,
-            13.026,
-            64.0
+            13.13,
+            100.8
           ]
         },
         "warnings": []
@@ -1522,9 +1547,9 @@
       ],
       "architectural_brief": "Dải đất mặt Bắc Hoàng Thành (giữa tường Bắc Tử Cấm Thành y=+330m và tường Bắc Hoàng Thành cao 4.0m tại y=+394m): chính giữa trục Thần đạo là Cửa Hòa Bình (cổng Bắc Hoàng Thành 2 tầng mái lưu ly vàng/xanh), hai bên là hành lang vườn Thiệu Phương hình chữ Vạn, giếng cổ và các nhà trực thị vệ.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 16,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Cửa Hòa Bình (3 lối vòm đi qua được) & Vườn Thiệu Phương: lầu bát giác lộ thiên với hàng cột gỗ & tiểu cảnh hòn non bộ.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-70,70] × Y[365,466] (140×101m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T16/ref_01.jpg",
         "05_qa_outputs/references/T16/ref_02.jpg",
@@ -1551,7 +1576,8 @@
       "reference_target_count": 15,
       "real_reference_count": 20,
       "interior_ready": true,
-      "scene_triangle_count": 319978
+      "scene_triangle_count": 319538,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T17",
@@ -1563,46 +1589,46 @@
       "priority_batch": 3,
       "status": "completed",
       "center": {
-        "x": -390.0,
-        "y": -410.0,
+        "x": -510.0,
+        "y": -285.5,
         "z": 0.0
       },
       "dimensions": {
-        "width": 460.0,
-        "depth": 380.0,
+        "width": 820.0,
+        "depth": 219.0,
         "max_height_m": 14.0
       },
       "bounds": {
-        "x_min": -620.0,
-        "x_max": -160.0,
-        "y_min": -600.0,
-        "y_max": -220.0
+        "x_min": -920.0,
+        "x_max": -100.0,
+        "y_min": -395.0,
+        "y_max": -176.0
       },
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T17_cua_quang_duc_than_cong_tay.glb",
-      "sha256": "3d244f237db5553ac728700fcafbf8461ca7cf4468255f84f9a089af14528bf1",
+      "sha256": "87a58d474777b15314ef9b6998912f8d9ae175ffae79a4d1bc904cab3ab3c1d3",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 123143,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 142508,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -230.0,
-            0.0,
-            -190.0
+            -409.9,
+            -1.2,
+            -109.42
           ],
           "max": [
-            230.0,
-            13.954,
-            190.0
+            412.213,
+            15.05,
+            109.4
           ],
           "size": [
-            460.0,
-            13.954,
-            380.0
+            822.11,
+            16.25,
+            218.82
           ]
         },
         "warnings": []
@@ -1615,9 +1641,9 @@
       ],
       "architectural_brief": "Cánh Tây Nam Kinh Thành: đoạn tường Vauban mặt Nam cao 6.6m có pháo đài nhô, Cửa Quảng Đức (Cửa Sập) 2 tầng vọng lâu mái ngói ống, nhà súng Hữu trưng bày 5 khẩu Thần Công (Ngũ Hành) đúc đồng trên giá gỗ chạm, đoạn Hào Kim Thủy phía Tây Nam và đường nội thành trồng phượng vĩ.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 16,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Mở cổng vòm Cửa Quảng Đức cho GTA đi qua & hoàn thiện Tả Pháo Xưởng / kỳ đài góc Tây Nam sắc nét gạch vồ.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-920,-100] × Y[-395,-176] (820×219m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T17/ref_01.jpg",
         "05_qa_outputs/references/T17/ref_02.jpg",
@@ -1641,10 +1667,11 @@
         "05_qa_outputs/references/T17/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T17_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 109560,
+      "scene_triangle_count": 142508,
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T18",
@@ -1656,46 +1683,46 @@
       "priority_batch": 3,
       "status": "completed",
       "center": {
-        "x": 390.0,
-        "y": -410.0,
+        "x": 490.0,
+        "y": -285.5,
         "z": 0.0
       },
       "dimensions": {
-        "width": 460.0,
-        "depth": 380.0,
+        "width": 780.0,
+        "depth": 219.0,
         "max_height_m": 14.0
       },
       "bounds": {
-        "x_min": 160.0,
-        "x_max": 620.0,
-        "y_min": -600.0,
-        "y_max": -220.0
+        "x_min": 100.0,
+        "x_max": 880.0,
+        "y_min": -395.0,
+        "y_max": -176.0
       },
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T18_cua_the_nhon_than_cong_dong.glb",
-      "sha256": "da3885f2a4292e105d4612a9d68a399b21b6eea8f78055177fc68fcca9a3b057",
+      "sha256": "7cee738abe00c2e1b059689944c4ba7457a53af3c58395d4fc595ae31bfa86dc",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 66757,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 205957,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -230.0,
-            0.0,
-            -190.0
+            -389.92,
+            -1.2,
+            -109.42
           ],
           "max": [
-            230.0,
+            389.9,
             14.98,
-            190.0
+            109.4
           ],
           "size": [
-            460.0,
-            14.98,
-            380.0
+            779.82,
+            16.18,
+            218.82
           ]
         },
         "warnings": []
@@ -1708,9 +1735,9 @@
       ],
       "architectural_brief": "Cánh Đông Nam Kinh Thành: đoạn tường Vauban mặt Nam cao 6.6m, Cửa Thể Nhơn (Cửa Ngăn) 2 tầng vọng lâu, nhà súng Tả trưng bày 4 khẩu Thần Công (Tứ Thời: Xuân-Hạ-Thu-Đông) đúc đồng, Hào Kim Thủy Đông Nam và cầu đá đi vào Quốc Tử Giám / khu quan lại.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 16,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Mở cổng vòm Cửa Thể Nhơn (Cửa Ngăn) đi qua được & hoàn thiện Hữu Pháo Xưởng / chòi gác góc Đông Nam.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[100,880] × Y[-395,-176] (780×219m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T18/ref_01.jpg",
         "05_qa_outputs/references/T18/ref_02.jpg",
@@ -1734,10 +1761,11 @@
         "05_qa_outputs/references/T18/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T18_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 109967,
+      "scene_triangle_count": 205957,
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T19",
@@ -1749,46 +1777,46 @@
       "priority_batch": 4,
       "status": "completed",
       "center": {
-        "x": -465.5,
-        "y": -65.0,
+        "x": -635.0,
+        "y": -15.5,
         "z": 0.0
       },
       "dimensions": {
-        "width": 309.0,
-        "depth": 310.0,
+        "width": 570.0,
+        "depth": 321.0,
         "max_height_m": 11.0
       },
       "bounds": {
-        "x_min": -620.0,
-        "x_max": -311.0,
-        "y_min": -220.0,
-        "y_max": 90.0
+        "x_min": -920.0,
+        "x_max": -350.0,
+        "y_min": -176.0,
+        "y_max": 145.0
       },
       "elevation_z": 0.0,
       "poly_budget": 220000,
       "glb_path": "T19_kim_thuy_tay_nam.glb",
-      "sha256": "e44f845319d24ff2e044b5afeb7ee4d315a060bca43289f883248e2458d75fa5",
+      "sha256": "16beb63ffb4d055c6c3b117789d68b39a71ef990bceb489e361d55e337586ea2",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 30868,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 219588,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -154.5,
-            0.0,
-            -155.0
+            -284.9,
+            -1.6,
+            -160.4
           ],
           "max": [
-            154.5,
-            10.702,
-            155.0
+            284.9,
+            11.432,
+            160.4
           ],
           "size": [
-            309.0,
-            10.702,
-            310.0
+            569.8,
+            13.03,
+            320.8
           ]
         },
         "warnings": []
@@ -1801,9 +1829,9 @@
       ],
       "architectural_brief": "Đoạn Hào Kim Thủy bao sát mặt Tây Nam Hoàng Thành (mặt nước -1.50m, kè đá Thanh, cầu đá sang khu Tây), kèm dãy dinh thự nhà rường Huế mái ngói âm dương của các nha sở triều đình phía Tây.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 14,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Sắc nét tường gạch vồ hào Kim Thủy Tây Nam, cầu gạch & các công sở nha môn có cửa mở vào hiên.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-920,-350] × Y[-176,145] (570×321m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T19/ref_01.jpg",
         "05_qa_outputs/references/T19/ref_02.jpg",
@@ -1829,7 +1857,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T19_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 219588
     },
     {
       "tile_id": "T20",
@@ -1841,46 +1871,46 @@
       "priority_batch": 4,
       "status": "completed",
       "center": {
-        "x": -465.5,
-        "y": 242.0,
+        "x": -635.0,
+        "y": 305.5,
         "z": 0.0
       },
       "dimensions": {
-        "width": 309.0,
-        "depth": 304.0,
+        "width": 570.0,
+        "depth": 321.0,
         "max_height_m": 11.0
       },
       "bounds": {
-        "x_min": -620.0,
-        "x_max": -311.0,
-        "y_min": 90.0,
-        "y_max": 394.0
+        "x_min": -920.0,
+        "x_max": -350.0,
+        "y_min": 145.0,
+        "y_max": 466.0
       },
       "elevation_z": 0.0,
       "poly_budget": 240000,
       "glb_path": "T20_kim_thuy_tay_bac_xa_tac.glb",
-      "sha256": "4fa9cadbe1aa07246a5d116841582c6244fe74d261aeb51d4ee8792c51bbc104",
+      "sha256": "3bdbf671caa0be8c9c0aa9f17db4457a4443881b1fcae6475e78112558b08033",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 50514,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 219728,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -154.2,
-            0.0,
-            -151.8
+            -284.92,
+            -1.6,
+            -160.4
           ],
           "max": [
-            154.2,
+            284.9,
             11.442,
-            151.8
+            160.4
           ],
           "size": [
-            308.4,
-            11.442,
-            303.6
+            569.82,
+            13.04,
+            320.8
           ]
         },
         "warnings": []
@@ -1893,9 +1923,9 @@
       ],
       "architectural_brief": "Hào Kim Thủy Tây Bắc và cầu vòm đá dẫn vào Cửa Chương Đức; bên ngoài là khuôn viên Đàn Xã Tắc (2 tầng đàn vuông đắp đất ngũ sắc, bậc đá 4 hướng, lan can gạch xây thấp) cùng khu nhà vườn cổ nội thành.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 16,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Đàn Xã Tắc 2 tầng nền đá Thanh, lan can chạm hoa văn, hương trụ, bậc cấp không ngập đất & Hào Kim Thủy Tây Bắc.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-920,-350] × Y[145,466] (570×321m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T20/ref_01.jpg",
         "05_qa_outputs/references/T20/ref_02.jpg",
@@ -1921,7 +1951,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T20_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 219728
     },
     {
       "tile_id": "T21",
@@ -1933,46 +1965,46 @@
       "priority_batch": 4,
       "status": "completed",
       "center": {
-        "x": 465.5,
-        "y": -65.0,
+        "x": 598.0,
+        "y": 145.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 309.0,
-        "depth": 310.0,
+        "width": 564.0,
+        "depth": 642.0,
         "max_height_m": 12.0
       },
       "bounds": {
-        "x_min": 311.0,
-        "x_max": 620.0,
-        "y_min": -220.0,
-        "y_max": 90.0
+        "x_min": 316.0,
+        "x_max": 880.0,
+        "y_min": -176.0,
+        "y_max": 466.0
       },
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T21_kim_thuy_dong_nam_luc_bo.glb",
-      "sha256": "132b4caf59469820baa2f908ce673d58a5a5c7ac402aff1858b42f065c2f2a11",
+      "sha256": "54d0f3733c215ace068710c543bfbf6953b641a9e56b0455b4baac0e5b6e4fac",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 29602,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 279702,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -154.5,
-            -0.305,
-            -155.0
+            -281.9,
+            -1.6,
+            -320.9
           ],
           "max": [
-            154.5,
+            281.9,
             10.867,
-            155.0
+            320.9
           ],
           "size": [
-            309.0,
-            11.172,
-            310.0
+            563.8,
+            12.47,
+            641.8
           ]
         },
         "warnings": []
@@ -1986,9 +2018,9 @@
       ],
       "architectural_brief": "Đoạn Hào Kim Thủy mặt Đông Nam và cụm công sở hành chính cao nhất triều Nguyễn bên ngoài Hoàng Thành: Khu Lục Bộ (Lại, Hộ, Lễ, Binh, Hình, Công), Viện Cơ Mật và Quốc Sử Quán kiến trúc nhà rường 3 gian 2 chái mái ngói liệt có sân vườn cân đối.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 16,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Khu Lục Bộ & Cơ Mật Viện: bổ sung sảnh nha môn mở cửa bước vào được, bàn án công đường, mái ngói liệt.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[316,880] × Y[-176,466] (564×642m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T21/ref_01.jpg",
         "05_qa_outputs/references/T21/ref_02.jpg",
@@ -2012,10 +2044,11 @@
         "05_qa_outputs/references/T21/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T21_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 109980,
+      "scene_triangle_count": 279702,
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T22",
@@ -2027,46 +2060,46 @@
       "priority_batch": 4,
       "status": "completed",
       "center": {
-        "x": 465.5,
-        "y": 242.0,
+        "x": 440.0,
+        "y": 753.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 309.0,
-        "depth": 304.0,
+        "width": 880.0,
+        "depth": 574.0,
         "max_height_m": 12.0
       },
       "bounds": {
-        "x_min": 311.0,
-        "x_max": 620.0,
-        "y_min": 90.0,
-        "y_max": 394.0
+        "x_min": 0.0,
+        "x_max": 880.0,
+        "y_min": 466.0,
+        "y_max": 1040.0
       },
       "elevation_z": 0.0,
       "poly_budget": 260000,
       "glb_path": "T22_kim_thuy_dong_bac_tinh_tam_nam.glb",
-      "sha256": "0c9977c123cd10112ac998bb0cc3839289615a7714ba2578cd591b5b3fe6ec11",
+      "sha256": "7756ec203ba64306f0a8883d933c27c0da5c372e87dd833076077f1dd623ee84",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 35693,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 259810,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -154.5,
-            0.0,
-            -152.0
+            -439.9,
+            -1.6,
+            -286.9
           ],
           "max": [
-            154.5,
+            439.9,
             12.078,
-            152.0
+            286.9
           ],
           "size": [
-            309.0,
-            12.078,
-            304.0
+            879.8,
+            13.68,
+            573.8
           ]
         },
         "warnings": []
@@ -2080,9 +2113,9 @@
       ],
       "architectural_brief": "Hào Kim Thủy Đông Bắc, cầu vòm đá dẫn vào Cửa Hiển Nhơn và nửa Nam của Hồ Tịnh Tâm (ngự uyển sen trắng nổi tiếng kinh đô với cầu Hồng Cừ, đê Kim Oanh và tường bao xây gạch vồ).",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 15,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Hồ Tịnh Tâm (Nam) với đảo Bồng Lai / Tạ Văn Tân có cầu dẫn đi bộ ra chòi gỗ 8 mái trên mặt hồ.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[0,880] × Y[466,1040] (880×574m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T22/ref_01.jpg",
         "05_qa_outputs/references/T22/ref_02.jpg",
@@ -2109,7 +2142,8 @@
       "reference_target_count": 15,
       "real_reference_count": 20,
       "interior_ready": true,
-      "scene_triangle_count": 259976
+      "scene_triangle_count": 259810,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T23",
@@ -2121,46 +2155,46 @@
       "priority_batch": 5,
       "status": "completed",
       "center": {
-        "x": -310.0,
-        "y": 557.0,
+        "x": -460.0,
+        "y": 1083.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 620.0,
-        "depth": 326.0,
+        "width": 920.0,
+        "depth": 1234.0,
         "max_height_m": 11.0
       },
       "bounds": {
-        "x_min": -620.0,
+        "x_min": -920.0,
         "x_max": 0.0,
-        "y_min": 394.0,
-        "y_max": 720.0
+        "y_min": 466.0,
+        "y_max": 1700.0
       },
       "elevation_z": 0.0,
       "poly_budget": 220000,
       "glb_path": "T23_doanh_trai_tay_bac.glb",
-      "sha256": "e467c249974b70f1cdb02d1cebe2ea10a393f8916925206d332e39e274ed7797",
+      "sha256": "c21bfd9a4e8012e9d144d2e3af9b937ce3a3b357eaa22987d47f6f515aa0e624",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 71366,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 219769,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -310.0,
-            0.0,
-            -163.0
+            -459.9,
+            -1.6,
+            -616.9
           ],
           "max": [
-            310.0,
+            459.9,
             10.63,
-            163.0
+            616.9
           ],
           "size": [
-            620.0,
-            10.63,
-            326.0
+            919.8,
+            12.23,
+            1233.8
           ]
         },
         "warnings": []
@@ -2172,9 +2206,9 @@
       ],
       "architectural_brief": "Nửa Tây của Hào Kim Thủy phía Bắc (cầu đá qua Cửa Hòa Bình tại biên x=0), sông Ngự Hà cắt ngang nội thành, các dãy trại lính Cấm binh & kho lương triều Nguyễn mái ngói đất nung xen kẽ vườn cây xanh.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 13,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Doanh trại Thị Vệ Tây Bắc & Cửa An Hòa / tường Bắc Kinh Thành: mở cổng trại lính, giá vũ khí, phản gỗ nội thất.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-920,0] × Y[466,1700] (920×1234m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T23/ref_01.jpg",
         "05_qa_outputs/references/T23/ref_02.jpg",
@@ -2201,7 +2235,8 @@
       "reference_target_count": 15,
       "real_reference_count": 20,
       "interior_ready": true,
-      "scene_triangle_count": 218237
+      "scene_triangle_count": 219769,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T24",
@@ -2213,46 +2248,46 @@
       "priority_batch": 5,
       "status": "completed",
       "center": {
-        "x": 310.0,
-        "y": 557.0,
+        "x": 440.0,
+        "y": 1370.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 620.0,
-        "depth": 326.0,
+        "width": 880.0,
+        "depth": 660.0,
         "max_height_m": 13.0
       },
       "bounds": {
         "x_min": 0.0,
-        "x_max": 620.0,
-        "y_min": 394.0,
-        "y_max": 720.0
+        "x_max": 880.0,
+        "y_min": 1040.0,
+        "y_max": 1700.0
       },
       "elevation_z": 0.0,
       "poly_budget": 280000,
       "glb_path": "T24_tinh_tam_bac_tang_thu_lau.glb",
-      "sha256": "46884537c2570e44febb5508d17093502adcbcc1794c1639f6507020581c3bd8",
+      "sha256": "8323bbc52db5fe8f62cc509a3f8f735b1bbbb4f8f34774c6b6e7b48ea3c46a55",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 122830,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 269532,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -310.0,
-            -0.005,
-            -163.0
+            -439.9,
+            -0.124,
+            -329.9
           ],
           "max": [
-            310.0,
+            439.9,
             12.498,
-            163.0
+            330.25
           ],
           "size": [
-            620.0,
-            12.503,
-            326.0
+            879.8,
+            12.62,
+            660.15
           ]
         },
         "warnings": []
@@ -2266,9 +2301,9 @@
       ],
       "architectural_brief": "Nửa Bắc Hồ Tịnh Tâm (Đảo Bồng Lai, Bồng Doanh Các, Phương Trượng), Hồ Học Hải và Tàng Thư Lâu 2 tầng xây gạch vồ chống cháy nằm giữa đảo hồ (nơi lưu trữ châu bản, địa bạ triều Nguyễn), nối sông Ngự Hà.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 15,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Tàng Thư Lâu 2 tầng giữa Hồ Học Hải (cho phép đi qua cầu đá vào tầng 1 vòm gạch chứa Châu bản, tủ kinh sách triều Nguyễn).",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[0,880] × Y[1040,1700] (880×660m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T24/ref_01.jpg",
         "05_qa_outputs/references/T24/ref_02.jpg",
@@ -2292,10 +2327,11 @@
         "05_qa_outputs/references/T24/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T24_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 109986,
+      "scene_triangle_count": 269532,
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T25",
@@ -2307,46 +2343,46 @@
       "priority_batch": 5,
       "status": "completed",
       "center": {
-        "x": -800.0,
-        "y": 60.0,
+        "x": -1100.0,
+        "y": 652.5,
         "z": 0.0
       },
       "dimensions": {
         "width": 360.0,
-        "depth": 1320.0,
+        "depth": 2095.0,
         "max_height_m": 14.0
       },
       "bounds": {
-        "x_min": -980.0,
-        "x_max": -620.0,
-        "y_min": -600.0,
-        "y_max": 720.0
+        "x_min": -1280.0,
+        "x_max": -920.0,
+        "y_min": -395.0,
+        "y_max": 1700.0
       },
       "elevation_z": 0.0,
       "poly_budget": 220000,
       "glb_path": "T25_thanh_vauban_tay.glb",
-      "sha256": "5256d278cd17fc4c16fecfb01c686295d654ef85023dcb80a5be86b64c1594c0",
+      "sha256": "9e7dafad26df586a5da4bd062a4836982d56a94b061d7536c4e4045c3034cf21",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 76253,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 219873,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -180.0,
-            0.0,
-            -660.0
+            -179.9,
+            -1.2,
+            -1047.4
           ],
           "max": [
-            180.0,
-            13.918,
-            660.0
+            179.92,
+            13.937,
+            1047.4
           ],
           "size": [
-            360.0,
-            13.918,
-            1320.0
+            359.82,
+            15.14,
+            2094.8
           ]
         },
         "warnings": []
@@ -2358,9 +2394,9 @@
       ],
       "architectural_brief": "Tường Kinh Thành kiểu Vauban mặt Tây cao 6.6m, dày 21m, có 5 pháo đài góc nhọn zic-zắc phòng thủ, Cửa Hữu & Cửa Chánh Tây (vọng lâu 2 tầng mái ngói ống), Hộ Thành Hào Tây rộng 35m (mặt nước -2.20m) có cầu đá vòm bắc qua và dải cây xanh ngoại vi.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 13,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Thành Vauban Tây, Hộ Thành Hào Tây & pháo đài gạch vồ: lỗ châu mai, pháo đài góc, ụ pháo & điếm canh mở cửa.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-1280,-920] × Y[-395,1700] (360×2095m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T25/ref_01.jpg",
         "05_qa_outputs/references/T25/ref_02.jpg",
@@ -2384,10 +2420,11 @@
         "05_qa_outputs/references/T25/ref_20.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T25_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 99980,
+      "scene_triangle_count": 219873,
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T26",
@@ -2399,46 +2436,46 @@
       "priority_batch": 5,
       "status": "completed",
       "center": {
-        "x": 800.0,
-        "y": 60.0,
+        "x": 1150.0,
+        "y": 652.5,
         "z": 0.0
       },
       "dimensions": {
-        "width": 360.0,
-        "depth": 1320.0,
+        "width": 540.0,
+        "depth": 2095.0,
         "max_height_m": 14.0
       },
       "bounds": {
-        "x_min": 620.0,
-        "x_max": 980.0,
-        "y_min": -600.0,
-        "y_max": 720.0
+        "x_min": 880.0,
+        "x_max": 1420.0,
+        "y_min": -395.0,
+        "y_max": 1700.0
       },
       "elevation_z": 0.0,
       "poly_budget": 220000,
       "glb_path": "T26_thanh_vauban_dong.glb",
-      "sha256": "c4c833a44f042038122bb50e350d9a9b28304dd225386494b53dfe9088ba3654",
+      "sha256": "b3ab81b786569dca503b425a7b74c738aaf8f6783b0f0950ecde36f2e6394414",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 68395,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 213125,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -180.0,
-            0.0,
-            -660.0
+            -269.92,
+            -1.2,
+            -1047.4
           ],
           "max": [
-            180.0,
-            14.71,
-            660.0
+            269.9,
+            14.567,
+            1047.4
           ],
           "size": [
-            360.0,
-            14.71,
-            1320.0
+            539.82,
+            15.77,
+            2094.8
           ]
         },
         "warnings": []
@@ -2450,9 +2487,9 @@
       ],
       "architectural_brief": "Tường Kinh Thành kiểu Vauban mặt Đông cao 6.6m với các pháo đài nhô sắc cạnh, Cửa Thượng Tứ (Đông Nam Môn) và Cửa Đông Ba (Chánh Đông Môn) có vọng lâu 2 tầng, Hộ Thành Hào Đông (sông Đông Ba cổ, cao độ nước -2.20m) cùng cầu đá dẫn sang phố cổ Gia Hội.",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 13,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Thành Vauban Đông, Hộ Thành Hào Đông & Cửa Đông Ba / Kẻ Trài: vòm gạch đi qua được, lan can cổ, nhà gác.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[880,1420] × Y[-395,1700] (540×2095m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T26/ref_01.jpg",
         "05_qa_outputs/references/T26/ref_02.jpg",
@@ -2474,10 +2511,11 @@
         "05_qa_outputs/references/T26/ref_18.jpg"
       ],
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T26_LATEST_COMPARE.jpg",
-      "scene_triangle_count": 99666,
+      "scene_triangle_count": 213125,
       "reference_target_count": 15,
       "real_reference_count": 18,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1"
     },
     {
       "tile_id": "T27",
@@ -2489,46 +2527,46 @@
       "priority_batch": 6,
       "status": "completed",
       "center": {
-        "x": 0.0,
-        "y": 880.0,
+        "x": 70.0,
+        "y": 1925.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 1960.0,
-        "depth": 320.0,
+        "width": 2700.0,
+        "depth": 450.0,
         "max_height_m": 14.0
       },
       "bounds": {
-        "x_min": -980.0,
-        "x_max": 980.0,
-        "y_min": 720.0,
-        "y_max": 1040.0
+        "x_min": -1280.0,
+        "x_max": 1420.0,
+        "y_min": 1700.0,
+        "y_max": 2150.0
       },
       "elevation_z": 0.0,
       "poly_budget": 240000,
       "glb_path": "T27_thanh_vauban_bac.glb",
-      "sha256": "d6e09481a263210f012cd54f7cfe66e347e024829e604cc4401a5440ded84f34",
+      "sha256": "5f12bad4c35ac8750ef4aec9ccbdab2e0441129ee9edcaecf6da83d7928504d6",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 79750,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 240006,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -979.2,
-            0.0,
-            -159.2
+            -1349.9,
+            -1.4,
+            -224.9
           ],
           "max": [
-            979.2,
+            1349.9,
             14.845,
-            159.2
+            224.92
           ],
           "size": [
-            1958.4,
-            14.845,
-            318.4
+            2699.8,
+            16.25,
+            449.82
           ]
         },
         "warnings": []
@@ -2540,9 +2578,9 @@
       ],
       "architectural_brief": "Toàn tuyến tường Kinh Thành Vauban mặt Bắc cao 6.6m nối khép kín góc Tây Bắc và Đông Bắc (Trấn Bình Đài — đồn Mang Cá phòng thủ góc Đông Bắc), Cửa Chánh Bắc (Cửa Hậu), Cửa An Hòa, Hộ Thành Hào Bắc rộng 35m (cao độ nước -2.20m).",
       "detail_stage": "L5_HERITAGE_FINAL",
-      "version": 12,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Thành Vauban Bắc & Trấn Bình Đài (Mang Cá): nâng cấp pháo đài phòng thủ, cầu đá, vọng lâu mở cửa đi vào.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-1280,1420] × Y[1700,2150] (2700×450m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T27/ref_01.jpg",
         "05_qa_outputs/references/T27/ref_02.jpg",
@@ -2568,7 +2606,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T27_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": true
+      "interior_ready": true,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 240006
     },
     {
       "tile_id": "T28",
@@ -2580,46 +2620,46 @@
       "priority_batch": 6,
       "status": "completed",
       "center": {
-        "x": 0.0,
-        "y": -690.0,
+        "x": 70.0,
+        "y": -485.0,
         "z": 0.0
       },
       "dimensions": {
-        "width": 1960.0,
+        "width": 2700.0,
         "depth": 180.0,
         "max_height_m": 14.0
       },
       "bounds": {
-        "x_min": -980.0,
-        "x_max": 980.0,
-        "y_min": -780.0,
-        "y_max": -600.0
+        "x_min": -1280.0,
+        "x_max": 1420.0,
+        "y_min": -575.0,
+        "y_max": -395.0
       },
       "elevation_z": 0.0,
       "poly_budget": 340000,
       "glb_path": "T28_ho_thanh_hao_nam_phu_van_lau.glb",
-      "sha256": "c83b9f08d5d8f4ac27591cbc7dba17f88875b81b7ea49a46fbca78ff231db6d4",
+      "sha256": "5d20d951a6fe7232b9a82443fae3f49331c9d750cab73a13c996a2e14fcaa5c5",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 84670,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 327715,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -979.8,
-            0.0,
-            -89.7
+            -1349.9,
+            -2.0,
+            -89.92
           ],
           "max": [
-            979.8,
+            1349.9,
             14.117,
-            89.9
+            89.951
           ],
           "size": [
-            1959.6,
-            14.117,
-            179.6
+            2699.8,
+            16.12,
+            179.87
           ]
         },
         "warnings": []
@@ -2633,9 +2673,9 @@
       ],
       "architectural_brief": "Tuyến Hộ Thành Hào Nam (mặt nước -2.20m) chạy dọc chân Kỳ Đài, bờ kè đá Bắc Sông Hương, dải công viên ven sông có 2 trụ đá 'Khuynh Cái Hạ Mã'; chính tâm trục Thần đạo (x=0) là Phu Văn Lâu 2 tầng lầu gỗ sơn son mái Hoàng lưu ly (nơi niêm yết chiếu chỉ Vua) và Nghênh Lương Đình 1 gian 4 chái có bậc đá bước xuống bến ngự Sông Hương.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 8,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Phu Văn Lâu + Nghênh Lương Đình: cả hai công trình đều thoáng mở bốn bề đi bộ xuyên qua, lộ kết cấu vì kèo gỗ lim nhìn thấy từ bên trong + bến Ngự.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-1280,1420] × Y[-575,-395] (2700×180m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T28/ref_01.jpg",
         "05_qa_outputs/references/T28/ref_02.jpg",
@@ -2654,7 +2694,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T28_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 13,
-      "interior_ready": false
+      "interior_ready": false,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 327715
     },
     {
       "tile_id": "T29",
@@ -2666,46 +2708,46 @@
       "priority_batch": 6,
       "status": "completed",
       "center": {
-        "x": 0.0,
-        "y": -920.0,
-        "z": -2.5
+        "x": 70.0,
+        "y": -760.0,
+        "z": 0.0
       },
       "dimensions": {
-        "width": 1960.0,
-        "depth": 280.0,
+        "width": 2700.0,
+        "depth": 370.0,
         "max_height_m": 8.0
       },
       "bounds": {
-        "x_min": -980.0,
-        "x_max": 980.0,
-        "y_min": -1060.0,
-        "y_max": -780.0
+        "x_min": -1280.0,
+        "x_max": 1420.0,
+        "y_min": -945.0,
+        "y_max": -575.0
       },
       "elevation_z": -2.5,
       "poly_budget": 200000,
       "glb_path": "T29_song_huong_thuyen_rong.glb",
-      "sha256": "727009689bf1fe1f462c8df4e1fea84aefeff4b03c0620498b42710ac180a2cf",
+      "sha256": "df0d80601142cd9a0bca20b889572e1fb52fa884a1768fad72cb2d8e50312d14",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 22620,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 79329,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -979.8,
-            -0.079,
-            -139.8
+            -1349.9,
+            -0.1,
+            -184.9
           ],
           "max": [
-            979.8,
+            1349.9,
             7.908,
-            139.8
+            184.9
           ],
           "size": [
-            1959.6,
-            7.987,
-            279.6
+            2699.8,
+            8.01,
+            369.8
           ]
         },
         "warnings": []
@@ -2716,9 +2758,9 @@
       ],
       "architectural_brief": "Mặt nước Sông Hương trong xanh rộng 280m (cao độ mặt nước -2.50m, vật liệu phản chiếu bầu trời Huế và hoàng hôn tím), bố trí đội Thuyền Rồng ngự dụng (instanced từ P12) đậu gần bến Nghênh Lương Đình và xuôi dòng nhẹ nhàng, xen vài đò ngang gỗ truyền thống.",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Đội Ngự Thuyền Rồng trên Sông Hương: đầu rồng Bezier, khoang thuyền lâu có bàn ngự, rèm lụa, đèn lồng chiếu sáng.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-1280,1420] × Y[-945,-575] (2700×370m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T29/ref_01.jpg",
         "05_qa_outputs/references/T29/ref_02.jpg",
@@ -2739,7 +2781,9 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T29_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 15,
-      "interior_ready": false
+      "interior_ready": false,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 79329
     },
     {
       "tile_id": "T30",
@@ -2751,46 +2795,46 @@
       "priority_batch": 6,
       "status": "completed",
       "center": {
-        "x": 0.0,
-        "y": -1210.0,
+        "x": 70.0,
+        "y": -1097.5,
         "z": 0.0
       },
       "dimensions": {
-        "width": 1960.0,
-        "depth": 300.0,
+        "width": 2700.0,
+        "depth": 305.0,
         "max_height_m": 45.0
       },
       "bounds": {
-        "x_min": -980.0,
-        "x_max": 980.0,
-        "y_min": -1360.0,
-        "y_max": -1060.0
+        "x_min": -1280.0,
+        "x_max": 1420.0,
+        "y_min": -1250.0,
+        "y_max": -945.0
       },
       "elevation_z": 0.0,
       "poly_budget": 180000,
       "glb_path": "T30_bo_nam_ngu_binh.glb",
-      "sha256": "8a713593ba89953a4a8394785dc0772b299717661ce09e0acbe195de5a107251",
+      "sha256": "8e07900bb598f017cb40feafcd2c5823fc5d0d4efdcf3082a16d2b27431ec768",
       "audit": {
         "verified": true,
-        "audited_at": "2026-11-24T16:08:21+00:00",
-        "triangle_count": 20772,
+        "audited_at": "2026-11-26T13:25:36+00:00",
+        "triangle_count": 79720,
         "pivot_ok": true,
         "bbox_ok": true,
         "bounds_y_up": {
           "min": [
-            -979.6,
-            0.0,
-            -149.6
+            -1349.9,
+            -0.05,
+            -152.42
           ],
           "max": [
-            979.6,
+            1349.9,
             44.352,
-            149.6
+            152.4
           ],
           "size": [
-            1959.2,
-            44.352,
-            299.2
+            2699.8,
+            44.4,
+            304.82
           ]
         },
         "warnings": []
@@ -2801,9 +2845,9 @@
       ],
       "architectural_brief": "Bờ Nam Sông Hương phủ hàng cây phượng vĩ, bến đò cổ, làng xóm thấp tầng thế kỷ 19 và phông địa hình đồi thông Tiền Án hướng về Núi Ngự Bình (khối địa hình viễn cảnh mượt mà tạo đường chân trời phong thủy Huế nguyên bản).",
       "detail_stage": "L3_POLISH_PHAP_LAM",
-      "version": 7,
+      "version": 30,
       "approved_stop": false,
-      "orchestrator_note": "Bờ Nam Sông Hương & Núi Ngự Bình: nâng cấp thảm thực vật thông Huế, đàn Nam Giao/vọng cảnh & đường mòn bờ sông.",
+      "orchestrator_note": "[v2_satellite_1to1 · v30] Đã chuẩn hóa tọa độ 1:1 theo Google Satellite (z=17-19, Az=144.8°). Biên ô khóa cứng X[-1280,1420] × Y[-1250,-945] (2700×305m). Các lượt nâng cấp v31+ bắt buộc kế thừa hình học & vị trí công trình trong khung này.",
       "reference_photos": [
         "05_qa_outputs/references/T30/ref_01.jpg",
         "05_qa_outputs/references/T30/ref_02.jpg",
@@ -2829,7 +2873,10 @@
       "latest_comparison_jpg": "05_qa_outputs/comparisons/T30_LATEST_COMPARE.jpg",
       "reference_target_count": 15,
       "real_reference_count": 20,
-      "interior_ready": false
+      "interior_ready": false,
+      "grid_epoch": "v2_satellite_1to1",
+      "scene_triangle_count": 79720
     }
-  ]
+  ],
+  "grid_epoch": "v2_satellite_1to1"
 }
