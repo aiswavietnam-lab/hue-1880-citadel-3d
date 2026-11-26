@@ -39,24 +39,24 @@
   "completed_tiles": 30,
   "total_tiles": 30,
   "last_sync_backend": "rclone",
-  "last_sync_applied_files": 9,
-  "last_sync_utc": "2026-11-25T16:21:38+00:00",
+  "last_sync_applied_files": 24,
+  "last_sync_utc": "2026-11-26T04:46:39+00:00",
   "tile_versions": {
     "T01": {
       "version": 13,
-      "sha256_12": "bc767c16e31a"
+      "sha256_12": "0ffec62ebe1f"
     },
     "T02": {
-      "version": 18,
-      "sha256_12": "8a2c80a68cb7"
+      "version": 20,
+      "sha256_12": "e69dbe2f6f9b"
     },
     "T03": {
-      "version": 18,
-      "sha256_12": "eb247b471cbb"
+      "version": 20,
+      "sha256_12": "498376e2c24e"
     },
     "T04": {
-      "version": 18,
-      "sha256_12": "ff6a3e0e6f75"
+      "version": 20,
+      "sha256_12": "4d8a820cd6ac"
     },
     "T05": {
       "version": 12,
@@ -67,88 +67,88 @@
       "sha256_12": "44fc6dde18c5"
     },
     "T07": {
-      "version": 14,
-      "sha256_12": "747f9b4d2aec"
+      "version": 20,
+      "sha256_12": "2ae2baa0c489"
     },
     "T08": {
-      "version": 18,
-      "sha256_12": "731f21d1d75b"
+      "version": 20,
+      "sha256_12": "90ff3c69faf6"
     },
     "T09": {
-      "version": 18,
-      "sha256_12": "4bee7df73947"
+      "version": 20,
+      "sha256_12": "4ba7933ba8ba"
     },
     "T10": {
-      "version": 18,
-      "sha256_12": "7a4dc1003cf6"
+      "version": 20,
+      "sha256_12": "ca210c6a204c"
     },
     "T11": {
-      "version": 18,
-      "sha256_12": "cfc755ddba2d"
+      "version": 19,
+      "sha256_12": "65077d34d702"
     },
     "T12": {
-      "version": 17,
-      "sha256_12": "76f95b207dd6"
+      "version": 19,
+      "sha256_12": "97f51372ede9"
     },
     "T13": {
-      "version": 15,
-      "sha256_12": "958a049e8c69"
+      "version": 16,
+      "sha256_12": "721b6baec5cc"
     },
     "T14": {
-      "version": 18,
-      "sha256_12": "e342355597dd"
+      "version": 19,
+      "sha256_12": "c2abc96a2178"
     },
     "T15": {
-      "version": 18,
-      "sha256_12": "46e08a13bb79"
+      "version": 20,
+      "sha256_12": "3e2ada3b2019"
     },
     "T16": {
-      "version": 14,
-      "sha256_12": "6c0860656a02"
+      "version": 16,
+      "sha256_12": "7563f6acf46b"
     },
     "T17": {
-      "version": 14,
-      "sha256_12": "59ef166ed3a0"
+      "version": 16,
+      "sha256_12": "3d244f237db5"
     },
     "T18": {
-      "version": 14,
-      "sha256_12": "aac82b9c2e0a"
+      "version": 15,
+      "sha256_12": "8f01e1373324"
     },
     "T19": {
       "version": 14,
       "sha256_12": "e44f845319d2"
     },
     "T20": {
-      "version": 14,
-      "sha256_12": "5eb28a6359b7"
+      "version": 16,
+      "sha256_12": "4fa9cadbe1aa"
     },
     "T21": {
-      "version": 14,
-      "sha256_12": "1f56bba4f3b2"
+      "version": 15,
+      "sha256_12": "063bef8a2c7a"
     },
     "T22": {
-      "version": 14,
-      "sha256_12": "2184238353b3"
+      "version": 15,
+      "sha256_12": "0c9977c123cd"
     },
     "T23": {
-      "version": 12,
-      "sha256_12": "cef332970721"
+      "version": 13,
+      "sha256_12": "e467c249974b"
     },
     "T24": {
-      "version": 13,
-      "sha256_12": "209653494ae0"
+      "version": 15,
+      "sha256_12": "46884537c257"
     },
     "T25": {
-      "version": 11,
-      "sha256_12": "a02136b3893b"
+      "version": 12,
+      "sha256_12": "bb2b53b3cff1"
     },
     "T26": {
-      "version": 11,
-      "sha256_12": "a6352bc79ec9"
+      "version": 12,
+      "sha256_12": "3d6ca4b8d9f2"
     },
     "T27": {
-      "version": 11,
-      "sha256_12": "e96fc64c6c12"
+      "version": 12,
+      "sha256_12": "d6e09481a263"
     },
     "T28": {
       "version": 8,
