@@ -10,6 +10,8 @@ import { courtAudio } from "./court_audio.js";
 import { createHueTouchController, isHueTouchDevice } from "./hue_touch_controls.js";
 import { heritageVoice } from "./heritage_voice.js";
 import { heritageQuests } from "./heritage_quests.js";
+import { HueEnvironmentPhysicsEngine } from "./hue_graphics_physics.js";
+import { HueImperialCourtSystem, createDetailedScaleFigure170m } from "./hue_imperial_court_npcs.js";
 import {
   HueRenderCullingEngine,
   classifyMeshInterior,
@@ -128,6 +130,8 @@ const STATE = {
   showLabels: true,
   showHumans: !IS_PUBLIC_MODE,
   smartCulling: true,
+  weather: "clear",
+  showNpcs: true,
   autoPollTimer: null,
   ready: false,
   pendingLoads: 0,
@@ -136,6 +140,9 @@ const STATE = {
   totalRawNodes: 0,
   totalOptNodes: 0,
 };
+
+let envPhysics = null;
+let courtNpcSystem = null;
 
 const ZONE_STYLE = {
   truc_than_dao: { color: 0xd4a017, label: "Trục Thần Đạo" },
@@ -586,6 +593,7 @@ function applyQualityPreset(key, notifyUser = false) {
   const preset = QUALITY_PRESETS[key] || QUALITY_PRESETS.balanced;
   STATE.quality = key;
   huePbr.applyQualityPreset(key);
+  if (envPhysics) envPhysics.setQuality(key);
 
   resolutionGovernor.reset();
   const dpr = IS_QA_MODE ? 1 : resolutionGovernor.ratio(preset.dprMax);
@@ -613,6 +621,7 @@ function applyQualityPreset(key, notifyUser = false) {
   renderEngine.resizePostProcessing(window.innerWidth, window.innerHeight, dpr);
   renderEngine.onCameraProjectionChanged();
   renderEngine.invalidateOcclusion();
+  if (courtNpcSystem) renderEngine.setupObjectForCsm(courtNpcSystem.group);
 
   // Cập nhật lại shader shadow nếu thay đổi bật/tắt bóng
   scene.traverse((obj) => {
@@ -961,7 +970,7 @@ function buildHumanScaleCheckpoints() {
     { x: 0, y: -328, z: 0, label: "Mốc 1.70m · Kỳ Đài" },
   ];
   checkpoints.forEach((cp) => {
-    const fig = createHumanReferenceFigure(cp.label);
+    const fig = createDetailedScaleFigure170m(cp.label);
     fig.position.copy(planToThree(cp.x, cp.y, cp.z));
     fig.traverse((o) => freezeStaticObject(o));
     humanScaleGroup.add(fig);
@@ -1768,6 +1777,24 @@ function updateTimeOfDay(hour) {
   skyUniforms.cloudOpacity.value = skyBlend.cloudOp;
   skyUniforms.starIntensity.value = skyBlend.starInt;
 
+  if (STATE.weather === "rain") {
+    sunInt *= 0.60;
+    hemiInt *= 1.06;
+    fogDensity = Math.max(fogDensity * 1.9, 0.00105);
+    fogCol.lerp(new THREE.Color(0x6e7b84), 0.56);
+    skyUniforms.fogColor.value.copy(fogCol);
+    skyUniforms.uSkyExposure.value *= 0.62;
+    skyUniforms.uSkyTint.value.lerp(new THREE.Color(0x8899a6), 0.52);
+    skyUniforms.cloudOpacity.value = Math.max(skyUniforms.cloudOpacity.value, 0.36);
+  } else if (STATE.weather === "mist") {
+    sunInt *= 0.78;
+    fogDensity = Math.max(fogDensity * 2.25, 0.00138);
+    fogCol.lerp(new THREE.Color(0xc5cbcf), 0.44);
+    skyUniforms.fogColor.value.copy(fogCol);
+    skyUniforms.uSkyExposure.value *= 0.85;
+    skyUniforms.cloudOpacity.value = Math.max(skyUniforms.cloudOpacity.value, 0.30);
+  }
+
   scene.fog.color.copy(fogCol);
   const inPlayerMode = STATE.cameraMode === "gta" || STATE.cameraMode === "walk";
   scene.fog.density = inPlayerMode ? Math.max(fogDensity, 0.00058) : fogDensity;
@@ -1800,6 +1827,8 @@ function updateTimeOfDay(hour) {
     currentLanternPower = 0.0;
   }
   applyLanternPowerOnly();
+  if (envPhysics) envPhysics.syncEnvironment({ lanternPower: currentLanternPower });
+  if (courtNpcSystem) courtNpcSystem.syncEnvironment({ lanternPower: currentLanternPower, weather: STATE.weather });
   if (renderEngine.csm && renderEngine.stats.csmActive) {
     renderEngine.csm.update();
   }
@@ -1976,6 +2005,8 @@ const gtaState = {
   camCurrentLook: new THREE.Vector3(0, 1.5, 90),
   animPhase: 0,
   speedSmoothed: 0,
+  bowTimer: 0,
+  prevStrideSin: 0,
   turbo: false,
   outfitIdx: 0,
   dragging: false,
@@ -3146,6 +3177,9 @@ function findSafeSpawnFloor(threeX, threeZ, targetY = 0) {
 
 function resnapPlayerToLoadedTileFloor(tile) {
   heritageQuests.refreshGroundHeights();
+  if (courtNpcSystem && tile && tile.bounds) {
+    courtNpcSystem.invalidateGroundInBounds(tile.bounds);
+  }
   if (STATE.cameraMode !== "walk" && STATE.cameraMode !== "gta") return;
   const b = tile.bounds;
   const planX = gtaState.pos.x;
@@ -3529,11 +3563,15 @@ function stepSinglePhysicsSubstep(subDt, wishDirX, wishDirZ, hasMoveInput, wishS
 
   if (!gtaState.grounded) {
     if (gtaState.velY <= 0 && gtaState.pos.y <= probe.floorY + 0.03) {
-      const impact = Math.min(0.13, Math.max(0, -gtaState.velY - 2.3) * 0.015);
+      const landImpactVel = -gtaState.velY;
+      const impact = Math.min(0.13, Math.max(0, landImpactVel - 2.3) * 0.015);
       gtaState.landDip = Math.max(gtaState.landDip, impact);
       gtaState.pos.y = probe.floorY;
       gtaState.velY = 0;
       gtaState.grounded = true;
+      if (envPhysics && landImpactVel > 2.0) {
+        envPhysics.spawnFootstepBurst(gtaState.pos, Math.min(1.8, landImpactVel / 5.5), 14);
+      }
     }
   } else {
     const dy = probe.floorY - prevFeetY;
@@ -3624,6 +3662,11 @@ function updatePlayerSimulation(dt) {
 
   const horizSpeed = Math.hypot(gtaState.velX, gtaState.velZ);
   gtaState.speedSmoothed += (horizSpeed - gtaState.speedSmoothed) * (1 - Math.exp(-12 * clampedDt));
+  if (hasMoveInput || !gtaState.grounded) {
+    gtaState.bowTimer = 0;
+  } else if (gtaState.bowTimer > 0) {
+    gtaState.bowTimer = Math.max(0, gtaState.bowTimer - clampedDt);
+  }
 
   // Làm mượt cao độ mắt khi ngồi cúi, leo bậc cấp và tiếp đất
   const targetEyeH = gtaState.crouched ? PLAYER_CROUCH_EYE : PLAYER_STAND_EYE;
@@ -3664,6 +3707,11 @@ function updatePlayerSimulation(dt) {
       const bobAmp = Math.min(1.0, horizSpeed / 7.2) * (gtaState.crouched ? 0.42 : 1.0);
       bobY = Math.sin(gtaState.bobPhase * 2.0) * 0.022 * bobAmp;
       bobSide = Math.cos(gtaState.bobPhase) * 0.012 * bobAmp;
+      const fpsSin = Math.sin(gtaState.bobPhase);
+      if (fpsSin * gtaState.prevStrideSin <= 0 && horizSpeed > 2.6 && envPhysics) {
+        envPhysics.spawnFootstepBurst(gtaState.pos, THREE.MathUtils.clamp(normSpd * 1.1, 0.45, 1.35), 6);
+      }
+      gtaState.prevStrideSin = fpsSin;
     }
 
     const targetRoll =
@@ -3725,6 +3773,10 @@ function updatePlayerSimulation(dt) {
       const s = Math.sin(gtaState.animPhase);
       const c = Math.cos(gtaState.animPhase);
       const stride = THREE.MathUtils.clamp(0.42 + normSpeed * 0.52, 0.28, 0.98) * (gtaState.crouched ? 0.62 : 1.0);
+      if (s * gtaState.prevStrideSin <= 0 && gtaState.speedSmoothed > 2.2 && envPhysics) {
+        envPhysics.spawnFootstepBurst(gtaState.pos, THREE.MathUtils.clamp(normSpeed * 1.15, 0.45, 1.4), 7);
+      }
+      gtaState.prevStrideSin = s;
 
       // Chân bước tiến về phía trước (-Z): khi chân vung tới (c > 0 với chân trái, -c > 0 với chân phải) đầu gối gập ra sau (< 0)
       rig.leftLeg.hip.rotation.x = s * stride + crouchHipAdd;
@@ -3737,6 +3789,8 @@ function updatePlayerSimulation(dt) {
       // Tay đánh đối xứng chân, khuỷu tay LUÔN gập tự nhiên về phía trước (> 0)
       rig.leftArm.shoulder.rotation.x = -s * stride * 0.80;
       rig.rightArm.shoulder.rotation.x = s * stride * 0.80;
+      rig.leftArm.shoulder.rotation.z = 0;
+      rig.rightArm.shoulder.rotation.z = 0;
       rig.leftArm.elbow.rotation.x = 0.22 + normSpeed * 0.50 + Math.max(0, -s) * 0.28;
       rig.rightArm.elbow.rotation.x = 0.22 + normSpeed * 0.50 + Math.max(0, s) * 0.28;
 
@@ -3762,6 +3816,8 @@ function updatePlayerSimulation(dt) {
 
       rig.leftArm.shoulder.rotation.x = 0.36;
       rig.rightArm.shoulder.rotation.x = -0.24;
+      rig.leftArm.shoulder.rotation.z = 0;
+      rig.rightArm.shoulder.rotation.z = 0;
       rig.leftArm.elbow.rotation.x = 0.66;
       rig.rightArm.elbow.rotation.x = 0.56;
 
@@ -3775,6 +3831,39 @@ function updatePlayerSimulation(dt) {
       rig.coatTailPivot.rotation.x = -0.44;
       rig.saberPivot.rotation.x = -0.72;
       rig.jadePendantPivot.rotation.x = -0.32;
+    } else if (gtaState.bowTimer > 0.01) {
+      const relax = 1 - Math.exp(-13 * clampedDt);
+      const bowProgress = 1.0 - gtaState.bowTimer / 2.2;
+      const bowK = Math.pow(Math.sin(THREE.MathUtils.clamp(bowProgress, 0, 1) * Math.PI), 0.65);
+      const torsoLean = gtaState.crouched ? -0.22 : 0;
+      const headComp = gtaState.crouched ? 0.18 : 0;
+
+      rig.leftLeg.hip.rotation.x += (crouchHipAdd - rig.leftLeg.hip.rotation.x) * relax;
+      rig.rightLeg.hip.rotation.x += (crouchHipAdd - rig.rightLeg.hip.rotation.x) * relax;
+      rig.leftLeg.knee.rotation.x += (crouchKneeAdd - rig.leftLeg.knee.rotation.x) * relax;
+      rig.rightLeg.knee.rotation.x += (crouchKneeAdd - rig.rightLeg.knee.rotation.x) * relax;
+      rig.leftLeg.ankle.rotation.x += (crouchAnkleAdd - rig.leftLeg.ankle.rotation.x) * relax;
+      rig.rightLeg.ankle.rotation.x += (crouchAnkleAdd - rig.rightLeg.ankle.rotation.x) * relax;
+
+      rig.leftArm.shoulder.rotation.x += (0.86 * bowK - rig.leftArm.shoulder.rotation.x) * relax;
+      rig.rightArm.shoulder.rotation.x += (0.86 * bowK - rig.rightArm.shoulder.rotation.x) * relax;
+      rig.leftArm.shoulder.rotation.z += (0.20 * bowK - rig.leftArm.shoulder.rotation.z) * relax;
+      rig.rightArm.shoulder.rotation.z += (-0.20 * bowK - rig.rightArm.shoulder.rotation.z) * relax;
+      rig.leftArm.elbow.rotation.x += (0.88 * bowK - rig.leftArm.elbow.rotation.x) * relax;
+      rig.rightArm.elbow.rotation.x += (0.88 * bowK - rig.rightArm.elbow.rotation.x) * relax;
+
+      rig.hips.position.y += (0.86 + crouchDrop - 0.02 * bowK - rig.hips.position.y) * relax;
+      rig.torso.rotation.x += (torsoLean - 0.46 * bowK - rig.torso.rotation.x) * relax;
+      rig.torso.rotation.y *= 1 - relax;
+      rig.headGroup.rotation.x += (headComp + 0.22 * bowK - rig.headGroup.rotation.x) * relax;
+      rig.headGroup.rotation.y *= 1 - relax;
+
+      const flapBow = Math.max(gtaState.crouched ? 0.56 : 0.08, 0.28 * bowK);
+      rig.frontFlapL.rotation.x += (flapBow - rig.frontFlapL.rotation.x) * relax;
+      rig.frontFlapR.rotation.x += (flapBow - rig.frontFlapR.rotation.x) * relax;
+      rig.coatTailPivot.rotation.x += (-(0.12 * bowK + 0.04) - rig.coatTailPivot.rotation.x) * relax;
+      rig.saberPivot.rotation.x += (-0.58 - rig.saberPivot.rotation.x) * relax;
+      rig.jadePendantPivot.rotation.x += (0.14 * bowK - rig.jadePendantPivot.rotation.x) * relax;
     } else {
       gtaState.animPhase += clampedDt * 1.85;
       const breath = Math.sin(gtaState.animPhase);
@@ -3791,6 +3880,8 @@ function updatePlayerSimulation(dt) {
 
       rig.leftArm.shoulder.rotation.x += (0.03 * breath - rig.leftArm.shoulder.rotation.x) * relax;
       rig.rightArm.shoulder.rotation.x += (-0.03 * breath - rig.rightArm.shoulder.rotation.x) * relax;
+      rig.leftArm.shoulder.rotation.z *= 1 - relax;
+      rig.rightArm.shoulder.rotation.z *= 1 - relax;
       rig.leftArm.elbow.rotation.x += (0.16 - rig.leftArm.elbow.rotation.x) * relax;
       rig.rightArm.elbow.rotation.x += (0.16 - rig.rightArm.elbow.rotation.x) * relax;
 
@@ -3950,6 +4041,26 @@ function renderGtaRadar(isMoving, isSprinting, horizSpeed = 0) {
       ctx.strokeRect(bx, by, bw, bh);
     });
   }
+  if (courtNpcSystem && STATE.showNpcs) {
+    const blips = courtNpcSystem.getRadarBlips(pPlan.x, pPlan.y, 440);
+    for (let i = 0; i < blips.length; i++) {
+      const nb = blips[i];
+      const [nxr, nyr] = toRadar(nb.x, nb.y);
+      ctx.fillStyle =
+        nb.archetype === "guard" || nb.archetype === "captain"
+          ? "#ff6b57"
+          : nb.archetype === "lady"
+            ? "#f3a8d8"
+            : nb.archetype === "martial"
+              ? "#ffb347"
+              : nb.archetype === "bearer"
+                ? "#82e6be"
+                : "#f5d76e";
+      ctx.beginPath();
+      ctx.arc(nxr, nyr, nb.archetype === "civil" || nb.archetype === "martial" || nb.archetype === "captain" ? 2.6 : 2.1, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
   ctx.restore();
 
   ctx.strokeStyle = "rgba(218, 198, 162, 0.16)";
@@ -4005,7 +4116,9 @@ function renderGtaRadar(isMoving, isSprinting, horizSpeed = 0) {
           ? "Đang đi cúi"
           : "Đang ngồi"
         : !isMoving
-          ? "Đứng yên"
+          ? gtaState.bowTimer > 0.1
+            ? "Đang hành lễ"
+            : "Đứng yên"
           : gtaState.turbo
             ? "Lướt nhanh"
             : isSprinting
@@ -4019,6 +4132,16 @@ function renderGtaRadar(isMoving, isSprinting, horizSpeed = 0) {
   const coordsEl = document.getElementById("gta-coords-mini");
   if (coordsEl) {
     coordsEl.textContent = `X ${Math.round(pPlan.x)} · Y ${Math.round(pPlan.y)} · H ${pPlan.z.toFixed(1)}m`;
+  }
+  const npcBadgeEl = document.getElementById("gta-npc-nearby");
+  if (npcBadgeEl) {
+    const greeting = STATE.showNpcs && courtNpcSystem ? courtNpcSystem.nearestGreeting : null;
+    if (greeting) {
+      npcBadgeEl.textContent = greeting;
+      npcBadgeEl.classList.remove("hidden");
+    } else {
+      npcBadgeEl.classList.add("hidden");
+    }
   }
 }
 
@@ -4452,6 +4575,11 @@ window.addEventListener("keydown", (e) => {
     }
     if (normCode === "KeyR") {
       unstuckPlayerToSafeGround();
+      return;
+    }
+    if (normCode === "KeyG" && STATE.cameraMode === "gta") {
+      gtaState.bowTimer = 2.2;
+      showToast("Thực hiện Lễ Vái Cung Thủ Triều Nguyễn");
       return;
     }
   }
@@ -4987,6 +5115,35 @@ function bindUiEvents() {
     STATE.showHumans = e.target.checked;
     humanScaleGroup.visible = STATE.showHumans;
     focusViewportCanvas();
+  });
+
+  const showNpcsChk = document.getElementById("chk-show-npcs");
+  if (showNpcsChk) {
+    showNpcsChk.checked = STATE.showNpcs;
+    showNpcsChk.addEventListener("change", (e) => {
+      STATE.showNpcs = e.target.checked;
+      if (courtNpcSystem) courtNpcSystem.setVisible(STATE.showNpcs);
+      focusViewportCanvas();
+    });
+  }
+
+  document.querySelectorAll(".weather-btn[data-weather]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const mode = btn.dataset.weather || "clear";
+      STATE.weather = mode;
+      document.querySelectorAll(".weather-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.weather === mode);
+      });
+      if (envPhysics) envPhysics.setWeather(mode);
+      updateTimeOfDay(STATE.hour);
+      const labels = {
+        clear: "Nắng gió Cố đô (Hoa rơi & Đom đóm)",
+        rain: "Mưa Huế (Sân gạch ướt bóng & Nước gợn)",
+        mist: "Sương trầm bảng lảng Hoàng Thành",
+      };
+      showToast(`Thời tiết: ${labels[mode] || mode}`);
+      focusViewportCanvas();
+    });
   });
 
   const smartCullChk = document.getElementById("chk-smart-culling");
@@ -5643,6 +5800,98 @@ window.__HUE_VIEWER__ = {
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
   reloadManifest: () => loadPipelineState(false),
+  setWeather: (mode) => {
+    const valid = mode === "rain" || mode === "mist" ? mode : "clear";
+    STATE.weather = valid;
+    document.querySelectorAll(".weather-btn").forEach((b) => {
+      b.classList.toggle("active", b.dataset.weather === valid);
+    });
+    if (envPhysics) envPhysics.setWeather(valid);
+    updateTimeOfDay(STATE.hour);
+    if (envPhysics) envPhysics.update(0.016, { isQaMode: IS_QA_MODE });
+    updateTileCulling(true);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return { weather: STATE.weather, wetness: envPhysics ? Number(envPhysics.wetness.toFixed(3)) : 0 };
+  },
+  setNpcsVisible: (visible) => {
+    STATE.showNpcs = Boolean(visible);
+    const chk = document.getElementById("chk-show-npcs");
+    if (chk) chk.checked = STATE.showNpcs;
+    if (courtNpcSystem) {
+      courtNpcSystem.setVisible(STATE.showNpcs);
+      if (STATE.showNpcs) {
+        const activePreset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
+        courtNpcSystem.update(0.016, {
+          cameraMode: STATE.cameraMode,
+          playerPos: gtaState.pos,
+          maxCullDist: STATE.cameraMode === "gta" || STATE.cameraMode === "walk" ? activePreset.gtaCullDist : activePreset.birdCullDist,
+          isQaMode: IS_QA_MODE,
+        });
+      }
+    }
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return courtNpcSystem ? courtNpcSystem.getStats() : null;
+  },
+  triggerBow: () => {
+    gtaState.bowTimer = 2.2;
+    updatePlayerSimulation(0.016);
+    renderGtaRadar(false, false, 0);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return { bowTimer: gtaState.bowTimer };
+  },
+  stepPhysics: (dt = 1 / 60, steps = 1) => {
+    const n = Math.max(1, Math.min(600, Math.floor(steps)));
+    const activePreset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
+    const maxCullDist = STATE.cameraMode === "gta" || STATE.cameraMode === "walk" ? activePreset.gtaCullDist : activePreset.birdCullDist;
+    for (let i = 0; i < n; i++) {
+      if (STATE.cameraMode === "gta" || STATE.cameraMode === "walk") {
+        updatePlayerSimulation(dt);
+      }
+      skyUniforms.uTime.value += dt;
+      huePbr.update(dt);
+      if (envPhysics) envPhysics.update(dt, { isQaMode: false });
+      if (courtNpcSystem) {
+        courtNpcSystem.update(dt, {
+          cameraMode: STATE.cameraMode,
+          playerPos: gtaState.pos,
+          maxCullDist,
+          isQaMode: false,
+        });
+      }
+    }
+    heritageQuests.updateFrame(performance.now(), STATE.cameraMode, gtaState.pos, camera.position);
+    updateTileCulling(true);
+    updateLabelsAndCompass(true);
+    if (STATE.cameraMode === "gta" || STATE.cameraMode === "walk") {
+      const hs = Math.hypot(gtaState.velX, gtaState.velZ);
+      renderGtaRadar(hs > 0.25, hs > moveSettings.walkSpeed * 1.15, hs);
+    }
+    renderEngine.updateCsmAndShadowTrigger(performance.now(), IS_QA_MODE, requestShadowUpdate);
+    renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return {
+      weather: STATE.weather,
+      wetness: envPhysics ? Number(envPhysics.wetness.toFixed(3)) : 0,
+      npcStats: courtNpcSystem ? courtNpcSystem.getStats() : null,
+    };
+  },
+  getNpcSample: (limit = 16) => {
+    if (!courtNpcSystem) return null;
+    const slice = courtNpcSystem.npcs.slice(0, limit).map((n) => ({
+      id: n.id,
+      roleTitle: n.roleTitle,
+      archetype: n.archetype,
+      behavior: n.behavior,
+      planX: Number(n.pos.x.toFixed(2)),
+      planY: Number((-n.pos.z).toFixed(2)),
+      groundY: Number(n.groundY.toFixed(3)),
+      saluteBlend: Number(n.saluteBlend.toFixed(3)),
+      bowBlend: Number(n.bowBlend.toFixed(3)),
+    }));
+    return {
+      ...courtNpcSystem.getStats(),
+      sample: slice,
+    };
+  },
   renderNow: () => {
     updateTileCulling(true);
     updateLabelsAndCompass(true);
@@ -5660,6 +5909,11 @@ window.__HUE_VIEWER__ = {
       ? STATE.gridManifest.tiles.filter((t) => t.status === "completed").length
       : 0,
     hour: STATE.hour,
+    weather: STATE.weather,
+    showNpcs: STATE.showNpcs,
+    npcTotal: courtNpcSystem ? courtNpcSystem.npcs.length : 0,
+    npcVisible: courtNpcSystem ? courtNpcSystem.visibleNpcCount : 0,
+    nearestNpcGreeting: courtNpcSystem ? courtNpcSystem.nearestGreeting : null,
     cameraMode: STATE.cameraMode,
     quality: STATE.quality,
     smartCulling: STATE.smartCulling,
@@ -5727,6 +5981,19 @@ function animate(now) {
 
   skyUniforms.uTime.value = now * 0.001;
   huePbr.update(dt);
+  const activePreset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
+  if (envPhysics) envPhysics.update(dt, { isQaMode: IS_QA_MODE });
+  if (courtNpcSystem) {
+    courtNpcSystem.update(dt, {
+      cameraMode: STATE.cameraMode,
+      playerPos: gtaState.pos,
+      maxCullDist:
+        STATE.cameraMode === "gta" || STATE.cameraMode === "walk"
+          ? activePreset.gtaCullDist
+          : activePreset.birdCullDist,
+      isQaMode: IS_QA_MODE,
+    });
+  }
   heritageQuests.updateFrame(now, STATE.cameraMode, gtaState.pos, camera.position);
   updateTileCulling(false);
   renderEngine.updateCsmAndShadowTrigger(now, IS_QA_MODE, requestShadowUpdate);
@@ -5762,6 +6029,24 @@ buildImperialLanternNetwork();
 buildGtaCharacter();
 applyGtaOutfit(0);
 applyGtaCamPreset(0, false);
+
+envPhysics = new HueEnvironmentPhysicsEngine({ scene, camera, huePbr });
+envPhysics.setQuality(STATE.quality);
+envPhysics.setWeather(STATE.weather);
+
+courtNpcSystem = new HueImperialCourtSystem({
+  scene,
+  camera,
+  probeGroundY: (x, z, hintY = 4.0) => {
+    const topCap = Number.isFinite(hintY) ? hintY : 4.0;
+    return probePlayerFloorAndCeiling(x, z, -2.5, topCap, 999, false).floorY;
+  },
+  gfxEngine: null,
+  dynamicLanternMaterials,
+});
+courtNpcSystem.setVisible(STATE.showNpcs);
+renderEngine.setupObjectForCsm(courtNpcSystem.group);
+
 bindUiEvents();
 heritageUI.connect({
   camera, controls, setCameraMode, cancelViewerFlight: cancelFlight, capturePng: captureScenePng,

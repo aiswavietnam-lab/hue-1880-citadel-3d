@@ -225,6 +225,10 @@
         <input id="chk-show-humans" type="checkbox" />
         <span>Mốc đối chiếu người (1.70m)</span>
       </label>
+      <label class="toggle-row" title="Hiển thị thị vệ Ngọ Môn, đội tuần tiễu và quan lại triều Nguyễn 1880">
+        <input id="chk-show-npcs" type="checkbox" checked />
+        <span>Lính gác &amp; Quan lại 1880</span>
+      </label>
       <label class="toggle-row" title="Tự động ẩn công trình khuất sau các khối kiến trúc lớn và ẩn nội thất của công trình khác khi đang ở bên trong">
         <input id="chk-smart-culling" type="checkbox" checked />
         <span>Tự ẩn khuất cảnh &amp; nội thất khác</span>
@@ -357,6 +361,17 @@
           </svg>
           <span>Tua thời gian</span>
         </button>
+      </div>
+    </div>
+
+    <div class="divider-v" aria-hidden="true"></div>
+
+    <div class="control-group weather-group">
+      <div class="group-label">Thời tiết Cố đô</div>
+      <div class="segmented" role="group" aria-label="Thời tiết">
+        <button id="weather-clear" class="seg-btn weather-btn active" type="button" data-weather="clear" title="Nắng gió dịu, hoa rơi ban ngày và đom đóm về đêm">Nắng gió</button>
+        <button id="weather-rain" class="seg-btn weather-btn" type="button" data-weather="rain" title="Mưa Huế lất phất, sân gạch ướt bóng và gợn sóng Sông Hương">Mưa Huế</button>
+        <button id="weather-mist" class="seg-btn weather-btn" type="button" data-weather="mist" title="Sương trầm bảng lảng mặt hồ & khói hương Đỉnh Đồng">Sương trầm</button>
       </div>
     </div>
 
@@ -542,7 +557,7 @@
     <div id="gta-topbar" hidden class="hud-panel gta-topbar">
       <div class="gta-keys-line"><span class="touch-help">Cần trái để đi, vuốt cảnh để nhìn. Dùng hai ngón để đổi cự ly ở góc nhìn thứ ba.</span>
         <strong id="gta-mode-tag" class="gta-tag">HALF-LIFE FPS · 1.70M</strong>
-        <span id="gta-keys-hint"><code>W A S D</code> đi bộ · <code>Shift</code> chạy · <code>Space</code> nhảy · <code>Ctrl</code> ngồi · <strong>Bấm cảnh</strong> xoay chuột 360° · <code>V</code> góc nhìn 1/3 · <code>F</code> lướt nhanh · <code>M</code> cài đặt · <code>Esc</code> mở chuột</span>
+        <span id="gta-keys-hint"><code>W A S D</code> đi bộ · <code>Shift</code> chạy · <code>Space</code> nhảy · <code>Ctrl</code> ngồi · <strong>Bấm cảnh</strong> xoay chuột 360° · <code>V</code> góc nhìn 1/3 · <code>G</code> hành lễ · <code>F</code> lướt nhanh · <code>M</code> cài đặt · <code>Esc</code> mở chuột</span>
       </div>
       <div class="gta-tp-row">
         <span class="gta-tp-label">Dịch chuyển:</span>
@@ -641,6 +656,7 @@
           <span id="gta-speed-mini" class="mono">0.0 m/s</span>
           <span id="gta-coords-mini" class="mono">X 0 · Y -95 · H 0.0m</span>
         </div>
+        <div id="gta-npc-nearby" class="gta-npc-nearby hidden"></div>
       </div>
     </div>
   </div>

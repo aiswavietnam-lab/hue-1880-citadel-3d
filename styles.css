@@ -3039,3 +3039,30 @@ body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-set
 @media (prefers-reduced-motion: reduce) {
   .heritage-sheet, .tile-label, #heritage-preloader, .hud-panel, .court-audio-btn { animation: none !important; transition: none !important; }
 }
+
+/* Thời tiết Cố đô & Thông báo Quan lại / Thị vệ Triều Nguyễn */
+#hud-bottombar .weather-group .segmented {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.weather-group .seg-btn {
+  font-size: 11.5px;
+  padding: 5px 6px;
+}
+#gta-radar-card {
+  width: min(246px, calc(100vw - 24px));
+}
+.gta-npc-nearby {
+  margin-top: 5px;
+  padding: 4px 7px;
+  border-radius: 5px;
+  border: 1px solid rgba(217, 189, 133, 0.42);
+  background: rgba(24, 34, 28, 0.92);
+  color: #f6dfaa;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.gta-npc-nearby.hidden {
+  display: none;
+}
+

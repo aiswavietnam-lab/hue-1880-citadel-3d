@@ -35,6 +35,7 @@ Trên Google Drive tồn tại các thư mục cũ trùng tên. Mọi script `rc
 7. `hue_atmosphere_water.js` đồng bộ mặt nước, sương và đèn lồng theo giờ. `hue_postfx.js` dùng các addon r170 và giấy phép trong `vendor/three/`. Khi thay phiên bản Three.js, đồng bộ những phụ thuộc này với `three.module.js`.
 8. `court_audio.js` (`assets/audio/*`), `heritage_voice.js` (`assets/voice/*`, `scripts/generate_ai_voices.py`) và `heritage_quests.js` (`assets/quests/quests_manifest.json`): Nhã nhạc cung đình 3D, tự động hạ nhạc nền (audio ducking) khi thuyết minh AI tiếng Việt miễn phí (`Hoài My` & `Nam Minh` Neural TTS + `Web Speech API` dự phòng) đang phát, cùng Chiến dịch 7 Chương Nhiệm vụ Tân Khoa Tiến Sĩ 1880 (NPC 3D, cột sáng dẫn đường, giải đố lịch sử nhận 7 Ấn triện Hoàng cung).
 9. Kiểm tra `?qa=1` với đường vẽ trực tiếp. Kiểm tra riêng bản công khai ở mức Cao và Điện ảnh để xác nhận chuỗi hậu kỳ thực sự dựng khung hình.
+10. `hue_graphics_physics.js` & `hue_imperial_court_npcs.js`: Thời tiết 3 chế độ (Nắng gió / Mưa Huế / Sương trầm), sân gạch ướt bóng, khói Đỉnh Đồng, cờ Đại Kỳ Kỳ Đài & Bến Ngự động theo gió, 64 Hoa Đăng nổi lực đẩy Archimedes trên Hồ Thái Dịch & Sông Hương, cùng 97 Thị vệ, Cấm binh tuần tiễu và Văn/Võ Bá Quan Triều Nguyễn 1880 chào lễ & hiển thị Radar (phím `G` hành lễ).
 
 ## 4. Quy Trình Đồng Bộ Trước & Sau Mỗi Phiên Làm Việc
 ```bash

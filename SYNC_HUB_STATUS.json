@@ -32,6 +32,8 @@
     "heritage_ui.js",
     "heritage_voice.js",
     "hue_atmosphere_water.js",
+    "hue_graphics_physics.js (Weather Clear/Rain/Mist, Wet Tiles, 64 Hoa Dang, Wind Banners, Cauldron Smoke & Footstep Splashes)",
+    "hue_imperial_court_npcs.js (97 Nguyen Court Guards, Patrols, Mandarins & Canopy Retinue with AI Salute/Bow & Radar Blips)",
     "hue_postfx.js",
     "hue_realism_shaders.js",
     "hue_touch_controls.js",
@@ -41,7 +43,7 @@
   "total_tiles": 30,
   "last_sync_backend": "cli_v2_realign",
   "last_sync_applied_files": 30,
-  "last_sync_utc": "2026-11-26T13:52:43+00:00",
+  "last_sync_utc": "2026-11-26T17:51:34+00:00",
   "tile_versions": {
     "T01": {
       "version": 30,
