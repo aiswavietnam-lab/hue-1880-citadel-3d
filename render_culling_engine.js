@@ -403,11 +403,14 @@ export function buildTileOccluderAndZones(
 const NON_COLLIDER_MAT_RE =
   /(nuoc|water|song_?huong|ho_?thai_?dich_?water|kim_?thuy|glass|kinh|la_?cay|tan_?cay|foliage|leaf|leaves|bonsai_?leaf|hoa_?sen|canh_?hoa|emissive|lantern|den_?long|moc_?nguoi)/;
 
+const ALWAYS_NON_COLLIDER_NODE_RE =
+  /(^|[_\-\s])(human\d*|humanscale|gta_?walkthrough|qa_?(guard|staff|human|moc)|moc_?(nguoi|chuan)|thuoc_?do|thive\d*|thi_?ve|linh_?thi_?ve|doan_?quan_?vien|quan_?vien|dien_?vien|dao_?kep|guard_?(1m|pvl|quangduc|portal)|mandarin|quan_?(dai_?than|van|vo)|linh_?gac|1m70|den_?long|lanterns?)($|[_\-\s\d])/;
+
 const NON_COLLIDER_NODE_RE =
-  /(^|[_\-\s])(nuoc|water|song_?huong|la_?cay|tan_?cay|foliage|leaf|leaves|hoa_?sen|beo|den_?long|lantern|moc_?nguoi|human|ngoi_?ong|ngoi_?liet|ngoi_?hoang|ngoi_?thanh|rong_?bo|phuong|kham_?sanh|bat_?huong|choe|hac_?dong|lu_?dong)($|[_\-\s\d])/;
+  /(^|[_\-\s])(nuoc|water|song_?huong|la_?cay|tan_?cay|foliage|leaf|leaves|hoa_?sen|beo|den_?long|lanterns?|moc_?nguoi|human|ngoi_?ong|ngoi_?liet|ngoi_?hoang|ngoi_?thanh|rong_?bo|phuong|kham_?sanh|bat_?huong|choe|hac_?dong|lu_?dong|hoanh_?phi|cau_?doi|man_?truong)($|[_\-\s\d])/;
 
 const WALKABLE_KEEP_RE =
-  /(bac_|stair|step|cau_|bridge|san_|nen_|terrace|floor|platform|vom_|gate|cua_|cong_|wall|tuong_|cot_|column|lan_?can|balustrade)/;
+  /(bac_|bac_?tam|tam_?cap|rong_?bac|stair|step|cau_|bridge|san_|nen_|terrace|floor|platform|vom_|gate|cua_|cua_?buc|cua_?tshb|door|cong_|wall|tuong_|cot_|column|lan_?can|balustrade)/;
 
 const _clipBufA = new Float64Array(24);
 const _clipBufB = new Float64Array(24);
@@ -528,8 +531,7 @@ export class TileSpatialCollider {
       const t = this.cellTris[i];
       if (maxY[t] < minSearchY) continue;
       const ny = norms[t * 3 + 1];
-      const absNy = Math.abs(ny);
-      if (absNy < 0.42) continue;
+      if (ny < 0.45 && ny > -0.35) continue;
 
       const vBase = t * 9;
       const ax = verts[vBase];
@@ -558,10 +560,10 @@ export class TileSpatialCollider {
       if (v < -1.5e-4 || u + v > 1.00015) continue;
 
       const hitY = ay + u * (ty - ay) + v * (by - ay);
-      if (absNy >= 0.55 && hitY <= maxFloorY && hitY >= minSearchY && hitY > out.floorY) {
+      if (ny >= 0.45 && hitY <= maxFloorY && hitY >= minSearchY && hitY > out.floorY) {
         out.floorY = hitY;
       }
-      if (hitY >= minCeilY && hitY < out.ceilY) {
+      if (ny <= -0.35 && hitY >= minCeilY && hitY < out.ceilY) {
         out.ceilY = hitY;
       }
     }
@@ -604,7 +606,7 @@ export class TileSpatialCollider {
           if (maxY[t] <= minBandY || minY[t] >= maxBandY) continue;
           const nBase = t * 3;
           const ny = norms[nBase + 1];
-          if (Math.abs(ny) >= 0.78) continue;
+          if (Math.abs(ny) >= 0.56) continue;
 
           const vBase = t * 9;
           _clipBufA[0] = verts[vBase];
@@ -884,6 +886,7 @@ export function buildTileSpatialCollider(tile, tileWorldPos, rawRoot) {
       cursor = cursor.parent;
     }
     const nodeTag = nodeNames.join(" | ");
+    if (ALWAYS_NON_COLLIDER_NODE_RE.test(nodeTag)) return;
     const mustKeep = WALKABLE_KEEP_RE.test(nodeTag) || WALKABLE_KEEP_RE.test(matTag);
     if (!mustKeep && NON_COLLIDER_NODE_RE.test(nodeTag)) return;
 
@@ -901,19 +904,6 @@ export function buildTileSpatialCollider(tile, tileWorldPos, rawRoot) {
     const idxAttr = mesh.geometry.index;
     const triCount = idxAttr ? Math.floor(idxAttr.count / 3) : Math.floor(posAttr.count / 3);
     if (triCount <= 0) return;
-
-    // Đối với tượng điêu khắc/đỉnh đồng chi tiết cực cao có diện tích gọn, thay bằng hộp va chạm đặc 10 mặt
-    if (!mustKeep && triCount > 900 && spanX < 4.5 && spanZ < 4.5 && spanY > 0.55) {
-      pushBoxProxy(
-        localBox.min.x + wx,
-        wMinY,
-        localBox.min.z + wz,
-        localBox.max.x + wx,
-        wMaxY,
-        localBox.max.z + wz
-      );
-      return;
-    }
 
     if (!mustKeep && triCount > 35000 && wMinY > 3.2) return;
 

@@ -1940,7 +1940,7 @@ const GTA_OUTFITS = [
   },
 ];
 
-const PLAYER_RADIUS = 0.33;
+const PLAYER_RADIUS = 0.24;
 const PLAYER_STAND_HEIGHT = 1.70;
 const PLAYER_CROUCH_HEIGHT = 1.08;
 const PLAYER_STAND_EYE = 1.60;
@@ -3338,9 +3338,16 @@ function stepSinglePhysicsSubstep(subDt, wishDirX, wishDirZ, hasMoveInput, wishS
   // 4. Di chuyển ngang + Trượt dọc tường hình trụ 4 lượt (Collide-and-Slide chống xuyên tường/kẹt góc)
   const bodyHeight = gtaState.crouched ? PLAYER_CROUCH_HEIGHT : PLAYER_STAND_HEIGHT;
   const stepUpMax = gtaState.grounded ? PLAYER_MAX_STEP : gtaState.velY <= 0.2 ? 0.22 : 0.06;
+  const startStepX = gtaState.pos.x;
+  const startStepZ = gtaState.pos.z;
+  const preResolveVelX = gtaState.velX;
+  const preResolveVelZ = gtaState.velZ;
+  let stepUpProbeBoost = 0;
 
   let nextX = THREE.MathUtils.clamp(gtaState.pos.x + gtaState.velX * subDt, -820, 820);
   let nextZ = THREE.MathUtils.clamp(gtaState.pos.z + gtaState.velZ * subDt, -820, 1080);
+  const wantedNextX = nextX;
+  const wantedNextZ = nextZ;
 
   if (!gtaState.turbo) {
     const localCols = getNearbySpatialColliders(nextX, nextZ, 3.5);
@@ -3350,7 +3357,7 @@ function stepSinglePhysicsSubstep(subDt, wishDirX, wishDirZ, hasMoveInput, wishS
       _colSweepState.vx = gtaState.velX;
       _colSweepState.vz = gtaState.velZ;
       const minWallY = gtaState.pos.y + stepUpMax;
-      const maxWallY = gtaState.pos.y + bodyHeight - 0.04;
+      const maxWallY = gtaState.pos.y + (gtaState.grounded ? Math.min(bodyHeight - 0.04, 1.12) : bodyHeight - 0.04);
 
       for (let iter = 0; iter < 4; iter++) {
         let anyHit = false;
@@ -3379,8 +3386,135 @@ function stepSinglePhysicsSubstep(subDt, wishDirX, wishDirZ, hasMoveInput, wishS
     gtaState.pos.y += gtaState.velY * subDt;
   }
 
+  if (!gtaState.turbo && gtaState.grounded) {
+    const wishDx = wantedNextX - startStepX;
+    const wishDz = wantedNextZ - startStepZ;
+    const wishDist = Math.hypot(wishDx, wishDz);
+    if (wishDist > 1e-4) {
+      const dirX = wishDx / wishDist;
+      const dirZ = wishDz / wishDist;
+      const projDist = (gtaState.pos.x - startStepX) * dirX + (gtaState.pos.z - startStepZ) * dirZ;
+
+      if (projDist < wishDist * 0.45) {
+        let steppedUp = false;
+        const p1x = startStepX + dirX * (PLAYER_RADIUS + 0.16);
+        const p1z = startStepZ + dirZ * (PLAYER_RADIUS + 0.16);
+        const p2x = startStepX + dirX * (PLAYER_RADIUS + 0.46);
+        const p2z = startStepZ + dirZ * (PLAYER_RADIUS + 0.46);
+        const sp1 = probePlayerFloorAndCeiling(p1x, p1z, prevFeetY + 0.24, prevFeetY + 0.88, prevFeetY + 1.05, true);
+        const step1Y = sp1.floorY;
+        if (step1Y > prevFeetY + 0.24 && step1Y <= prevFeetY + 0.88) {
+          const sp2 = probePlayerFloorAndCeiling(p2x, p2z, prevFeetY + 0.24, step1Y + 0.50, step1Y + 1.05, true);
+          const step2Y = sp2.floorY;
+          if (step2Y >= step1Y - 0.32) {
+            const headSp = probePlayerFloorAndCeiling(p1x, p1z, step1Y - 0.08, step1Y + 0.08, step1Y + 0.85, false);
+            const headCeilY = headSp.ceilY;
+            if (headCeilY - step1Y >= Math.min(bodyHeight, 1.38)) {
+              const testCols = getNearbySpatialColliders(wantedNextX, wantedNextZ, 3.5);
+              _colSweepState.x = wantedNextX;
+              _colSweepState.z = wantedNextZ;
+              _colSweepState.vx = preResolveVelX;
+              _colSweepState.vz = preResolveVelZ;
+              const upMinY = step1Y + 0.34;
+              const upMaxY = step1Y + Math.min(bodyHeight - 0.04, 1.12);
+              for (let it = 0; it < 4; it++) {
+                let hit = false;
+                for (let c = 0; c < testCols.length; c++) {
+                  if (testCols[c].resolveCylinderHorizontal(_colSweepState, PLAYER_RADIUS, upMinY, upMaxY)) hit = true;
+                }
+                if (!hit) break;
+              }
+              const stepProj = (_colSweepState.x - startStepX) * dirX + (_colSweepState.z - startStepZ) * dirZ;
+              if (stepProj >= wishDist * 0.45) {
+                gtaState.pos.x = _colSweepState.x;
+                gtaState.pos.z = _colSweepState.z;
+                gtaState.velX = _colSweepState.vx;
+                gtaState.velZ = _colSweepState.vz;
+                stepUpProbeBoost = Math.max(stepUpProbeBoost, step1Y - prevFeetY + 0.14);
+                steppedUp = true;
+              }
+            }
+          }
+        }
+
+        if (!steppedUp && projDist < wishDist * 0.20) {
+          if ((gtaState._edgeWallCooldown || 0) > 0) {
+            gtaState._edgeWallCooldown -= 1;
+          } else {
+            const latX = -dirZ;
+            const latZ = dirX;
+            const minWallY = prevFeetY + stepUpMax;
+            const maxWallY = prevFeetY + Math.min(bodyHeight - 0.04, 1.12);
+            const baseBias = Math.abs(startStepX) < 2.0 ? (startStepX < 0 ? -1 : 1) : 1;
+            const offsets = [0.62 * baseBias, -0.62 * baseBias, 1.06 * baseBias, -1.06 * baseBias];
+            let slid = false;
+            for (let oi = 0; oi < offsets.length; oi++) {
+              const off = offsets[oi];
+              const lxBase = startStepX + latX * off;
+              const lzBase = startStepZ + latZ * off;
+              const flAhead = probePlayerFloorAndCeiling(
+                lxBase + dirX * 0.40,
+                lzBase + dirZ * 0.40,
+                prevFeetY - 0.65,
+                prevFeetY + 0.86,
+                prevFeetY + 1.05,
+                true
+              );
+              if (flAhead.floorY < prevFeetY - 0.60) continue;
+
+              // Overlapping cylinder corridor sweep (0, 0.18, 0.38, 0.58m): cannot tunnel past front face of hollow walls
+              const corridorCols = getNearbySpatialColliders(lxBase + dirX * 0.30, lzBase + dirZ * 0.30, 3.2);
+              let corridorClear = true;
+              for (let si = 0; si < 4; si++) {
+                const fwd = si * 0.19;
+                const px = lxBase + dirX * fwd;
+                const pz = lzBase + dirZ * fwd;
+                _colSweepState.x = px;
+                _colSweepState.z = pz;
+                _colSweepState.vx = preResolveVelX;
+                _colSweepState.vz = preResolveVelZ;
+                for (let c = 0; c < corridorCols.length; c++) {
+                  corridorCols[c].resolveCylinderHorizontal(_colSweepState, PLAYER_RADIUS, minWallY, maxWallY);
+                }
+                if (Math.hypot(_colSweepState.x - px, _colSweepState.z - pz) > 0.05) {
+                  corridorClear = false;
+                  break;
+                }
+              }
+              if (!corridorClear) continue;
+
+              const sideSign = off > 0 ? 1 : -1;
+              const slideDist = Math.min(wishDist * 0.85, 0.075);
+              const sx = startStepX + latX * sideSign * slideDist;
+              const sz = startStepZ + latZ * sideSign * slideDist;
+              const sideCols = getNearbySpatialColliders(sx, sz, 2.5);
+              _colSweepState.x = sx;
+              _colSweepState.z = sz;
+              _colSweepState.vx = preResolveVelX;
+              _colSweepState.vz = preResolveVelZ;
+              for (let c = 0; c < sideCols.length; c++) {
+                sideCols[c].resolveCylinderHorizontal(_colSweepState, PLAYER_RADIUS, minWallY, maxWallY);
+              }
+              if ((_colSweepState.x - startStepX) * latX * sideSign + (_colSweepState.z - startStepZ) * latZ * sideSign > slideDist * 0.35) {
+                gtaState.pos.x = _colSweepState.x;
+                gtaState.pos.z = _colSweepState.z;
+                gtaState.velX = preResolveVelX;
+                gtaState.velZ = preResolveVelZ;
+                slid = true;
+                break;
+              }
+            }
+            if (!slid) gtaState._edgeWallCooldown = 5;
+          }
+        }
+      } else {
+        gtaState._edgeWallCooldown = 0;
+      }
+    }
+  }
+
   const maxFloorProbeY = gtaState.grounded
-    ? prevFeetY + PLAYER_MAX_STEP
+    ? prevFeetY + Math.max(PLAYER_MAX_STEP, stepUpProbeBoost)
     : gtaState.velY > 0.15
       ? prevFeetY + 0.08
       : Math.max(prevFeetY, gtaState.pos.y) + 0.28;
