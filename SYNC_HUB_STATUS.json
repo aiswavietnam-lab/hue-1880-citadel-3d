@@ -32,19 +32,21 @@
     "heritage_ui.js",
     "heritage_voice.js",
     "hue_atmosphere_water.js",
+    "hue_character_realistic.js",
     "hue_graphics_physics.js",
     "hue_imperial_court_npcs.js",
+    "hue_mobile_gyro360.js",
     "hue_postfx.js",
     "hue_realism_shaders.js",
     "hue_touch_controls.js",
-    "hue_ue5_engine.js (UE5 Lumen Multi-Bounce GI + GTAO + SSCS + SSR + Volumetric God-Rays + AgX CAS)",
+    "hue_ue5_engine.js",
     "hue_view_performance.js"
   ],
   "completed_tiles": 30,
   "total_tiles": 30,
   "last_sync_backend": "cli",
   "last_sync_applied_files": 0,
-  "last_sync_utc": "2026-11-27T15:42:00+00:00",
+  "last_sync_utc": "2026-11-27T17:55:00+00:00",
   "tile_versions": {
     "T01": {
       "version": 30,

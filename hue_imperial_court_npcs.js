@@ -59,6 +59,18 @@ function addPart(list, geo, hex, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, sx
 function finalizeParts(list) {
   const merged = mergeGeometries(list, false);
   list.forEach((g) => g.dispose());
+  const pos = merged.attributes.position;
+  if (pos) {
+    const uvs = new Float32Array(pos.count * 2);
+    for (let i = 0; i < pos.count; i++) {
+      const px = pos.getX(i);
+      const py = pos.getY(i);
+      const pz = pos.getZ(i);
+      uvs[i * 2 + 0] = Math.atan2(px, pz) / (Math.PI * 2) + 0.5;
+      uvs[i * 2 + 1] = py * 2.2;
+    }
+    merged.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+  }
   merged.computeVertexNormals();
   merged.computeBoundingSphere();
   merged.computeBoundingBox();
@@ -219,31 +231,39 @@ export function buildImperialCourtGeometries() {
   // 1. ĐẦU CHUNG & RÂU QUAN VĂN / QUAN VÕ (Gốc khớp cổ tại y = 1.44m -> đỉnh đầu 1.70m)
   const makeHeadGeo = (beardMode) => {
     const p = [];
-    // Cổ
-    addPart(p, new THREE.CylinderGeometry(0.050, 0.058, 0.085, 10), SKIN_SHADE, 0, 0.032, 0);
-    // Hộp sọ & khuôn mặt
-    addPart(p, new THREE.SphereGeometry(0.106, 14, 12), SKIN, 0, 0.142, 0, 0, 0, 0, 0.91, 1.06, 0.96);
-    // Sống mũi & chóp mũi hướng -Z
-    addPart(p, new THREE.BoxGeometry(0.022, 0.042, 0.028), SKIN, 0, 0.136, -0.098, -0.18, 0, 0);
+    // Cổ & gân cổ
+    addPart(p, new THREE.CylinderGeometry(0.050, 0.058, 0.088, 12), SKIN_SHADE, 0, 0.032, 0);
+    // Hộp sọ, xương gò má & quai hàm cằm
+    addPart(p, new THREE.SphereGeometry(0.105, 16, 14), SKIN, 0, 0.146, 0, 0, 0, 0, 0.89, 1.07, 0.96);
+    addPart(p, new THREE.SphereGeometry(0.052, 10, 8), SKIN, 0, 0.088, -0.042, 0, 0, 0, 0.96, 0.82, 1.08);
+    // Sống mũi, chóp mũi & cánh mũi hướng -Z
+    addPart(p, new THREE.BoxGeometry(0.018, 0.038, 0.026), SKIN, 0, 0.138, -0.098, -0.22, 0, 0);
+    addPart(p, new THREE.SphereGeometry(0.010, 8, 8), SKIN, 0, 0.123, -0.108, 0, 0, 0, 0.95, 0.85, 0.95);
+    addPart(p, new THREE.SphereGeometry(0.007, 6, 6), SKIN_SHADE, -0.010, 0.122, -0.101);
+    addPart(p, new THREE.SphereGeometry(0.007, 6, 6), SKIN_SHADE, 0.010, 0.122, -0.101);
+    // Đôi môi tự nhiên
+    addPart(p, new THREE.BoxGeometry(0.030, 0.008, 0.012), 0xb06a58, 0, 0.102, -0.096);
     // Hai vành tai
-    addPart(p, new THREE.SphereGeometry(0.024, 7, 6), SKIN_SHADE, -0.096, 0.140, 0.005, 0, 0, 0, 0.48, 1.05, 0.72);
-    addPart(p, new THREE.SphereGeometry(0.024, 7, 6), SKIN_SHADE, 0.096, 0.140, 0.005, 0, 0, 0, 0.48, 1.05, 0.72);
-    // Chân mày & Đôi mắt đen có thần
-    addPart(p, new THREE.BoxGeometry(0.030, 0.007, 0.010), HAIR, -0.036, 0.168, -0.092, 0, 0, 0.08);
-    addPart(p, new THREE.BoxGeometry(0.030, 0.007, 0.010), HAIR, 0.036, 0.168, -0.092, 0, 0, -0.08);
-    addPart(p, new THREE.SphereGeometry(0.011, 6, 6), HAIR, -0.035, 0.151, -0.094, 0, 0, 0, 1.1, 0.75, 0.5);
-    addPart(p, new THREE.SphereGeometry(0.011, 6, 6), HAIR, 0.035, 0.151, -0.094, 0, 0, 0, 1.1, 0.75, 0.5);
+    addPart(p, new THREE.SphereGeometry(0.024, 8, 6), SKIN_SHADE, -0.095, 0.140, 0.004, 0, 0, 0, 0.44, 1.05, 0.70);
+    addPart(p, new THREE.SphereGeometry(0.024, 8, 6), SKIN_SHADE, 0.095, 0.140, 0.004, 0, 0, 0, 0.44, 1.05, 0.70);
+    // Chân mày, tròng trắng & con ngươi đen có thần
+    addPart(p, new THREE.BoxGeometry(0.032, 0.0065, 0.010), HAIR, -0.034, 0.169, -0.093, 0, 0, 0.09);
+    addPart(p, new THREE.BoxGeometry(0.032, 0.0065, 0.010), HAIR, 0.034, 0.169, -0.093, 0, 0, -0.09);
+    addPart(p, new THREE.SphereGeometry(0.013, 8, 6), IVORY, -0.033, 0.152, -0.092, 0, 0, 0, 1.15, 0.72, 0.52);
+    addPart(p, new THREE.SphereGeometry(0.013, 8, 6), IVORY, 0.033, 0.152, -0.092, 0, 0, 0, 1.15, 0.72, 0.52);
+    addPart(p, new THREE.SphereGeometry(0.0075, 6, 6), HAIR, -0.033, 0.152, -0.098, 0, 0, 0, 1.0, 0.9, 0.45);
+    addPart(p, new THREE.SphereGeometry(0.0075, 6, 6), HAIR, 0.033, 0.152, -0.098, 0, 0, 0, 1.0, 0.9, 0.45);
     // Nền tóc vấn khăn chữ Nhân & búi tóc sau gáy
-    addPart(p, new THREE.SphereGeometry(0.107, 12, 10), HAIR, 0, 0.156, 0.012, -0.18, 0, 0, 0.93, 0.96, 0.96);
+    addPart(p, new THREE.SphereGeometry(0.107, 12, 10), HAIR, 0, 0.158, 0.012, -0.18, 0, 0, 0.92, 0.96, 0.96);
     addPart(p, new THREE.SphereGeometry(0.052, 9, 8), HAIR, 0, 0.155, 0.102);
 
     if (beardMode === "civil") {
       // Chòm râu dài tam chòm nho nhã của Quan Văn
-      addPart(p, new THREE.BoxGeometry(0.048, 0.009, 0.012), HAIR, 0, 0.106, -0.096);
+      addPart(p, new THREE.BoxGeometry(0.048, 0.009, 0.012), HAIR, 0, 0.108, -0.098);
       addPart(p, new THREE.ConeGeometry(0.018, 0.085, 6), HAIR, 0, 0.048, -0.094, Math.PI, 0, 0);
     } else if (beardMode === "martial") {
       // Râu quai nón & ria mép uy dũng của Quan Võ
-      addPart(p, new THREE.BoxGeometry(0.066, 0.013, 0.016), HAIR, 0, 0.106, -0.096);
+      addPart(p, new THREE.BoxGeometry(0.066, 0.013, 0.016), HAIR, 0, 0.108, -0.098);
       addPart(p, new THREE.BoxGeometry(0.042, 0.038, 0.018), HAIR, 0, 0.076, -0.090);
     }
     return finalizeParts(p);
@@ -1782,19 +1802,55 @@ export class HueImperialCourtSystem {
   }
 
   _createInstancedPools(maxCount, dynamicLanternMaterials) {
-    // Vật liệu gấm lụa nhận nhân màu instanceColor × vertexColor trắng có đổ bóng vạt áo
-    const clothMat = new THREE.MeshStandardMaterial({
+    // Bản đồ nếp gấp lụa gấm cho toàn bộ 97 NPC (0 tăng Draw Call)
+    const bumpCanvas = document.createElement("canvas");
+    bumpCanvas.width = 128;
+    bumpCanvas.height = 128;
+    const bctx = bumpCanvas.getContext("2d");
+    bctx.fillStyle = "#808080";
+    bctx.fillRect(0, 0, 128, 128);
+    bctx.strokeStyle = "#b0b0b0";
+    bctx.lineWidth = 2;
+    for (let y = 8; y < 128; y += 16) {
+      bctx.beginPath();
+      bctx.moveTo(0, y);
+      bctx.quadraticCurveTo(64, y + 6, 128, y);
+      bctx.stroke();
+    }
+    for (let x = 12; x < 128; x += 24) {
+      bctx.strokeStyle = "#5c5c5c";
+      bctx.lineWidth = 1.2;
+      bctx.beginPath();
+      bctx.moveTo(x, 0);
+      bctx.lineTo(x, 128);
+      bctx.stroke();
+    }
+    const npcClothBump = new THREE.CanvasTexture(bumpCanvas);
+    npcClothBump.wrapS = npcClothBump.wrapT = THREE.RepeatWrapping;
+    npcClothBump.repeat.set(3, 3);
+
+    // Vật liệu gấm lụa có ánh nhung sheen & nếp nhăn vải PBR
+    const clothMat = new THREE.MeshPhysicalMaterial({
       color: 0xffffff,
       vertexColors: true,
-      roughness: 0.50,
+      bumpMap: npcClothBump,
+      bumpScale: 0.008,
+      roughness: 0.46,
       metalness: 0.06,
+      clearcoat: 0.14,
+      clearcoatRoughness: 0.48,
+      sheen: 0.34,
+      sheenRoughness: 0.58,
+      sheenColor: new THREE.Color(0xf5e2c4),
     });
     // Vật liệu chi tiết đa sắc (vàng kim, ngà, da mặt, mắt, tóc, cổ trắng, ủng quan, thép sáng)
-    const detailMat = new THREE.MeshStandardMaterial({
+    const detailMat = new THREE.MeshPhysicalMaterial({
       color: 0xffffff,
       vertexColors: true,
-      roughness: 0.38,
+      roughness: 0.36,
       metalness: 0.28,
+      clearcoat: 0.16,
+      clearcoatRoughness: 0.42,
     });
     // Vật liệu bầu lụa đèn lồng cầm tay tự phát sáng ấm về đêm
     const lanternGlowMat = new THREE.MeshStandardMaterial({

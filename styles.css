@@ -3083,4 +3083,202 @@ body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-set
   box-shadow: 0 0 12px rgba(212, 160, 23, 0.26);
 }
 
+/* =========================================================================
+ * THANH LA BÀN 360° & CẢM BIẾN XOAY ĐIỆN THOẠI NHÌN 360° (CHẾ ĐỘ NHẬP VAI)
+ * ========================================================================= */
+.hue-roleplay-360-bar {
+  position: fixed;
+  top: var(--header-bottom);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 31;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px 5px 11px;
+  border-radius: 999px;
+  background: rgba(18, 20, 17, 0.88);
+  border: 1px solid rgba(217, 189, 133, 0.48);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  max-width: calc(100vw - 96px);
+  transition: top 0.2s ease, opacity 0.18s ease;
+}
+
+.hue-roleplay-360-bar.hidden,
+body.hud-hidden .hue-roleplay-360-bar {
+  display: none !important;
+}
+
+@media (min-width: 821px) {
+  body:has(#gta-topbar:not([hidden])) .hue-roleplay-360-bar {
+    display: none !important;
+  }
+}
+
+body:has(#hue-quest-tracker:not(.hidden)) .hue-roleplay-360-bar {
+  top: calc(var(--header-bottom) + 38px);
+}
+
+.hue-compass-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.hue-compass-tape {
+  position: relative;
+  width: 148px;
+  height: 22px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(10, 12, 10, 0.92), rgba(28, 32, 26, 0.76) 50%, rgba(10, 12, 10, 0.92));
+  border: 1px solid rgba(217, 189, 133, 0.34);
+  flex: none;
+}
+
+.hue-compass-tape-inner {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  will-change: transform;
+}
+
+.compass-tick {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: rgba(235, 224, 198, 0.52);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.compass-tick.major {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #f5d88b;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
+}
+
+.hue-compass-needle {
+  position: absolute;
+  left: 50%;
+  top: 1px;
+  bottom: 1px;
+  width: 2px;
+  transform: translateX(-50%);
+  background: #e2583e;
+  box-shadow: 0 0 6px rgba(226, 88, 62, 0.85);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.hue-compass-readout {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+#hue-gyro-deg {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f7dea0;
+}
+
+.hue-gyro-dir {
+  font-size: 11px;
+  color: rgba(242, 234, 214, 0.86);
+  max-width: 145px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hue-gyro-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+}
+
+.gyro360-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #faf1dc;
+  background: rgba(217, 189, 133, 0.14);
+  border: 1px solid rgba(217, 189, 133, 0.52);
+  cursor: pointer;
+  white-space: nowrap;
+  touch-action: manipulation;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.gyro360-pill:hover {
+  background: rgba(217, 189, 133, 0.25);
+  border-color: #f4d37d;
+}
+
+.gyro360-pill.subtle {
+  padding: 4px 9px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(217, 189, 133, 0.32);
+  color: rgba(245, 238, 222, 0.9);
+}
+
+.gyro360-pill.hidden {
+  display: none !important;
+}
+
+.gyro360-pill.is-active,
+#hue-touch-gyro.active {
+  background: linear-gradient(135deg, rgba(44, 138, 119, 0.48), rgba(212, 160, 23, 0.36));
+  border-color: #8ee6cf;
+  color: #edfff9;
+  box-shadow: 0 0 12px rgba(72, 189, 162, 0.34);
+}
+
+@media (max-width: 820px) {
+  .hue-roleplay-360-bar {
+    top: calc(var(--header-bottom) + 48px);
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: calc(100vw - 144px);
+    padding: 3px 6px 3px 8px;
+    gap: 5px;
+  }
+  body:has(#hue-quest-tracker:not(.hidden)) .hue-roleplay-360-bar {
+    top: calc(var(--header-bottom) + 80px);
+  }
+  .hue-compass-tape {
+    width: 68px;
+    height: 19px;
+  }
+  .hue-gyro-dir {
+    display: none;
+  }
+  .gyro360-pill {
+    min-height: 25px;
+    padding: 2px 7px;
+    font-size: 10.5px;
+  }
+  body:has(.heritage-sheet:not([hidden])) .hue-roleplay-360-bar,
+  body.hue-sidebar-open .hue-roleplay-360-bar,
+  body.hue-inspector-open .hue-roleplay-360-bar {
+    display: none !important;
+  }
+}
+
 

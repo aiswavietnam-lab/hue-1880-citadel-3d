@@ -5,7 +5,7 @@
   "coordinate_frame": "master_plan_z_up_meters",
   "total_tiles": 30,
   "completed_tiles": 30,
-  "last_updated_utc": "2026-11-27T14:40:28.941905+00:00",
+  "last_updated_utc": "2026-11-27T16:42:20.297135+00:00",
   "master_bounds_m": {
     "x_min": -1280.0,
     "x_max": 1420.0,

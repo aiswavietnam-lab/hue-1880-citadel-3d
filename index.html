@@ -555,11 +555,38 @@
       <span class="hl-ch-dot"></span>
     </div>
 
+    <!-- Thanh La bàn 360° & Cảm biến Xoay Điện Thoại 360° trong Chế độ Nhập Vai -->
+    <div id="hue-roleplay-360-bar" class="hud-panel hue-roleplay-360-bar hidden" role="region" aria-label="La bàn và điều khiển xoay điện thoại 360 độ">
+      <div class="hue-compass-group" title="Phương vị nhìn 360° theo trục Thần Đạo Kinh thành Huế (324.8° Tây Bắc)">
+        <div id="hue-compass-tape" class="hue-compass-tape" aria-hidden="true">
+          <div id="hue-compass-tape-inner" class="hue-compass-tape-inner"></div>
+          <span class="hue-compass-needle"></span>
+        </div>
+        <div class="hue-compass-readout">
+          <strong id="hue-gyro-deg" class="mono">325°</strong>
+          <span id="hue-gyro-dir" class="hue-gyro-dir">Tây Bắc · Điện Thái Hòa</span>
+        </div>
+      </div>
+
+      <div class="hue-gyro-actions">
+        <button id="btn-gyro-360" class="gyro360-pill" type="button" aria-pressed="false" title="Bật / Tắt xoay điện thoại 360° bằng cảm biến con quay hồi chuyển">
+          <svg viewBox="0 0 20 20" width="14" height="14" fill="none" aria-hidden="true">
+            <rect x="6.2" y="2.6" width="7.6" height="14.8" rx="1.8" stroke="currentColor" stroke-width="1.45"/>
+            <path d="M2.5 10C2.5 7.9 5.8 6.3 10 6.3C14.2 6.3 17.5 7.9 17.5 10C17.5 12.1 14.2 13.7 10 13.7" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/>
+            <path d="M11.7 12.2L9.6 13.7L11.7 15.2" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span id="btn-gyro-360-label">Xoay ĐT 360°</span>
+        </button>
+        <button id="btn-gyro-recenter" class="gyro360-pill subtle" type="button" title="Cân bằng lại tâm nhìn 360° ngang tầm mắt nhân vật">Cân tâm</button>
+        <button id="btn-char-showcase" class="gyro360-pill subtle hidden" type="button" title="Đưa camera về cự ly Cận cảnh HD để xoay 360° ngắm chi tiết nhân vật">Ngắm NV</button>
+      </div>
+    </div>
+
     <button id="heritage-help-toggle" class="museum-btn" type="button" aria-label="Hướng dẫn di chuyển" aria-expanded="false" aria-controls="gta-topbar">?</button>
     <div id="gta-topbar" hidden class="hud-panel gta-topbar">
-      <div class="gta-keys-line"><span class="touch-help">Cần trái để đi, vuốt cảnh để nhìn. Dùng hai ngón để đổi cự ly ở góc nhìn thứ ba.</span>
+      <div class="gta-keys-line"><span class="touch-help">Cần trái để đi, bật <strong>Xoay ĐT 360°</strong> hoặc vuốt cảnh để nhìn vòng quanh. Dùng hai ngón để thu phóng cận cảnh nhân vật.</span>
         <strong id="gta-mode-tag" class="gta-tag">HALF-LIFE FPS · 1.70M</strong>
-        <span id="gta-keys-hint"><code>W A S D</code> đi bộ · <code>Shift</code> chạy · <code>Space</code> nhảy · <code>Ctrl</code> ngồi · <strong>Bấm cảnh</strong> xoay chuột 360° · <code>V</code> góc nhìn 1/3 · <code>G</code> hành lễ · <code>F</code> lướt nhanh · <code>M</code> cài đặt · <code>Esc</code> mở chuột</span>
+        <span id="gta-keys-hint"><code>W A S D</code> đi bộ · <code>Shift</code> chạy · <code>Space</code> nhảy · <code>Ctrl</code> ngồi · <strong>Bấm cảnh / Xoay ĐT</strong> nhìn 360° · <code>V</code> góc nhìn 1/3 · <code>C</code> đổi nhân vật · <code>B</code> cận cảnh HD · <code>G</code> hành lễ · <code>M</code> cài đặt</span>
       </div>
       <div class="gta-tp-row">
         <span class="gta-tp-label">Dịch chuyển:</span>
@@ -572,7 +599,7 @@
         <span class="gta-tp-sep" aria-hidden="true"></span>
         <button id="btn-gta-view" class="gta-tp-btn accent" type="button">Đổi sang Góc thứ 3 (V)</button>
         <button id="btn-gta-cam" class="gta-tp-btn hidden" type="button">Cự ly cam: Chuẩn (B)</button>
-        <button id="btn-gta-outfit" class="gta-tp-btn hidden" type="button">Trang phục: Cẩm Y Thị Vệ (C)</button>
+        <button id="btn-gta-outfit" class="gta-tp-btn hidden" type="button">Trang phục: Hiệp Khách Hồng Y (C)</button>
         <button id="btn-move-settings" class="gta-tp-btn" type="button">Cài đặt chuyển động (M)</button>
         <button id="btn-gta-unstuck" class="gta-tp-btn" type="button" title="Đặt lại vị trí đứng trên mặt sàn an toàn gần nhất">Đặt lại (R)</button>
         <button id="btn-gta-exit" class="gta-tp-btn danger" type="button">Thoát</button>
@@ -582,7 +609,7 @@
     <!-- Bảng Cài đặt Chuyển động kiểu Half-Life -->
     <section id="move-settings-panel" class="hud-panel move-settings-panel hidden" aria-label="Cài đặt chuyển động Half-Life">
       <div class="move-settings-head">
-        <strong>Cài đặt Chuyển động Half-Life</strong>
+        <strong>Cài đặt Chuyển động &amp; Xoay 360°</strong>
         <button id="btn-close-move-settings" class="icon-btn" type="button" aria-label="Đóng cài đặt chuyển động">
           <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
             <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
@@ -624,10 +651,18 @@
 
       <div class="move-setting-row">
         <div class="move-setting-label">
-          <label for="rng-mouse-sens">Độ nhạy chuột</label>
+          <label for="rng-mouse-sens">Độ nhạy chuột &amp; vuốt</label>
           <strong id="val-mouse-sens" class="mono">1.00x</strong>
         </div>
         <input id="rng-mouse-sens" type="range" min="0.35" max="2.40" step="0.05" value="1.00" />
+      </div>
+
+      <div class="move-setting-row">
+        <div class="move-setting-label">
+          <label for="rng-gyro-sens">Độ nhạy xoay điện thoại 360°</label>
+          <strong id="val-gyro-sens" class="mono">1.15x</strong>
+        </div>
+        <input id="rng-gyro-sens" type="range" min="0.40" max="2.50" step="0.05" value="1.15" />
       </div>
 
       <div class="move-setting-checks">
@@ -637,7 +672,7 @@
         </label>
         <label class="toggle-row">
           <input id="chk-invert-y" type="checkbox" />
-          <span>Đảo trục dọc chuột (Invert Y)</span>
+          <span>Đảo trục dọc góc nhìn (Invert Y)</span>
         </label>
       </div>
 
@@ -710,6 +745,7 @@
     </div>
 
     <div id="hue-walk-actions" class="hue-touch-actions hidden">
+      <button id="hue-touch-gyro" class="hue-touch-btn" type="button" aria-pressed="false">Xoay 360°</button>
       <button id="hue-touch-turbo" class="hue-touch-btn" type="button">Chạy</button>
       <button id="hue-touch-crouch" class="hue-touch-btn" type="button">Ngồi</button>
       <button id="hue-touch-outfit" class="hue-touch-btn hidden" type="button">Y phục</button>
