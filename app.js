@@ -12,6 +12,7 @@ import { heritageVoice } from "./heritage_voice.js";
 import { heritageQuests } from "./heritage_quests.js";
 import { HueEnvironmentPhysicsEngine } from "./hue_graphics_physics.js";
 import { HueImperialCourtSystem, createDetailedScaleFigure170m } from "./hue_imperial_court_npcs.js";
+import { HueUE5LightingEngine } from "./hue_ue5_engine.js";
 import {
   HueRenderCullingEngine,
   classifyMeshInterior,
@@ -49,6 +50,7 @@ const QUALITY_PRESETS = {
     shadowFarBird: 600,
     bloom: false,
     sao: false,
+    ue5: false,
     iblIntensity: 0.35,
     interiorDistGta: 75,
     interiorDistBird: 140,
@@ -68,7 +70,8 @@ const QUALITY_PRESETS = {
     shadowFarBird: 1200,
     bloom: false,
     sao: false,
-    iblIntensity: 0.45,
+    ue5: false,
+    iblIntensity: 0.48,
     interiorDistGta: 110,
     interiorDistBird: 200,
     gtaCullDist: 460,
@@ -87,7 +90,8 @@ const QUALITY_PRESETS = {
     shadowFarBird: 1350,
     bloom: true,
     sao: false,
-    iblIntensity: 0.58,
+    ue5: false,
+    iblIntensity: 0.68,
     interiorDistGta: 165,
     interiorDistBird: 280,
     gtaCullDist: 920,
@@ -102,11 +106,12 @@ const QUALITY_PRESETS = {
     shadows: true,
     csmCascades: 3,
     shadowSize: 2048,
-    shadowFarGta: 650,
-    shadowFarBird: 1600,
+    shadowFarGta: 480,
+    shadowFarBird: 1500,
     bloom: true,
     sao: true,
-    iblIntensity: 0.72,
+    ue5: false,
+    iblIntensity: 0.68,
     interiorDistGta: 200,
     interiorDistBird: 340,
     gtaCullDist: 1050,
@@ -115,14 +120,47 @@ const QUALITY_PRESETS = {
     farBird: 7800,
     maxPointLights: 8,
   },
+  ue5: {
+    label: "Unreal Engine 5 (Lumen)",
+    dprMax: 1.65,
+    shadows: true,
+    csmCascades: 3,
+    shadowSize: 2048,
+    shadowFarGta: 420,
+    shadowFarBird: 1450,
+    bloom: true,
+    sao: true,
+    ue5: true,
+    iblIntensity: 0.74,
+    interiorDistGta: 220,
+    interiorDistBird: 380,
+    gtaCullDist: 1150,
+    birdCullDist: 6000,
+    farGta: 2300,
+    farBird: 8200,
+    maxPointLights: 8,
+  },
 };
+
+const URL_QUALITY = URL_PARAMS.get("quality");
+const IS_HARDWARE_MOBILE =
+  typeof window !== "undefined" &&
+  (navigator.maxTouchPoints || 0) > 0 &&
+  Boolean(window.matchMedia?.("(pointer: coarse)").matches);
+const INITIAL_QUALITY = IS_QA_MODE
+  ? "fast"
+  : URL_QUALITY && QUALITY_PRESETS[URL_QUALITY]
+    ? URL_QUALITY
+    : IS_HARDWARE_MOBILE
+      ? "balanced"
+      : "ue5";
 
 const STATE = {
   config: null,
   gridManifest: null,
   libraryManifest: null,
   cameraMode: "bird", // "bird" | "gta" | "walk" | "timelapse"
-  quality: IS_QA_MODE ? "fast" : "balanced",
+  quality: INITIAL_QUALITY,
   hour: 9.5,
   selectedTileId: null,
   activeZoneFilter: "all",
@@ -200,6 +238,8 @@ const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0xcbd5df, 0.00028);
 const huePbr = new HuePbrMaterialLibrary(renderer, scene, ".");
 huePbr.applyQualityPreset(STATE.quality);
+const ue5Engine = new HueUE5LightingEngine({ renderer, scene });
+ue5Engine.applyPreset(STATE.quality, IS_QA_MODE);
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 9500);
 camera.position.set(265, 142, 485);
@@ -503,24 +543,33 @@ const skyDome = new THREE.Mesh(
         float hasPhoto = max(uSkyReadyA * (1.0 - uSkyMix), uSkyReadyB * uSkyMix);
         vec3 col = mix(colA, colB, clamp(uSkyMix, 0.0, 1.0));
 
-        // 3. Mây tầng cao trôi nhẹ thời gian thực trên bầu trời Cố đô
+        // 3. Mây thể tích tự đổ bóng Beer-Lambert & viền bạc Silver-Lining chuẩn UE5 SkyAtmosphere
         vec3 sDir = normalize(sunDir);
         float sunAmt = max(dot(dir, sDir), 0.0);
         if (cloudOpacity > 0.01 && y > 0.012) {
           vec2 cPlane = dir.xz / (y + 0.25);
-          float c1 = cloudFbm(cPlane * 0.45 + vec2(uTime * 0.007, uTime * 0.0028));
-          float c2 = cloudFbm(cPlane * 0.88 - vec2(uTime * 0.004, -uTime * 0.005));
-          float wisps = smoothstep(0.50, 0.82, c1 * 0.65 + c2 * 0.35);
+          vec2 drift1 = vec2(uTime * 0.007, uTime * 0.0028);
+          vec2 drift2 = vec2(uTime * 0.004, -uTime * 0.005);
+          float c1 = cloudFbm(cPlane * 0.45 + drift1);
+          float c2 = cloudFbm(cPlane * 0.88 - drift2);
+          float dens = smoothstep(0.47, 0.84, c1 * 0.65 + c2 * 0.35);
+          vec2 sunStep = sDir.xz * 0.16;
+          float cSun = cloudFbm((cPlane + sunStep) * 0.45 + drift1);
+          float densSun = smoothstep(0.47, 0.84, cSun);
+          float trans = exp(-densSun * 1.35);
+          float silver = pow(sunAmt, 5.0) * (1.0 - dens * 0.55) * 0.75;
           float cMask = smoothstep(0.012, 0.16, y) * (1.0 - smoothstep(0.75, 0.98, y) * 0.35);
-          float sunLit = 0.78 + 0.40 * pow(sunAmt, 3.0);
-          col = mix(col, cloudColor * sunLit, clamp(wisps * cMask * cloudOpacity, 0.0, 0.38));
+          vec3 cloudShadowCol = mix(midColor * 0.74, cloudColor * 0.76, 0.52);
+          vec3 cloudLitCol = cloudColor * (0.88 + 0.48 * pow(sunAmt, 2.2)) + sunColor * silver * 0.45;
+          vec3 finalCloud = mix(cloudShadowCol, cloudLitCol, clamp(trans * 0.85 + 0.15, 0.0, 1.0));
+          col = mix(col, finalCloud, clamp(dens * cMask * cloudOpacity, 0.0, 0.44));
         }
 
         // 4. Quầng nắng tán xạ Mie & đĩa Mặt trời (hòa mượt cùng ảnh 360°)
         float haloFactor = mix(1.0, 0.42, clamp(hasPhoto, 0.0, 1.0));
         float aboveH = smoothstep(-0.03, 0.05, y);
-        col += sunColor * pow(sunAmt, 12.0) * sunGlow * haloFactor * aboveH;
-        col += sunColor * pow(sunAmt, 220.0) * (sunGlow * 2.1 * mix(1.0, 0.6, clamp(hasPhoto, 0.0, 1.0))) * aboveH;
+        col += sunColor * pow(sunAmt, 10.0) * sunGlow * haloFactor * aboveH;
+        col += sunColor * pow(sunAmt, 220.0) * (sunGlow * 2.25 * mix(1.0, 0.6, clamp(hasPhoto, 0.0, 1.0))) * aboveH;
 
         // 5. Sao đêm dạng điểm tròn sắc nét trên Hoàng Thành khi về khuya
         if (starIntensity > 0.01 && y > 0.04) {
@@ -536,21 +585,23 @@ const skyDome = new THREE.Mesh(
           }
         }
 
-        // 6. Rặng núi xa Trường Sơn / Ngự Bình mờ sương & hòa dải chân trời liền mạch với FogExp2
+        // 6. Rặng núi xa Trường Sơn / Ngự Bình mờ sương & tán xạ Mie chân trời liền mạch
+        float sunHorizonWarmth = pow(sunAmt, 3.0) * smoothstep(-0.06, 0.28, sDir.y);
+        vec3 mieFogCol = mix(fogColor, mix(fogColor, sunColor, 0.36), sunHorizonWarmth);
         float ridge1 = 0.018 + 0.011 * sin(az * 3.0 + 0.6) + 0.005 * sin(az * 7.0 - 1.1) + 0.0025 * sin(az * 17.0 + 2.3);
         float ridge2 = 0.009 + 0.006 * sin(az * 4.0 + 2.2) + 0.003 * sin(az * 11.0 + 0.4);
         float farPeak = smoothstep(ridge1 + 0.004, ridge1 - 0.002, y) * step(-0.01, y);
         float nearPeak = smoothstep(ridge2 + 0.003, ridge2 - 0.0015, y) * step(-0.01, y);
-        vec3 farRidgeCol = mix(mountainColor, fogColor, 0.65);
-        vec3 nearRidgeCol = mix(mountainColor * 0.78, fogColor, 0.48);
+        vec3 farRidgeCol = mix(mountainColor, mieFogCol, 0.65);
+        vec3 nearRidgeCol = mix(mountainColor * 0.78, mieFogCol, 0.48);
         col = mix(col, farRidgeCol, farPeak * 0.74);
         col = mix(col, nearRidgeCol, nearPeak * 0.86);
 
-        float hazeBand = exp(-max(y, 0.0) * 32.0) * 0.56;
+        float hazeBand = exp(-max(y, 0.0) * 36.0) * 0.46;
         if (y < 0.0) {
           hazeBand = max(hazeBand, smoothstep(0.0, -0.04, y) * 0.96);
         }
-        col = mix(col, fogColor, clamp(hazeBand, 0.0, 0.96));
+        col = mix(col, mieFogCol, clamp(hazeBand, 0.0, 0.96));
 
         gl_FragColor = vec4(col, 1.0);
         #include <tonemapping_fragment>
@@ -588,18 +639,30 @@ scene.add(ambientFill);
 const renderEngine = new HueRenderCullingEngine({ renderer, scene, camera, sunLight });
 renderEngine.setSkyDome(skyDome);
 
+function syncUe5ToggleUi() {
+  const btn = document.getElementById("btn-ue5-toggle");
+  if (!btn) return;
+  const isUe5 = STATE.quality === "ue5";
+  btn.classList.toggle("is-active", isUe5);
+  btn.setAttribute("aria-pressed", String(isUe5));
+}
+
 // --- Áp dụng cấu hình Đồ họa / Hiệu năng ---
 function applyQualityPreset(key, notifyUser = false) {
-  const preset = QUALITY_PRESETS[key] || QUALITY_PRESETS.balanced;
-  STATE.quality = key;
-  huePbr.applyQualityPreset(key);
-  if (envPhysics) envPhysics.setQuality(key);
+  const resolvedKey = QUALITY_PRESETS[key] ? key : "balanced";
+  const preset = QUALITY_PRESETS[resolvedKey];
+  STATE.quality = resolvedKey;
+  huePbr.applyQualityPreset(resolvedKey);
+  ue5Engine.applyPreset(resolvedKey, IS_QA_MODE);
+  if (envPhysics) envPhysics.setQuality(resolvedKey);
 
   resolutionGovernor.reset();
   const dpr = IS_QA_MODE ? 1 : resolutionGovernor.ratio(preset.dprMax);
   renderer.setPixelRatio(dpr);
   renderer.setSize(window.innerWidth, window.innerHeight);
 
+  const prevShadows = renderer.shadowMap.enabled;
+  const prevCsm = renderEngine.stats.csmActive;
   const wantShadows = !IS_QA_MODE && preset.shadows;
   renderer.shadowMap.enabled = wantShadows;
   const isGroundMode = STATE.cameraMode === "gta" || STATE.cameraMode === "walk";
@@ -617,21 +680,34 @@ function applyQualityPreset(key, notifyUser = false) {
   if (!IS_QA_MODE) {
     renderEngine.ensureIBL(preset.iblIntensity ?? 0.45);
   }
-  renderEngine.ensurePostProcessing(preset, IS_QA_MODE);
+  renderEngine.ensurePostProcessing(preset, IS_QA_MODE).then((ok) => {
+    if (ok) {
+      renderEngine.resizePostProcessing(window.innerWidth, window.innerHeight, dpr);
+      ue5Engine.updateFrame(0.016, {
+        isIndoor: Boolean(renderEngine.stats.activeIndoorTileId),
+        wetness: envPhysics ? envPhysics.wetness : 0,
+        isQaMode: IS_QA_MODE,
+        postFX: renderEngine.postFX,
+        fogColor: scene.fog.color,
+      });
+    }
+  });
   renderEngine.resizePostProcessing(window.innerWidth, window.innerHeight, dpr);
   renderEngine.onCameraProjectionChanged();
   renderEngine.invalidateOcclusion();
   if (courtNpcSystem) renderEngine.setupObjectForCsm(courtNpcSystem.group);
 
-  // Cập nhật lại shader shadow nếu thay đổi bật/tắt bóng
-  scene.traverse((obj) => {
-    if (obj.isMesh && obj.material) {
-      const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
-      mats.forEach((m) => {
-        if (m) m.needsUpdate = true;
-      });
-    }
-  });
+  // Chỉ biên dịch lại shader shadow khi trạng thái bật/tắt bóng hoặc CSM thực sự đổi
+  if (prevShadows !== wantShadows || prevCsm !== renderEngine.stats.csmActive) {
+    scene.traverse((obj) => {
+      if (obj.isMesh && obj.material) {
+        const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+        mats.forEach((m) => {
+          if (m) m.needsUpdate = true;
+        });
+      }
+    });
+  }
   applyLanternPowerOnly();
   if (typeof updateTimeOfDay === "function" && STATE.ready) {
     updateTimeOfDay(STATE.hour);
@@ -639,7 +715,8 @@ function applyQualityPreset(key, notifyUser = false) {
   if (wantShadows) requestShadowUpdate(true);
 
   const sel = document.getElementById("quality-select");
-  if (sel && sel.value !== key) sel.value = key;
+  if (sel && sel.value !== resolvedKey) sel.value = resolvedKey;
+  syncUe5ToggleUi();
   if (notifyUser) showToast(`Đã chuyển mức đồ họa: ${preset.label}`);
 }
 
@@ -1084,7 +1161,7 @@ function sanitizeGeometryAttributes(geom) {
   }
 }
 
-function cloneNormalizedGeometry(src, matrix, wantUv, flipWinding, isInterior = false) {
+function cloneNormalizedGeometry(src, matrix, wantUv, flipWinding, isInterior = false, wantVertexColor = false) {
   const posSrc = src.attributes.position;
   if (!posSrc) return null;
   const g = new THREE.BufferGeometry();
@@ -1098,6 +1175,9 @@ function cloneNormalizedGeometry(src, matrix, wantUv, flipWinding, isInterior = 
     } else {
       g.setAttribute("uv", new THREE.BufferAttribute(new Float32Array(posSrc.count * 2), 2));
     }
+  }
+  if (wantVertexColor && src.attributes.color) {
+    g.setAttribute("color", src.attributes.color.clone());
   }
   const idxCount = src.index ? src.index.count : posSrc.count;
   const idxArr = new Uint32Array(idxCount);
@@ -1219,6 +1299,9 @@ function optimizeTileRoot(rawRoot, tile) {
     const isFlatMat = /(co_?xanh|nuoc|water|song_?huong|gach_?bat_?trang|ground)/.test(matNameLow);
 
     if (!neg && matrices.length >= 24 && expandedVerts > 60000) {
+      if (!geometry.attributes.aHueOcc) {
+        computeArchitecturalVertexOcclusion(geometry, isInterior, geometry.attributes.color || null);
+      }
       const inst = new THREE.InstancedMesh(geometry, material, matrices.length);
       for (let i = 0; i < matrices.length; i++) {
         inst.setMatrixAt(i, matrices[i]);
@@ -1262,8 +1345,9 @@ function optimizeTileRoot(rawRoot, tile) {
       mb = { material, wantUv, isInterior, geos: [] };
       matMergeBuckets.set(mbKey, mb);
     }
+    const wantVColor = Boolean(mb.material.vertexColors);
     for (let i = 0; i < matrices.length; i++) {
-      const ng = cloneNormalizedGeometry(geometry, matrices[i], mb.wantUv, neg, mb.isInterior);
+      const ng = cloneNormalizedGeometry(geometry, matrices[i], mb.wantUv, neg, mb.isInterior, wantVColor);
       if (ng) mb.geos.push(ng);
     }
   }
@@ -1352,22 +1436,22 @@ function optimizeTileRoot(rawRoot, tile) {
 
 // --- Hàng đợi nạp GLB ưu tiên từ trung tâm ra ngoại vi (kèm bộ giải mã Draco/Meshopt/KTX2) ---
 const gltfLoader = new GLTFLoader();
-// Một số GLB cũ trỏ ảnh JPEG vào bộ đệm đỉnh. Cho thư viện PBR
-// tiếp quản vật liệu đó, đồng thời vẫn đọc ảnh hợp lệ ở bản đồng bộ mới.
-gltfLoader.register(parser => {
-  const geometryViews = new Set((parser.json.accessors || []).map(item => item.bufferView));
+// Kiểm tra chữ ký byte JPEG (0xFF 0xD8 0xFF) trên mọi bufferView ảnh nhúng để ngăn lỗi blob
+// từ buffer lỗi (như T21), cho phép bể vật liệu PBR CC0 tiếp quản sạch sẽ 100%.
+gltfLoader.register((parser) => {
   return {
     name: "HueEmbeddedImageFallback",
     loadTexture(index) {
-      const image = parser.json.images?.[parser.json.textures[index].source];
-      if (image?.mimeType !== "image/jpeg" || image.bufferView == null ||
-          !geometryViews.has(image.bufferView)) return null;
-      return parser.getDependency("bufferView", image.bufferView).then(buffer => {
+      const texDef = parser.json.textures?.[index];
+      const image = texDef ? parser.json.images?.[texDef.source] : null;
+      if (image?.mimeType !== "image/jpeg" || image.bufferView == null) return null;
+      return parser.getDependency("bufferView", image.bufferView).then((buffer) => {
         const header = new Uint8Array(buffer, 0, Math.min(3, buffer.byteLength));
-        return header[0] === 255 && header[1] === 216 && header[2] === 255
-          ? parser.loadTexture(index) : null;
+        return header.length >= 3 && header[0] === 255 && header[1] === 216 && header[2] === 255
+          ? parser.loadTexture(index)
+          : null;
       });
-    }
+    },
   };
 });
 const engineReadyPromise = renderEngine
@@ -1797,13 +1881,19 @@ function updateTimeOfDay(hour) {
 
   scene.fog.color.copy(fogCol);
   const inPlayerMode = STATE.cameraMode === "gta" || STATE.cameraMode === "walk";
-  scene.fog.density = inPlayerMode ? Math.max(fogDensity, 0.00058) : fogDensity;
-  sunLight.color.copy(sunCol);
-  sunLight.intensity = sunInt;
-  hemiLight.intensity = hemiInt;
+  scene.fog.density = inPlayerMode ? Math.max(fogDensity, 0.00054) : fogDensity;
   const activePreset = QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced;
-  renderEngine.syncSunLightState(sunCol, sunInt);
-  renderEngine.updateIblForSunElevation(activePreset.iblIntensity ?? 0.45, THREE.MathUtils.radToDeg(alt));
+  // Tỷ lệ tương phản Nắng chính / Trời khuếch tán chuẩn Unreal Engine 5 (Key-to-Fill ~4.5:1)
+  const sunKeyScale = activePreset.ue5 ? 1.52 : activePreset.sao ? 1.30 : activePreset.bloom ? 1.14 : 1.0;
+  const skyFillScale = activePreset.ue5 ? 0.48 : activePreset.sao ? 0.60 : activePreset.bloom ? 0.78 : 1.0;
+  const finalSunInt = sunInt * sunKeyScale;
+  const finalHemiInt = hemiInt * skyFillScale;
+  ambientFill.intensity = activePreset.ue5 ? 0.11 : activePreset.sao ? 0.16 : 0.28;
+
+  sunLight.color.copy(sunCol);
+  sunLight.intensity = finalSunInt;
+  hemiLight.intensity = finalHemiInt;
+  renderEngine.syncSunLightState(sunCol, finalSunInt);
 
   if (riverMaterial) {
     riverMaterial.color.copy(lerpColorTriple(0x274f57, midCol.getHex(), h >= 17.0 ? 0.45 : 0.16));
@@ -1818,6 +1908,8 @@ function updateTimeOfDay(hour) {
       }
     : null;
   huePbr.updateSkyEnvironment(topCol, midCol, horCol, sunCol, currentSunDir, h, skyPhotoInfo);
+  const sunElevDeg = THREE.MathUtils.radToDeg(alt);
+  renderEngine.updateIblForSunElevation(activePreset.iblIntensity ?? 0.45, sunElevDeg);
 
   if (h >= 17.2) {
     currentLanternPower = THREE.MathUtils.clamp((h - 17.2) / 0.55, 0, 1);
@@ -1827,6 +1919,24 @@ function updateTimeOfDay(hour) {
     currentLanternPower = 0.0;
   }
   applyLanternPowerOnly();
+  ue5Engine.syncAtmosphere({
+    sunDir: currentSunDir,
+    sunCol,
+    topCol,
+    midCol,
+    horCol,
+    sunElevDeg,
+    lanternPower: currentLanternPower,
+    weather: STATE.weather,
+    wetness: envPhysics ? envPhysics.wetness : 0,
+  });
+  if (renderEngine.postFX) {
+    renderEngine.postFX.syncUe5State({
+      sunElevDeg,
+      fogColor: scene.fog.color,
+      timeSec: ue5Engine.simTime,
+    });
+  }
   if (envPhysics) envPhysics.syncEnvironment({ lanternPower: currentLanternPower });
   if (courtNpcSystem) courtNpcSystem.syncEnvironment({ lanternPower: currentLanternPower, weather: STATE.weather });
   if (renderEngine.csm && renderEngine.stats.csmActive) {
@@ -5075,6 +5185,16 @@ function bindUiEvents() {
     });
   }
 
+  const btnUe5Toggle = document.getElementById("btn-ue5-toggle");
+  if (btnUe5Toggle) {
+    syncUe5ToggleUi();
+    btnUe5Toggle.addEventListener("click", () => {
+      const nextKey = STATE.quality === "ue5" ? "balanced" : "ue5";
+      applyQualityPreset(nextKey, true);
+      focusViewportCanvas();
+    });
+  }
+
   const sidebarEl = document.getElementById("hud-sidebar");
   const toggleSidebarBtn = document.getElementById("btn-toggle-sidebar");
   if ((IS_PUBLIC_MODE || isHueMobileUi()) && sidebarEl) {
@@ -5557,8 +5677,16 @@ window.__HUE_VIEWER__ = {
     while ((!STATE.ready || STATE.pendingLoads > 0 || pendingSkyLoads > 0) && Date.now() - start < timeoutMs) {
       await new Promise((r) => setTimeout(r, 100));
     }
+    await renderEngine.ensurePostProcessing(QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced, IS_QA_MODE);
     updateTimeOfDay(STATE.hour);
     updateTileCulling(true);
+    ue5Engine.updateFrame(0.05, {
+      isIndoor: Boolean(renderEngine.stats.activeIndoorTileId),
+      wetness: envPhysics ? envPhysics.wetness : 0,
+      isQaMode: IS_QA_MODE,
+      postFX: renderEngine.postFX,
+      fogColor: scene.fog.color,
+    });
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
     return {
       ready: STATE.ready,
@@ -5578,12 +5706,28 @@ window.__HUE_VIEWER__ = {
   setTimeOfDay: (hour) => {
     updateTimeOfDay(hour);
     updateTileCulling(true);
+    ue5Engine.updateFrame(0.05, {
+      isIndoor: Boolean(renderEngine.stats.activeIndoorTileId),
+      wetness: envPhysics ? envPhysics.wetness : 0,
+      isQaMode: IS_QA_MODE,
+      postFX: renderEngine.postFX,
+      fogColor: scene.fog.color,
+    });
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
-  setQualityPreset: (key) => {
+  setQualityPreset: async (key) => {
     applyQualityPreset(key, false);
+    await renderEngine.ensurePostProcessing(QUALITY_PRESETS[STATE.quality] || QUALITY_PRESETS.balanced, IS_QA_MODE);
     updateTileCulling(true);
+    ue5Engine.updateFrame(0.05, {
+      isIndoor: Boolean(renderEngine.stats.activeIndoorTileId),
+      wetness: envPhysics ? envPhysics.wetness : 0,
+      isQaMode: IS_QA_MODE,
+      postFX: renderEngine.postFX,
+      fogColor: scene.fog.color,
+    });
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
+    return window.__HUE_VIEWER__.getStats();
   },
   setSmartCulling: (enabled) => {
     STATE.smartCulling = Boolean(enabled);
@@ -5810,6 +5954,13 @@ window.__HUE_VIEWER__ = {
     updateTimeOfDay(STATE.hour);
     if (envPhysics) envPhysics.update(0.016, { isQaMode: IS_QA_MODE });
     updateTileCulling(true);
+    ue5Engine.updateFrame(0.05, {
+      isIndoor: Boolean(renderEngine.stats.activeIndoorTileId),
+      wetness: envPhysics ? envPhysics.wetness : 0,
+      isQaMode: IS_QA_MODE,
+      postFX: renderEngine.postFX,
+      fogColor: scene.fog.color,
+    });
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
     return { weather: STATE.weather, wetness: envPhysics ? Number(envPhysics.wetness.toFixed(3)) : 0 };
   },
@@ -5858,6 +6009,13 @@ window.__HUE_VIEWER__ = {
           isQaMode: false,
         });
       }
+      ue5Engine.updateFrame(dt, {
+        isIndoor: Boolean(renderEngine.stats.activeIndoorTileId),
+        wetness: envPhysics ? envPhysics.wetness : 0,
+        isQaMode: IS_QA_MODE,
+        postFX: renderEngine.postFX,
+        fogColor: scene.fog.color,
+      });
     }
     heritageQuests.updateFrame(performance.now(), STATE.cameraMode, gtaState.pos, camera.position);
     updateTileCulling(true);
@@ -5895,6 +6053,13 @@ window.__HUE_VIEWER__ = {
   renderNow: () => {
     updateTileCulling(true);
     updateLabelsAndCompass(true);
+    ue5Engine.updateFrame(0.016, {
+      isIndoor: Boolean(renderEngine.stats.activeIndoorTileId),
+      wetness: envPhysics ? envPhysics.wetness : 0,
+      isQaMode: IS_QA_MODE,
+      postFX: renderEngine.postFX,
+      fogColor: scene.fog.color,
+    });
     renderEngine.renderSceneFrame(performance.now(), IS_QA_MODE, true);
   },
   pauseLoop: (paused) => {
@@ -5926,6 +6091,9 @@ window.__HUE_VIEWER__ = {
     loadedTiles: Array.from(tileObjects.values()).filter(entry => entry.glbGroup).length,
     pendingLoads: STATE.pendingLoads,
     pixelRatio: renderer.getPixelRatio(),
+    toneMapping: renderer.toneMapping,
+    exposure: Number(renderer.toneMappingExposure.toFixed(3)),
+    envIntensity: Number((scene.environmentIntensity ?? 0).toFixed(3)),
     rendererMemory: { ...renderer.info.memory, programs: renderer.info.programs.length },
     ...renderEngine.stats,
   }),
@@ -5945,12 +6113,13 @@ function updateFpsHud(now) {
   if (el) {
     const rs = renderEngine.stats;
     const extras = [];
+    if (rs.ue5Active) extras.push("UE5 Lumen");
     if (rs.occludedTiles > 0) extras.push(`ẩn ${rs.occludedTiles} khuất`);
     if (rs.activeIndoorTileId) extras.push(`nội thất ${rs.activeIndoorTileId}`);
     el.textContent = extras.length
       ? `${fps} FPS · ${calls} draws · ${extras.join(" · ")}`
       : `${fps} FPS · ${calls} draws`;
-    el.title = `Tỉ lệ điểm ảnh ${renderer.getPixelRatio().toFixed(2)} · Hiển thị ${rs.visibleTiles} ô · Ngoài góc ${rs.frustumCulledTiles} · Khuất tầm nhìn ${rs.occludedTiles} · Nội thất bật ${rs.interiorVisibleTiles}/ẩn ${rs.interiorHiddenTiles} · CSM ${rs.csmActive ? rs.csmCascades + " tầng" : "tắt"} · Hậu kỳ ${rs.postProcessingActive ? "bật" : "tắt"}`;
+    el.title = `Tỉ lệ điểm ảnh ${renderer.getPixelRatio().toFixed(2)} · Hiển thị ${rs.visibleTiles} ô · Ngoài góc ${rs.frustumCulledTiles} · Khuất tầm nhìn ${rs.occludedTiles} · Nội thất bật ${rs.interiorVisibleTiles}/ẩn ${rs.interiorHiddenTiles} · CSM ${rs.csmActive ? rs.csmCascades + " tầng" : "tắt"} · Hậu kỳ ${rs.ue5Active ? "UE5 Lumen" : rs.postProcessingActive ? "bật" : "tắt"}`;
     el.style.color = fps >= 45 ? "#6CE0C6" : fps >= 25 ? "#FCE29C" : "#FF8B7B";
   }
   fpsFrames = 0;
@@ -5963,8 +6132,14 @@ function animate(now) {
   requestAnimationFrame(animate);
   if (STATE.loopPaused) { lastTime = now; return; }
   const elapsedMs = now - lastTime;
-  if (!IS_QA_MODE && (STATE.quality === "balanced" || STATE.quality === "high") &&
-      resolutionGovernor.sample(elapsedMs)) {
+  if (
+    !IS_QA_MODE &&
+    (STATE.quality === "balanced" ||
+      STATE.quality === "high" ||
+      STATE.quality === "cinematic" ||
+      STATE.quality === "ue5") &&
+    resolutionGovernor.sample(elapsedMs)
+  ) {
     const dpr = resolutionGovernor.ratio(QUALITY_PRESETS[STATE.quality].dprMax);
     renderer.setPixelRatio(dpr);
     renderEngine.resizePostProcessing(innerWidth, innerHeight, dpr);
@@ -5996,6 +6171,13 @@ function animate(now) {
   }
   heritageQuests.updateFrame(now, STATE.cameraMode, gtaState.pos, camera.position);
   updateTileCulling(false);
+  ue5Engine.updateFrame(dt, {
+    isIndoor: Boolean(renderEngine.stats.activeIndoorTileId),
+    wetness: envPhysics ? envPhysics.wetness : 0,
+    isQaMode: IS_QA_MODE,
+    postFX: renderEngine.postFX,
+    fogColor: scene.fog.color,
+  });
   renderEngine.updateCsmAndShadowTrigger(now, IS_QA_MODE, requestShadowUpdate);
   updateLabelsAndCompass(false);
   renderEngine.renderSceneFrame(now, IS_QA_MODE, false);

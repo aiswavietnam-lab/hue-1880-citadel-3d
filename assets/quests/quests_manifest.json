@@ -238,118 +238,2185 @@
       "ceremony_sfx": "dai_hong_chung"
     },
     {
+      "id": "QZ01_01",
+      "tile_id": "T01",
+      "title": "Nghi thức thượng kỳ trên Kỳ Đài Kinh Thành",
+      "location_label": "Kỳ Đài Nam Chính - Ngọ Môn Tiền Phương",
+      "npc_name": "Suất Đội Kỳ Đài Nguyễn Văn Trạch",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_01",
+      "objective_short": "Đối chiếu quy chế treo đại kỳ và hiệu pháo tại Kỳ Đài năm Tự Đức thứ ba mươi ba (1880)",
+      "dialogue": "Bẩm đại nhân, hôm nay là ngày Sóc đầu tháng tại Kinh sư Phú Xuân năm 1880. Quân lính Ty Kỳ Đài đã chuẩn bị đại kỳ sắc vàng cùng bốn khẩu thần công ở tầng đài thứ ba. Trước khi phát lệnh kéo cờ và điểm pháo báo hiệu cho toàn Kinh thành, xin đại nhân kiểm định lại điển lệ thượng kỳ được chép trong Khâm Định Đại Nam Hội Điển Sự Lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục triều Tự Đức năm 1880, vào các tiết đại lễ và ngày Sóc Vọng tại Kỳ Đài Kinh thành Huế, lá đại kỳ của triều đình được quy định treo như thế nào?",
+      "choices": [
+        "Treo đại kỳ sắc vàng thêu rồng năm móng kèm phát pháo lệnh từ trên đài báo hiệu cho bá quan văn võ chuẩn bị chầu tại Ngọ Môn",
+        "Treo song kỳ sắc đỏ và sắc lam ở hai góc đài phía Đông và phía Tây, tuyệt đối không phát pháo lệnh để giữ sự tĩnh mịch trước Hoàng thành",
+        "Chỉ treo cờ ngũ sắc vào ban đêm và hạ toàn bộ cờ hiệu xuống trước giờ Mão để nhường tầm nhìn cho lầu Ngũ Phụng"
+      ],
+      "correct_index": 0,
+      "hint": "Màu vàng là chính sắc của bậc Đế vương triều Nguyễn, và Kỳ Đài có bố trí đại bác trên đài để bắn pháo hiệu trong các dịp đại lễ, Sóc Vọng.",
+      "historical_note": "Kỳ Đài Huế được xây dựng từ năm Gia Long thứ sáu (1807) và tu bổ qua các đời Minh Mạng, Thiệu Trị, Tự Đức. Tầng đài gồm ba cấp hình chóp cụt chồng lên nhau, trên đỉnh dựng cột cờ cao để treo đại kỳ sắc vàng trong các ngày lễ tiết, Sóc Vọng và các buổi đại triều năm 1880.",
+      "seal_name": "Kỳ Đài Điển Lệ Ấn"
+    },
+    {
+      "id": "QZ01_02",
+      "tile_id": "T02",
+      "title": "Phép phân luồng qua năm lối cổng Ngọ Môn",
+      "location_label": "Ngọ Môn Chính Nam Hoàng Thành",
+      "npc_name": "Thị Vệ Trưởng Cẩm Y Vệ Trần Đình Hựu",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_02",
+      "objective_short": "Xác minh quy tắc đi lại qua năm cửa dưới nền đài Ngọ Môn trong lễ thường triều năm 1880",
+      "dialogue": "Kính chào quý quan. Sáng nay Hoàng đế ngự triều tại điện Thái Hòa, các bậc thân vương cùng bá quan văn võ từ Lục Bộ đang tề tựu trước cầu Trung Đạo để tiến qua Ngọ Môn. Lính Cẩm Y Vệ đang canh giữ năm lối cổng dưới nền đài chữ U, xin quý quan chỉ rõ quy định phân luồng cho từng lối cổng theo đúng phép tắc năm 1880.",
+      "question": "Theo điển chế triều Nguyễn ghi trong Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm 1880, năm lối cổng dưới nền đài Ngọ Môn được phân định quyền đi lại cho Hoàng đế và bá quan như thế nào?",
+      "choices": [
+        "Cửa Ngọ Môn chính giữa dành riêng cho Hoàng đế, hai cửa Tả Giáp Môn và Hữu Giáp Môn dành cho quan văn võ theo ban, còn Tả Dịch Môn và Hữu Dịch Môn ở hai cánh dành cho binh lính và voi ngựa theo hầu",
+        "Cả năm cửa đều mở thông suốt cho bá quan văn võ từ cửu phẩm trở lên tự do đi qua theo thứ tự tuổi tác mà không phân biệt lối giữa hay lối bên",
+        "Cửa chính giữa dành cho các quan Tứ trụ triều đình, còn Hoàng đế ngự kiệu đi qua lối Hữu Dịch Môn để vào thẳng khu vực Tử Cấm Thành"
+      ],
+      "correct_index": 0,
+      "hint": "Trục thần đạo chính giữa luôn độc tôn dành cho bậc Thiên tử; hai cửa Giáp Môn kề bên dành cho quan lại văn tả võ hữu, hai cửa Dịch Môn ngoài cùng dành cho đội ngũ tùy tùng.",
+      "historical_note": "Ngọ Môn được kiến thiết hoàn chỉnh dưới triều Minh Mạng năm thứ mười bốn (1833) và giữ nguyên quy chế nghiêm ngặt dưới triều Tự Đức năm 1880: cửa chính giữa là Ngọ Môn chỉ mở khi Hoàng đế ngự giá, kề hai bên là Tả Giáp Môn và Hữu Giáp Môn cho bá quan, ngoài cùng hai cánh là Tả Dịch Môn và Hữu Dịch Môn cho biền binh, voi ngựa.",
+      "seal_name": "Ngọ Môn Nghi Chế Ấn"
+    },
+    {
+      "id": "QZ01_03",
+      "tile_id": "T03",
+      "title": "Điển lễ phẩm cấp trên sân Đại Triều Nghi",
+      "location_label": "Cầu Trung Đạo và Sân Đại Triều Điện Thái Hòa",
+      "npc_name": "Lễ Bộ Tham Tri Lê Quang Đĩnh",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_03",
+      "objective_short": "Kiểm tra trật tự đứng chầu theo bia Phẩm Sơn tại sân Đại Triều Nghi trước điện Thái Hòa năm 1880",
+      "dialogue": "Thưa đồng liêu, nước hồ Thái Dịch sáng nay phẳng lặng soi bóng cầu Trung Đạo và phường môn chạm trổ pháp lam. Trên sân Đại Triều Nghi hai tầng trước điện Thái Hòa, hai hàng bia đá Phẩm Sơn từ Chính Nhất phẩm xuống đến Tòng Cửu phẩm đã được bộ Lễ lau rửa tinh tươm. Xin đồng liêu nhắc lại quy tắc sắp xếp vị trí đứng chầu của hai ban văn võ để truyền cho các tân quan.",
+      "question": "Theo quy chế triều nghi tại sân Đại Triều trước điện Thái Hòa được chép trong Đại Nam Thực Lục và Khâm Định Đại Nam Hội Điển Sự Lệ năm 1880, các quan văn võ đứng chầu theo hai dãy bia đá Phẩm Sơn tuân theo nguyên tắc nào?",
+      "choices": [
+        "Tuân theo nguyên tắc Tả văn Hữu võ tính từ ngai vàng điện Thái Hòa nhìn ra Ngọ Môn, trong đó quan từ Tứ phẩm trở lên đứng ở sân tầng trên và quan từ Ngũ phẩm đến Cửu phẩm đứng ở sân tầng dưới",
+        "Quan võ từ Nhất phẩm đến Cửu phẩm đều đứng ở sân tầng trên sát thềm điện Thái Hòa, còn toàn bộ quan văn đứng ở sân tầng dưới sát bờ hồ Thái Dịch",
+        "Các quan tự chọn vị trí đứng bất kỳ quanh cầu Trung Đạo miễn là hướng mặt về phía lầu Ngũ Phụng trên cổng Ngọ Môn"
+      ],
+      "correct_index": 0,
+      "hint": "Hãy nhớ nguyên tắc Tả văn Hữu võ truyền thống lấy hướng Hoàng đế ngự trên ngai vàng nhìn xuống phía Nam làm chuẩn, kết hợp với kết cấu hai tầng sân cao thấp của sân Đại Triều Nghi.",
+      "historical_note": "Sân Đại Triều Nghi trước điện Thái Hòa gồm hai cấp sân lát đá Thanh, cắm hai dãy bia đá khắc chữ Hán từ Chính Nhất phẩm đến Tòng Cửu phẩm. Theo hướng từ điện Thái Hòa nhìn ra Ngọ Môn, bên trái (phía Đông) là ban Văn, bên phải (phía Tây) là ban Võ; các quan đại thần từ Tứ phẩm trở lên đứng ở sân trên, từ Ngũ phẩm trở xuống đứng ở sân dưới.",
+      "seal_name": "Thái Hòa Triều Nghi Ấn"
+    },
+    {
+      "id": "QZ01_04",
+      "tile_id": "T01",
+      "title": "Biên chế Cửu Vị Thần Công trước Kỳ Đài Kinh Thành",
+      "location_label": "Nhà Đồ Cửu Vị Thần Công - Hai Bên Kỳ Đài Nam Chính",
+      "npc_name": "Chưởng Vệ Vũ Khố Phan Đình Tuyên",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_04",
+      "objective_short": "Xác minh danh hiệu và cách bố trí Cửu Vị Thần Công hai bên Kỳ Đài năm Tự Đức thứ ba mươi ba (1880)",
+      "dialogue": "Bẩm đại nhân, hôm nay là kỳ kiểm tra định lệ hai dãy nhà che Cửu Vị Thần Công đặt đối xứng ở mặt trong cửa Thể Nhơn và cửa Quảng Đức, sát hai bên chân Kỳ Đài năm 1880. Chín cỗ đại pháo bằng đồng này được đúc từ triều Gia Long và ban phong danh hiệu bậc Tướng quân. Xin đại nhân đối chiếu lại quy cách phân chia danh hiệu của chín cỗ thần công theo chính sử.",
+      "question": "Theo Đại Nam Thực Lục và Khâm Định Đại Nam Hội Điển Sự Lệ đang áp dụng năm 1880, chín cỗ đại pháo bằng đồng trong bộ Cửu Vị Thần Công đặt gần khu vực Kỳ Đài Kinh thành Huế được đặt tên và phân bố theo hệ thống nào?",
+      "choices": [
+        "Được đặt tên theo Tứ Thời gồm Xuân, Hạ, Thu, Đông và Ngũ Hành gồm Mộc, Hỏa, Thổ, Kim, Thủy kèm mỹ hiệu Thần Oai Vô Địch Thượng Tướng Quân khắc nổi trên thân súng",
+        "Được đặt tên theo Cửu Tinh Bắc Đẩu và xếp thành một hàng dọc duy nhất chắn ngang trước cầu Trung Đạo",
+        "Được đặt tên theo chín tỉnh miền Nam và chỉ mang ra khỏi kho Vũ Khố vào ngày lễ Nguyên Đán hàng năm"
+      ],
+      "correct_index": 0,
+      "hint": "Chín cỗ súng đồng tượng trưng cho sự vận hành thuận hòa của bốn mùa trong năm và năm nguyên tố tự nhiên của đất trời.",
+      "historical_note": "Cửu Vị Thần Công được đúc hoàn thành năm Gia Long thứ ba (1804), gồm bốn khẩu Tứ Thời (Xuân, Hạ, Thu, Đông) đặt bên trái và năm khẩu Ngũ Hành (Mộc, Hỏa, Thổ, Kim, Thủy) đặt bên phải gần chân Kỳ Đài. Năm Gia Long thứ mười lăm (1816), triều đình sắc phong cho cả chín khẩu danh hiệu Thần Oai Vô Địch Thượng Tướng Quân và duy trì nghi thức tế lễ trang trọng suốt triều Tự Đức năm 1880.",
+      "seal_name": "Cửu Vị Thần Công Ấn"
+    },
+    {
+      "id": "QZ01_05",
+      "tile_id": "T02",
+      "title": "Nghi lễ Truyền Lô xướng danh Tiến sĩ trên lầu Ngũ Phụng",
+      "location_label": "Lầu Ngũ Phụng - Thượng Đài Ngọ Môn",
+      "npc_name": "Hàn Lâm Viện Thị Độc Học Sĩ Đặng Văn Kiều",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_05",
+      "objective_short": "Kiểm định quy trình lễ Truyền Lô và niêm yết bảng vàng từ lầu Ngũ Phụng Ngọ Môn năm 1880",
+      "dialogue": "Kính bẩm quý quan, khoa thi Đình năm Tự Đức thứ ba mươi ba, năm 1880 vừa chấm quyển xong. Sáng nay bộ Lễ cùng Hàn Lâm Viện chuẩn bị cử hành đại lễ Truyền Lô trên lầu Ngũ Phụng của cổng Ngọ Môn để công bố danh tính các tân Tiến sĩ. Xin quý quan xác nhận lại quy trình xướng danh và rước bảng vàng theo đúng điển lệ hội thi của triều đình.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ quy định về lễ Truyền Lô công bố danh sách Tiến sĩ tại lầu Ngũ Phụng trên cổng Ngọ Môn năm 1880, trình tự xướng danh và rước bảng vàng diễn ra như thế nào?",
+      "choices": [
+        "Quan Truyền Lô dùng ống loa xướng danh từng vị tân khoa từ trên lầu Ngũ Phụng truyền xuống sân Ngọ Môn, sau đó bảng vàng được đặt lên long đình rước qua cửa Ngọ Môn ra niêm yết tại Phu Văn Lâu",
+        "Các tân Tiến sĩ tự bước lên mái chính giữa lầu Ngũ Phụng để tự đọc bài văn sách trước mặt bá quan văn võ và dân chúng Kinh thành",
+        "Bảng vàng được dán cố định ngay trên cánh cửa gỗ trung tâm của Ngọ Môn suốt ba năm liên tiếp mà không rước ra ngoài Hoàng thành"
+      ],
+      "correct_index": 0,
+      "hint": "Tên các vị tân khoa được truyền qua loa từ trên lầu Ngũ Phụng xuống dưới sân, rồi bảng vàng được rước ra công trình chuyên dùng để niêm yết chiếu chỉ, bảng thi nằm phía nam Kỳ Đài.",
+      "historical_note": "Lầu Ngũ Phụng trên đài Ngọ Môn là nơi cử hành lễ Truyền Lô sau mỗi kỳ thi Đình triều Nguyễn. Quan bộ Lễ đặt án vàng trên lầu, quan Truyền Lô xướng tên các vị đỗ Đệ nhất giáp, Đệ nhị giáp, Đệ tam giáp Tiến sĩ và Phó bảng; sau lễ bái tạ, bảng vàng được rước bằng long đình ra treo tại Phu Văn Lâu cho sĩ tử và bách tính chiêm ngưỡng.",
+      "seal_name": "Ngũ Phụng Truyền Lô Ấn"
+    },
+    {
+      "id": "QZ01_06",
+      "tile_id": "T03",
+      "title": "Nghi nhạc Nhã Nhạc tại hiên Điện Thái Hòa",
+      "location_label": "Tiền Hiên Điện Thái Hòa và Bờ Bắc Hồ Thái Dịch",
+      "npc_name": "Hòa Thanh Thự Chưởng Bạ Nguyễn Hữu Thận",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_06",
+      "objective_short": "Phân định vị trí dàn Đại Nhạc và Tiểu Nhạc trong buổi lễ Đại Triều tại điện Thái Hòa năm 1880",
+      "dialogue": "Bẩm đại nhân, nhạc công Hòa Thanh Thự đã mang đầy đủ biên chung, biên khánh, trống đại cổ, kèn bầu cùng đàn tỳ bà, đàn nguyệt đến trước thềm điện Thái Hòa để phục vụ lễ Đại Triều năm 1880. Để âm luật hòa hợp đúng phép lễ nhạc vương triều, xin đại nhân chỉ định lại vị trí dàn dựng các đội nhạc theo đúng Hội Điển.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ quy định về nhạc lễ trong buổi Đại Triều tại điện Thái Hòa năm 1880, hai bộ phận Đại Nhạc và Tiểu Nhạc (Nhã Nhạc) của Hòa Thanh Thự được bố trí và tấu nhạc như thế nào?",
+      "choices": [
+        "Dàn Nhã Nhạc cùng biên chung, biên khánh bố trí ở hiên trước điện Thái Hòa, còn dàn Đại Nhạc với trống lớn và kèn đồng bố trí ở phía dưới sân chầu, thay phiên tấu các bản nhạc lễ tương ứng với từng bước nghi thức của Hoàng đế và bá quan",
+        "Toàn bộ nhạc công phải đứng trên mái cầu Trung Đạo giữa hồ Thái Dịch và chỉ được phép đánh một tiếng trống duy nhất khi kết thúc buổi chầu",
+        "Dàn Đại Nhạc đặt ngay phía sau ngai vàng trong hậu điện Thái Hòa, còn dàn Tiểu Nhạc đứng ngoài cổng Ngọ Môn để đón khách"
+      ],
+      "correct_index": 0,
+      "hint": "Dàn nhạc tinh tế có chuông vàng khánh ngọc đặt gần thềm hiên chính điện, còn dàn nhạc âm lượng hùng tráng với trống lớn đặt ở dưới sân Đại Triều để điều tiết tiết tấu buổi lễ.",
+      "historical_note": "Trong lễ Đại Triều tại điện Thái Hòa năm 1880, Hòa Thanh Thự phụ trách âm nhạc cung đình: trên hiên điện đặt bộ biên chung, biên khánh, đặc chung, đặc khánh cùng dàn Tiểu Nhạc (Ti trúc tế nhạc); dưới sân Đại Triều bố trí dàn Đại Nhạc (Cổ xuy đại nhạc). Khi Hoàng đế thăng điện, truyền chỉ hay hoàn cung đều có chương khúc quy định nghiêm ngặt.",
+      "seal_name": "Thái Hòa Nhã Nhạc Ấn"
+    },
+    {
+      "id": "QZ01_07",
+      "tile_id": "T01",
+      "title": "Phép canh giữ cửa Thể Nhơn và cửa Quảng Đức bên Kỳ Đài",
+      "location_label": "Nhị Môn Nam Chính - Thể Nhơn Môn và Quảng Đức Môn",
+      "npc_name": "Hộ Thành Binh Mã Tư Đô Úy Võ Văn Nghị",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_07",
+      "objective_short": "Kiểm định quy chế đóng mở và phân luồng hai cửa Thể Nhơn, Quảng Đức đối xứng hai bên Kỳ Đài năm 1880",
+      "dialogue": "Bẩm đại nhân, hai cửa Thể Nhơn ở phía đông và Quảng Đức ở phía tây nằm kẹp hai bên chân Kỳ Đài chính là hai lối ra vào trọng yếu nhất ở mặt nam Kinh thành Huế năm 1880. Hộ Thành Binh Mã Tư đang đối chiếu giờ đóng mở cửa thành theo tiếng chuông trống và quy tắc kiểm soát người qua lại theo Hội Điển. Xin đại nhân chỉ rõ điển lệ canh phòng tại hai cửa này.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng năm 1880, quy chế đóng mở và canh giữ các cửa chính mặt nam Kinh thành Huế hai bên Kỳ Đài như cửa Thể Nhơn và cửa Quảng Đức được thực hiện như thế nào?",
+      "choices": [
+        "Mở cửa vào đầu giờ Mão sau hiệu pháo và hồi trống canh năm, đóng cửa và khóa niêm phong vào cuối giờ Dậu, ban đêm nghiêm cấm qua lại trừ trường hợp có thẻ bài hợp phù khẩn cấp của triều đình",
+        "Mở thông suốt cả ngày lẫn đêm không bao giờ đóng cánh cửa gỗ để thương nhân tự do vận chuyển hàng hóa vào thẳng trong Hoàng thành",
+        "Chỉ mở cửa Thể Nhơn vào mùa xuân và chỉ mở cửa Quảng Đức vào mùa thu, các tháng còn lại trong năm đều xây gạch bít kín"
+      ],
+      "correct_index": 0,
+      "hint": "Mọi cửa Kinh thành Huế thời Nguyễn đều đóng mở nghiêm ngặt theo giờ giấc ban ngày (từ sáng sớm đến chiều tối) và ban đêm chỉ mở khi có hợp phù quân cơ khẩn cấp.",
+      "historical_note": "Mặt nam Kinh thành Huế có bốn cửa, trong đó cửa Thể Nhơn (tức cửa Ngăn) và cửa Quảng Đức nằm ngay hai bên Kỳ Đài, dẫn thẳng vào khu vực trước Ngọ Môn và Lục Bộ. Theo Hội Điển năm 1880, các cửa thành do biền binh canh giữ nghiêm ngặt, mở lúc sáng sớm và đóng khóa lúc chiều tối theo hiệu lệnh từ lầu chuông trống, ban đêm phải có phù nghiệm mới được thông hành.",
+      "seal_name": "Nam Thành Thủ Ngự Ấn"
+    },
+    {
+      "id": "QZ01_08",
+      "tile_id": "T02",
+      "title": "Nghi lễ Ban Sóc phát lịch mới tại tiền đường Ngọ Môn",
+      "location_label": "Sân Tiền Phương và Thượng Đài Ngọ Môn",
+      "npc_name": "Khâm Thiên Giám Giám Chính Nguyễn Văn Tư",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_08",
+      "objective_short": "Xác minh nghi thức lễ Ban Sóc trao lịch Hiệp Kỷ tại Ngọ Môn vào dịp cuối năm âm lịch dưới triều Tự Đức (1880)",
+      "dialogue": "Kính trình quý quan, Khâm Thiên Giám chúng tôi đã soạn xong bộ lịch Hiệp Kỷ cho năm mới theo đúng phép tính thiên văn và tiết khí năm 1880. Hôm nay triều đình tổ chức lễ Ban Sóc trọng thể tại Ngọ Môn để ban phát lịch cho các bậc hoàng thân quốc thích cùng bá quan văn võ. Xin quý quan kiểm tra lại nghi thức tiến lịch và ban lịch theo đúng điển chế từ thời Minh Mạng truyền xuống triều Tự Đức.",
+      "question": "Theo Đại Nam Thực Lục và Khâm Định Đại Nam Hội Điển Sự Lệ, lễ Ban Sóc (ban phát lịch năm mới do Khâm Thiên Giám biên soạn) được triều đình nhà Nguyễn tổ chức tại Ngọ Môn như thế nào?",
+      "choices": [
+        "Từ thời Minh Mạng năm thứ hai mươi hai trở đi và duy trì đến năm 1880, lễ Ban Sóc được cử hành trọng thể tại Ngọ Môn vào cuối năm âm lịch: các quan Khâm Thiên Giám rước hòm lịch lên đài Ngọ Môn để tiến dâng vào nội cung và ban phát lịch Hiệp Kỷ cho hoàng thân cùng bá quan",
+        "Lễ Ban Sóc chỉ tổ chức bốn năm một lần vào ngày rằm tháng bảy tại bến thuyền sông Hương mà không đi qua Ngọ Môn",
+        "Khâm Thiên Giám chỉ phát lịch miệng bằng cách đọc to ngày tháng từ trên Kỳ Đài xuống mà không in thành sách lịch"
+      ],
+      "correct_index": 0,
+      "hint": "Kể từ khi Ngọ Môn hoàn thành và định lệ vào cuối thời Minh Mạng (1841), lễ Ban Sóc phát lịch năm mới được chuyển từ sân điện Thái Hòa ra cử hành uy nghi tại chính Ngọ Môn.",
+      "historical_note": "Lễ Ban Sóc là nghi lễ ban phát lịch năm mới (lịch Hiệp Kỷ do Khâm Thiên Giám soạn) vào tháng Chạp hàng năm. Từ năm Minh Mạng thứ hai mươi hai (1841) và tiếp nối dưới triều Tự Đức năm 1880, lễ Ban Sóc được tổ chức tại Ngọ Môn: lịch tiến ngự được rước vào cung, còn lịch ban cho các hoàng thân và bá quan văn võ được trao ngay trước sân Ngọ Môn.",
+      "seal_name": "Ngọ Môn Ban Sóc Ấn"
+    },
+    {
+      "id": "QZ01_09",
+      "tile_id": "T03",
+      "title": "Phép Nhất thi Nhất họa trên cổ diêm Điện Thái Hòa",
+      "location_label": "Chính Điện Thái Hòa - Khu Trùng Thiềm Điệp Ốc",
+      "npc_name": "Nội Các Thị Lang Nguyễn Thuật",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_09",
+      "objective_short": "Giải mã quy thức trang trí thơ văn ngự chế Nhất thi Nhất họa trên dải cổ diêm Điện Thái Hòa năm 1880",
+      "dialogue": "Thưa đồng liêu, khi ngước nhìn lên hệ khung gỗ lim sơn son thếp vàng và dải cổ diêm giữa hai tầng mái Trùng thiềm điệp ốc của điện Thái Hòa năm 1880, ta thấy hàng trăm ô hộc chạm khắc thơ chữ Hán xen kẽ cùng các bức tranh cát tường. Xin đồng liêu giải thích rõ nguyên tắc bố cục thơ và họa trên kiến trúc chính điện cho các học quan Nội Các cùng tường tận.",
+      "question": "Theo quy cách kiến trúc cung đình Huế ghi nhận trong sử liệu triều Nguyễn năm 1880, hệ thống các ô hộc trang trí trên dải cổ diêm và liên ba của điện Thái Hòa tuân theo nguyên tắc nghệ thuật độc đáo nào?",
+      "choices": [
+        "Tuân theo nguyên tắc Nhất thi Nhất họa hoặc Nhất liên Nhất họa, tức cứ mỗi ô chạm khắc một bài thơ chữ Hán ngũ ngôn hoặc thất ngôn ca ngợi cảnh thái bình thịnh trị lại xen kẽ với một ô tranh vẽ đồ án bát bửu, tứ linh hoặc phong cảnh",
+        "Toàn bộ các ô hộc trên cổ diêm đều để trống không chạm khắc bất kỳ chữ viết hay hình vẽ nào để giảm tải trọng cho mái ngói hoàng lưu ly",
+        "Các ô hộc chỉ ghi danh sách thu thuế ruộng đất hàng năm của các phủ huyện bằng chữ Nôm viết mực đen trên giấy bản"
+      ],
+      "correct_index": 0,
+      "hint": "Tên gọi của phong cách trang trí đặc trưng nhất trong kiến trúc cung đình Huế kết hợp hài hòa giữa một bài thơ ngự chế và một bức họa tương ứng.",
+      "historical_note": "Điện Thái Hòa được xây dựng theo kiểu kiến trúc Trùng thiềm điệp ốc (mái chồng diêm hai tầng) với tám mươi cột gỗ lim sơn thếp rồng mây. Trên dải cổ diêm ngoại thất và hệ liên ba nội thất năm 1880 được trang trí theo lối Nhất thi Nhất họa: mỗi bức họa (bát bửu, hoa lá, sơn thủy) đi kèm một bài thơ chữ Hán sơn thếp vàng hoặc khảm pháp lam ca ngợi cơ đồ thịnh trị của vương triều.",
+      "seal_name": "Thái Hòa Thi Họa Ấn"
+    },
+    {
+      "id": "QZ01_10",
+      "tile_id": "T01",
+      "title": "Hệ thống pháo đài Nam Chánh và Hộ Thành Hào trước Kỳ Đài",
+      "location_label": "Pháo Đài Nam Chánh - Tiền Phương Kỳ Đài Kinh Thành",
+      "npc_name": "Công Bộ Đô Thủy Tư Lang Trung Hồ Đắc Tuấn",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_10",
+      "objective_short": "Kiểm định cấu trúc phòng thủ Pháo đài Nam Chánh gắn liền với Kỳ Đài và Hộ Thành Hào năm 1880",
+      "dialogue": "Bẩm đại nhân, bộ Công đang tiến hành kỳ khảo sát định kỳ bờ kè đá Hộ Thành Hào và pháo đài Nam Chánh nhô ra ngay phía trước Kỳ Đài năm Tự Đức thứ ba mươi ba (1880). Công trình này kết hợp lối phòng thủ góc cạnh với tường gạch vồ truyền thống. Xin đại nhân xác nhận lại nguyên tắc thiết kế pháo đài và hào nước bảo vệ mặt nam Kinh thành theo sử liệu.",
+      "question": "Theo Đại Nam Thực Lục và Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm 1880, cấu trúc phòng thủ tại khu vực Kỳ Đài và mặt nam Kinh thành Huế được thiết kế theo quy thức nào?",
+      "choices": [
+        "Kỳ Đài nằm ở trung tâm pháo đài Nam Chánh thuộc mặt nam Kinh thành, phía ngoài có hệ thống tường thành xây gạch vồ dày kiên cố kết hợp pháo nhãn, vọng lâu và dải Hộ Thành Hào kè đá bao bọc thông với sông Hương",
+        "Kỳ Đài được dựng nổi hoàn toàn trên bè gỗ giữa lòng sông Hương mà không nối với bất kỳ bức tường thành hay hào nước nào",
+        "Phía trước Kỳ Đài không đào hào nước mà đắp một ngọn núi đất cao năm mươi mét che khuất hoàn toàn tầm nhìn từ lầu Ngũ Phụng ra sông Hương"
+      ],
+      "correct_index": 0,
+      "hint": "Kinh thành Huế kết hợp kiến trúc thành lũy phương Đông với kiểu pháo đài góc cạnh cận đại, có hào nước rộng kè đá bao quanh ngay phía ngoài chân tường thành và Kỳ Đài.",
+      "historical_note": "Kỳ Đài nằm ở chính giữa mặt nam Kinh thành Huế, gắn liền với hệ thống phòng thủ pháo đài Nam Chánh. Mặt ngoài tường thành xây gạch vồ kiên cố, có mở các ô pháo nhãn và bao bọc bởi hệ thống Hộ Thành Hào rộng lớn dẫn nước từ sông Hương, tạo nên tuyến phòng thủ và cảnh quan phong thủy hoàn chỉnh năm 1880.",
+      "seal_name": "Nam Chánh Phòng Thủ Ấn"
+    },
+    {
+      "id": "QZ01_11",
+      "tile_id": "T02",
+      "title": "Quy chế đại chuông và đại trống trên lầu Ngũ Phụng Ngọ Môn",
+      "location_label": "Gian Trung Tâm Lầu Ngũ Phụng - Thượng Đài Ngọ Môn",
+      "npc_name": "Biền Binh Ty Chuông Trống Ngọ Môn Phạm Văn Cẩn",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_11",
+      "objective_short": "Đối chiếu quy tắc gióng đại hồng chung và đại cổ trên lầu Ngũ Phụng khi Hoàng đế ngự triều năm 1880",
+      "dialogue": "Bẩm quý quan, trên lầu Ngũ Phụng của cổng Ngọ Môn năm 1880 có treo quả đại hồng chung bằng đồng ở phía đông và chiếc đại cổ lớn ở phía tây. Mỗi khi Hoàng đế chuẩn bị ngự ra điện Thái Hòa hoặc cử hành đại lễ tại Ngọ Môn, đội biền binh chúng tôi phải tuân thủ nghiêm ngặt hiệu lệnh gióng chuông trống. Xin quý quan chỉ rõ quy định này trong Hội Điển.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ quy định về nghi tiết đại triều và đại lễ tại Ngọ Môn năm 1880, quả chuông đồng lớn và chiếc trống đại trên lầu Ngũ Phụng được sử dụng với chức năng nào?",
+      "choices": [
+        "Gióng chuông và điểm trống theo đúng số hồi quy định để phát hiệu lệnh nghiêm trang báo giờ Hoàng đế xuất cung ngự triều, điều tiết nhịp độ hành lễ của bá quan văn võ và báo hiệu đóng mở cửa Hoàng thành",
+        "Chỉ dùng làm vật trang trí cố định trên lầu Ngũ Phụng, tuyệt đối cấm đánh chuông hay gõ trống trong suốt triều đại nhà Nguyễn",
+        "Cho phép mọi người dân đi qua trước Ngọ Môn tự do lên lầu gõ trống bất kỳ lúc nào trong ngày để cầu may mắn"
+      ],
+      "correct_index": 0,
+      "hint": "Chuông và trống trên lầu Ngũ Phụng là pháp khí hiệu lệnh tối cao của Hoàng thành để điều phối nghi thức thiết triều và báo hiệu giờ giấc cung đình.",
+      "historical_note": "Trên lầu Ngũ Phụng của cổng Ngọ Môn có bố trí một đại hồng chung bằng đồng và một trống đại cổ. Trong các buổi lễ Đại Triều, Ban Sóc, Truyền Lô hay khi Hoàng đế ngự giá qua Ngọ Môn năm 1880, tiếng chuông và tiếng trống từ lầu Ngũ Phụng vang lên theo tiết tấu quy định trong Hội Điển để dẫn lễ cho toàn bộ bá quan và đội nhạc.",
+      "seal_name": "Ngũ Phụng Chung Cổ Ấn"
+    },
+    {
+      "id": "QZ01_12",
+      "tile_id": "T03",
+      "title": "Ý nghĩa đôi Kỳ Lân đồng và Phường Môn pháp lam trước Điện Thái Hòa",
+      "location_label": "Sân Đại Triều Nghi và Cầu Trung Đạo Điện Thái Hòa",
+      "npc_name": "Nội Vụ Phủ Lang Trung Trương Đăng Quế Hậu Duệ",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        0.0,
+        -410.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -418.0,
+        0.0
+      ],
+      "voice_id": "voice_V01_12",
+      "objective_short": "Khảo cứu biểu tượng đôi Kỳ Lân đồng mạ vàng và hai cổng Phường Môn pháp lam tại sân Điện Thái Hòa năm 1880",
+      "dialogue": "Kính chào đồng liêu. Khi bước từ Ngọ Môn qua cầu Trung Đạo tiến vào sân Đại Triều Nghi của điện Thái Hòa năm 1880, ta đi dưới hai vòm cổng Phường Môn gắn pháp lam ngũ sắc lộng lẫy và thấy đôi linh thú bằng đồng mạ vàng đặt trang trọng trên bệ đá hai bên sân chầu. Xin đồng liêu giải nghĩa danh xưng và ý nghĩa biểu trưng của hai hạng mục này theo điển chế triều Nguyễn.",
+      "question": "Theo sử liệu kiến trúc cung đình Huế và Khâm Định Đại Nam Hội Điển Sự Lệ năm 1880, đôi linh thú bằng đồng đặt đối xứng trên sân Đại Triều Nghi cùng hai vòm cổng Phường Môn ở hai đầu cầu Trung Đạo trước điện Thái Hòa mang ý nghĩa gì?",
+      "choices": [
+        "Đôi Kỳ Lân bằng đồng mạ vàng biểu trưng cho bậc nhân từ, trí tuệ và điềm lành thái bình thịnh trị chầu hầu trước chính điện, còn hai cổng Phường Môn trang trí pháp lam đánh dấu ranh giới thần đạo tôn nghiêm dẫn vào sân Đại Triều",
+        "Đôi linh thú bằng đất nung dùng để đốt trầm hương xua muỗi cho ngựa chiến, còn hai cổng Phường Môn dùng làm giá phơi quân trang của lính thị vệ",
+        "Đôi linh thú là tượng sư tử đá nhập từ phương Tây dùng để buộc thuyền buôn neo đậu ngay trong lòng hồ Thái Dịch"
+      ],
+      "correct_index": 0,
+      "hint": "Kỳ Lân là một trong Tứ Linh báo hiệu điềm thái bình và bậc minh quân đức độ, còn Phường Môn khảm pháp lam ở hai đầu cầu Trung Đạo tôn vinh trục thần đạo dẫn vào điện Thái Hòa.",
+      "historical_note": "Tại khu vực cầu Trung Đạo và sân Đại Triều Nghi trước điện Thái Hòa năm 1880 có dựng hai cổng Phường Môn bằng đồng và gỗ khảm pháp lam rực rỡ ở hai đầu cầu, cùng đôi Kỳ Lân đúc bằng đồng mạ vàng đặt trên bệ đá Thanh chạm trổ tinh xảo. Kỳ Lân trong quan niệm cung đình Nguyễn là linh thú nhân từ, chỉ xuất hiện khi đất nước thái bình và có bậc thánh quân trị vì.",
+      "seal_name": "Thái Hòa Linh Thú Ấn"
+    },
+    {
       "id": "QZ02_01",
       "chapter": 14,
       "quest_type": "artifact_inspect",
       "required_hour_range": [
-        5.5,
-        18.5
+        6.0,
+        18.0
       ],
-      "title": "Khảo cứu T04: Pháp lam Nhất thi nhất họa và Ngai vàng Điện Thái Hòa",
+      "title": "Khảo cứu T04: Rồng Đá Thanh Chạm Nổi trên Đạp Đạo Điện Thái Hòa",
       "tile_id": "T04",
-      "location_label": "Thềm đá Thanh trước Tiền điện Thái Hòa",
-      "npc_name": "Hàn lâm viện Thị độc học sĩ",
+      "location_label": "Bậc thềm Đạp đạo chính giữa nền đài Điện Thái Hòa",
+      "npc_name": "Công bộ Lang trung Giám tu Thạch tượng",
       "npc_outfit": "scholar_jade",
       "npc_plan": [
-        6.0,
-        -21.0,
-        3.1416
-      ],
-      "player_teleport_plan": [
-        6.0,
-        -26.0,
+        0.0,
+        -22.0,
         0.0
       ],
-      "voice_id": "voice_QZ02_01",
-      "ceremony_sfx": "chieng_ngomon",
-      "seal_name": "Ấn Thái Hòa Khảo Cổ",
-      "objective_short": "Quan sát cổ diêm pháp lam và 80 cột lim sơn son thếp vàng của Điện Thái Hòa.",
-      "dialogue": "Kính chào quý khách đã bước tới thềm đá Thanh trước Điện Thái Hòa vào năm Tự Đức thứ ba mươi ba. Tòa chính điện dựng theo chuẩn thức Trùng thiềm điệp ốc với tám mươi cột gỗ lim sơn son thếp vàng vẽ rồng ẩn mây, là nơi Hoàng đế ngự ngai vàng dưới bửu tán cử hành các buổi Đại triều trang nghiêm. Xin quý khách ngước nhìn dải cổ diêm giữa hai tầng mái ngói Hoàng lưu ly phía trên, nơi nghệ nhân cung đình khảm các ô hộc pháp lam ngũ sắc để lưu truyền điển tích vương triều.",
-      "question": "Bố cục trang trí đặc trưng trên dải cổ diêm pháp lam và liên ba gỗ của Điện Thái Hòa được gọi là lối gì?",
+      "player_teleport_plan": [
+        0.0,
+        -28.0,
+        0.0
+      ],
+      "voice_id": "voice_V02_01",
+      "ceremony_sfx": "nha_nhac_thai_hoa",
+      "seal_name": "Ấn Thái Hòa Long Bậc",
+      "objective_short": "Quan sát thành bậc đá Thanh chạm rồng năm móng uốn lượn ở lối bậc thềm chính giữa Điện Thái Hòa.",
+      "dialogue": "Kính chào quý khách tại chân thềm đá Thanh của Điện Thái Hòa năm Tự Đức thứ ba mươi ba (1880). Nền đài ngôi đại điện được xây cao hai tầng bằng gạch vồ và bó vỉa đá Thanh nguyên khối cao hai mét ba mươi lăm phân. Tại lối lên xuống chính giữa hướng thẳng ra cầu Trung Đạo, các nghệ nhân thạch tượng đã chạm khắc đôi rồng mây năm móng uốn lượn dọc thành bậc để tạo nên lối Đạp đạo uy nghiêm bậc nhất Hoàng thành.",
+      "question": "Theo điển chế cung đình ghi trong Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Công và Bộ Lễ) năm 1880, lối bậc thềm Đạp đạo chạm rồng năm móng ở chính giữa mặt tiền Điện Thái Hòa được quy định sử dụng như thế nào?",
       "choices": [
-        "Nhất thi nhất họa (một bài thơ xen kẽ một bức họa)",
-        "Tứ linh quần hội (chỉ khắc bốn linh vật không có chữ)",
-        "Bát tiên quá hải (chỉ vẽ tám vị tiên quanh mái điện)"
+        "Chỉ dành riêng cho Hoàng đế ngự kiệu hoặc bước qua trong các đại lễ, các hoàng thân và đại thần văn võ đều phải đi theo các bậc thềm hai bên Tả và Hữu",
+        "Mọi quan viên từ Cửu phẩm trở lên đều được tự do đi lại ngay trên bậc thềm rồng chính giữa",
+        "Chỉ dùng làm máng thoát nước mưa từ mái Hoàng lưu ly xuống sân Đại Triều Nghi"
       ],
       "correct_index": 0,
-      "hint": "Hãy quan sát dải cổ diêm giữa hai tầng mái: cứ một ô hình vẽ phong cảnh hoặc điển tích lại đi kèm một ô thơ chữ Hán đối xứng.",
-      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Công) và Đại Nam Thực Lục (lần đại tu năm Minh Mạng thứ 14 - 1833 và năm 1839), Điện Thái Hòa có kết cấu Trùng thiềm điệp ốc gồm Tiền điện 7 gian 2 chái nối Chính điện 5 gian 2 chái, chống đỡ bằng 80 cột gỗ lim. Bờ nóc và cổ diêm mái điện trang trí pháp lam ngũ sắc theo lối nhất thi nhất họa (riêng bờ nóc tiền điện có 25 ô gồm 12 ô thơ, 12 ô họa và 1 ô trung tâm). Bên trong điện đặt Ngai vàng trên bệ gỗ 3 tầng sơn son thếp vàng dưới Bửu tán, nơi chỉ có Hoàng đế, Hoàng thân và Tứ trụ đại thần đứng chầu trong lễ Đại triều."
+      "hint": "Hình tượng rồng năm móng trên trục chính giữa Thần đạo luôn gắn liền với đặc quyền tối thượng của bậc Thiên tử.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Công - quy chế cung điện) và Đại Nam Thực Lục, nền Điện Thái Hòa cao 2.35m chia làm hai tầng với các hệ bậc cấp bằng đá Thanh chạm rồng (Long bệ / Đạp đạo). Lối bậc thềm chính giữa chạm rồng 5 móng nằm trên trục Ngự đạo chỉ dành riêng cho Hoàng đế; hoàng thân quốc thích và tứ trụ đại thần khi được phép lên điện phải bước theo các lối bậc thềm hai bên Tả và Hữu."
     },
     {
       "id": "QZ02_02",
+      "chapter": 14,
+      "quest_type": "night_lantern",
+      "required_hour_range": [
+        17.5,
+        23.5
+      ],
+      "title": "Đêm Đèn lồng T04: Trụ Đèn Đá Thanh và Lư Hương Đồng Sân Đại Triều Nghi",
+      "tile_id": "T04",
+      "location_label": "Hai bên lan can đá Thanh quanh Sân Đại Triều Nghi Điện Thái Hòa",
+      "npc_name": "Loan giá ty Chưởng vệ",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        -16.0,
+        -32.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -16.0,
+        -38.0,
+        0.0
+      ],
+      "voice_id": "voice_V02_02",
+      "ceremony_sfx": "dai_hong_chung",
+      "seal_name": "Ấn Đại Triều Minh Đăng",
+      "objective_short": "Kiểm tra hệ thống trụ đèn đá Thanh thắp sáng và đỉnh trầm đồng trước giờ thiết triều sớm tại Điện Thái Hòa.",
+      "dialogue": "Đêm đã buông xuống sân Đại Triều Nghi năm Tự Đức thứ ba mươi ba (1880), các trụ đèn đá Thanh chạm cánh sen dọc lan can sân chầu đều đã được thắp nến sáng rực. Bản chức thuộc Loan giá ty đang đốc thúc quân sĩ chuẩn bị củi trầm hương cho các đỉnh đồng và kiểm tra vị trí dàn bày lỗ bộ nghi trượng để rạng sáng ngày mai cử hành lễ Đại triều đầu tháng thật trang nghiêm.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Lễ - Nghi vệ và Triều hội) năm 1880, trong các buổi Đại triều cử hành vào lúc tảng sáng tại Điện Thái Hòa, hệ thống đỉnh trầm và đèn đuốc trên sân Đại Triều Nghi được vận hành nhằm mục đích gì?",
+      "choices": [
+        "Thắp sáng không gian sân chầu từ canh năm khi trời còn mờ tối và đốt trầm hương tỏa khói thơm thanh tịnh đón Hoàng đế ngự giá",
+        "Đốt lửa nấu cơm và nướng thịt ngay tại sân chầu cho toàn bộ binh lính Cấm vệ",
+        "Làm hiệu lửa báo động chiến tranh để đóng kín toàn bộ cửa Kinh thành Huế"
+      ],
+      "correct_index": 0,
+      "hint": "Lễ Đại triều triều Nguyễn bắt đầu từ rất sớm (khoảng canh năm bước sang giờ Mão), cần ánh sáng đèn lồng, trụ đèn đá và hương trầm nghi ngút nơi sân điện.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Lễ) và Đại Nam Thực Lục, các buổi lễ Đại triều tại Điện Thái Hòa vào ngày mồng 1 và ngày 15 âm lịch thường bắt đầu chuẩn bị từ canh năm. Đội Loan giá ty, Thị vệ và Bộ Lễ phải thắp sáng hệ thống đèn lồng, trụ đèn đá dọc sân Đại Triều Nghi, đồng thời đốt trầm đàn hương trong các đỉnh đồng trước thềm điện để tạo không khí linh thiêng, trang trọng khi Hoàng đế ngự lên Ngai vàng."
+    },
+    {
+      "id": "QZ02_03",
       "chapter": 15,
       "quest_type": "dawn_court",
       "required_hour_range": [
         5.0,
-        9.5
+        11.0
       ],
-      "title": "Bình minh T05: Tề tựu Tả Vu - Hữu Vu sau Đại Cung Môn",
+      "title": "Bình minh T05: Lệ Kiểm Thẻ Bài Ngà Voi và Mộc Bài tại Đại Cung Môn",
       "tile_id": "T05",
-      "location_label": "Sân Bái Mạng trước nhà Tả Vu và Đại Cung Môn",
-      "npc_name": "Lễ bộ Lang trung đốc biện Triều nghi",
+      "location_label": "Cửa Tả và Cửa Hữu của Đại Cung Môn dẫn vào sân Bái Mạng",
+      "npc_name": "Thị vệ xứ Nhất đẳng Thị vệ",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        -11.0,
+        59.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -11.0,
+        53.0,
+        0.0
+      ],
+      "voice_id": "voice_V02_03",
+      "ceremony_sfx": "chieng_ngomon",
+      "seal_name": "Ấn Đại Cung Phù Thẻ",
+      "objective_short": "Tìm hiểu quy định đeo thẻ bài ngà voi và thẻ bài gỗ của quan viên khi bước qua cửa Tả, cửa Hữu Đại Cung Môn.",
+      "dialogue": "Tại cửa Tả và cửa Hữu của Đại Cung Môn vào buổi sáng năm Tự Đức thứ ba mươi ba (1880), đội Thị vệ đang kiểm tra nghiêm ngặt từng vị quan văn võ được triệu vào sân Bái Mạng. Theo lệnh cấm vệ Tử Cấm Thành, bất kể quan viên phẩm hàm cao thấp, hễ bước qua ngưỡng cửa Đại Cung Môn đều phải đeo thẻ bài hợp lệ bên đai áo để đối chiếu danh sách trực ban.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Binh và Bộ Lễ - Môn cấm) năm 1880, chất liệu thẻ bài (chương bài / phù bài) đeo bên mình của các bậc đại thần và quan lại khi ra vào cửa Tử Cấm Thành được phân biệt theo phẩm trật như thế nào?",
+      "choices": [
+        "Các bậc hoàng thân và đại thần ấn quan cao cấp dùng thẻ bài bằng ngà voi (nha bài) khắc chức hàm, còn các thuộc viên và biền binh cấp dưới dùng thẻ bài bằng gỗ quý hoặc sừng (mộc bài, giác bài)",
+        "Tất cả từ đại thần Nhất phẩm đến binh lính gác cổng đều đeo thẻ bài đúc bằng vàng ròng nặng một cân",
+        "Không ai được đeo thẻ bài mà chỉ cần đọc mật khẩu bằng thơ lục bát cho lính gác nghe"
+      ],
+      "correct_index": 0,
+      "hint": "Triều Nguyễn phân biệt đẳng cấp quan chế rất rõ qua chất liệu thẻ đeo: bậc đại thần dùng ngà voi trắng quý giá, cấp dưới dùng sừng hoặc gỗ.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Lễ và Bộ Binh) cùng hiện vật thẻ bài triều Nguyễn năm 1880, quy chế ra vào Tử Cấm Thành qua Đại Cung Môn đòi hỏi quan viên bắt buộc phải đeo thẻ bài. Các bậc hoàng thân, đại thần văn võ từ Tứ phẩm, Tam phẩm trở lên và quan Nội các, Cơ mật viện được cấp Nha bài (thẻ ngà voi) khắc rõ chức danh; các lại dịch, thị vệ, thái giám và lính trực ban dùng Giác bài (thẻ sừng) hoặc Mộc bài (thẻ gỗ) có đóng dấu kiềm kiểm soát."
+    },
+    {
+      "id": "QZ02_04",
+      "chapter": 15,
+      "quest_type": "artifact_inspect",
+      "required_hour_range": [
+        6.0,
+        18.5
+      ],
+      "title": "Khảo cứu T05: Kết Cấu Năm Gian Hai Chái và Ngói Thanh Lưu Ly của Tả Vu - Hữu Vu",
+      "tile_id": "T05",
+      "location_label": "Thềm đá Thanh trước mặt chính tòa Hữu Vu phía Tây sân Bái Mạng",
+      "npc_name": "Công bộ Chủ sự giám sát Ngõa tác",
       "npc_outfit": "official_blue",
       "npc_plan": [
-        14.0,
-        88.0,
+        -22.0,
+        83.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -22.0,
+        77.0,
+        0.0
+      ],
+      "voice_id": "voice_V02_04",
+      "ceremony_sfx": "nha_nhac_thai_hoa",
+      "seal_name": "Ấn Bái Mạng Thanh Lưu Ly",
+      "objective_short": "So sánh màu ngói Thanh lưu ly của Tả Vu, Hữu Vu với ngói Hoàng lưu ly của Đại Cung Môn và Điện Cần Chánh.",
+      "dialogue": "Đứng giữa sân Bái Mạng năm 1880, quý khách có thể quan sát trực quan quy tắc phân cấp màu sắc ngói lưu ly trong Hoàng cung Huế. Trong khi Đại Cung Môn ở phía Nam và Điện Cần Chánh ở phía Bắc đều lợp ngói ống tráng men vàng (Hoàng lưu ly), hai tòa nhà Tả Vu ở bên Đông và Hữu Vu ở bên Tây có quy mô năm gian hai chái lại được lợp ngói ống tráng men xanh lục biếc (Thanh lưu ly).",
+      "question": "Theo quy chế điển lễ kiến trúc trong Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Công) năm 1880, sự khác biệt giữa mái ngói Hoàng lưu ly (màu vàng) và mái ngói Thanh lưu ly (màu xanh) trong khu vực sân Bái Mạng thể hiện nguyên tắc gì?",
+      "choices": [
+        "Ngói Hoàng lưu ly dành riêng cho các chính điện và môn lâu trục chính nơi Hoàng đế ngự (Điện Thái Hòa, Đại Cung Môn, Điện Cần Chánh), còn ngói Thanh lưu ly dùng cho các tòa phối điện và công trình phụ trợ hai bên như Tả Vu, Hữu Vu",
+        "Do lò gạch Bát Tràng và lò Thanh Hà năm 1880 pha nhầm thuốc men gốm nên màu ngói bị lệch ngẫu nhiên",
+        "Ngói Thanh lưu ly chỉ lợp cho nhà của quan võ, còn ngói Hoàng lưu ly lợp cho nhà của quan văn"
+      ],
+      "correct_index": 0,
+      "hint": "Trong hệ thống màu sắc ngũ hành cung đình Huế, sắc vàng (Hoàng) thuộc hành Thổ ở trung tâm chỉ dành cho bậc Hoàng đế, còn sắc xanh (Thanh) dành cho các tòa phối thuộc hai bên.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Công - quy chế ngói lưu ly), triều Nguyễn phân định nghiêm ngặt cấp bậc công trình qua màu men ngói ống. Các điện chính trên trục Thần đạo nơi Hoàng đế thiết triều hoặc ngự giá như Điện Thái Hòa, Đại Cung Môn, Điện Cần Chánh, Điện Càn Thành đều lợp ngói Hoàng lưu ly (men vàng); trong khi các tòa phối điện đối xứng hai bên như Tả Vu, Hữu Vu, hai cánh Lầu Ngũ Phụng và dãy Trường lang được lợp ngói Thanh lưu ly (men xanh lục)."
+    },
+    {
+      "id": "QZ02_05",
+      "chapter": 16,
+      "quest_type": "artifact_inspect",
+      "required_hour_range": [
+        6.0,
+        18.0
+      ],
+      "title": "Khảo cứu T06: Tranh Gương Kinh Sư và Thơ Ngự Chế trên Vách Gỗ Điện Cần Chánh",
+      "tile_id": "T06",
+      "location_label": "Gian Đông và Gian Tây bên trong Tiền điện Cần Chánh",
+      "npc_name": "Hàn lâm viện Biên tu",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        8.0,
+        133.0,
         3.1416
       ],
       "player_teleport_plan": [
-        14.0,
-        82.0,
+        8.0,
+        127.0,
         0.0
       ],
-      "voice_id": "voice_QZ02_02",
-      "ceremony_sfx": "chieng_ngomon",
-      "seal_name": "Ấn Tả Văn Hữu Võ",
-      "objective_short": "Gặp quan Bộ Lễ tại sân Bái Mạng để tìm hiểu quy chế phân ban Tả Vu và Hữu Vu.",
-      "dialogue": "Sương sớm năm Tự Đức thứ ba mươi ba vừa tan trên mái ngói Thanh lưu ly, tiếng chiêng báo giờ chầu sắp ngân vang khắp Hoàng thành. Bước qua năm gian ba cửa sơn son thếp vàng của Đại Cung Môn là sân Bái Mạng thuộc Tử Cấm Thành, nơi Tả Vu ở phía Đông và Hữu Vu ở phía Tây đứng đối xứng nhau. Trước giờ Hoàng đế ngự giá, các đại thần từ Tứ phẩm trở lên tề tựu tại đây chỉnh đốn phẩm phục, cầm hốt ngà và chờ điểm danh đúng lễ nghi.",
-      "question": "Theo điển chế triều Nguyễn, hai tòa nhà Tả Vu (phía Đông) và Hữu Vu (phía Tây) trong sân Bái Mạng được phân định cho đối tượng nào chuẩn bị trước khi thiết triều?",
+      "voice_id": "voice_V02_05",
+      "ceremony_sfx": "nha_nhac_thai_hoa",
+      "seal_name": "Ấn Cần Chánh Tranh Gương",
+      "objective_short": "Chiêm ngưỡng các bức tranh gương vẽ cảnh thắng cảnh thần kinh kèm thơ ngự chế treo trong Điện Cần Chánh.",
+      "dialogue": "Bước vào Tiền điện Cần Chánh năm Tự Đức thứ ba mươi ba (1880), ngoài hệ cột gỗ lim sơn thếp rồng mây, quý khách hãy ngước nhìn các ô liên ba và vách gỗ hai bên Đông Tây. Tại đây treo trang trọng nhiều bức tranh gương (tranh vẽ trên mặt kính lồng khung gỗ chạm thếp vàng) tái hiện sinh động hai mươi thắng cảnh đất Thần kinh cùng các bài thơ ngự chế của Hoàng đế Thiệu Trị và Hoàng đế Tự Đức.",
+      "question": "Theo Đại Nam Thực Lục và Khâm Định Đại Nam Hội Điển Sự Lệ, bộ thơ văn và họa phẩm nổi tiếng nào ca ngợi hai mươi thắng cảnh đất Huế đã được Hoàng đế Thiệu Trị sáng tác, cho khắc bản in và thể hiện lên tranh gương trưng bày tại các cung điện như Điện Cần Chánh?",
       "choices": [
-        "Tả Vu dành cho quan võ, Hữu Vu dành cho quan văn",
-        "Tả Vu dành cho quan văn, Hữu Vu dành cho quan võ",
-        "Cả hai tòa chỉ dành riêng cho binh lính Cấm vệ nghỉ ngơi"
+        "Thần Kinh Nhị Thập Cảnh (Hai mươi thắng cảnh đất Thần kinh Huế từ sông Hương, núi Ngự Bình đến hồ Tịnh Tâm, cửa Thuận An)",
+        "Binh Thư Yếu Lược (Sách dạy cách bày binh bố trận trên chiến trường)",
+        "Gia Định Thành Thông Chí (Bản đồ địa lý vùng đất Nam Kỳ lục tỉnh)"
       ],
-      "correct_index": 1,
-      "hint": "Triều đình nhà Nguyễn tuân thủ nghiêm nguyên tắc Tả văn Hữu võ khi bài ban và sắp đặt công sở hai bên trục Thần đạo.",
-      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Lễ - quy thức Triều hội) và Đại Nam Thực Lục, Đại Cung Môn được dựng năm Minh Mạng thứ 14 (1833) gồm 5 gian 3 cửa, trong đó cửa giữa chỉ dành riêng cho Hoàng đế đi qua. Phía sau Đại Cung Môn là sân Bái Mạng với hai tòa nhà đối xứng Tả Vu (phía Đông, dành cho quan văn) và Hữu Vu (phía Tây, dành cho quan võ từ Tứ phẩm đến Nhất phẩm) làm nơi sửa soạn phẩm phục trước khi vào chầu, đồng thời là nơi tổ chức yến tiệc cung đình và làm việc của các cơ quan cơ mật."
+      "correct_index": 0,
+      "hint": "Tên bộ tác phẩm gồm năm chữ Hán Việt, chỉ rõ con số 'hai mươi thắng cảnh' (Nhị thập cảnh) của kinh đô Huế (Thần kinh).",
+      "historical_note": "Theo Đại Nam Thực Lục Chính Biên (Đệ tam kỷ - triều Thiệu Trị) và Khâm Định Đại Nam Hội Điển Sự Lệ, bộ Thần Kinh Nhị Thập Cảnh gồm 20 bài thơ ngự chế của Hoàng đế Thiệu Trị vịnh 20 thắng cảnh thiên nhiên và kiến trúc tiêu biểu của kinh đô Huế. Bộ tác phẩm không chỉ được khắc in trong Ngự chế Thần Kinh Nhị Thập Cảnh Thi Tập, khắc bia đá dựng tại các thắng cảnh mà còn được vẽ thành các bức tranh gương (tranh kính) tinh xảo treo trang trí bên trong Điện Cần Chánh và các cung điện Tử Cấm Thành."
     },
     {
-      "id": "QZ02_03",
+      "id": "QZ02_06",
       "chapter": 16,
-      "quest_type": "night_lantern",
+      "quest_type": "dawn_court",
       "required_hour_range": [
-        18.0,
-        23.5
+        5.5,
+        11.5
       ],
-      "title": "Đêm Đèn lồng T06: Canh tuần Thường triều Điện Cần Chánh",
+      "title": "Bình minh T06: Đôi Hạc Đồng Chầu Hương Án và Đông Tây Hành Lang Điện Cần Chánh",
       "tile_id": "T06",
-      "location_label": "Sân trước Điện Cần Chánh dưới ánh đèn lồng",
-      "npc_name": "Thị vệ xứ Chưởng vệ trực đêm",
+      "location_label": "Thềm đá Thanh trước gian giữa Tiền điện Cần Chánh",
+      "npc_name": "Thái thường tự Thiếu khanh",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        -5.0,
+        127.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -5.0,
+        120.0,
+        0.0
+      ],
+      "voice_id": "voice_V02_06",
+      "ceremony_sfx": "dai_hong_chung",
+      "seal_name": "Ấn Cần Chánh Tiên Hạc",
+      "objective_short": "Quan sát cách bài trí hương án, đỉnh đồng và đôi hạc đồng tại không gian lễ nghi Điện Cần Chánh năm 1880.",
+      "dialogue": "Trong buổi sáng thiết Thường triều năm Tự Đức thứ ba mươi ba (1880), bản chức thuộc Thái thường tự đang kiểm tra hương án, lư trầm và đôi hạc đồng đứng chầu trên lưng quy đặt trang trọng tại Điện Cần Chánh. Phía Đông và phía Tây ngôi điện còn nối trực tiếp với Đông Các và hệ hành lang dẫn sang Nội Các, tạo thành đầu mối văn thư và lễ nghi hoàn chỉnh của Tử Cấm Thành.",
+      "question": "Theo truyền thống mỹ thuật và điển lễ cung đình Huế ghi trong Khâm Định Đại Nam Hội Điển Sự Lệ năm 1880, hình tượng đôi Hạc đồng đứng trên lưng Rùa (Hạc quy) đặt chầu hai bên hương án trong các chính điện như Điện Cần Chánh mang ý nghĩa biểu trưng gì?",
+      "choices": [
+        "Sự giao hòa bền vững giữa trời và đất (âm dương), ước vọng trường thọ vĩnh cửu của bậc quân vương và vận nước Đại Nam trường tồn",
+        "Dùng để đo lượng mưa và mực nước lũ của sông Hương vào mùa mưa bão",
+        "Là vật nuôi săn mồi của đội quân tuần tra biên giới phía Bắc"
+      ],
+      "correct_index": 0,
+      "hint": "Chim Hạc là linh điểu của bầu trời (dương), Rùa (Quy) là linh vật của mặt đất và nước (âm), cả hai đều là biểu tượng của sự trường thọ ngàn năm.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Công và Bộ Lễ) cùng khảo cứu đồ tự khí cung đình Huế năm 1880, bộ Lư hương - Đỉnh trầm đi kèm đôi Hạc đồng đứng trên lưng Rùa (Hạc ngự quy) đặt tại Điện Cần Chánh và các điện miếu triều Nguyễn biểu trưng cho sự gắn kết hài hòa giữa Trời và Đất, giữa khát vọng thanh cao (Hạc) và nền tảng vững bền (Quy), cầu chúc cho Hoàng đế vạn thọ và cơ đồ vương triều bền vững."
+    },
+    {
+      "id": "QZ04_01",
+      "tile_id": "T10",
+      "title": "Thẩm định ấn tín và sổ sách Nội vụ phủ năm một ngàn tám trăm tám mươi",
+      "location_label": "Nội vụ phủ khu vực Đông Bắc Hoàng thành",
+      "npc_name": "Nội vụ phủ Thị lang Nguyễn Văn Tường",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        145.0,
+        -55.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        145.0,
+        -63.0,
+        0.0
+      ],
+      "voice_id": "voice_V04_01",
+      "objective_short": "Đối chiếu quy chế niêm phong kho tàng của Nội vụ phủ theo Khâm Định Đại Nam Hội Điển Sự Lệ năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Kính chào đại nhân. Năm Tự Đức thứ ba mươi ba tức năm một ngàn tám trăm tám mươi, triều đình truyền chỉ rà soát toàn bộ sổ sách gấm vóc, bạc nén và vật phẩm ngự dụng tại các kho thuộc Nội vụ phủ. Trước khi mở niêm phong kho Thanh Hòa, xin đại nhân cho biết quy định chuẩn xác về việc hội đồng giám lâm khi mở khóa kho tàng theo điển lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm một ngàn tám trăm tám mươi, khi mở niêm phong kho tàng thuộc Nội vụ phủ để xuất nhập vật phẩm ngự dụng, cần có sự hiện diện đối chiếu của những thành phần nào?",
+      "choices": [
+        "Quan chủ quản Nội vụ phủ phối hợp cùng Khoa đạo Đô Sát Viện và quan viên bộ Hộ hội đồng giám sát, đối chiếu thẻ bài và chữ ký niêm phong trước khi mở khóa.",
+        "Chỉ cần một viên Thư lại trực nhật tại Nội vụ phủ tự mình mở khóa và ghi chép vào sổ tạm mà không cần báo qua Đô Sát Viện hay bộ Hộ.",
+        "Giao toàn quyền cho đội lính Thị vệ canh cổng tự ý xuất kho bất kỳ lúc nào có khẩu lệnh truyền miệng từ các cung tần trong Nội đình."
+      ],
+      "correct_index": 0,
+      "hint": "Hãy nhớ nguyên tắc kiềm chế và giám sát chéo giữa cơ quan quản lý kho, bộ Hộ và cơ quan ngôn luận giám sát là Đô Sát Viện trong triều đình nhà Nguyễn.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục thời Tự Đức, Nội vụ phủ quản lý các kho báu vật, tơ lụa, vàng bạc của triều đình; mọi việc xuất nhập đều phải có hội đồng gồm quan Nội vụ phủ, bộ Hộ và Khoa đạo Đô Sát Viện giám lâm để tránh thất thoát.",
+      "seal_name": "Nội Vụ Phủ Ấn"
+    },
+    {
+      "id": "QZ04_02",
+      "tile_id": "T11",
+      "title": "Khảo cứu thể thức biên tập châu bản tại Hàn Lâm Viện năm một ngàn tám trăm tám mươi",
+      "location_label": "Hàn Lâm Viện phía Đông Nam Hoàng thành",
+      "npc_name": "Hàn Lâm Viện Thị độc Học sĩ Phạm Phú Thứ",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        152.0,
+        -58.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        152.0,
+        -66.0,
+        0.0
+      ],
+      "voice_id": "voice_V04_02",
+      "objective_short": "Xác định chức trách biên soạn từ mệnh và chế cáo của Hàn Lâm Viện theo điển chế năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Bẩm đại nhân, hôm nay tại trường lang Hàn Lâm Viện, các thuộc viên đang chép lại những bản thảo chiếu chỉ và sắc phong chuẩn bị dâng lên Nội Các trình Hoàng đế ngự lãm. Trong kỳ khảo khóa năm một ngàn tám trăm tám mươi này, xin đại nhân chỉ rõ phận sự chính yếu của Hàn Lâm Viện được chép trong Hội Điển để các tân khoa đồng sự cùng tường tận.",
+      "question": "Dựa theo Đại Nam Thực Lục và Khâm Định Đại Nam Hội Điển Sự Lệ tính đến năm một ngàn tám trăm tám mươi, chức trách cốt lõi của Hàn Lâm Viện trong bộ máy văn thần triều Nguyễn là gì?",
+      "choices": [
+        "Chuyên trách thảo các văn bản từ mệnh, chiếu, chế, biểu, sắc phong, biên tu quốc sử và phụng trực giảng đọc kinh sách khi có chỉ triệu.",
+        "Trực tiếp thống lĩnh quân đội thủy bộ tại kinh thành và tự quyết định việc điều động binh lương đi các tỉnh biên giới phía Bắc.",
+        "Độc quyền thu thuế thương cảng và xét xử toàn bộ các vụ án hình sự trọng tội thay cho bộ Hình cùng Đại Lý Tự."
+      ],
+      "correct_index": 0,
+      "hint": "Tên gọi Hàn Lâm gắn liền với giới văn thần khoa bảng, chuyên lo việc bút nghiên, từ chương, chiếu biểu và sách vở cung đình.",
+      "historical_note": "Trong hệ thống quan chế triều Nguyễn năm một ngàn tám trăm tám mươi, Hàn Lâm Viện là cơ quan quy tụ các bậc văn thần khoa bảng, chuyên phụng thảo chiếu chế, từ mệnh, chúc văn và tham gia biên tập các bộ sách lớn của quốc gia dưới sự điều phối của Nội Các.",
+      "seal_name": "Hàn Lâm Viện Ấn"
+    },
+    {
+      "id": "QZ04_03",
+      "tile_id": "T12",
+      "title": "Nghi thức túc trực và kiểm soát phù hiệu tuần phòng năm một ngàn tám trăm tám mươi",
+      "location_label": "Trạm tuần phòng Thị vệ xứ tiếp giáp khu vực T12",
+      "npc_name": "Thị vệ xứ Chưởng vệ Hồ Văn Hiển",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        160.0,
+        -52.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        160.0,
+        -60.0,
+        0.0
+      ],
+      "voice_id": "voice_V04_02",
+      "objective_short": "Kiểm tra quy định mang bài ngà và hợp phù tuần đêm tại các cửa thuộc khu vực Hoàng thành năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Đứng lại! Khu vực ranh giới T12 đang trong giờ giới nghiêm tuần phòng buổi tối năm Tự Đức thứ ba mươi ba. Mọi quan viên hay lính canh qua lại các cửa cấm đều phải tuân thủ phép hợp phù và xuất trình thẻ bài theo đúng quy định trong Khâm Định Đại Nam Hội Điển Sự Lệ. Xin đại nhân nêu rõ phép kiểm tra thẻ bài khi đóng mở cửa thành ban đêm.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm một ngàn tám trăm tám mươi, việc ra vào các cửa Hoàng thành sau giờ đóng cửa ban đêm được kiểm soát theo quy trình nào?",
+      "choices": [
+        "Nghiêm cấm tự ý mở cửa ban đêm; trường hợp có việc quân cơ khẩn cấp phải có chỉ truyền kèm hợp phù đối chiếu khớp hai nửa thẻ bài giữa Nội đình và Chưởng vệ canh cửa mới được mở.",
+        "Bất kỳ quan viên nào từ hàm Cửu phẩm trở lên chỉ cần xưng danh tính ngoài cửa là lính canh phải lập tức mở toang cửa thành mà không cần thẻ bài hay hợp phù.",
+        "Cửa Hoàng thành luôn mở thông suốt suốt đêm không khóa để thương nhân và dân thường tự do gánh hàng hóa ra vào buôn bán trong sân điện."
+      ],
+      "correct_index": 0,
+      "hint": "An ninh Hoàng thành ban đêm cực kỳ nghiêm ngặt, đòi hỏi cơ chế đối chiếu hai nửa tín vật hợp phù khi có mệnh lệnh khẩn cấp.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ quyển nói về Binh bộ và Thị vệ xứ, các cửa Hoàng thành và Tử Cấm Thành đều đóng mở theo giờ quy định (hiệu chuông trống lầu Ngọ Môn); ban đêm tuyệt đối không mở trừ khi có việc khẩn cấp và phải đối chiếu đúng hợp phù.",
+      "seal_name": "Thị Vệ Xứ Ấn"
+    },
+    {
+      "id": "QZ04_04",
+      "tile_id": "T10",
+      "title": "Quy chế kiểm định bạc nén và tiền đồng tại kho Nội vụ phủ năm một ngàn tám trăm tám mươi",
+      "location_label": "Kho Kim Ngân thuộc Nội vụ phủ khu vực T10",
+      "npc_name": "Nội vụ phủ Lang trung Lê Đình Diên",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        145.0,
+        -55.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        145.0,
+        -63.0,
+        0.0
+      ],
+      "voice_id": "voice_V04_03",
+      "objective_short": "Xác định quy cách đóng dấu kiểm định và cân đong bạc đĩnh nhập kho Nội vụ phủ theo Khâm Định Đại Nam Hội Điển Sự Lệ năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Kính chào đại nhân. Buổi chầu sớm năm Tự Đức thứ ba mươi ba tức năm một ngàn tám trăm tám mươi vừa ban chỉ kiểm nhận lô bạc nén từ các tỉnh giải về kho Kim Ngân thuộc Nội vụ phủ. Để tránh tình trạng pha tạp kẽm chì hoặc hao hụt cân lượng, xin đại nhân cho biết quy trình khắc chữ và kiểm định bạc đĩnh trước khi cất vào hòm niêm phong theo điển lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm một ngàn tám trăm tám mươi, bạc đĩnh trước khi nhập kho Nội vụ phủ phải trải qua thủ tục kiểm định và đánh dấu như thế nào?",
+      "choices": [
+        "Phải do thợ bạc công tượng thử lửa xét tuổi bạc, cân đủ mười lạng mỗi đĩnh, đóng dấu hiệu năm đúc cùng tên tỉnh và tên thợ đúc rõ ràng rồi mới hội đồng niêm phong nhập kho.",
+        "Chỉ cần đếm đủ số lượng thỏi bạc theo tờ trình của quan giải nạp mà không cần thử lửa hay cân lại từng đĩnh bạc tại cửa kho.",
+        "Cho phép các thương nhân ngoại quốc tự đem bạc nguyên liệu vào đúc ngay trong sân điện Càn Thành mà không cần qua sự giám sát của bộ Hộ và Nội vụ phủ."
+      ],
+      "correct_index": 0,
+      "hint": "Mỗi thỏi bạc đĩnh mười lạng của triều Nguyễn đều phải rõ nguồn gốc nơi đúc, tuổi bạc và có dấu đóng kiểm chứng để quy trách nhiệm khi phát hiện bạc giả.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục, các hạng bạc đĩnh mười lạng nộp về kho kinh thành năm một ngàn tám trăm tám mươi đều phải khắc rõ niên hiệu, tên tỉnh, họ tên tượng mục đúc bạc và được quan Nội vụ phủ cùng bộ Hộ thử tuổi bạc, cân đo chuẩn xác trước khi nhập khố.",
+      "seal_name": "Nội Vụ Phủ Ấn"
+    },
+    {
+      "id": "QZ04_05",
+      "tile_id": "T11",
+      "title": "Phép đài chữ và kiêng húy trong tấu sớ tại Hàn Lâm Viện năm một ngàn tám trăm tám mươi",
+      "location_label": "Phòng Kiểm duyệt văn thư Hàn Lâm Viện khu vực T11",
+      "npc_name": "Hàn Lâm Viện Biên tu Trần Tiễn Thành",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        150.0,
+        -56.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        150.0,
+        -64.0,
+        0.0
+      ],
+      "voice_id": "tile_T11_deep",
+      "objective_short": "Phân định quy tắc đài chữ và tránh quốc húy khi soạn thảo biểu tấu năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Bẩm đại nhân, dưới ánh đèn canh khuya năm một ngàn tám trăm tám mươi tại Hàn Lâm Viện, chúng tôi đang rà soát lại các bản tấu sớ từ các địa phương gửi về trước khi chuyển sang Nội Các. Có một số văn bản viết sai quy cách đài chữ đối với tôn hiệu Hoàng triều. Xin đại nhân chỉ dẫn rõ phép đài chữ chuẩn xác theo Khâm Định Đại Nam Hội Điển Sự Lệ.",
+      "question": "Trong thể thức văn thư hành chính được quy định tại Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm một ngàn tám trăm tám mươi, phép đài chữ và kiêng húy khi viết tấu sớ dâng lên Hoàng đế được thực hiện ra sao?",
+      "choices": [
+        "Khi gặp chữ chỉ Tôn miếu, Hoàng đế, Thánh chỉ hoặc lăng tẩm phải sang dòng nâng cao đầu dòng theo đúng bậc nhất đài, nhị đài, tam đài và tuyệt đối kiêng tránh các chữ quốc húy theo bảng ban hành của bộ Lễ.",
+        "Người viết tấu sớ được phép viết liền mạch từ đầu đến cuối trang giấy mà không cần xuống dòng hay nâng cao chữ nào miễn là chữ viết dễ đọc.",
+        "Chỉ các quan võ ngoài biên ải mới phải kiêng húy, còn văn thần thuộc Hàn Lâm Viện và Lục Bộ ở kinh thành thì được miễn toàn bộ phép đài chữ."
+      ],
+      "correct_index": 0,
+      "hint": "Trong văn bản cung đình nhà Nguyễn, việc tôn kính Hoàng triều thể hiện trực tiếp qua vị trí độ cao đầu dòng (nhất đài, nhị đài, tam đài) và việc tránh dùng chữ trùng tên húy.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Lễ bộ và Nội Các, mọi chương sớ, biểu tấu dâng lên triều đình năm một ngàn tám trăm tám mươi đều phải tuân thủ nghiêm ngặt quy chế tam đài, nhị đài, nhất đài, bình đài và lệ kiêng quốc húy; nếu vi phạm sẽ bị Đô Sát Viện và Nội Các đàn hặc xử phạt theo luật.",
+      "seal_name": "Nội Các Đồ Thư Chi Chương"
+    },
+    {
+      "id": "QZ04_06",
+      "tile_id": "T12",
+      "title": "Điển lệ điểm danh và truyền hiệu trống canh tại khu vực T12 năm một ngàn tám trăm tám mươi",
+      "location_label": "Vọng gác Đông Khuyết Đài tiếp giáp khu vực T12",
+      "npc_name": "Thị vệ xứ Vệ úy Tôn Thất Thuyết",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        158.0,
+        -54.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        158.0,
+        -62.0,
+        0.0
+      ],
+      "voice_id": "tile_T12_deep",
+      "objective_short": "Nắm vững quy định điểm danh biền binh trực gác và truyền hiệu canh đêm tại Hoàng thành năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Chào đại nhân giữa canh ba năm một ngàn tám trăm tám mươi. Tại vọng gác khu vực T12 này, các đội Cẩm y vệ và Kim ngô vệ đang thay phiên trực canh theo hiệu trống từ lầu Ngọ Môn truyền xuống. Để đảm bảo kỷ luật quân ngũ nơi cấm thành, xin đại nhân cho biết quy định xử lý và kiểm diện biền binh trực đêm theo Hội Điển.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục năm một ngàn tám trăm tám mươi, chế độ trực canh ban đêm của các vệ quân bảo vệ vòng thành Hoàng thành được quy định như thế nào?",
+      "choices": [
+        "Quan chỉ huy trực nhật phải lập sổ danh sách biền binh ứng trực từng canh, phát thẻ bài kiểm diện và truyền mõ canh liên tiếp giữa các vọng gác; ai bỏ vị trí hoặc ngủ gật khi đang canh giữ cửa cấm sẽ bị khép tội theo quân luật.",
+        "Lính canh chỉ cần điểm danh một lần vào buổi chiều rồi được phép về doanh trại nghỉ ngơi, giao cửa thành cho dân phu tự trông coi đến sáng.",
+        "Các vọng gác quanh Hoàng thành được phép tắt hết đèn đuốc và ngừng truyền hiệu trống canh vào những đêm trời mưa hoặc sương mù dày đặc."
+      ],
+      "correct_index": 0,
+      "hint": "Kỷ luật canh phòng nơi Hoàng thành đòi hỏi sự liên hoàn của tiếng mõ, sổ điểm danh từng canh và sự giám sát chặt chẽ của quan viên trực nhật.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Binh bộ, lực lượng Thị vệ, Cẩm y vệ và các vệ trực canh tại Hoàng thành Huế năm một ngàn tám trăm tám mươi phải điểm danh theo sổ trực hàng đêm, đeo thẻ bài và truyền hiệu canh liên tục giữa các chòi gác; việc trễ nải hoặc tự ý rời vị trí đều bị xử nặng theo hình luật triều Nguyễn.",
+      "seal_name": "Cẩm Y Vệ Ấn"
+    },
+    {
+      "id": "QZ04_07",
+      "tile_id": "T10",
+      "title": "Quy chế may mặc và cấp phát triều phục tại ty Thượng Y năm một ngàn tám trăm tám mươi",
+      "location_label": "Ty Thượng Y thuộc Nội vụ phủ khu vực T10",
+      "npc_name": "Nội vụ phủ Viên ngoại lang Đặng Huy Trứ",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        145.0,
+        -55.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        145.0,
+        -63.0,
+        0.0
+      ],
+      "voice_id": "voice_V04_07",
+      "objective_short": "Xác định quy định phân biệt hoa văn bổ tử trên phẩm phục văn võ bá quan theo Khâm Định Đại Nam Hội Điển Sự Lệ năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Kính chào đại nhân. Tại ty Thượng Y thuộc Nội vụ phủ sáng nay năm Tự Đức thứ ba mươi ba tức năm một ngàn tám trăm tám mươi, các thợ thêu cung đình đang hoàn tất những tấm bổ tử để gắn lên đại triều phục ban cấp cho các quan viên mới thăng bổ. Để tránh nhầm lẫn phẩm trật giữa hai ban văn võ, xin đại nhân cho biết quy tắc thêu hình cầm thú trên bổ tử theo đúng điển lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm một ngàn tám trăm tám mươi, hình thêu trên tấm bổ tử đính trước ngực và sau lưng áo phẩm phục của quan viên triều Nguyễn được phân định như thế nào?",
+      "choices": [
+        "Quan văn thêu hình các loài chim quý từ Tiên hạc đến Kim tước theo thứ bậc từ Nhất phẩm xuống Cửu phẩm; quan võ thêu hình các loài thú dũng mãnh từ Kỳ lân, Sư tử đến Bưu, Tê ngưu theo phẩm hàm tương ứng.",
+        "Tất cả quan văn lẫn quan võ từ Nhất phẩm đến Cửu phẩm đều thêu chung một hình rồng năm móng bằng chỉ vàng giống hệt Hoàng bào của Hoàng đế.",
+        "Quan võ thêu hình hoa sen và chim hạc trên nền lụa trắng, còn quan văn thêu hình hổ báo và đeo giáp sắt khi vào dự lễ Đại triều."
+      ],
+      "correct_index": 0,
+      "hint": "Cổ nhân có câu văn cầm võ thú: ban văn lấy hình ảnh chim quý tượng trưng cho văn nhã, ban võ lấy hình ảnh mãnh thú tượng trưng cho uy dũng.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Lễ bộ và Nội vụ phủ, phẩm phục triều Nguyễn năm một ngàn tám trăm tám mươi quy định chặt chẽ màu sắc và hoa văn bổ tử: quan văn dùng hình cửu cầm (Tiên hạc, Cẩm kê, Khổng tước, Vân nhạn, Bạch nhàn, Lộ tư, Khê thần, Cưu, Kim tước), quan võ dùng hình thú (Kỳ lân, Sư tử, Báo, Hổ, Hùng, Bi, Bưu, Hải mã, Tê ngưu).",
+      "seal_name": "Nội Vụ Phủ Ấn"
+    },
+    {
+      "id": "QZ04_08",
+      "tile_id": "T11",
+      "title": "Thể thức lưu trữ bản thảo Khởi cư chú tại Hàn Lâm Viện năm một ngàn tám trăm tám mươi",
+      "location_label": "Tàng Thư Các thuộc Hàn Lâm Viện khu vực T11",
+      "npc_name": "Hàn Lâm Viện Thị giảng Học sĩ Nguyễn Tư Giản",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        151.0,
+        -57.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        151.0,
+        -65.0,
+        0.0
+      ],
+      "voice_id": "voice_V04_08",
+      "objective_short": "Khảo cứu quy định ghi chép sổ Khởi cư chú trong các buổi thiết triều và kinh diên năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Bẩm đại nhân, tại gian lưu trữ khu vực T11 của Hàn Lâm Viện vào năm một ngàn tám trăm tám mươi, chúng tôi đang đóng quyển các tập sổ ghi chép lời dạy của Hoàng đế và lời tấu đối của đình thần trong tháng qua. Xin đại nhân chỉ rõ quy chế phụng chép và niêm phong sổ Khởi cư chú được quy định trong Hội Điển để các vị tân Thị giảng nắm vững phép tắc.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục tính đến năm một ngàn tám trăm tám mươi, việc ghi chép và quản lý sổ Khởi cư chú trong triều đình nhà Nguyễn được thực hiện theo quy trình nào?",
+      "choices": [
+        "Các quan viên Nội Các và Hàn Lâm Viện được cử làm Khởi cư chú quan phải thay phiên túc trực trong các buổi ngự triều và giảng kinh diên để ghi chép trung thực mọi lời phán bảo cùng tấu đối, cuối mỗi tháng đóng quyển niêm phong chuyển giao lưu trữ làm sử liệu.",
+        "Sổ Khởi cư chú chỉ do các thái giám tự viết theo trí nhớ vào cuối mỗi năm rồi đem dán công khai ngoài cổng Ngọ Môn cho dân chúng tự do sao chép.",
+        "Nghiêm cấm mọi quan viên mang bút mực vào điện Cần Chánh; mọi việc triều chính đều chỉ truyền miệng mà không được phép ghi chép thành văn bản."
+      ],
+      "correct_index": 0,
+      "hint": "Khởi cư chú là nhật ký hoạt động và lời nói của nhà vua khi lâm triều, đòi hỏi các bậc văn thần túc trực ghi chép hàng ngày và niêm phong cẩn mật để làm gốc cho việc biên soạn Thực Lục về sau.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Nội Các và Hàn Lâm Viện, chế độ Khởi cư chú dưới triều Tự Đức năm một ngàn tám trăm tám mươi quy định các văn thần luân phiên hầu chầu, ghi chép tỉ mỉ lời dụ và việc chính sự hàng ngày, đóng dấu niêm phong từng tháng để lưu trữ tại Đông Các và cung cấp tư liệu cho Quốc Sử Quán.",
+      "seal_name": "Hàn Lâm Viện Ấn"
+    },
+    {
+      "id": "QZ04_09",
+      "tile_id": "T12",
+      "title": "Quy định hộ vệ nghi trượng và kiểm soát khí giới nơi cửa cấm năm một ngàn tám trăm tám mươi",
+      "location_label": "Trạm kiểm soát Tả Túc Môn tiếp giáp khu vực T12",
+      "npc_name": "Thị vệ xứ Phó vệ úy Nguyễn Hữu Độ",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        159.0,
+        -53.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        159.0,
+        -61.0,
+        0.0
+      ],
+      "voice_id": "voice_V04_09",
+      "objective_short": "Xác minh quy định cấm mang binh khí trái phép và số lượng tùy tùng khi quan viên đi qua cửa khu vực cấm thành năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Kính bẩm đại nhân. Buổi trưa năm một ngàn tám trăm tám mươi tại trạm kiểm soát tiếp giáp khu vực T12, đội Thị vệ vừa ngăn một đoàn tùy tùng của quan địa phương định mang theo gươm giáo đi thẳng qua cửa cấm để vào nha môn. Xin đại nhân phân định rõ luật lệ kiểm soát binh khí và gia đinh tùy tùng nơi cửa Hoàng thành theo Khâm Định Đại Nam Hội Điển Sự Lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm một ngàn tám trăm tám mươi, quy định về việc mang binh khí và dẫn theo người hầu khi quan viên vào các cửa Hoàng thành và Tử Cấm Thành được thực thi như thế nào?",
+      "choices": [
+        "Chỉ các đội Thị vệ và biền binh đang làm nhiệm vụ túc trực hộ giá theo ngạch định mới được phép mang khí giới; các quan viên vào chầu phải để lính hầu cùng võ khí ở ngoài cửa quy định, ai tự ý mang binh khí vào khu vực cấm sẽ bị xử trọng tội theo luật cung vệ.",
+        "Mọi quan viên từ Tứ phẩm trở lên đều được phép dẫn theo năm mươi lính riêng cầm giáo mác và súng điểu thương đi thẳng vào tận thềm điện Thái Hòa.",
+        "Lính gác cửa chỉ kiểm tra thẻ bài của quan văn, còn quan võ và gia đinh đi kèm thì được tự do mang mọi loại đao kiếm ra vào Tử Cấm Thành không giới hạn."
+      ],
+      "correct_index": 0,
+      "hint": "Luật cung vệ của triều Nguyễn đặt sự an toàn của Hoàng cung lên hàng đầu: ngoài lực lượng thị vệ túc trực theo ngạch, không một quan viên nào được tự ý mang vũ khí hay đem đông người hầu vào cửa cấm.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Binh bộ và Hình bộ (Luật Cung vệ), tại Hoàng thành Huế năm một ngàn tám trăm tám mươi, việc mang binh khí và số lượng người hầu theo quan viên qua các cửa đều bị giới hạn nghiêm ngặt; chỉ biền binh trực ban có thẻ bài mới được mang khí giới hộ vệ.",
+      "seal_name": "Thị Vệ Xứ Ấn"
+    },
+    {
+      "id": "QZ04_10",
+      "tile_id": "T10",
+      "title": "Quy chế tiếp nhận và bảo quản đồ sứ ký kiểu tại kho Từ Khí năm một ngàn tám trăm tám mươi",
+      "location_label": "Kho Từ Khí thuộc Nội vụ phủ khu vực T10",
+      "npc_name": "Nội vụ phủ Chủ sự Phan Huy Vịnh",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        145.0,
+        -55.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        145.0,
+        -63.0,
+        0.0
+      ],
+      "voice_id": "voice_V04_10",
+      "objective_short": "Xác định quy định kiểm nhận và phân hạng đồ sứ ngự dụng tại kho Từ Khí thuộc Nội vụ phủ năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Kính chào đại nhân. Chiều năm Tự Đức thứ ba mươi ba tức năm một ngàn tám trăm tám mươi, các kiện đồ sứ ký kiểu vừa được chuyển về tới kho Từ Khí thuộc Nội vụ phủ. Để lập sổ đệ trình bộ Hộ và Nội Các, xin đại nhân cho biết quy định kiểm đếm, phân loại hiệu đề và xử lý đồ sứ sứt mẻ theo Khâm Định Đại Nam Hội Điển Sự Lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng năm một ngàn tám trăm tám mươi, quy trình kiểm nhận đồ sứ ký kiểu nhập vào kho Từ Khí của Nội vụ phủ được quy định như thế nào?",
+      "choices": [
+        "Quan viên Nội vụ phủ phải hội đồng cùng bộ Hộ và Khoa đạo mở từng kiện đối chiếu mẫu vẽ, hiệu đề niên hiệu dưới đáy, phân chia hạng nguyên vẹn để tiến ngự và lập biên bản riêng các món rạn nứt để quy trách nhiệm bồi thường.",
+        "Tất cả đồ sứ chuyển về đều xếp lẫn vào kho lương thực mà không cần mở kiện kiểm tra hay ghi chép số lượng từng bộ bát đĩa.",
+        "Các viên thợ gốm địa phương được tự ý lấy đồ sứ có đề niên hiệu Hoàng đế trong kho Từ Khí đem ra chợ Đông Ba bán lấy tiền công."
+      ],
+      "correct_index": 0,
+      "hint": "Đồ sứ ngự dụng có hiệu đề riêng của triều đình nên khi nhập kho phải đối chiếu mẫu mã, kiểm tra độ nguyên vẹn trước hội đồng giám lâm.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Nội vụ phủ, kho Từ Khí chuyên cất giữ đồ sứ ngự dụng và đồ sứ ký kiểu; mọi đợt nhập kho năm một ngàn tám trăm tám mươi đều phải có hội đồng kiểm đếm từng món, xét kỹ men sứ, hoa văn và chữ hiệu đề, phân hạng rõ ràng trong sổ cái.",
+      "seal_name": "Nội Vụ Phủ Ấn"
+    },
+    {
+      "id": "QZ04_11",
+      "tile_id": "T11",
+      "title": "Điển lệ phụng thảo sắc phong thần sắc tại Hàn Lâm Viện năm một ngàn tám trăm tám mươi",
+      "location_label": "Soạn Thảo Đường thuộc Hàn Lâm Viện khu vực T11",
+      "npc_name": "Hàn Lâm Viện Tu soạn Bùi Ân Niên",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        153.0,
+        -56.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        153.0,
+        -64.0,
+        0.0
+      ],
+      "voice_id": "voice_V04_11",
+      "objective_short": "Khảo cứu quy trình soạn lời chế và cấp giấy sắc rồng cho các bậc thần linh và công thần năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Bẩm đại nhân, nhân dịp lễ ban ân năm một ngàn tám trăm tám mươi, Hàn Lâm Viện đang phụng chỉ soạn lời văn cho hàng trăm đạo sắc phong thần hiệu các đình đền và truy tặng công thần các tỉnh. Xin đại nhân chỉ rõ phép phối hợp giữa bộ Lễ, Hàn Lâm Viện và Nội Các khi hoàn thiện một đạo sắc phong theo Khâm Định Đại Nam Hội Điển Sự Lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm một ngàn tám trăm tám mươi, quy trình soạn thảo và đóng bảo ấn lên các đạo sắc phong thần hiệu và quan tước được thực hiện ra sao?",
+      "choices": [
+        "Bộ Lễ hoặc bộ Lại xét định phẩm trật và mỹ tự, Hàn Lâm Viện phụng thảo lời văn theo đúng khuôn mẫu từng bậc, sau đó viết lên giấy sắc vẽ rồng chuyển sang Nội Các kiểm duyệt để xin thỉnh bảo ấn Sắc Mệnh Chi Bảo.",
+        "Mỗi xã thôn tự mua giấy trắng viết lời sắc phong theo ý riêng rồi nhờ viên lý trưởng đóng dấu gỗ của làng là có giá trị như sắc chỉ triều đình.",
+        "Hàn Lâm Viện tự ý ban phát tước vị Thượng đẳng thần cho bất kỳ đền miếu nào mà không cần qua sự xét duyệt của bộ Lễ hay chuẩn y của Hoàng đế."
+      ],
+      "correct_index": 0,
+      "hint": "Việc ban sắc phong đòi hỏi sự phối hợp chặt chẽ: bộ chủ quản xét hạng và mỹ tự, Hàn Lâm Viện thảo lời chế, và Nội Các thỉnh bảo ấn nhà vua.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Lễ bộ, Lại bộ và Nội Các, vào năm một ngàn tám trăm tám mươi, mọi đạo sắc phong thần kỳ hoặc cáo mệnh quan viên đều do Hàn Lâm Viện soạn lời theo mỹ tự đã được chuẩn định, chép trên giấy long tiên và do Nội Các hội đồng dụng bảo ấn Sắc Mệnh Chi Bảo hoặc Chế Cáo Chi Bảo.",
+      "seal_name": "Sắc Mệnh Chi Bảo"
+    },
+    {
+      "id": "QZ04_12",
+      "tile_id": "T12",
+      "title": "Quy định truyền thẻ báo giờ và hộ tống hộp tấu sớ khẩn qua cửa cấm năm một ngàn tám trăm tám mươi",
+      "location_label": "Trạm trực Thị vệ xứ khu vực T12 gần Tả Vu",
+      "npc_name": "Thị vệ xứ Tham lãnh Lê Chuẩn",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        161.0,
+        -54.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        161.0,
+        -62.0,
+        0.0
+      ],
+      "voice_id": "voice_V04_12",
+      "objective_short": "Nắm rõ quy trình tiếp nhận và hộ tống tráp biểu tấu quân cơ khẩn cấp qua trạm Thị vệ xứ năm một ngàn tám trăm tám mươi.",
+      "dialogue": "Kính bẩm đại nhân. Hoàng hôn năm một ngàn tám trăm tám mươi vừa buông xuống khu vực T12 thì có dịch trạm phi ngựa mang tráp văn thư biên báo khẩn cấp từ Bắc Kỳ về đến cửa Hoàng thành. Xin đại nhân nêu rõ phép tiếp nhận và chuyển tráp tấu sớ khẩn qua các lớp cửa cấm theo Khâm Định Đại Nam Hội Điển Sự Lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm một ngàn tám trăm tám mươi, khi có văn thư quân cơ khẩn cấp chuyển về đến cửa Hoàng thành vào lúc chiều tối, lực lượng Thị vệ xứ và quan trực nhật phải xử lý theo trình tự nào?",
+      "choices": [
+        "Quan trực Thị vệ xứ tại cửa phải lập tức kiểm tra dấu niêm phong tráp văn thư, ghi rõ giờ khắc vào sổ nhật ký truyền đệ, rồi cử thị vệ mang thẻ bài hộ tống chuyển ngay cho quan trực Nội Các để kịp thời dâng lên ngự lãm.",
+        "Bắt người đưa thư phải đứng đợi ngoài hào thành cho đến trưa ngày hôm sau mới được phép nộp tráp văn thư bất kể tình hình quân cơ gấp rút.",
+        "Lính gác cửa tự ý bóc niêm phong đọc hết nội dung mật tấu rồi tự viết thư trả lời cho các tỉnh mà không cần báo lên Nội Các."
+      ],
+      "correct_index": 0,
+      "hint": "Văn thư quân cơ khẩn cấp không được phép chậm trễ nhưng vẫn phải kiểm tra niêm phong, ghi sổ giờ khắc và do thị vệ có thẻ bài chuyển thẳng tới Nội Các.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Binh bộ (Bưu chính và Thị vệ xứ) cùng Nội Các, các tráp tấu sớ quân cơ khẩn cấp về tới kinh thành Huế năm một ngàn tám trăm tám mươi đều được quan trực Thị vệ xứ và Nội Các tiếp nhận ngay bất kể ngày đêm, đối chiếu niêm phong, ghi sổ khắc giờ và dâng trình Hoàng đế.",
+      "seal_name": "Thị Vệ Xứ Ấn"
+    },
+    {
+      "id": "QZ05_01",
+      "tile_id": "T13",
+      "title": "Khảo cứu phẩm phục và nghi thức đại triều tại khu vực T13 năm 1880",
+      "location_label": "Sân chầu khu vực T13 Hoàng thành Huế",
+      "npc_name": "Quan Thị Lang Bộ Lễ Nguyễn Văn Thận",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        -255.5,
+        87.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -255.5,
+        79.0,
+        0.0
+      ],
+      "voice_id": "voice_V05_01",
+      "objective_short": "Xác định quy định phẩm phục và vị trí đứng chầu của quan viên theo Khâm Định Đại Nam Hội Điển Sự Lệ năm 1880.",
+      "dialogue": "Bẩm đại nhân, vào năm Tự Đức thứ ba mươi ba tức năm 1880, mọi nghi thức chầu mừng tại khu vực T13 đều được Bộ Lễ giám sát nghiêm ngặt theo Khâm Định Đại Nam Hội Điển Sự Lệ. Xin đại nhân cho biết quy định chính xác về việc sắp xếpban thứ và kiểm định trang phục của bá quan văn võ trước giờ lâm triều.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng vào năm 1880, nguyên tắc phân định vị trí đứng chầu của các quan văn võ tại sân đại triều khu vực T13 được thực hiện như thế nào?",
+      "choices": [
+        "Quan văn đứng ban bên tả theo thứ tự từ chánh nhất phẩm đến cửu phẩm, quan võ đứng ban bên hữu theo đúng phẩm hàm quy định trên bia phẩm cấp",
+        "Quan võ đứng toàn bộ ở hàng trước sát thềm điện, quan văn đứng lùi về phía sau không phân biệt tả hữu hay phẩm hàm cao thấp",
+        "Tất cả quan viên văn võ tự chọn vị trí đứng tùy theo tuổi tác và thâm niên làm việc tại kinh thành Phú Xuân mà không cần theo bia phẩm cấp"
+      ],
+      "correct_index": 0,
+      "hint": "Hãy nhớ nguyên tắc Tả văn Hữu võ và hệ thống bia đá phân định phẩm hàm từ nhất phẩm đến cửu phẩm trên sân chầu triều Nguyễn.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ quyển 68 và Đại Nam Thực Lục, nghi thức triều hội dưới triều vua Tự Đức năm 1880 tuân thủ nghiêm ngặt quy chế Tả văn Hữu võ, trong đó quan viên đứng đúng vị trí bia phẩm cấp và mặc triều phục thêu bổ tử tương ứng với phẩm hàm.",
+      "seal_name": "Ấn Lễ Bộ Khảo Định Điển Chế"
+    },
+    {
+      "id": "QZ05_02",
+      "tile_id": "T14",
+      "title": "Kiểm duyệt châu bản và biên chép sử liệu tại khu vực T14 năm 1880",
+      "location_label": "Văn phòng biên tu khu vực T14 Hoàng thành Huế",
+      "npc_name": "Quan Hàn Lâm Viện Biên Tu Phạm Đình Giáp",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        -235.0,
+        92.5,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -235.0,
+        84.5,
+        0.0
+      ],
+      "voice_id": "voice_V05_02",
+      "objective_short": "Đối chiếu quy trình dâng tấu sớ và lưu trữ châu bản năm Tự Đức thứ ba mươi ba tức năm 1880.",
+      "dialogue": "Chào đại nhân, tại khu vực T14 năm 1880, chúng tôi đang phân loại các bản tấu sớ đã được Hoàng đế Tự Đức ngự lãm và châu phê để chuyển giao cho Quốc Sử Quán biên chép vào Đại Nam Thực Lục. Đại nhân hãy giúp xác nhận quy định đóng dấu ấn tín và bảo quản châu bản theo đúng phép tắc năm 1880.",
+      "question": "Theo quy định hành chính trong Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm 1880, các văn bản tấu sớ sau khi được Hoàng đế ngự phê bằng mực son được xử lý và lưu trữ ra sao?",
+      "choices": [
+        "Nội Các tiến hành sao lục để ban hành thi hành, còn bản gốc có bút tích châu phê của Hoàng đế phải được niêm phong cẩn mật và lưu trữ tại Đông Các",
+        "Các bộ ngành tự giữ lại bản gốc có bút tích mực son của Hoàng đế tại nha môn địa phương và không cần nộp lại cho Nội Các",
+        "Tất cả bản gốc châu phê đều được đem đốt bỏ ngay sau khi quan viên đọc xong chỉ dụ tại sân chầu để giữ bí mật quốc gia"
+      ],
+      "correct_index": 0,
+      "hint": "Nội Các và Đông Các là cơ quan trung tâm phụ trách sao lục và cất giữ bản gốc châu bản ngự phê dưới triều Nguyễn.",
+      "historical_note": "Sử liệu Đại Nam Thực Lục và Khâm Định Đại Nam Hội Điển Sự Lệ ghi rõ dưới thời vua Tự Đức năm 1880, hệ thống văn thư của Nội Các quản lý chặt chẽ các tập châu bản: bản chính có ngự phê mực son được lưu giữ tại tàng thư Đông Các, còn bản sao được phát hành đến các bộ và địa phương để thực thi.",
+      "seal_name": "Ấn Nội Các Châu Bản Tàng Thư"
+    },
+    {
+      "id": "QZ05_03",
+      "tile_id": "T15",
+      "title": "Tuần tra nghiêm ngặt và kiểm soát thẻ bài tại khu vực T15 năm 1880",
+      "location_label": "Trạm canh phòng vệ khu vực T15 Hoàng thành Huế",
+      "npc_name": "Quan Thị Vệ Đại Thần Lê Quang Võ",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        -215.0,
+        98.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -215.0,
+        90.0,
+        0.0
+      ],
+      "voice_id": "voice_V05_03",
+      "objective_short": "Kiểm tra quy chế xuất nhập cung cấm và sử dụng yêu bài tại khu vực T15 năm 1880.",
+      "dialogue": "Đứng lại! Khu vực T15 là trọng địa phòng vệ trong Hoàng thành Huế năm 1880. Theo lệnh của binh bộ và quy định trong Khâm Định Đại Nam Hội Điển Sự Lệ, mọi quan viên và binh lính đi qua cửa khuyết đều phải xuất trình thẻ bài hợp lệ. Xin đại nhân chứng minh sự am hiểu về quy chế tuần phòng năm 1880.",
+      "question": "Theo binh chế ghi trong Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục năm 1880, quy định kiểm soát người ra vào các cửa cung cấm tại khu vực T15 được thực thi theo nguyên tắc nào?",
+      "choices": [
+        "Mọi quan viên và lính trực phải đeo yêu bài hoặc tín bài khắc rõ chức danh, đối chiếu khớp với sổ trực tại cửa canh mới được phép đi qua",
+        "Chỉ cần mặc trang phục giống quan lại triều đình là được tự do đi qua mọi cửa cấm vào ban đêm mà không cần xuất trình thẻ bài",
+        "Binh lính canh cửa chỉ kiểm tra thẻ bài vào ngày mồng một và ngày rằm hàng tháng, các ngày thường mở cửa tự do cho dân chúng ra vào"
+      ],
+      "correct_index": 0,
+      "hint": "Chế độ yêu bài và sổ điểm danh trực ban tại các cửa Hoàng thành được quy định cực kỳ nghiêm ngặt để bảo vệ an ninh hoàng cung.",
+      "historical_note": "Trong Khâm Định Đại Nam Hội Điển Sự Lệ phần Binh Bộ và Hộ Vệ, triều đình năm 1880 quy định nghiêm ngặt chế độ cấp phát và kiểm tra yêu bài bằng ngà, sừng hoặc gỗ khắc chữ đối với từng ngạch quan viên, thị vệ và binh lính khi ra vào khu vực hoàng thành.",
+      "seal_name": "Ấn Thị Vệ Xứ Tuần Phòng Tín Bài"
+    },
+    {
+      "id": "QZ05_04",
+      "tile_id": "T13",
+      "title": "Khảo cứu nghi thức ban lịch Hiệp Kỷ tại khu vực T13 năm 1880",
+      "location_label": "Thềm điện khu vực T13 Hoàng thành Huế",
+      "npc_name": "Quan Khâm Thiên Giám Giám Chính Trần Đình Hựu",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        -252.0,
+        88.5,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -252.0,
+        80.5,
+        0.0
+      ],
+      "voice_id": "voice_V05_04",
+      "objective_short": "Xác định quy trình dâng và ban phát lịch Hiệp Kỷ của Khâm Thiên Giám vào năm Tự Đức thứ ba mươi ba tức năm 1880.",
+      "dialogue": "Bẩm đại nhân, hàng năm tại khu vực T13 Hoàng thành Huế, Khâm Thiên Giám đều phối hợp với Bộ Lễ tổ chức lễ Tiến lịch để dâng lịch Hiệp Kỷ mới lên Hoàng đế Tự Đức trước khi ban phát ra toàn quốc. Xin đại nhân đối chiếu sử liệu năm 1880 để xác nhận quy định nghiêm cấm in lậu lịch trong dân gian.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng vào năm 1880, việc biên soạn và ban hành lịch Hiệp Kỷ của triều Nguyễn được quản lý theo quy định nào?",
+      "choices": [
+        "Khâm Thiên Giám độc quyền tính toán thiên văn để soạn lịch Hiệp Kỷ, đóng ấn của Bộ Lễ rồi mới ban phát; nghiêm cấm tư nhân tự ý khắc in lịch",
+        "Triều đình cho phép các nhà in tư nhân ở mọi tỉnh thành tự do tính ngày tháng và in lịch bán ra thị trường mà không cần Khâm Thiên Giám duyệt",
+        "Chỉ có các quan từ tam phẩm trở lên tại kinh thành Phú Xuân mới được xem lịch, còn nông dân ở các địa phương tuyệt đối không được phát lịch"
+      ],
+      "correct_index": 0,
+      "hint": "Khâm Thiên Giám là cơ quan chuyên trách thiên văn lịch pháp, còn Bộ Lễ phụ trách đóng ấn và tổ chức lễ Ban sóc phát lịch.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Lễ Bộ và Khâm Thiên Giám, vào năm 1880 triều đình duy trì nghiêm ngặt lễ Tiến lịch và Ban sóc; mọi cuốn lịch Hiệp Kỷ ban hành đều phải có ấn tín của Bộ Lễ nhằm thống nhất thời tiết mùa vụ và kỷ cương hoàng quyền.",
+      "seal_name": "Ấn Khâm Thiên Giám Hiệp Kỷ Lịch"
+    },
+    {
+      "id": "QZ05_05",
+      "tile_id": "T14",
+      "title": "Khảo cứu quy chế cấp phát lương bổng và xuân phục tại khu vực T14 năm 1880",
+      "location_label": "Nha môn Lại Bộ và Hộ Bộ khu vực T14 Hoàng thành Huế",
+      "npc_name": "Quan Tham Tri Bộ Hộ Đặng Văn Kiều",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        -232.5,
+        94.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -232.5,
+        86.0,
+        0.0
+      ],
+      "voice_id": "voice_V05_05",
+      "objective_short": "Kiểm tra sổ sách cấp phát bổng lộc và tiền xuân phục cho quan viên theo quy định năm 1880.",
+      "dialogue": "Chào đại nhân, tại khu vực T14 năm 1880, chúng tôi đang đối chiếu sổ ngạch quan viên để chuẩn bị cấp phát lương tiền, gạo bổng và tiền xuân phục theo định lệ. Xin đại nhân tra cứu Khâm Định Đại Nam Hội Điển Sự Lệ để xác nhận nguyên tắc phân định bổng lộc cho bá quan năm Tự Đức thứ ba mươi ba.",
+      "question": "Theo quy định tài chính trong Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục năm 1880, chế độ lương bổng chính thức của quan viên văn võ tại kinh thành Huế bao gồm những thành phần cơ bản nào?",
+      "choices": [
+        "Bao gồm tiền lương hàng năm, gạo bổng tính theo phương vuông và tiền xuân phục cấp theo đúng phẩm hàm từ chánh nhất phẩm đến tòng cửu phẩm",
+        "Toàn bộ quan viên từ nhất phẩm đến cửu phẩm đều nhận mức tiền lương bằng nhau và không được cấp phát gạo ăn hay tiền may trang phục",
+        "Quan lại triều đình không được nhận lương tiền từ kho nhà nước mà phải tự thu thuế trực tiếp của thương nhân đi qua cửa Hoàng thành"
+      ],
+      "correct_index": 0,
+      "hint": "Chế độ bổng lộc triều Nguyễn kết hợp cả tiền mặt, lúa gạo và khoản tiền hỗ trợ may sắm lễ phục hàng năm gọi là tiền xuân phục.",
+      "historical_note": "Sử liệu Khâm Định Đại Nam Hội Điển Sự Lệ quyển 37 thuộc Bộ Hộ chép rõ vào năm 1880, triều đình quy định chi tiết biểu lương tiền, số phương gạo bổng và tiền xuân phục riêng biệt cho từng bậc chánh tòng từ nhất phẩm xuống đến cửu phẩm.",
+      "seal_name": "Ấn Hộ Bộ Bổng Lộc Khảo Kiểm"
+    },
+    {
+      "id": "QZ05_06",
+      "tile_id": "T15",
+      "title": "Khảo cứu hiệu lệnh trống canh và truyền thẻ bài đêm tại khu vực T15 năm 1880",
+      "location_label": "Đài canh đêm khu vực T15 Hoàng thành Huế",
+      "npc_name": "Quan Vệ Úy Cấm Quân Hoàng Đình Tuấn",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        -212.5,
+        99.5,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -212.5,
+        91.5,
+        0.0
+      ],
+      "voice_id": "voice_V05_06",
+      "objective_short": "Xác minh quy tắc điểm trống năm canh và truyền thẻ tuần đêm tại khu vực T15 năm 1880.",
+      "dialogue": "Bẩm đại nhân, màn đêm đã buông xuống khu vực T15 Hoàng thành Huế năm 1880. Các toán lính Cấm quân đang thực hiện nghi thức truyền thẻ bài canh gác qua từng trạm gác theo tiếng trống điểm canh trên lầu. Xin đại nhân xác nhận quy định nghiêm mật về việc tuần đêm trong cung cấm.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng vào năm 1880, công tác tuần tra ban đêm của các đội Cấm quân và Thị vệ tại khu vực T15 được giám sát bằng phương thức nào?",
+      "choices": [
+        "Các trạm canh phải luân chuyển thẻ bài tuần đêm theo từng khắc của năm canh và ghi sổ giao nhận; nếu trễ nải hoặc làm thất lạc thẻ sẽ bị xử phạt theo quân pháp",
+        "Sau khi đóng cửa Hoàng thành lúc chạng vạng tối, toàn bộ binh lính được phép rời bỏ vị trí về doanh trại ngủ cho đến khi mặt trời mọc",
+        "Việc điểm trống canh ban đêm do dân thường sống quanh kinh thành thay phiên nhau đảm nhận mà không có sự giám sát của quan võ trực ban"
+      ],
+      "correct_index": 0,
+      "hint": "Hãy chú ý đến phương pháp truyền thẻ canh liên hoàn giữa các điểm gác để chống việc binh lính ngủ gật trong đêm.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Binh Bộ, quy chế túc vệ năm 1880 bắt buộc các đội quân canh đêm trong Hoàng thành phải truyền thẻ canh đúng giờ khắc từ canh một đến canh năm dưới sự kiểm tra đột xuất của quan viên trực ban.",
+      "seal_name": "Ấn Cấm Quân Túc Vệ Tuần Canh"
+    },
+    {
+      "id": "QZ05_07",
+      "tile_id": "T13",
+      "title": "Khảo cứu nhạc khí Nhã nhạc và nghi tiết Thiều nhạc tại khu vực T13 năm 1880",
+      "location_label": "Hiên nhạc khu vực T13 Hoàng thành Huế",
+      "npc_name": "Quan Hòa Thanh Thự Thự Chính Nguyễn Hữu Độ",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        -258.0,
+        85.5,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -258.0,
+        77.5,
+        0.0
+      ],
+      "voice_id": "voice_V05_08",
+      "objective_short": "Xác định quy định biên chế nhạc công và nhạc khí của Hòa Thanh Thự trong lễ đại triều năm 1880.",
+      "dialogue": "Bẩm đại nhân, tại khu vực T13 Hoàng thành Huế năm 1880, các nhạc công Hòa Thanh Thự đang chỉnh đốn biên chung, biên khánh, trống cái và kèn bầu để chuẩn bị tấu nhạc đại triều dưới thời Hoàng đế Tự Đức. Xin đại nhân tra cứu Khâm Định Đại Nam Hội Điển Sự Lệ để xác nhận quy định sử dụng nhạc chương cho đúng phép nước năm 1880.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng vào năm 1880, việc cử nhạc tại khu vực đại triều T13 khi Hoàng đế ngự giá và khi bá quan bái lạy được quy định như thế nào?",
+      "choices": [
+        "Khi Hoàng đế thăng điện hoặc hồi cung và khi bá quan hành lễ bái lạy đều phải tấu đúng chương khúc Đại nhạc và Nhã nhạc theo hiệu lệnh chiêng trống của Hòa Thanh Thự",
+        "Các nhạc công được tự do lựa chọn bất kỳ bản nhạc dân gian hay hát bội nào để biểu diễn tùy hứng trong suốt thời gian Hoàng đế thiết triều",
+        "Triều đình cấm hoàn toàn việc sử dụng nhạc cụ có âm thanh như chuông và trống trong Hoàng thành vào năm 1880 để giữ sự yên tĩnh tuyệt đối"
+      ],
+      "correct_index": 0,
+      "hint": "Hãy lưu ý vai trò của Hòa Thanh Thự và sự phân chia chặt chẽ giữa Đại nhạc cùng Nhã nhạc theo từng bước nghi lễ khi Hoàng đế lâm triều.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Lễ Bộ mục Nhạc chương, vào năm 1880 mọi nghi thức đại triều đều do Hòa Thanh Thự điều phối nhạc lễ, sử dụng bộ biên chung, biên khánh và dàn Đại nhạc tấu các khúc Lý bình, Khánh bình đúng theo từng khẩu lệnh xướng lễ.",
+      "seal_name": "Ấn Hòa Thanh Thự Nhã Nhạc Điển Lệ"
+    },
+    {
+      "id": "QZ05_08",
+      "tile_id": "T14",
+      "title": "Khảo cứu quy chế khảo khóa và thăng giáng quan viên tại khu vực T14 năm 1880",
+      "location_label": "Sảnh khảo công khu vực T14 Hoàng thành Huế",
+      "npc_name": "Quan Lại Bộ Thượng Thư Trần Tiễn Thành",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        -238.0,
+        91.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -238.0,
+        83.0,
+        0.0
+      ],
+      "voice_id": "voice_V05_09",
+      "objective_short": "Kiểm tra phép khảo khóa định kỳ ba năm một lần đối với quan lại theo Khâm Định Đại Nam Hội Điển Sự Lệ năm 1880.",
+      "dialogue": "Chào đại nhân, tại khu vực T14 năm 1880, Bộ Lại đang tổng hợp sổ khảo công của các quan viên kinh thành và các tỉnh để trình Hoàng đế Tự Đức quyết định việc thăng hàm, lưu nhiệm hay giáng chức. Xin đại nhân đối chiếu sử liệu năm 1880 để xác minh kỳ hạn và tiêu chí khảo khóa quan lại.",
+      "question": "Theo quy chế quan chức ghi trong Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục năm 1880, phép khảo khóa để xét công trạng thăng giáng quan viên của Bộ Lại được thực hiện theo nguyên tắc nào?",
+      "choices": [
+        "Cứ định kỳ ba năm tổ chức khảo khóa một lần dựa trên bốn tiêu chí thanh liêm, cẩn thận, siêng năng và sắc sảo để phân hạng ưu, bình, thứ",
+        "Việc thăng chức hay giáng chức quan viên được quyết định bằng cách bốc thăm ngẫu nhiên vào ngày đầu xuân mà không cần xét công trạng thực tế",
+        "Quan viên một khi đã được bổ nhiệm vào làm việc tại kinh thành Huế thì giữ nguyên chức vụ suốt đời, không bao giờ phải chịu sự kiểm tra của Bộ Lại"
+      ],
+      "correct_index": 0,
+      "hint": "Phép khảo khóa của Bộ Lại triều Nguyễn gắn liền với chu kỳ ba năm và bốn chữ tiêu chuẩn Thanh, Thận, Cần, Mẫn.",
+      "historical_note": "Trong Khâm Định Đại Nam Hội Điển Sự Lệ phần Lại Bộ, triều đình năm 1880 duy trì nghiêm ngặt chế độ khảo khóa ba năm một lần đối với quan lại trong kinh và ngoài tỉnh, lấy bốn chữ Thanh, Thận, Cần, Mẫn làm thước đo công trạng để tấu trình Hoàng đế phê chuẩn thưởng phạt.",
+      "seal_name": "Ấn Lại Bộ Khảo Công Quan Chế"
+    },
+    {
+      "id": "QZ05_09",
+      "tile_id": "T15",
+      "title": "Khảo cứu quy định phòng hỏa và tuần tra kho tàng tại khu vực T15 năm 1880",
+      "location_label": "Trạm tuần hỏa khu vực T15 Hoàng thành Huế",
+      "npc_name": "Quan Chưởng Vệ Kinh Thành Ngô Tất Thắng",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        -218.0,
+        96.5,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -218.0,
+        88.5,
+        0.0
+      ],
+      "voice_id": "voice_V05_10",
+      "objective_short": "Xác định quy định chuẩn bị dụng cụ chữa cháy và nghiêm cấm lửa củi bừa bãi tại khu vực T15 năm 1880.",
+      "dialogue": "Bẩm đại nhân, các cung điện và tàng thư quanh khu vực T15 Hoàng thành Huế năm 1880 đều làm bằng gỗ quý nên việc phòng hỏa được triều đình coi là nhiệm vụ sống còn. Xin đại nhân kiểm tra lại quy định trang bị vại nước, câu liêm và thang tre của các đội tuần phòng theo đúng lệnh năm Tự Đức thứ ba mươi ba.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng vào năm 1880, công tác phòng chống hỏa hoạn tại các khu vực trọng yếu trong Hoàng thành Huế như khu vực T15 được quy định ra sao?",
+      "choices": [
+        "Các trạm gác phải luôn trữ đầy nước trong vại lớn, sắm đủ câu liêm, gầu múc, thang chữa cháy và kiểm soát chặt chẽ việc dùng đèn lửa trong cung cấm",
+        "Binh lính trực gác được phép tự ý đốt lửa trại lớn ngay sát chân cột gỗ của các tòa đại điện để sưởi ấm và nướng thức ăn suốt cả ngày lẫn đêm",
+        "Triều đình không trang bị bất kỳ dụng cụ chứa nước nào trong Hoàng thành mà chỉ chờ đến khi có mưa rào tự nhiên mới tiến hành dập lửa"
+      ],
+      "correct_index": 0,
+      "hint": "Tại các điểm canh trong Hoàng thành luôn có các vại đồng hoặc chum lớn chứa đầy nước cùng bộ dụng cụ câu liêm, thang gỗ sẵn sàng ứng cứu.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục năm 1880, triều Nguyễn đặt ra quy định Hỏa cấm cực kỳ khắt khe trong Hoàng thành và Tử Cấm Thành, bắt buộc các đội vệ binh phải kiểm tra lượng nước trong các vại cứu hỏa hàng ngày và xử nặng mọi hành vi bất cẩn về củi lửa.",
+      "seal_name": "Ấn Kinh Thành Hỏa Cấm Tuần Phòng"
+    },
+    {
+      "id": "QZ05_10",
+      "tile_id": "T13",
+      "title": "Khảo cứu nghi thức tiến dâng chúc văn và hương án tại khu vực T13 năm 1880",
+      "location_label": "Chính điện khu vực T13 Hoàng thành Huế",
+      "npc_name": "Quan Thái Thường Tự Khanh Bùi Văn Dị",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        -254.0,
+        86.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -254.0,
+        78.0,
+        0.0
+      ],
+      "voice_id": "voice_V05_11",
+      "objective_short": "Xác định quy định soạn thảo chúc văn và bài trí hương án đại lễ theo Khâm Định Đại Nam Hội Điển Sự Lệ năm 1880.",
+      "dialogue": "Bẩm đại nhân, tại khu vực T13 Hoàng thành Huế năm 1880, Thái Thường Tự đang phối hợp với Viện Hàn Lâm kiểm tra bản chúc văn viết trên bảng gỗ dán giấy vàng để chuẩn bị cho lễ tế trọng đại của triều đình. Xin đại nhân đối chiếu sử liệu năm Tự Đức thứ ba mươi ba để xác nhận quy tắc kiểm duyệt chúc văn trước khi dâng lên ngự lãm.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng vào năm 1880, quy trình soạn thảo và kiểm duyệt bản chúc văn dùng trong các đại lễ tại khu vực T13 được thực hiện như thế nào?",
+      "choices": [
+        "Viện Hàn Lâm phụ trách soạn thảo lời chúc văn theo đúng điển mẫu, sau đó trình Nội Các và Bộ Lễ kiểm duyệt cẩn trọng rồi mới dâng lên Hoàng đế ngự lãm và điền ngự danh",
+        "Các binh lính gác cửa tự viết lời khấn nguyện lên giấy thường ngay trước giờ hành lễ mà không cần thông qua Viện Hàn Lâm hay Bộ Lễ",
+        "Triều đình bỏ hẳn việc đọc chúc văn trong các đại lễ năm 1880 và chỉ dùng tiếng trống để thay thế cho toàn bộ lời tấu cáo"
+      ],
+      "correct_index": 0,
+      "hint": "Hãy lưu ý sự phối hợp chặt chẽ giữa Viện Hàn Lâm soạn văn, Bộ Lễ cùng Thái Thường Tự coi sóc nghi lễ và việc trình Hoàng đế ngự lãm chúc bản.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Lễ Bộ và Thái Thường Tự, vào năm 1880 mọi bản chúc văn dùng trong đại lễ đều do Hàn Lâm Viện phụng soạn, viết chữ đoan trang trên chúc bản, qua Nội Các và Bộ Lễ phúc kiểm trước khi dâng Hoàng đế Tự Đức thân duyệt.",
+      "seal_name": "Ấn Thái Thường Tự Điển Lễ Chúc Bản"
+    },
+    {
+      "id": "QZ05_11",
+      "tile_id": "T14",
+      "title": "Khảo cứu phép niêm phong ấn tín và hộp đựng công văn tại khu vực T14 năm 1880",
+      "location_label": "Phòng trực ấn tín khu vực T14 Hoàng thành Huế",
+      "npc_name": "Quan Nội Các Thị Độc Học Sĩ Phan Đình Bình",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        -234.0,
+        93.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -234.0,
+        85.0,
+        0.0
+      ],
+      "voice_id": "voice_V05_12",
+      "objective_short": "Kiểm tra quy chế quản lý kim bảo, ngọc tỷ và thủ tục đóng ấn công văn tại khu vực T14 năm 1880.",
+      "dialogue": "Chào đại nhân, tại phòng trực khu vực T14 Hoàng thành Huế năm 1880, các quan viên Nội Các đang thực hiện nghi thức mở tráp ấn tín để đóng dấu vào các đạo chiếu chỉ vừa được ban hành. Xin đại nhân tra cứu Khâm Định Đại Nam Hội Điển Sự Lệ để xác nhận quy định giám sát việc dùng ấn năm 1880.",
+      "question": "Theo quy chế Nội Các trong Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục năm 1880, việc cất giữ và sử dụng các bảo ấn để đóng trên chiếu chỉ, sắc dụ được kiểm soát theo nguyên tắc nào?",
+      "choices": [
+        "Khi đóng ấn phải có mặt đầy đủ quan viên trực ban của Nội Các và Lục Bộ cùng giám sát, ghi rõ số lượng văn bản vào sổ nhật ký rồi niêm phong tráp ấn ngay sau khi dùng",
+        "Mỗi vị quan trong triều đều được tự đúc một bản sao ấn ngọc của Hoàng đế mang về nhà riêng để tự đóng dấu vào bất kỳ giấy tờ nào mình muốn",
+        "Các tráp đựng bảo ấn được đặt mở tự do ngoài hành lang khu vực T14 suốt ngày đêm mà không cần khóa hay ghi sổ theo dõi người sử dụng"
+      ],
+      "correct_index": 0,
+      "hint": "Việc mở hòm ấn bảo của triều Nguyễn đòi hỏi chế độ đồng giám sát nghiêm ngặt của nhiều quan viên và phải ghi chép sổ sách chi tiết từng lần dùng ấn.",
+      "historical_note": "Sử liệu Khâm Định Đại Nam Hội Điển Sự Lệ quyển 225 phần Nội Các chép rõ vào năm 1880, việc thỉnh bảo ấn đóng dấu sắc chỉ phải hội đủ quan viên Nội Các cùng quan trực các bộ chứng kiến, đăng ký rõ ngày giờ và mục đích sử dụng vào sổ lưu chiếu.",
+      "seal_name": "Ấn Nội Các Bảo Tỷ Giám Thủ"
+    },
+    {
+      "id": "QZ05_12",
+      "tile_id": "T15",
+      "title": "Khảo cứu quy chế kiểm tra khí giới và nghi trượng thị vệ tại khu vực T15 năm 1880",
+      "location_label": "Khố phòng nghi trượng khu vực T15 Hoàng thành Huế",
+      "npc_name": "Quan Quản Vệ Vũ Lâm Quân Trương Văn Đạt",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        -214.0,
+        97.5,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -214.0,
+        89.5,
+        0.0
+      ],
+      "voice_id": "voice_V05_13",
+      "objective_short": "Xác minh quy định bảo quản gươm giáo, cờ quạt và lỗ bộ nghi trượng tại khu vực T15 năm 1880.",
+      "dialogue": "Bẩm đại nhân, tại khu vực T15 Hoàng thành Huế năm 1880, đội quân Vũ Lâm và Thị vệ đang tiến hành kiểm kê định kỳ các loại trường thương, đao mạ vàng, lọng tía và cờ tiết mao thuộc đồ lỗ bộ nghi trượng. Xin đại nhân xác nhận quy định bảo dưỡng và bàn giao khí giới theo binh chế năm Tự Đức thứ ba mươi ba.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Binh Bộ áp dụng vào năm 1880, các loại binh khí và đồ nghi trượng trang bị cho quân Thị vệ tại khu vực T15 được quản lý ra sao?",
+      "choices": [
+        "Mỗi món khí giới và nghi trượng đều được khắc ký hiệu, lập sổ quản lý chặt chẽ; binh lính phải lau chùi sáng bóng, nếu làm hư hỏng hoặc tự ý mang ra khỏi cung cấm sẽ bị trị tội",
+        "Binh lính sau mỗi ca gác được phép đem bán các thanh gươm giáo và cờ lọng cung đình ra chợ Đông Ba để lấy tiền tiêu xài cá nhân",
+        "Triều đình quy định không bao giờ được lau chùi hay sửa chữa binh khí trong Hoàng thành mà cứ để gỉ sét tự nhiên qua nhiều năm"
+      ],
+      "correct_index": 0,
+      "hint": "Đồ lỗ bộ nghi trượng và vũ khí cấm quân đều là tài sản quốc gia trọng yếu, có khắc dấu hiệu riêng và kiểm tra định kỳ theo quân luật.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ phần Binh Bộ và Vũ Khố, vào năm 1880 mọi khí giới, cờ quạt, tàn lọng thuộc hệ thống lỗ bộ và trang bị của Cấm quân đều được đóng dấu hiệu, kiểm tra định kỳ độ sắc bén và xử phạt nghiêm theo quân pháp nếu để hư hao thất thoát.",
+      "seal_name": "Ấn Vũ Lâm Quân Nghi Trượng Kiểm Điểm"
+    },
+    {
+      "id": "QZ06_01",
+      "tile_id": "T16",
+      "title": "Nghi Le Truyen Lo Va Niem Yet Hoang Bang Nam 1880",
+      "location_label": "Khu vuc T16 - Truc Nam Hoang Thanh va Lau Phu Van",
+      "npc_name": "Thi Lang Bo Le Nguyen Thuat",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_01",
+      "objective_short": "Khao cuu quy dinh niem yet Hoang bang sau le Truyen Lo nam 1880 tai T16",
+      "dialogue": "Giua tiet thu nam Tu Duc thu ba muoi ba, tuc nam 1880, le Truyen Lo xuong danh cac vi tan khoa Tien si vua hoan tat tai dien Thai Hoa. Theo Khâm Định Đại Nam Hội Điển Sự Lệ, tam Hoang bang son son thep vang duoc ruoc qua cua Ngo Mon de niem yet cho si tu va bach tinh chiem nguong.",
+      "question": "Theo điển lệ triều Nguyễn áp dụng năm 1880 trong Khâm Định Đại Nam Hội Điển Sự Lệ, sau khi cử hành lễ Truyền Lô tại điện Thái Hòa, tấm Hoàng bảng ghi danh các vị tân khoa Tiến sĩ được rước ra niêm yết chính thức tại địa điểm nào thuộc trục phía nam Hoàng thành?",
+      "choices": [
+        "Niêm yết trang trọng tại lầu Phu Văn nằm trên trục chính đạo phía trước cửa Ngọ Môn",
+        "Niêm yết bên trong khuôn viên Quốc Tử Giám nằm ở bờ bắc sông Hương ngay trong ngày lễ",
+        "Niêm yết tại vọng gác cửa Thượng Tứ rồi chuyển thẳng về lưu trữ tại Tàng Thư Lâu"
+      ],
+      "correct_index": 0,
+      "hint": "Đây là tòa lầu hai tầng nằm ngay trên trục thần đạo phía nam cửa Ngọ Môn, chuyên dùng để đăng tải chiếu thư và bảng vàng của triều đình.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Lễ) và Đại Nam Thực Lục, dưới triều vua Tự Đức năm 1880, lầu Phu Văn là nơi niêm yết chiếu chỉ quan trọng và bảng vàng xướng danh Tiến sĩ sau lễ Truyền Lô trước khi đưa bản sao về Quốc Tử Giám khắc bia đá.",
+      "seal_name": "Lễ Bộ Truyền Lô Chi Ấn"
+    },
+    {
+      "id": "QZ06_02",
+      "tile_id": "T17",
+      "title": "Quy Che Kiem Ke Chau Ban Va So Sach Thuong Tru Nam 1880",
+      "location_label": "Khu vuc T17 - Nha Mon Luc Bo va Kho Tang Thu",
+      "npc_name": "Noi Cac Thi Doc Hoc Si Pham Phu",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_02",
+      "objective_short": "Xac minh quy tac dong dau giap lai va luu tru chau ban nam 1880 tai T17",
+      "dialogue": "Tai nha mon khu vuc T17 nam 1880, moi tap chau ban ngu phe va so sach dinh dien tu cac tinh dao gui ve deu phai trai qua quy trinh doi chieu nghiem ngat. Chi mot sai sot nho ve dau kiem giap lai cung khien vien thu lai bi xu phat theo luat dinh.",
+      "question": "Chiếu theo quy định hành chính ghi trong Đại Nam Thực Lục và Khâm Định Đại Nam Hội Điển Sự Lệ năm 1880, khi các nha môn Lục bộ tại kinh sư bàn giao tập tấu sớ đã có châu phê sang Nội các để lưu trữ, văn thư bắt buộc phải thực hiện thủ tục kiểm chứng nào?",
+      "choices": [
+        "Đóng dấu kiềm giáp lai tại các trang nối, ghi rõ ngày tháng năm giao nhận và lập sổ đối chiếu hai bản",
+        "Sao chép toàn bộ nội dung sang giấy bản thường rồi hủy bỏ bản gốc có bút tích ngự phê của nhà vua",
+        "Chuyển thẳng toàn bộ bản gốc về dinh Tổng đốc các tỉnh địa phương mà không lưu lại bản nào ở kinh đô"
+      ],
+      "correct_index": 0,
+      "hint": "Triều Nguyễn quản lý văn thư ngự phê rất chặt chẽ bằng hệ thống ấn triện đóng ở mép nối giữa các tờ giấy và sổ giao nhận lưu tại Nội các.",
+      "historical_note": "Khâm Định Đại Nam Hội Điển Sự Lệ quy định rõ chế độ văn thư của Nội các và Lục bộ năm 1880: mọi châu bản ngự phê đều phải đóng dấu giáp lai, đăng ký vào sổ mục lục kèm ngày tháng năm đầy đủ để tra cứu và bảo quản lâu dài.",
+      "seal_name": "Nội Các Văn Thư Chi Bảo"
+    },
+    {
+      "id": "QZ06_03",
+      "tile_id": "T18",
+      "title": "Ky Luat Tuan Phong Va Kiem Soat The Bai Ho Thanh Ha Nam 1880",
+      "location_label": "Khu vuc T18 - Vanh Dai Ho Thanh Ha va Vong Gac Ngoai Vi",
+      "npc_name": "Vong Thanh Do Thong Le Dinh",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_03",
+      "objective_short": "Kiem tra quy dinh su dung the bai va gio dong cua thanh nam 1880 tai T18",
+      "dialogue": "O vanh dai T18 tiep giap hao nuoc Ho Thanh Ha nam 1880, bien binh cam quan tuc truc suot ngay dem. Khi tieng trong thu khong vua diem tren choi canh, moi hoat dong qua lai cua thanh va thuyen be tren song dao deu phai tuan theo lenh gioi nghiem.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Binh) áp dụng năm 1880, sau khi điểm trống thu không vào buổi tối và các cửa Kinh thành cùng Hoàng thành đã khóa, trường hợp nào mới được phép mở cửa thành hoặc hạ cầu qua hào nước?",
+      "choices": [
+        "Chỉ mở khi có chiếu chỉ khẩn cấp kèm hợp phù và thẻ bài ngà hoặc thẻ bài gỗ mun đối chiếu khớp hiệu",
+        "Mở tự do cho mọi thuyền buôn chở lương thực của thương nhân vào bất kỳ canh giờ nào trong đêm",
+        "Mở ngay khi có lời yêu cầu miệng của bất kỳ viên thư lại nào thuộc nha môn Lục bộ mà không cần thẻ bài"
+      ],
+      "correct_index": 0,
+      "hint": "Chế độ quân chính triều Nguyễn bắt buộc phải có tín vật đối chiếu hai nửa ăn khớp cùng mệnh lệnh khẩn cấp mới được mở cửa thành ban đêm.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Binh), quy chế canh giữ Kinh thành và Hoàng thành Huế năm 1880 quy định nghiêm ngặt giờ đóng mở cửa theo tiếng trống thu không; ban đêm muốn truyền mệnh lệnh khẩn qua cửa thành phải đối chiếu hợp phù và thẻ bài hợp lệ.",
+      "seal_name": "Hộ Thành Tuần Phòng Chi Ấn"
+    },
+    {
+      "id": "QZ06_04",
+      "tile_id": "T16",
+      "title": "Nghi Thuc Bai Mang Va Ban An Hoa Kim Ngan Nam 1880",
+      "location_label": "Khu vuc T16 - San Chau Truoc Cua Ngo Mon va Lau Phu Van",
+      "npc_name": "Quoc Tu Giam Tu Nghiep Tran Dinh",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_04",
+      "objective_short": "Khao cuu nghi thuc ban pham phuc va hoa kim ngan cho tan khoa Tien si nam 1880 tai T16",
+      "dialogue": "Duoi anh nang ban mai cua mua thu nam Tu Duc thu ba muoi ba, tuc nam 1880, cac vi tan khoa Tien si da chinh te truoc cua Ngo Mon tai khu vuc T16. Sau khi Hoang bang treo cao o lau Phu Van, bo Le se dan doan tan khoa vao lam le ta on va nhan ban pham phuc cung yen tiec.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Lễ) áp dụng năm 1880, sau lễ Truyền Lô và niêm yết Hoàng bảng, triều đình ban cấp những vật phẩm biểu trưng nào cho các vị tân khoa Tiến sĩ trước khi dự yến tiệc Ân vinh và vinh quy bái tổ?",
+      "choices": [
+        "Ban mũ cánh chuồn, áo bào phẩm phục, đai lưng cùng cành hoa kim ngân và dự yến tiệc do bộ Lễ khoản đãi",
+        "Ban ấn đồng Thượng thư lục bộ, thẻ bài vàng nguyên khối và quyền tự quản thu thuế một phủ tại kinh sư",
+        "Ban ngựa chiến giáp sắt của Cấm quân cùng lệnh bài điều động thủy sư tuần phòng trên sông Hương"
+      ],
+      "correct_index": 0,
+      "hint": "Các vị tân khoa đỗ kỳ Đình thí được ban mũ áo quan văn theo thứ bậc cùng cành hoa bằng vàng bạc cài trên mũ và dự tiệc rượu mừng của triều đình.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục, lệ khoa cử triều Nguyễn năm 1880 quy định các tân khoa Tiến sĩ sau lễ Truyền Lô được ban mũ áo phẩm phục, hoa kim ngân, dự yến Ân vinh tại bộ Lễ và xem vườn thượng uyển trước khi khắc bia tại Quốc Tử Giám.",
+      "seal_name": "Ân Vinh Tiến Sĩ Chi Ấn"
+    },
+    {
+      "id": "QZ06_05",
+      "tile_id": "T17",
+      "title": "Che Do Phuc Kiem So Dinh Dien Va Thue Khoa Nam 1880",
+      "location_label": "Khu vuc T17 - Cong Duong Bo Ho va Kho Luu Tru Dinh Dien",
+      "npc_name": "Bo Ho Huu Tham Tri Hoang Trong",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_05",
+      "objective_short": "Xac minh quy dinh ke khai ruong dat cong tu va dinh trang nam 1880 tai T17",
+      "dialogue": "Tai cong duong bo Ho thuoc khu vuc T17 nam 1880, tung hom go son son chua so dinh va so dien tu cac tinh gui ve dang duoc mo ra phuc kiem. Nam Tu Duc thu ba muoi ba, trieu dinhlien tuc ban chi du nghiem cam viec an lau dinh trang va khai thieu dien tich ruong dat chiu thue.",
+      "question": "Chiếu theo Đại Nam Thực Lục và Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Hộ) năm 1880, để ngăn ngừa nạn ẩn lậu đinh điền ở các địa phương, bộ Hộ yêu cầu sổ sách thuế khóa trình về kinh đô phải phân định rõ những hạng mục cốt yếu nào?",
+      "choices": [
+        "Phân định rõ diện tích công điền, tư điền theo từng hạng ruộng cùng tổng số đinh tráng thực tế chịu sưu thuế của mỗi xã thôn",
+        "Gộp chung toàn bộ ruộng đất của cả tỉnh vào một con số ước lượng duy nhất mà không cần chữ ký của lý trưởng sở tại",
+        "Chỉ ghi chép số lượng thuyền buôn cập bến cảng biển còn miễn trừ hoàn toàn việc lập sổ đinh và sổ ruộng ở nông thôn"
+      ],
+      "correct_index": 0,
+      "hint": "Việc quản lý tài chính của bộ Hộ dựa trên sự minh bạch giữa ruộng công và ruộng tư, cũng như số lượng suất đinh thực có tại từng làng xã.",
+      "historical_note": "Đại Nam Thực Lục (Chính biên, Đệ tứ kỷ) và Khâm Định Đại Nam Hội Điển Sự Lệ ghi rõ năm Tự Đức thứ ba mươi ba (1880), bộ Hộ siết chặt việc phúc kiểm sổ đinh điền, bắt buộc kê khai chi tiết hạng ruộng công tư và số suất đinh để định ngạch thuế lương và tiền đồng chính xác.",
+      "seal_name": "Hộ Bộ Độ Chi Chi Ấn"
+    },
+    {
+      "id": "QZ06_06",
+      "tile_id": "T18",
+      "title": "Kiem Soat Thuyen Van Luong Va Thuy Quan Ho Thanh Ha Nam 1880",
+      "location_label": "Khu vuc T18 - Tram Thuy Quan va Tuyen Song Dao Ho Thanh Ha",
+      "npc_name": "Thuy Su Suat Doi Truong Van",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_06",
+      "objective_short": "Kiem tra thu tuc thong hanh cua doan thuyen van luong qua thuy dao nam 1880 tai T18",
+      "dialogue": "Doc theo tuyen thuy dao T18 noi dong Ho Thanh Ha bao quanh kinh thanh nam 1880, cac doan thuyen cho gao trang va tien dong tu kho tinh ve kinh deu phai neo dau truoc tram thuy quan. Bien binh chi cho phep thuyen tien vao ben kho sau khi doi chieu day du giay thong hanh va niem phong.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm 1880, khi các đoàn thuyền vận lương của triều đình đi qua trạm kiểm soát thủy đạo quanh Kinh thành Huế để nhập gạo và tiền vào kho kinh sư, viên quan áp tải phải xuất trình giấy tờ gì cho đội biền binh canh giữ thủy quan?",
+      "choices": [
+        "Trình giấy thông hành và phiếu vận lương có đóng dấu kiềm của quan tỉnh sở tại ghi rõ số lượng gạo, tiền cùng niêm phong khoang thuyền",
+        "Chỉ cần treo cờ hiệu màu trắng ở mũi thuyền thì được đi thẳng qua cống thủy quan vào bất kỳ giờ nào mà không cần kiểm tra",
+        "Nộp toàn bộ sổ sách cho thương nhân ngoại quốc đứng ra bảo lãnh rồi tự ý dỡ hàng tại các bến chợ dân sinh ngoài thành"
+      ],
+      "correct_index": 0,
+      "hint": "Mọi chuyến vận tải lương thảo đường thủy của triều đình đều có văn bằng đối chiếu số lượng và dấu niêm phong của nha môn nơi xuất phát.",
+      "historical_note": "Khâm Định Đại Nam Hội Điển Sự Lệ quy định chặt chẽ chế độ Tào vận (vận chuyển lương thảo bằng đường thủy) năm 1880: thuyền chở gạo và tiền về kinh phải có văn凭 (giấy thông hành), sổ biên nhận đóng dấu kiềm giáp lai và chịu sự kiểm tra niêm phong tại các trạm thủy quan trước khi nhập kho.",
+      "seal_name": "Thủy Quan Tào Vận Chi Ấn"
+    },
+    {
+      "id": "QZ06_07",
+      "tile_id": "T16",
+      "title": "Nghi Che Khuynh Cai Ha Ma Truoc Lau Phu Van Nam 1880",
+      "location_label": "Khu vuc T16 - San Truoc Lau Phu Van va Bia Khuynh Cai Ha Ma",
+      "npc_name": "Thi Ve Xu Chanh Doi Truong Dang Huy",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_07",
+      "objective_short": "Khao cuu quy dinh nghi le qua bia Khuynh Cai Ha Ma truoc lau Phu Van nam 1880 tai T16",
+      "dialogue": "Tai khu vuc T16 truoc lau Phu Van nam Tu Duc thu ba muoi ba, tuc nam 1880, hai tam bia da khac bon chu Khuynh Cai Ha Ma duoc dung uy nghiem hai ben. Doi bien binh Thi ve tuc truc suot ngay dem de nhac nho quan vien va bach tinh giu tron le nghi khi di qua noi niem yet chieu chi.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng năm 1880, khi quan viên văn võ cùng bách tính đi ngang qua hai tấm bia đá khắc chữ Khuynh Cái Hạ Mã ở hai bên lầu Phu Văn trước Hoàng thành Huế, họ bắt buộc phải thực hiện nghi tiết nào?",
+      "choices": [
+        "Phải nghiêng lọng che, xuống ngựa hoặc bước xuống khỏi võng kiệu rồi đi bộ qua với thái độ cung kính",
+        "Được phép phi ngựa nhanh qua sân gạch miễn là có đeo thẻ bài đồng của nha môn Lục bộ bên hông",
+        "Chỉ các sĩ tử đi thi mới phải xuống ngựa còn quan viên từ bậc Tứ phẩm trở lên được ngồi nguyên trên kiệu"
+      ],
+      "correct_index": 0,
+      "hint": "Bốn chữ Hán khắc trên bia đá dịch nghĩa trực tiếp là nghiêng lọng và xuống ngựa để bày tỏ lòng tôn kính đối với nơi treo chiếu thư của hoàng đế.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Lễ) và Đại Nam Thực Lục, dưới triều vua Tự Đức năm 1880, lầu Phu Văn là nơi niêm yết chiếu chỉ, dụ chỉ và bảng vàng; hai bên dựng bia đá khắc bốn chữ Khuynh Cái Hạ Mã, bắt buộc mọi quan dân đi qua đều phải nghiêng lọng và xuống ngựa.",
+      "seal_name": "Phu Văn Nghi Vệ Chi Ấn"
+    },
+    {
+      "id": "QZ06_08",
+      "tile_id": "T17",
+      "title": "Quy Chuan Do Ban Kien Truc Va Xuat Vat Tu Bo Cong Nam 1880",
+      "location_label": "Khu vuc T17 - Nha Mon Bo Cong va Kho Vat Lieu Kien Thiet",
+      "npc_name": "Bo Cong Lang Trung Bui Vien",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_08",
+      "objective_short": "Xac minh quy trinh lap do ban va cap phat go lim gach ngoi cua bo Cong nam 1880 tai T17",
+      "dialogue": "Trong khuon vien nha mon bo Cong tai khu vuc T17 nam 1880, cac kho chua go lim, son song va gach ngoi luon duoc kiem ke nghiem ngat. Truoc khi khoi cong tu bo thanh quach hay dinh thu, vien quan chuyen trach phai hoan tat thu tuc trinh duyet ban ve kich thuoc.",
+      "question": "Chiếu theo Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Công) và Đại Nam Thực Lục năm 1880, trước khi xuất gỗ lim, gạch Bát Tràng và ngói lưu ly từ kho kinh sư để tu bổ công trình hoàng cung hoặc thành quách, bộ Công bắt buộc phải hoàn thành thủ tục nào?",
+      "choices": [
+        "Phải đo đạc thực địa, vẽ đồ bản chi tiết theo chuẩn thước quan kèm bảng dự toán vật tư trình lên ngự lãm phê chuẩn",
+        "Cho phép các đội thợ mộc tự ý lấy gỗ lim trong kho ra sử dụng trước rồi mới lập tờ kê khai ước chừng vào cuối năm",
+        "Giao toàn quyền quyết định mẫu mã kiến trúc và số lượng ngói lưu ly cho các thương nhân buôn gỗ ngoài chợ kinh thành"
+      ],
+      "correct_index": 0,
+      "hint": "Mọi công trình kiến thiết của triều Nguyễn đều phải có bản vẽ kỹ thuật gọi là đồ bản cùng bản chiết tính vật liệu được châu phê trước khi mở kho.",
+      "historical_note": "Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Công) quy định rõ quy trình營繕 (doanh缮 - xây dựng và tu bổ) năm 1880: các ty trực thuộc bộ Công phải vẽ đồ bản ghi rõ kích thước thước tấc, tính toán định mức từng loại gỗ, gạch, vôi mật, trình tấu được chuẩn y mới được phép xuất kho.",
+      "seal_name": "Công Bộ Doanh Thiện Chi Ấn"
+    },
+    {
+      "id": "QZ06_09",
+      "tile_id": "T18",
+      "title": "Ky Thuat Ke Da Thanh Va DieuTiet Thuy Luong Ho Thanh Ha Nam 1880",
+      "location_label": "Khu vuc T18 - Bo Ke Da Thanh va Cong Vom Ho Thanh Ha",
+      "npc_name": "Kinh Thanh Hiep Lanh Vuong Huu",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_09",
+      "objective_short": "Tim hieu phuong phap bao tri bo ke da va he thong cong vom thoat nuoc nam 1880 tai T18",
+      "dialogue": "Doc theo dai dat T18 tiep giap dong Ho Thanh Ha nam 1880, cac doi binh dinh dang khoi thong long hao va kiem tra nhung phien da xanh lat bo ke. He thong hao nuoc va cong vom nay vua la phao dai phong thu vua giup kinh thanh thoat nuoc nhanh chong trong mua mua lu.",
+      "question": "Theo sử liệu Đại Nam Thực Lục và Khâm Định Đại Nam Hội Điển Sự Lệ năm 1880, hệ thống bờ kè đá và cống vòm dọc tuyến hào Hộ Thành Hà bao quanh Kinh thành Huế được xây dựng và bảo trì theo phương thức kỹ thuật đặc trưng nào để chống xói lở lâu dài?",
+      "choices": [
+        "Ghép khít các khối đá thanh đẽo phẳng theo kỹ thuật xếp khan giật cấp kết hợp nạo vét định kỳ và kiểm soát cửa cống vòm điều tiết nước",
+        "Đắp hoàn toàn bằng đất cát pha rơm rạ mà không dùng bất kỳ phiến đá hay gạch nung nào ở phần chân bờ hào",
+        "Lấp kín toàn bộ các cửa cống thông với sông Hương vào mùa mưa để giữ toàn bộ nước lũ ứ đọng bên trong nội thành"
+      ],
+      "correct_index": 0,
+      "hint": "Kỹ thuật kè bờ hào của triều Nguyễn nổi tiếng với nghệ thuật ghép đá xanh khít mạch theo độ nghiêng giật cấp và hệ thống thủy quan thông dòng.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục, hệ thống Hộ Thành Hà và các thủy quan quanh Kinh thành Huế được kè bằng đá thanh xếp khít vững chắc; hằng năm dưới thời Tự Đức (1880), triều đình đều cắt cử biền binh nạo vét lòng hào và tu sửa cống vòm để bảo đảm phòng thủ và thoát lũ.",
+      "seal_name": "Hộ Thành Thủy Đạo Chi Ấn"
+    },
+    {
+      "id": "QZ06_10",
+      "tile_id": "T16",
+      "title": "Nghi Truong Ruoc Long Dinh Va Ban Bo Chieu Thu Nam 1880",
+      "location_label": "Khu vuc T16 - Truc Than Dao Ngo Mon va Lau Phu Van",
+      "npc_name": "Bo Le Phung Chi Quan Le Xuan",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_10",
+      "objective_short": "Khao cuu nghi truong ruoc chieu thu tu dien Thai Hoa ra lau Phu Van nam 1880 tai T16",
+      "dialogue": "Tren truc than dao thuoc khu vuc T16 nam Tu Duc thu ba muoi ba, tuc nam 1880, doi nha nhac cung dinh va doan ve si cam co mao, tiet viet dang xep hang nghiem chinh. Moi khi trieu dinh ban bo chieu thu trong dai, nghi le ruoc long dinh ra lau Phu Van deu phai tuan thu dien che.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Lễ) áp dụng năm 1880, khi triều đình cử hành lễ rước bản chính chiếu thư của hoàng đế từ điện Thái Hòa ra niêm yết tại lầu Phu Văn, văn bản chiếu thư được đặt và hộ tống theo nghi thức nào?",
+      "choices": [
+        "Đặt trang trọng trên long đình sơn son thếp vàng, che lọng vàng chín tầng, có đội nhã nhạc và biền binh cầm cờ tiết đi hộ vệ",
+        "Giao cho một viên thư lại cất trong túi vải thường rồi cưỡi ngựa một mình chạy thẳng ra treo ở cửa thành mà không cần nhạc lễ",
+        "Đặt trên thuyền rồng chèo dọc sông Hương rồi đọc lớn cho dân chúng nghe từ dưới bến nước chứ không đưa lên lầu Phu Văn"
+      ],
+      "correct_index": 0,
+      "hint": "Chiếu thư của hoàng đế là văn kiện tối cao nên phải được rước bằng long đình thếp vàng dưới bóng cửu long tán và tiếng đại nhạc cung đình.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Lễ) và Đại Nam Thực Lục, lễ ban chiếu dưới triều Tự Đức năm 1880 quy định bản chiếu chính đặt trên long đình, che lọng vàng, có quan bộ Lễ hầu rước cùng đội đại nhạc dẫn đường từ Ngọ Môn ra niêm yết tại lầu Phu Văn.",
+      "seal_name": "Khâm Phụng Chiếu Thư Chi Ấn"
+    },
+    {
+      "id": "QZ06_11",
+      "tile_id": "T17",
+      "title": "Quy Che Ong Tre Niem Phong Va Dich Tram Bo Binh Nam 1880",
+      "location_label": "Khu vuc T17 - Nha Mon Bo Binh va Ty Buu Chinh Kinh Su",
+      "npc_name": "Bo Binh Lang Trung Ngo Dinh",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_11",
+      "objective_short": "Xac minh quy dinh niem phong ong tre va khac gio chuyen cong van khan nam 1880 tai T17",
+      "dialogue": "Tai nha mon bo Binh thuoc khu vuc T17 nam 1880, cac vien quan coi soc viec Buu chinh dang kiem tra tung ong tre son do niem phong sap mat truoc khi giao cho phu tram. Moi cong van khan tu kinh su chuyen di cac tinh deu phai ghi ro khac gio tren phieu trinh.",
+      "question": "Chiếu theo Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Binh) và Đại Nam Thực Lục năm 1880, khi chuyển phát công văn quân cơ khẩn cấp từ kinh sư Huế đi các tỉnh qua hệ thống dịch trạm, văn thư được bảo mật và kiểm soát thời gian bằng phương thức nào?",
+      "choices": [
+        "Đặt trong ống tre sơn đỏ dán giấy niêm phong đóng dấu kiềm, kèm bài phiếu ghi rõ ngày giờ xuất phát và hạn định khắc giờ chạy trạm",
+        "Viết toàn bộ mật lệnh lên tấm bảng gỗ để hở ngoài lưng ngựa cho mọi người dân dọc đường cái quan đều đọc được nội dung",
+        "Gửi nhờ các ghe thuyền buôn muối của tư nhân vận chuyển theo mùa gió mà không quy định thời hạn bàn giao cho quan tỉnh"
+      ],
+      "correct_index": 0,
+      "hint": "Hệ thống Bưu chính của bộ Binh sử dụng ống đựng bằng tre có niêm phong dấu kiềm và phiếu khắc giờ kèm tiếng nhạc đồng báo hiệu ngựa trạm.",
+      "historical_note": "Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Binh - mục Bưu chính) quy định rõ năm 1880: công văn khẩn phát đi từ kinh sư phải bỏ vào ống tre niêm phong kín, đóng dấu giáp lai, cấp bài phiếu ghi rõ giờ khắc giao nhận giữa các trạm; nếu trễ giờ khắc quy định sẽ bị chiếu luật xử phạt.",
+      "seal_name": "Binh Bộ Dịch Trạm Chi Ấn"
+    },
+    {
+      "id": "QZ06_12",
+      "tile_id": "T18",
+      "title": "Che Do Bao Tri Cau Go Lim Va Vong Gac Cua Thanh Nam 1880",
+      "location_label": "Khu vuc T18 - Cau Go Bac Ngang Ho Thanh Ha va Vong Gac",
+      "npc_name": "Bo Vong Thanh Quan Co Phan Huy",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        0.0,
+        362.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        354.0,
+        0.0
+      ],
+      "voice_id": "voice_V06_12",
+      "objective_short": "Kiem tra quy trinh phoi hop bao tri cau go va canh gac dau cau Ho Thanh Ha nam 1880 tai T18",
+      "dialogue": "O khu vuc T18 noi nhung cay cau bac ngang dong Ho Thanh Ha dan vao cua Kinh thanh nam 1880, mat cau lat van go lim day gan dinh dong dang don tung doan nguoi ngua qua lai. Moi dau cau deu co vong gac cua bien binh phoi hop cung tho moc bo Cong kiem tra dinh ky.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm 1880, việc bảo vệ an ninh và duy tu kỹ thuật cho các cây cầu bắc qua hào Hộ Thành Hà dẫn vào các cửa Kinh thành Huế được triều đình phân công phối hợp giữa các lực lượng nào?",
+      "choices": [
+        "Đội biền binh của viên Quản cơ túc trực canh gác tại vọng lâu đầu cầu, phối hợp cùng thợ chuyên trách của bộ Công kiểm tra dầm gỗ và trụ đá định kỳ",
+        "Giao khoán hoàn toàn cho các hộ dân sống ven bờ sông tự thu tiền qua cầu và tự ý tháo dỡ ván gỗ lim khi cần sửa nhà riêng",
+        "Chỉ cử quan văn thuộc Quốc Tử Giám ra đứng gác vào ban đêm còn ban ngày bỏ trống hoàn toàn không có binh lính hay thợ tu sửa"
+      ],
+      "correct_index": 0,
+      "hint": "Việc canh giữ cửa ngõ thuộc trách nhiệm của võ quan Quản cơ và biền binh, còn việc khám xét dầm gỗ lim và trụ cầu thuộc chức phận của bộ Công.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (bộ Binh và bộ Công), năm 1880 tại các cầu và cửa Kinh thành Huế đều đặt vọng gác do Quản cơ, Suất đội chỉ huy biền binh tuần phòng; đồng thời bộ Công định kỳ cử viên chức và thợ mộc khám nghiệm ván cầu gỗ lim, đinh đồng và trụ đá để kịp thời tu bổ.",
+      "seal_name": "Kinh Thành Cầu Đạo Chi Ấn"
+    },
+    {
+      "id": "QZ07_01",
+      "tile_id": "T19",
+      "title": "Hệ thống lễ khí biên đậu phủ quỷ và nghi tiết ẩm phúc thụ tộ tại Đàn Xã Tắc năm 1880",
+      "location_label": "Khu vực T19 - Nhà Thần Khố và Thần Trù bên cạnh Đàn Xã Tắc",
+      "npc_name": "Quan Tự Thừa Thái Thường Tự Phan Đình Bình",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        -465.5,
+        -65.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -465.5,
+        -73.0,
+        0.0
+      ],
+      "voice_id": "voice_V07_01",
+      "objective_short": "Khảo cứu công dụng bộ lễ khí phủ, quỷ, biên, đậu và nghi thức ẩm phúc thụ tộ tại Đàn Xã Tắc năm 1880.",
+      "dialogue": "Kính bẩm đại nhân, tại nhà Thần Khố và Thần Trù bên cạnh Đàn Xã Tắc thuộc ô quy hoạch T19 chiều năm Tự Đức thứ ba mươi ba tức năm 1880, các thuộc viên Thái Thường Tự đang kiểm đếm lại bộ đồ tế sau kỳ đại lễ. Xin đại nhân phân định rõ quy cách dùng từng loại đồ đựng lễ phẩm và ý nghĩa của nghi tiết ẩm phúc thụ tộ được ghi trong Khâm Định Đại Nam Hội Điển Sự Lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng năm 1880, bộ lễ khí bài trí trên án thờ Đàn Xã Tắc và nghi tiết ẩm phúc thụ tộ cuối buổi tế được quy định như thế nào?",
+      "choices": [
+        "Dùng bát phủ và bát quỷ đựng lúa nếp kê vàng, giỏ biên tre đan đựng hoa quả khô, chén đậu gỗ sơn son đựng mắm muối thịt hầm, cuối lễ cử hành ẩm phúc thụ tộ dâng rượu phúc và thịt tộ lên Hoàng đế rồi ban lộc cho hoàng thân đại thần",
+        "Tất cả lễ phẩm từ xôi thịt đến rượu hoa quả đều đựng chung trong một chậu đồng lớn đặt dưới đất và sau khi tế xong phải đổ bỏ toàn bộ xuống sông không ai được phép thụ lộc",
+        "Chỉ bài trí bình hoa sứ trắng không đựng lương thực hay thịt tế, và nghi thức ẩm phúc thụ tộ chỉ dành riêng cho các lính canh ngoài cửa thành"
+      ],
+      "correct_index": 0,
+      "hint": "Trong cổ lễ triều Nguyễn, Phủ và Quỷ chuyên đựng ngũ cốc (xôi lúa, kê), Biên bằng tre đan đựng đồ khô, Đậu bằng gỗ đựng đồ ướt, còn Ẩm phúc thụ tộ là nghi lễ uống rượu phúc và nhận thịt lộc thần ban.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Lễ - Đồ lễ khí) và Đại Nam Thực Lục, lễ tế Đàn Xã Tắc năm 1880 sử dụng hệ thống lễ khí chuẩn mực gồm tước, đăng, hình, phủ, quỷ, biên, đậu lưu giữ tại Thần Khố; cuối lễ có nghi thức ẩm phúc thụ tộ để Hoàng đế nhận phúc lộc từ thần Thái Xã, Thái Tắc và ban phần thịt tộ cho bá quan bồi tế.",
+      "seal_name": "Ấn Xã Tắc Thụ Tộ"
+    },
+    {
+      "id": "QZ07_02",
+      "tile_id": "T20",
+      "title": "Hội đồng xét duyệt chiết tính vật liệu của Bộ Công và xuất ngân khố Bộ Hộ tại Khu Lục Bộ năm 1880",
+      "location_label": "Khu vực T20 - Công đường Bộ Công và Bộ Hộ thuộc Khu Lục Bộ",
+      "npc_name": "Quan Thị Lang Bộ Công Nguyễn Văn Tường",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        465.5,
+        -65.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        465.5,
+        -73.0,
+        0.0
+      ],
+      "voice_id": "voice_V07_02",
+      "objective_short": "Xác minh quy trình lập bản chiết tính vật liệu xây dựng của Bộ Công và cấp phát ngân lương của Bộ Hộ năm 1880.",
+      "dialogue": "Thưa đại nhân, tại công đường Bộ Công và Bộ Hộ trong Khu Lục Bộ thuộc ô quy hoạch T20 chiều năm 1880, các viên Lang trung đang hội đồng thẩm định dự toán tu bổ cung điện và sổ phóng lương biền binh. Chiếu theo điển lệ năm Tự Đức thứ ba mươi ba, xin đại nhân chỉ rõ cơ chế phối hợp kiểm soát vật tư và ngân khố giữa hai bộ này.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng tại Khu Lục Bộ năm 1880, quy trình xin cấp vật liệu và kinh phí để thi công hoặc tu bổ các công trình kiến trúc hoàng cung được kiểm soát giữa Bộ Công và Bộ Hộ ra sao?",
+      "choices": [
+        "Mọi công trình đều phải lập bản chiết tính định mức gỗ lim, gạch Bát Tràng, đá Thanh, vôi mật trình Bộ Công thẩm định chuẩn xác rồi mới chuyển sang Bộ Hộ đối chiếu để xuất ngân khố; nếu vượt định lệ mà không có chỉ dụ thì quan giám thu phải bồi hoàn",
+        "Các đội thợ xây dựng được tự do vào kho Nội Vụ Phủ lấy bạc nén và gỗ lim tùy ý mà không cần lập sổ chiết tính hay thông qua sự kiểm duyệt của Bộ Công và Bộ Hộ",
+        "Bộ Hình là cơ quan duy nhất đứng ra vẽ thiết kế cung điện và tự phát tiền lương cho thợ mộc, hoàn toàn không liên quan đến chức trách của Bộ Công hay Bộ Hộ"
+      ],
+      "correct_index": 0,
+      "hint": "Bộ Công nắm quy chuẩn kỹ thuật và định mức vật tư (công trình tắc lệ), còn Bộ Hộ nắm giữ ngân khố tiền bạc để kiểm soát chi tiêu theo đúng chiết tính đã duyệt.",
+      "historical_note": "Sách Khâm Định Đại Nam Hội Điển Sự Lệ (Bộ Công và Bộ Hộ) cùng Đại Nam Thực Lục năm 1880 quy định rất chặt chẽ về định mức vật tư xây dựng (gỗ lim, gạch ngói, đá Thanh, vôi mật) và thủ tục hội đồng thanh tra tài chính giữa Bộ Công và Bộ Hộ nhằm chống thất thoát công quỹ triều đình.",
+      "seal_name": "Ấn Lục Bộ Độ Chi"
+    },
+    {
+      "id": "QZ07_03",
+      "tile_id": "T21",
+      "title": "Lệ thu hoạch hạt sen ngự dụng nộp Thượng Thiện Sở và quản lý thuyền trên Hào Kim Thủy năm 1880",
+      "location_label": "Khu vực T21 - Bến thuyền đá Thanh và đầm sen Hào Kim Thủy",
+      "npc_name": "Quan Giám Thủ Thượng Thiện Sở Hồ Văn Hiển",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        -455.0,
+        -55.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -455.0,
+        -63.0,
+        0.0
+      ],
+      "voice_id": "voice_V07_03",
+      "objective_short": "Kiểm tra định lệ thu hái hạt sen ngự dụng và quy chế đăng ký hiệu bài cho thuyền làm nhiệm vụ trên Hào Kim Thủy năm 1880.",
+      "dialogue": "Kính chào đại nhân bên bến đá Hào Kim Thủy thuộc ô quy hoạch T21 chiều năm Tự Đức thứ ba mươi ba tức năm 1880. Hôm nay đội binh biền coi giữ hồ hào vừa chèo thuyền gỗ nhỏ thu hoạch đợt hạt sen mùa thu để bàn giao vào cung. Xin đại nhân xác nhận cơ quan tiếp nhận hạt sen ngự dụng và thủ tục kiểm soát thuyền bè xuống hào theo Khâm Định Đại Nam Hội Điển Sự Lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng năm 1880, sản vật hạt sen thu hoạch từ Hào Kim Thủy quanh Hoàng thành và các thuyền gỗ làm nhiệm vụ trên hào được quản lý như thế nào?",
+      "choices": [
+        "Đầm sen Hào Kim Thủy thuộc diện ngự dụng do binh biền chuyên trách thu hái đúng kỳ để nộp hạt sen vào Nội Vụ Phủ và Thượng Thiện Sở chế biến trà cùng ngự thiện dâng Hoàng thái hậu và Hoàng đế; mọi thuyền xuống hào đều phải đăng ký hiệu bài với vệ Thị Vệ",
+        "Hoa sen và hạt sen dưới Hào Kim Thủy được đem bán đấu giá tự do tại chợ Đông Ba mỗi ngày và bất kỳ thuyền đánh cá nào của dân gian cũng được tự ý bơi vào hào mà không cần hiệu bài",
+        "Triều đình nghiêm cấm trồng sen dưới Hào Kim Thủy vì sợ vướng mái chèo của chiến hạm bọc đồng chạy bằng hơi nước tuần tra quanh Hoàng thành"
+      ],
+      "correct_index": 0,
+      "hint": "Sen trong hồ hào Hoàng thành là vật phẩm quý dâng vào Nội Vụ Phủ và Thượng Thiện Sở để nấu ngự thiện, và thuyền bè trên hào phòng thủ phải có hiệu bài được vệ Thị Vệ kiểm soát.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục thời vua Tự Đức năm 1880, các hồ hào quanh Hoàng thành như Hào Kim Thủy và hồ Thái Dịch đều trồng sen ngự dụng; đến mùa thu hoạch, đội binh biền chuyên trách phải nộp đủ định ngạch hạt sen trắng vào Nội Vụ Phủ và Thượng Thiện Sở dưới sự giám sát nghiêm ngặt của vệ Thị Vệ.",
+      "seal_name": "Ấn Kim Thủy Ngự Liên"
+    },
+    {
+      "id": "QZ10_01",
+      "tile_id": "T28",
+      "title": "Điển Lễ Cửa Ngọ Môn Năm 1880",
+      "location_label": "Lầu Ngũ Phụng - Ngọ Môn",
+      "npc_name": "Quan Thị Vệ Nguyễn Văn Tường",
+      "npc_outfit": "guard_red",
+      "npc_plan": [
+        0.0,
+        -690.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -698.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_01",
+      "objective_short": "Khảo cứu quy chế năm cửa đi dưới đài Ngọ Môn năm 1880.",
+      "dialogue": "Nơi đây là cửa chính phía nam của Hoàng thành Phú Xuân, xây dựng kiên cố dưới triều Minh Mạng và giữ nguyên điển chế tới năm Tự Đức thứ ba mươi ba tức năm 1880. Nhà ngươi hãy cho biết quy định sử dụng năm lối đi dưới nền đài Ngọ Môn theo Khâm Định Đại Nam Hội Điển Sự Lệ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục tính đến năm 1880, lối đi chính giữa của cửa Ngọ Môn có tên là gì và dành cho ai đi qua?",
+      "choices": [
+        "Cửa Ngọ Môn chính giữa dành riêng cho Hoàng đế ngự giá, hai bên là Tả Giáp Môn và Hữu Giáp Môn dành cho quan văn võ theo hầu.",
+        "Cửa Đoan Môn chính giữa dành cho cả Hoàng đế và Hoàng thái hậu, hai bên là Tả Dịch Môn và Hữu Dịch Môn dành cho sứ thần ngoại quốc.",
+        "Cửa Chu Tước chính giữa dành cho các bậc thân vương và tứ trụ triều đình, hai bên là Tả Thanh Long và Hữu Bạch Hổ dành cho thị vệ."
+      ],
+      "correct_index": 0,
+      "hint": "Hãy nhớ tên gọi của cổng chính Hoàng thành và hai cửa giáp sát bên cạnh lối ngự đạo dành cho bậc cửu ngũ chí tôn.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục, nền đài Ngọ Môn có năm lối đi: lối chính giữa gọi là Ngọ Môn chỉ dành cho Hoàng đế, hai cửa kế bên là Tả Giáp Môn và Hữu Giáp Môn dành cho bá quan văn võ, còn hai cửa ngoài cùng hình vòm gọi là Tả Dịch Môn và Hữu Dịch Môn dành cho binh lính, voi ngựa theo hầu.",
+      "seal_name": "Ấn Ngọ Môn Thị Vệ"
+    },
+    {
+      "id": "QZ10_02",
+      "tile_id": "T29",
+      "title": "Quy Chế Cầu Trung Đạo Và Hồ Thái Dịch Năm 1880",
+      "location_label": "Cầu Trung Đạo - Hồ Thái Dịch",
+      "npc_name": "Nữ Quan Nội Đình Trần Thị Lễ",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        0.0,
+        -640.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -648.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_02",
+      "objective_short": "Xác minh chất liệu và kiến trúc hai ngôi phương môn ở hai đầu cầu Trung Đạo năm 1880.",
+      "dialogue": "Bước qua Ngọ Môn là cầu Trung Đạo bắc ngang hồ Thái Dịch dẫn thẳng vào sân Đại Triều Nghi. Vào năm 1880 dưới triều Tự Đức, hai đầu cầu Trung Đạo có dựng hai ngôi cổng phương môn uy nghi. Ngươi có biết rõ chất liệu và kỹ thuật chế tác của hai ngôi cổng này trong điển tịch triều Nguyễn không?",
+      "question": "Theo sử liệu Khâm Định Đại Nam Hội Điển Sự Lệ tính đến năm 1880, hai ngôi phương môn dựng ở hai đầu cầu Trung Đạo bắc qua hồ Thái Dịch được chế tác bằng chất liệu và kỹ thuật trang trí đặc sắc nào?",
+      "choices": [
+        "Cột và xà bằng gỗ lim sơn son thếp vàng, mái lợp ngói lưu ly xanh lấy từ lò gạch ngói Thanh Hóa.",
+        "Kết cấu bằng đồng đúc chạm trổ hoa văn rồng mây và tráng pháp lam nhiều màu rực rỡ kết hợp mạ vàng.",
+        "Đá cẩm thạch trắng nguyên khối khai thác từ núi Ngũ Hành Sơn ở Quảng Nam chạm khắc chữ thọ và hoa sen."
+      ],
+      "correct_index": 1,
+      "hint": "Nghệ thuật tráng men trên đồng là đỉnh cao mỹ thuật cung đình Huế từ thời Minh Mạng đến thời Tự Đức năm 1880.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục, hai ngôi phương môn ở hai đầu cầu Trung Đạo (còn gọi là cầu Kim Thủy) được làm bằng đồng mạ vàng kết hợp nghệ thuật pháp lam (đồng tráng men nhiều màu) chạm khắc hình rồng mây tinh xảo.",
+      "seal_name": "Ấn Thái Dịch Pháp Lam"
+    },
+    {
+      "id": "QZ10_03",
+      "tile_id": "T30",
+      "title": "Phẩm Sơn Sân Đại Triều Nghi Điện Thái Hòa Năm 1880",
+      "location_label": "Sân Đại Triều Nghi - Điện Thái Hòa",
+      "npc_name": "Quan Bộ Lễ Phan Đình Bình",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        0.0,
+        -590.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        0.0,
+        -598.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_03",
+      "objective_short": "Khảo cứu trật tự đứng chầu theo bia đá phẩm sơn tại sân Đại Triều Nghi năm 1880.",
+      "dialogue": "Sân Đại Triều Nghi trước điện Thái Hòa được chia thành hai tầng sân lát đá thanh cho các bậc đại thần và quan viên đứng chầu trong các kỳ đại triều mồng một và ngày rằm năm 1880. Ngươi hãy căn cứ vào quy định của Bộ Lễ trong Khâm Định Đại Nam Hội Điển Sự Lệ để chỉ rõ trật tự đứng chầu của hai ban văn võ.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng tại triều đình Huế năm 1880, các mốc bia đá phẩm sơn trên sân Đại Triều Nghi quy định vị trí đứng chầu của bá quan văn võ như thế nào khi hướng mặt vào chính điện Thái Hòa?",
+      "choices": [
+        "Tất cả quan văn từ nhất phẩm đến cửu phẩm đứng ở tầng sân trên, tất cả quan võ đứng ở tầng sân dưới.",
+        "Theo nguyên tắc tả văn hữu võ tính từ ngai vàng nhìn ra, tức là khi nhìn vào điện Thái Hòa thì quan văn đứng bên phải (phía đông), quan võ đứng bên trái (phía tây), từ chánh nhất phẩm đến tòng cửu phẩm.",
+        "Quan văn đứng ở hàng phía trước gần bậc thềm rồng, quan võ đứng ở hàng phía sau sát hồ Thái Dịch, không phân biệt bên tả hay bên hữu."
+      ],
+      "correct_index": 1,
+      "hint": "Triều đình nhà Nguyễn tuân thủ nghiêm ngặt nguyên tắc Tả văn Hữu võ lấy hướng nhìn của Hoàng đế từ ngai vàng trong điện Thái Hòa nhìn ra phía nam làm chuẩn.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (quyển Lễ bộ - Triều hội), sân Đại Triều Nghi đặt hai dãy phẩm sơn bằng đá từ chánh nhất phẩm đến tòng cửu phẩm theo nguyên tắc tả văn hữu võ (lấy hướng Hoàng đế ngự trên ngai nhìn xuống phía nam: bên tả tức phía đông dành cho quan văn, bên hữu tức phía tây dành cho quan võ; tầng sân trên dành cho quan từ tam phẩm trở lên, tầng sân dưới dành cho quan từ tứ phẩm trở xuống).",
+      "seal_name": "Ấn Đại Triều Phẩm Sơn"
+    },
+    {
+      "id": "QZ10_04",
+      "tile_id": "T28",
+      "title": "Lễ Ban Sóc Tại Lầu Ngũ Phụng Ngọ Môn Năm 1880",
+      "location_label": "Lầu Ngũ Phụng - Ngọ Môn",
+      "npc_name": "Quan Khâm Thiên Giám Trần Hữu Đạo",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        6.0,
+        -692.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        6.0,
+        -700.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_04",
+      "objective_short": "Khảo cứu nghi thức Lễ Ban Sóc ban lịch mới tại Ngọ Môn năm 1880.",
+      "dialogue": "Cứ vào dịp cuối tháng Chạp âm lịch hằng năm dưới triều Tự Đức, tại lầu Ngũ Phụng trên đài Ngọ Môn lại cử hành đại lễ Ban Sóc để ban phát lịch Hiệp Kỷ của năm mới cho hoàng thân quốc thích và bá quan văn võ. Nhà ngươi hãy đối chiếu Khâm Định Đại Nam Hội Điển Sự Lệ để xác định cơ quan phụ trách soạn lịch và nghi thức dâng lịch năm 1880.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng đến năm 1880, cơ quan nào chịu trách nhiệm biên soạn lịch Hiệp Kỷ và dâng tiến trong Lễ Ban Sóc cử hành tại Ngọ Môn?",
+      "choices": [
+        "Khâm Thiên Giám biên soạn lịch Hiệp Kỷ, phối hợp với Bộ Lễ tổ chức nghi thức dâng tiến lên Hoàng thái hậu, Hoàng đế và ban phát tại lầu Ngũ Phụng cửa Ngọ Môn.",
+        "Quốc Sử Quán biên soạn lịch Vạn Niên, giao cho Bộ Lại trực tiếp phát tận tay từng vị quan viên tại sân điện Cần Chánh.",
+        "Hàn Lâm Viện soạn thảo lịch Bách Trùng, giao cho Đô Sát Viện niêm yết tại Phu Văn Lâu mà không cần làm lễ tại Ngọ Môn."
+      ],
+      "correct_index": 0,
+      "hint": "Cơ quan chuyên trách quan sát thiên văn, tính toán tiết khí và làm lịch của triều Nguyễn mang tên có chữ Thiên Giám.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (quyển Lễ bộ - Ban sóc) và Đại Nam Thực Lục, từ thời Minh Mạng đến năm Tự Đức thứ ba mươi ba (1880), Khâm Thiên Giám là cơ quan chuyên trách tính toán tiết khí, biên soạn lịch Hiệp Kỷ và cùng Bộ Lễ cử hành đại lễ Ban Sóc trọng thể tại lầu Ngũ Phụng cửa Ngọ Môn.",
+      "seal_name": "Ấn Khâm Thiên Ban Sóc"
+    },
+    {
+      "id": "QZ10_05",
+      "tile_id": "T29",
+      "title": "Điển Lệ Ba Cầu Bắc Qua Hồ Thái Dịch Năm 1880",
+      "location_label": "Hồ Thái Dịch - Khu Vực Cầu Trung Đạo",
+      "npc_name": "Quan Thị Vệ Tả Dực Lê Văn Trung",
       "npc_outfit": "guard_red",
       "npc_plan": [
         -8.0,
-        114.0,
-        3.1416
+        -642.0,
+        0.0
       ],
       "player_teleport_plan": [
         -8.0,
-        108.0,
+        -650.0,
         0.0
       ],
-      "voice_id": "voice_QZ02_03",
-      "ceremony_sfx": "dai_hong_chung",
-      "seal_name": "Ấn Cần Chánh Canh Tuần",
-      "objective_short": "Tuần tra sân Điện Cần Chánh dưới ánh đèn lồng lục giác và nắm rõ lịch Thường triều.",
-      "dialogue": "Canh một đã điểm, hàng đèn lồng lục giác sơn son thếp vàng dọc trường lang Điện Cần Chánh đã bừng sáng giữa đêm Tử Cấm Thành tĩnh mịch. Bản chức phụng lệnh tuần tra quanh nền đá Thanh, kiểm tra cửa bức bàn và dãy vạc đồng trước thềm điện, bởi sáng mai Hoàng đế Tự Đức sẽ ngự tại đây nghị bàn quốc sự cùng đại thần Nội các và Lục bộ. Khác với lễ Đại triều ở Điện Thái Hòa, Điện Cần Chánh là nơi thiết Thường triều hằng tháng; xin hỏi quý khách có rõ lệ định ấy chăng?",
-      "question": "Theo điển chế triều Nguyễn ấn định từ năm Gia Long thứ 5 (1806) và duy trì dưới triều Tự Đức, Hoàng đế thiết lễ Thường triều tại Điện Cần Chánh vào những ngày nào mỗi tháng âm lịch?",
+      "voice_id": "voice_V10_05",
+      "objective_short": "Phân biệt quy chế đi lại trên cầu Trung Đạo và các lối đi hai bên hồ Thái Dịch năm 1880.",
+      "dialogue": "Từ các cửa dưới chân đài Ngọ Môn bước vào sân Đại Triều Nghi, hồ Thái Dịch được ngăn thành hai hồ Tả Thái Dịch và Hữu Thái Dịch bởi con đường và cầu Trung Đạo ở chính giữa. Vào năm 1880, triều đình quy định cực kỳ nghiêm ngặt lối đi cho Hoàng đế và bá quan văn võ khi tiến vào chầu tại điện Thái Hòa. Ngươi hãy trình bày rõ quy chế này.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ tính đến năm 1880, khi bá quan văn võ đi qua cửa Tả Giáp Môn và Hữu Giáp Môn để vào sân Đại Triều Nghi chầu vua thì phải di chuyển theo lộ trình nào quanh hồ Thái Dịch?",
       "choices": [
-        "Ngày mồng 1 và ngày 15 (ngày Rằm) hằng tháng",
-        "Ngày mồng 5, 10, 20 và 25 hằng tháng",
-        "Chỉ tổ chức duy nhất vào ngày mồng 1 Tết Nguyên đán"
+        "Quan văn và quan võ được phép đi thẳng qua chính giữa cầu Trung Đạo cùng một lượt với đoàn ngự giá của Hoàng đế.",
+        "Cầu Trung Đạo ở chính giữa chỉ dành riêng cho Hoàng đế ngự giá, còn bá quan văn võ sau khi qua Tả Giáp Môn và Hữu Giáp Môn phải đi theo hai đường bên tả và bên hữu hồ Thái Dịch để vào sân chầu.",
+        "Bá quan văn võ phải đi thuyền rồng vượt qua mặt nước hồ Thái Dịch rồi mới bước lên bậc thềm sân Đại Triều Nghi."
       ],
       "correct_index": 1,
-      "hint": "Ngày mồng 1 và ngày Rằm là lịch thiết Đại triều tại Điện Thái Hòa; còn Thường triều tại Điện Cần Chánh diễn ra bốn kỳ cách đều nhau mỗi tháng.",
-      "historical_note": "Theo Đại Nam Thực Lục chính biên (tháng 5 năm Gia Long thứ 5 - 1806) và Khâm Định Đại Nam Hội Điển Sự Lệ (quyển về Triều hội - Bộ Lễ), triều Nguyễn phân biệt rõ Đại triều tại Điện Thái Hòa (ngày mồng 1 và ngày Rằm) với Thường triều tại Điện Cần Chánh (vào các ngày mồng 5, 10, 20 và 25 âm lịch hằng tháng). Tại Điện Cần Chánh, Hoàng đế trực tiếp bàn bạc chính sự với quan văn võ từ Tứ phẩm trở lên, tiếp đón sứ thần và tổ chức các buổi ngự yến trọng thể trong Tử Cấm Thành."
+      "hint": "Cầu Trung Đạo nằm trên trục thần đạo nối thẳng từ cửa chính Ngọ Môn đến chính điện Thái Hòa nên chỉ dành cho bậc chí tôn.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (quyển Lễ bộ - Triều hội), cầu Trung Đạo nối thẳng từ cửa chính Ngọ Môn qua hồ Thái Dịch vào sân Đại Triều Nghi là lối Ngự đạo chỉ dành riêng cho Hoàng đế; bá quan văn võ đi qua Tả Giáp Môn và Hữu Giáp Môn rồi theo hai lối tả hữu hai bên hồ Thái Dịch để vào vị trí phẩm sơn đứng chầu.",
+      "seal_name": "Ấn Trung Đạo Ngự Lộ"
+    },
+    {
+      "id": "QZ10_06",
+      "tile_id": "T30",
+      "title": "Nhã Nhạc Cung Đình Tại Sân Điện Thái Hòa Năm 1880",
+      "location_label": "Thềm Rồng Sân Đại Triều Nghi - Điện Thái Hòa",
+      "npc_name": "Quan Hòa Thanh Thự Nguyễn Khoa Luận",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        8.0,
+        -588.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        8.0,
+        -596.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_06",
+      "objective_short": "Khảo cứu phân bố dàn Đại Nhạc và Tiểu Nhạc trong lễ đại triều điện Thái Hòa năm 1880.",
+      "dialogue": "Trong các buổi đại triều tại điện Thái Hòa năm Tự Đức thứ ba mươi ba tức năm 1880, âm nhạc cung đình đóng vai trò điều tiết mọi nghi tiết từ lúc Hoàng đế thăng điện cho đến khi bá quan hành lễ ngũ bái. Nhà ngươi hãy căn cứ vào Khâm Định Đại Nam Hội Điển Sự Lệ để chỉ rõ hai dàn nhạc lễ được bố trí tại điện Thái Hòa.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng năm 1880, trong lễ đại triều tại điện Thái Hòa, hai bộ phận âm nhạc cung đình nào được bố trí để tấu nhạc theo từng nghi tiết?",
+      "choices": [
+        "Dàn Đại Nhạc (Cổ xúy đại nhạc) và dàn Tiểu Nhạc (Nhã nhạc) thuộc Hòa Thanh Thự được bố trí trang nghiêm ở hiên điện và sân chầu để tấu các bản nhạc lễ khi Hoàng đế ngự giá và khi bá quan bái lạy.",
+        "Chỉ sử dụng duy nhất một đội trống trận của quân Thị vệ đặt ở ngoài cửa Ngọ Môn, bên trong sân Đại Triều Nghi tuyệt đối giữ yên lặng không có nhạc khí.",
+        "Chỉ sử dụng dàn đàn tranh và đàn bầu của các cung nữ nội đình ngồi tấu nhạc ngay phía sau ngai vàng trong hậu điện."
+      ],
+      "correct_index": 0,
+      "hint": "Âm nhạc triều hội nhà Nguyễn tại điện Thái Hòa gồm hai dàn nhạc lớn nhỏ đối ứng với nhau do Hòa Thanh Thự phụ trách.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (quyển Lễ bộ - Nhạc chương và Triều hội), trong các buổi đại triều tại điện Thái Hòa đến năm 1880, Hòa Thanh Thự bố trí dàn Đại Nhạc và Tiểu Nhạc (Nhã nhạc) ở khu vực hiên điện và sân Đại Triều Nghi để tấu các chương nhạc quy định như Lý Bình, Khánh Bình, Hòa Bình tương ứng với từng bước nghi lễ.",
+      "seal_name": "Ấn Hòa Thanh Nhã Nhạc"
+    },
+    {
+      "id": "QZ10_07",
+      "tile_id": "T28",
+      "title": "Nghi Thức Đại Lễ Truyền Lô Trên Lầu Ngũ Phụng Năm 1880",
+      "location_label": "Lầu Ngũ Phụng - Ngọ Môn",
+      "npc_name": "Quan Hồng Lô Tự Khanh Phạm Phú Thứ",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        -6.0,
+        -691.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -6.0,
+        -699.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_07",
+      "objective_short": "Khảo cứu nghi tiết xướng danh tân khoa Tiến sĩ và ban bảng vàng tại Ngọ Môn năm 1880.",
+      "dialogue": "Sau mỗi kỳ thi Đình dưới triều Tự Đức tính đến năm 1880, triều đình tổ chức đại lễ Truyền Lô vô cùng trang trọng tại lầu Ngũ Phụng cửa Ngọ Môn để xướng danh các vị tân khoa Tiến sĩ và Phó bảng. Nhà ngươi hãy dựa theo Khâm Định Đại Nam Hội Điển Sự Lệ để cho biết sau khi xướng danh tại Ngọ Môn thì bảng vàng ghi tên các vị tân khoa được rước đi treo ở đâu.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Thực Lục áp dụng đến năm 1880, trong lễ Truyền Lô tại Ngọ Môn, cơ quan nào phụ trách cầm loa đồng xướng danh các vị tân khoa Tiến sĩ và bảng vàng sau đó được rước ra treo tại địa điểm nào?",
+      "choices": [
+        "Quan viên Hồng Lô Tự và Bộ Lễ phụ trách truyền loa đồng xướng danh từ lầu Ngũ Phụng cửa Ngọ Môn, sau đó bảng vàng được đặt lên long đình rước ra treo tại Phu Văn Lâu cho sĩ tử và bách tính chiêm ngưỡng.",
+        "Quan viên Bộ Hình phụ trách đọc tên các vị tân khoa dưới chân cầu Trung Đạo, sau đó bảng vàng được cất ngay vào Tàng Thư Lâu mà không treo công khai.",
+        "Quan viên Quốc Tử Giám xướng danh tại cửa Hiển Nhơn, sau đó bảng vàng được treo cố định trên vách đá phía sau điện Thái Hòa."
+      ],
+      "correct_index": 0,
+      "hint": "Cơ quan chuyên trách xướng danh trong các đại lễ triều đình mang tên Hồng Lô Tự, còn lầu treo bảng vàng và chiếu chỉ nằm ở phía nam Kỳ Đài trước bến sông Hương.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (quyển Lễ bộ - Khoa cử - Truyền lô) và Đại Nam Thực Lục, trong đại lễ Truyền Lô cử hành tại Ngọ Môn đến năm 1880, quan viên Hồng Lô Tự dùng ống loa đồng xướng danh các vị tân khoa Tiến sĩ từ trên lầu Ngũ Phụng, tiếp đó bảng vàng được rước bằng long đình có nhã nhạc dẫn đường ra niêm yết tại Phu Văn Lâu.",
+      "seal_name": "Ấn Truyền Lô Kim Bảng"
+    },
+    {
+      "id": "QZ10_08",
+      "tile_id": "T29",
+      "title": "Hệ Thống Thủy Đạo Hồ Thái Dịch Và Sông Ngự Hà Năm 1880",
+      "location_label": "Bờ Đông Hồ Thái Dịch - Cầu Trung Đạo",
+      "npc_name": "Quan Bộ Công Đặng Huy Trứ",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        10.0,
+        -641.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        10.0,
+        -649.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_08",
+      "objective_short": "Xác minh nguồn cấp nước và cấu trúc bờ kè đá của hồ Thái Dịch trong Hoàng thành năm 1880.",
+      "dialogue": "Hồ Thái Dịch nằm ngay phía bắc cửa Ngọ Môn và phía nam sân Đại Triều Nghi, bốn mùa nước trong xanh nuôi dưỡng đàn cá chép đỏ và hoa sen ngự uyển. Vào năm Tự Đức thứ ba mươi ba tức năm 1880, Bộ Công thường xuyên kiểm tra cống ngầm dẫn nước và bờ kè đá xung quanh hồ. Ngươi có biết rõ nguồn nước của hồ Thái Dịch thông với thủy đạo nào trong Kinh thành không?",
+      "question": "Theo sử liệu Đại Nam Thực Lục và Đại Nam Nhất Thống Chí tính đến năm 1880, hồ Thái Dịch trước sân điện Thái Hòa được xây kè đá và dẫn nguồn nước lưu thông từ hệ thống thủy đạo nào của Kinh thành Huế?",
+      "choices": [
+        "Hồ Thái Dịch là hồ nước mặn dẫn trực tiếp từ cửa biển Thuận An qua đường ống bằng đồng không qua sông Hương.",
+        "Hồ Thái Dịch được kè đá kiên cố quanh bờ, thông thủy ngầm với hệ thống hào Kim Thủy và sông Ngự Hà nhận nước từ sông Hương để giữ mực nước luôn trong sạch quanh năm.",
+        "Hồ Thái Dịch hoàn toàn không có cống dẫn nước mà chỉ hứng nước mưa tự nhiên và sẽ cạn khô toàn bộ vào mùa xuân."
+      ],
+      "correct_index": 1,
+      "hint": "Hệ thống thủy đạo trong Hoàng thành và Kinh thành Huế năm 1880 nối liền hồ Thái Dịch với hào nước Kim Thủy và sông Ngự Hà bắt nguồn từ sông Hương.",
+      "historical_note": "Theo Đại Nam Thực Lục và Đại Nam Nhất Thống Chí (quyển Kinh sư), hồ Thái Dịch được đào và kè đá hoàn chỉnh từ năm Minh Mạng thứ mười bốn (1833) và duy trì đến năm Tự Đức thứ ba mươi ba (1880), có cống thủy đạo ngầm thông với hào Kim Thủy và hệ thống sông Ngự Hà dẫn nước từ sông Hương vào điều tiết.",
+      "seal_name": "Ấn Thái Dịch Kim Thủy"
+    },
+    {
+      "id": "QZ10_09",
+      "tile_id": "T30",
+      "title": "Đỉnh Đồng Và Hạc Đồng Trước Thềm Điện Thái Hòa Năm 1880",
+      "location_label": "Tiền Sảnh Và Sân Đại Triều Nghi - Điện Thái Hòa",
+      "npc_name": "Quan Nội Vụ Phủ Nguyễn Văn Chất",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        -9.0,
+        -589.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -9.0,
+        -597.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_09",
+      "objective_short": "Khảo cứu bài trí các pháp khí bằng đồng và đôi kỳ lân mạ vàng trước điện Thái Hòa năm 1880.",
+      "dialogue": "Đứng trên tầng sân trên của sân Đại Triều Nghi nhìn lên thềm chính điện Thái Hòa năm 1880, nhà ngươi sẽ thấy những pháp khí và linh vật bằng đồng đúc tuyệt mỹ được bài trí đối xứng hai bên ngự đạo. Hãy đối chiếu Khâm Định Đại Nam Hội Điển Sự Lệ để chỉ ra chính xác các linh vật và pháp khí đặt tại tiền sảnh điện Thái Hòa.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Nhất Thống Chí tính đến năm 1880, tại khu vực thềm rồng và sân chầu trước chính điện Thái Hòa được bài trí những linh vật và pháp khí bằng đồng tiêu biểu nào để tôn vinh uy nghiêm hoàng quyền?",
+      "choices": [
+        "Đôi kỳ lân bằng đồng mạ vàng đặt trên bệ đá cùng các đỉnh đồng đốt trầm hương và đôi hạc đồng chầu trang nghiêm trên sân Đại Triều Nghi.",
+        "Chín khẩu thần công Cửu Vị Thần Công đặt ngay chính giữa thềm rồng chắn ngang lối vào bảo tọa trong điện Thái Hòa.",
+        "Chín chiếc Cửu Đỉnh đúc từ thời Minh Mạng đặt dàn hàng ngang ngay trên bậc thềm phía trước cửa chính điện Thái Hòa."
+      ],
+      "correct_index": 0,
+      "hint": "Cửu Đỉnh đặt ở sân Thế Miếu còn Cửu Vị Thần Công đặt ở gần cửa Thể Nhơn và Quảng Đức; trước thềm điện Thái Hòa là đôi linh vật đồng mạ vàng và đỉnh đồng, hạc đồng.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Nhất Thống Chí, trước thềm điện Thái Hòa và trên sân Đại Triều Nghi năm 1880 bài trí đôi kỳ lân bằng đồng mạ vàng đặt trên bệ đá chạm trổ tinh xảo cùng hệ thống đỉnh đồng đốt trầm và hạc đồng đứng trên lưng rùa hướng về chính điện.",
+      "seal_name": "Ấn Thái Hòa Linh Thú"
+    },
+    {
+      "id": "QZ10_10",
+      "tile_id": "T28",
+      "title": "Quy Chế Chuông Trống Trên Lầu Ngũ Phụng Ngọ Môn Năm 1880",
+      "location_label": "Gian Chính Giữa Lầu Ngũ Phụng - Ngọ Môn",
+      "npc_name": "Quan Tư Lễ Giám Nguyễn Hữu Độ",
+      "npc_outfit": "official_blue",
+      "npc_plan": [
+        4.0,
+        -689.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        4.0,
+        -697.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_10",
+      "objective_short": "Khảo cứu quy định bố trí và gióng đại hồng chung cùng trống lớn trên lầu Ngũ Phụng năm 1880.",
+      "dialogue": "Trên tầng lầu Ngũ Phụng của cửa Ngọ Môn vào năm Tự Đức thứ ba mươi ba tức năm 1880, hai bên tả hữu gian chính giữa có treo quả chuông đồng lớn và chiếc trống đại dùng để báo hiệu giờ khắc cử hành đại lễ triều hội. Nhà ngươi hãy đối chiếu Khâm Định Đại Nam Hội Điển Sự Lệ để chỉ rõ vị trí đặt chuông, trống và quy định phát hiệu lệnh khi Hoàng đế ngự giá.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ và Đại Nam Nhất Thống Chí tính đến năm 1880, chuông lớn và trống lớn trên lầu Ngũ Phụng cửa Ngọ Môn được bố trí ở vị trí nào và sử dụng trong dịp nào?",
+      "choices": [
+        "Chuông lớn treo ở phía đông (bên tả) và trống lớn đặt ở phía tây (bên hữu) trên lầu Ngũ Phụng, được gióng lên để báo hiệu khi Hoàng đế ngự giá thiết triều hoặc cử hành đại lễ tại Ngọ Môn và điện Thái Hòa.",
+        "Cả chuông và trống đều chôn dưới chân tường phía ngoài cửa Hữu Dịch Môn và chỉ đánh vào ban đêm khi đóng cửa Kinh thành.",
+        "Chuông lớn đặt ở cầu Trung Đạo còn trống lớn đặt ở hồ Thái Dịch, do lính canh tự ý đánh mỗi giờ một lần không cần hiệu lệnh của Bộ Lễ."
+      ],
+      "correct_index": 0,
+      "hint": "Theo quy tắc tả chung hữu cổ trong kiến trúc cung đình nhà Nguyễn, chuông đặt bên tả (phía đông) và trống đặt bên hữu (phía tây) trên lầu Ngũ Phụng.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (quyển Lễ bộ - Nghi vệ và Triều hội) cùng Đại Nam Nhất Thống Chí, trên lầu Ngũ Phụng cửa Ngọ Môn năm 1880 bố trí đại hồng chung ở bên tả và trống đại ở bên hữu để phát hiệu lệnh nghiêm trang mỗi khi Hoàng đế xuất cung ngự triều hoặc cử hành đại lễ.",
+      "seal_name": "Ấn Ngũ Phụng Chung Cổ"
+    },
+    {
+      "id": "QZ10_11",
+      "tile_id": "T29",
+      "title": "Kiến Trúc Lan Can Đá Và Vòm Cầu Trung Đạo Năm 1880",
+      "location_label": "Chính Giữa Cầu Trung Đạo - Hồ Thái Dịch",
+      "npc_name": "Quan Lang Trung Bộ Công Lê Đình",
+      "npc_outfit": "scholar_jade",
+      "npc_plan": [
+        -5.0,
+        -639.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        -5.0,
+        -647.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_11",
+      "objective_short": "Xác minh cấu trúc vòm đá thanh của cầu Trung Đạo bắc qua hồ Thái Dịch năm 1880.",
+      "dialogue": "Cầu Trung Đạo bắc ngang hồ Thái Dịch là cây cầu ngự đạo trọng yếu dẫn từ cửa chính Ngọ Môn vào sân Đại Triều Nghi. Được kiến tạo hoàn chỉnh từ năm Minh Mạng thứ mười bốn và tu bổ gìn giữ cẩn mật đến năm Tự Đức thứ ba mươi ba tức năm 1880, cây cầu này mang kết cấu đá thanh vô cùng bền vững. Ngươi hãy cho biết đặc điểm kiến trúc của nhịp cầu và lan can cầu Trung Đạo.",
+      "question": "Theo sử liệu Đại Nam Thực Lục và Đại Nam Nhất Thống Chí tính đến năm 1880, phần thân cầu và lan can của cầu Trung Đạo bắc qua hồ Thái Dịch được xây dựng theo hình thức kiến trúc nào?",
+      "choices": [
+        "Thân cầu ghép bằng các tấm ván gỗ thông tạm bợ đặt trên phao nổi bằng tre, tháo dỡ mỗi khi có mưa lớn.",
+        "Thân cầu xây bằng đá thanh cuốn thành năm nhịp vòm thông thủy giữa hai bên hồ Thái Dịch, hai bên thành cầu lắp lan can đá chạm khắc hoa văn tinh xảo và hai đầu cầu dựng hai ngôi phương môn bằng đồng tráng pháp lam.",
+        "Thân cầu đắp hoàn toàn bằng đất sét nện kín không có nhịp thông thủy khiến nước hai bên hồ Thái Dịch bị chia cắt hoàn toàn."
+      ],
+      "correct_index": 1,
+      "hint": "Cầu Trung Đạo được xây bằng đá thanh kiên cố với các nhịp cuốn vòm bên dưới để dòng nước hồ Tả Thái Dịch và Hữu Thái Dịch lưu thông điều hòa.",
+      "historical_note": "Theo Đại Nam Thực Lục và Đại Nam Nhất Thống Chí (quyển Kinh sư), cầu Trung Đạo bắc qua hồ Thái Dịch được xây bằng đá thanh kiên cố với các nhịp vòm cuốn thông thủy ở dưới, bên trên lát đá phẳng phiu, hai bên có lan can đá và hai đầu cầu dựng hai ngôi phương môn bằng đồng mạ vàng tráng pháp lam rực rỡ.",
+      "seal_name": "Ấn Trung Đạo Thạch Kiều"
+    },
+    {
+      "id": "QZ10_12",
+      "tile_id": "T30",
+      "title": "Nghi Tiết Dâng Biểu Mừng Tết Nguyên Đán Tại Sân Điện Thái Hòa Năm 1880",
+      "location_label": "Tầng Sân Trên Sân Đại Triều Nghi - Điện Thái Hòa",
+      "npc_name": "Quan Thượng Thư Bộ Lễ Trần Tiễn Thành",
+      "npc_outfit": "minister_purple",
+      "npc_plan": [
+        3.0,
+        -587.0,
+        0.0
+      ],
+      "player_teleport_plan": [
+        3.0,
+        -595.0,
+        0.0
+      ],
+      "voice_id": "voice_V10_12",
+      "objective_short": "Khảo cứu nghi thức dâng biểu Khánh Hạ và lễ ngũ bái tại sân Đại Triều Nghi năm 1880.",
+      "dialogue": "Trong các dịp đại lễ Khánh Hạ như Tết Nguyên Đán hay lễ Vạn Thọ dưới triều Tự Đức năm 1880, toàn thể hoàng thân quốc thích và bá quan văn võ đều tề tựu tại sân Đại Triều Nghi trước điện Thái Hòa để dâng biểu chúc mừng Hoàng đế. Nhà ngươi hãy dựa theo Khâm Định Đại Nam Hội Điển Sự Lệ để trình bày đúng nghi thức bái lạy của bá quan trong đại lễ này.",
+      "question": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ áp dụng tại triều đình Huế năm 1880, trong lễ đại triều Khánh Hạ tại sân Đại Triều Nghi trước điện Thái Hòa, các bậc vương công và bá quan văn võ thực hiện nghi thức bái lạy trọng thể nào theo hiệu lệnh xướng lễ?",
+      "choices": [
+        "Thực hiện nghi lễ ngũ bái tam khấu (năm lần lạy, ba lần vái hoặc dập đầu theo nhịp xướng lễ và nhã nhạc) đồng thời dâng hòm biểu chúc mừng lên án vàng trước chính điện Thái Hòa.",
+        "Mỗi vị quan chỉ đứng yên chắp tay vái nhẹ một lần rồi tự do bước lên ngai vàng trò chuyện cùng Hoàng đế.",
+        "Các quan chỉ gửi thư chúc mừng qua lính canh ở ngoài cửa Hiển Nhơn mà không cần mặc triều phục hay đứng chầu tại sân Đại Triều Nghi."
+      ],
+      "correct_index": 0,
+      "hint": "Trong đại triều nhà Nguyễn, nghi lễ bái lạy cao nhất dành cho Hoàng đế tại sân điện Thái Hòa gồm năm lần lạy theo tiếng xướng của quan Hồng Lô Tự.",
+      "historical_note": "Theo Khâm Định Đại Nam Hội Điển Sự Lệ (quyển Lễ bộ - Triều hội và Khánh hạ), trong các buổi đại triều và đại lễ Khánh Hạ tại điện Thái Hòa năm 1880, hoàng thân và bá quan văn võ mặc đại triều phục đứng theo vị trí phẩm sơn trên sân Đại Triều Nghi, cử hành nghi lễ ngũ bái trang nghiêm theo tiếng xướng lễ và tiếng nhã nhạc cung đình.",
+      "seal_name": "Ấn Thái Hòa Khánh Hạ"
     }
   ]
 }

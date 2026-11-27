@@ -5,6 +5,7 @@ import {
   setHueRealismQuality,
   updateHueRealismTime,
 } from "./hue_realism_shaders.js";
+import { buildUe5LumenEnvScene } from "./hue_ue5_engine.js";
 
 /**
  * pbr_materials.js — Thư Viện Vật Liệu Bề Mặt PBR Cung Đình Huế 1880 (Dùng Chung & Tiết Kiệm VRAM)
@@ -13,7 +14,7 @@ import {
  *   bằng bộ vật liệu PBR quét thật (Poly Haven CC0 512px Albedo + 4:4:4 NormalGL + Roughness).
  * - Gộp chung thực thể MeshStandardMaterial (Material Pooling) giúp giữ nguyên ~15–20 draw call / ô
  *   trong bộ gộp `optimizeTileRoot` và không làm phình dung lượng 30 tệp `.glb` đồng bộ từ Drive.
- * - Tích hợp PMREM Sky Reflection đồng bộ theo quỹ đạo Mặt trời Huế (Bình minh -> Chính ngọ -> Hoàng hôn tím).
+ * - Tích hợp PMREM Sky + Courtyard Lumen Reflection đồng bộ theo quỹ đạo Mặt trời Huế.
  */
 
 const SURFACE_SPECS = {
@@ -22,144 +23,144 @@ const SURFACE_SPECS = {
     normal: "clay_roof_normal.jpg",
     rough: "clay_roof_rough.jpg",
     tileScaleM: 1.65,
-    roughness: 0.22,
-    metalness: 0.08,
-    normalScale: 0.95,
-    envIntensity: 1.32,
-    minLum: 0.052,
-    colorBoost: 1.22,
+    roughness: 0.20,
+    metalness: 0.10,
+    normalScale: 0.98,
+    envIntensity: 1.48,
+    minLum: 0.068,
+    colorBoost: 1.24,
   },
   clay_roof: {
     albedo: "clay_roof_albedo.jpg",
     normal: "clay_roof_normal.jpg",
     rough: "clay_roof_rough.jpg",
     tileScaleM: 1.75,
-    roughness: 0.78,
+    roughness: 0.76,
     metalness: 0.02,
-    normalScale: 0.95,
-    envIntensity: 0.62,
-    minLum: 0.05,
-    colorBoost: 1.15,
+    normalScale: 0.98,
+    envIntensity: 0.68,
+    minLum: 0.065,
+    colorBoost: 1.18,
   },
   lacquered_wood: {
     albedo: "fine_wood_albedo.jpg",
     normal: "fine_wood_normal.jpg",
     rough: "fine_wood_rough.jpg",
     tileScaleM: 1.6,
-    roughness: 0.27,
+    roughness: 0.24,
     metalness: 0.06,
-    normalScale: 0.44,
-    envIntensity: 1.15,
-    minLum: 0.048,
-    colorBoost: 1.22,
+    normalScale: 0.48,
+    envIntensity: 1.28,
+    minLum: 0.068,
+    colorBoost: 1.26,
   },
   fine_wood: {
     albedo: "fine_wood_albedo.jpg",
     normal: "fine_wood_normal.jpg",
     rough: "fine_wood_rough.jpg",
     tileScaleM: 1.8,
-    roughness: 0.58,
+    roughness: 0.54,
     metalness: 0.04,
-    normalScale: 0.74,
-    envIntensity: 0.72,
-    minLum: 0.042,
-    colorBoost: 1.28,
+    normalScale: 0.78,
+    envIntensity: 0.85,
+    minLum: 0.072,
+    colorBoost: 1.32,
   },
   gilded_gold: {
     albedo: "brushed_metal_albedo.jpg",
     normal: "brushed_metal_normal.jpg",
     rough: "brushed_metal_rough.jpg",
     tileScaleM: 1.5,
-    roughness: 0.26,
-    metalness: 0.86,
-    normalScale: 0.42,
-    envIntensity: 1.45,
-    minLum: 0.08,
-    colorBoost: 1.18,
+    roughness: 0.22,
+    metalness: 0.90,
+    normalScale: 0.44,
+    envIntensity: 1.65,
+    minLum: 0.095,
+    colorBoost: 1.22,
   },
   patina_bronze: {
     albedo: "brushed_metal_albedo.jpg",
     normal: "brushed_metal_normal.jpg",
     rough: "brushed_metal_rough.jpg",
     tileScaleM: 1.6,
-    roughness: 0.38,
-    metalness: 0.8,
-    normalScale: 0.52,
-    envIntensity: 1.28,
-    minLum: 0.055,
-    colorBoost: 1.25,
+    roughness: 0.36,
+    metalness: 0.82,
+    normalScale: 0.55,
+    envIntensity: 1.38,
+    minLum: 0.076,
+    colorBoost: 1.28,
   },
   glazed_porcelain: {
     albedo: "granite_paver_albedo.jpg",
     normal: "granite_paver_normal.jpg",
     rough: "brushed_metal_rough.jpg",
     tileScaleM: 1.35,
-    roughness: 0.19,
-    metalness: 0.12,
-    normalScale: 0.32,
-    envIntensity: 1.35,
-    minLum: 0.055,
-    colorBoost: 1.16,
+    roughness: 0.17,
+    metalness: 0.14,
+    normalScale: 0.34,
+    envIntensity: 1.45,
+    minLum: 0.068,
+    colorBoost: 1.18,
   },
   stone_masonry: {
     albedo: "stone_masonry_albedo.jpg",
     normal: "stone_masonry_normal.jpg",
     rough: "stone_masonry_rough.jpg",
     tileScaleM: 2.5,
-    roughness: 0.84,
+    roughness: 0.82,
     metalness: 0.03,
-    normalScale: 1.0,
-    envIntensity: 0.58,
-    minLum: 0.058,
-    colorBoost: 1.18,
+    normalScale: 1.05,
+    envIntensity: 0.66,
+    minLum: 0.072,
+    colorBoost: 1.20,
   },
   granite_paver: {
     albedo: "granite_paver_albedo.jpg",
     normal: "granite_paver_normal.jpg",
     rough: "granite_paver_rough.jpg",
     tileScaleM: 2.3,
-    roughness: 0.68,
+    roughness: 0.66,
     metalness: 0.04,
-    normalScale: 0.75,
-    envIntensity: 0.68,
-    minLum: 0.06,
-    colorBoost: 1.12,
+    normalScale: 0.80,
+    envIntensity: 0.74,
+    minLum: 0.072,
+    colorBoost: 1.15,
   },
   clay_brick: {
     albedo: "clay_brick_albedo.jpg",
     normal: "clay_brick_normal.jpg",
     rough: "clay_brick_rough.jpg",
     tileScaleM: 2.0,
-    roughness: 0.85,
+    roughness: 0.84,
     metalness: 0.02,
-    normalScale: 0.95,
-    envIntensity: 0.52,
-    minLum: 0.055,
-    colorBoost: 1.16,
+    normalScale: 0.98,
+    envIntensity: 0.58,
+    minLum: 0.066,
+    colorBoost: 1.18,
   },
   terracotta_paver: {
     albedo: "terracotta_paver_albedo.jpg",
     normal: "terracotta_paver_normal.jpg",
     rough: "terracotta_paver_rough.jpg",
     tileScaleM: 2.1,
-    roughness: 0.68,
+    roughness: 0.65,
     metalness: 0.03,
-    normalScale: 0.85,
-    envIntensity: 0.66,
-    minLum: 0.055,
-    colorBoost: 1.16,
+    normalScale: 0.88,
+    envIntensity: 0.72,
+    minLum: 0.068,
+    colorBoost: 1.18,
   },
   heritage_stucco: {
     albedo: "heritage_stucco_albedo.jpg",
     normal: "heritage_stucco_normal.jpg",
     rough: "heritage_stucco_rough.jpg",
     tileScaleM: 3.0,
-    roughness: 0.82,
+    roughness: 0.80,
     metalness: 0.02,
-    normalScale: 0.75,
-    envIntensity: 0.5,
-    minLum: 0.055,
-    colorBoost: 1.1,
+    normalScale: 0.78,
+    envIntensity: 0.58,
+    minLum: 0.068,
+    colorBoost: 1.12,
   },
   tree_bark: {
     albedo: "tree_bark_albedo.jpg",
@@ -169,9 +170,9 @@ const SURFACE_SPECS = {
     roughness: 0.88,
     metalness: 0.0,
     normalScale: 1.0,
-    envIntensity: 0.42,
-    minLum: 0.048,
-    colorBoost: 1.22,
+    envIntensity: 0.48,
+    minLum: 0.064,
+    colorBoost: 1.24,
   },
   lush_grass: {
     albedo: "lush_grass_albedo.jpg",
@@ -322,6 +323,7 @@ export class HuePbrMaterialLibrary {
       opacity: extraOpts.opacity != null ? extraOpts.opacity : 1.0,
     });
     mat.userData.baseNormalScale = baseNScale;
+    mat.userData.huePbrArchetype = archetypeKey;
     if (!extraOpts.transparent && archetypeKey !== "water_ripple") {
       attachHueRealismShader(mat, archetypeKey);
     }
@@ -338,14 +340,13 @@ export class HuePbrMaterialLibrary {
   }
 
   /**
-   * Cập nhật bản đồ phản xạ bầu trời PMREM đồng bộ theo giờ Mặt trời Huế
-   * Ưu tiên dùng ảnh bầu trời 360° thực tế (Pure Sky CC0) khi đã nạp xong, tự động dự phòng gradient
+   * Cập nhật bản đồ phản xạ bầu trời + bức xạ sân chầu Lumen PMREM đồng bộ theo giờ Mặt trời Huế
    */
   updateSkyEnvironment(topCol, midCol, horCol, sunCol, sunDir, hour, skyPhotoInfo = null) {
     this.atmosphere.setHour(topCol, midCol, horCol, sunDir, hour, skyPhotoInfo, this.scene?.fog);
     if (this.atmosphere.qa || !this.pmremGenerator || !this.scene) return;
     const hasPhoto = Boolean(skyPhotoInfo && skyPhotoInfo.texture && skyPhotoInfo.skyId);
-    const bucket = `${hasPhoto ? "photo" : "proc"}:${Math.round(hour * 1.5)}:${hasPhoto ? skyPhotoInfo.skyId : "g"}`;
+    const bucket = `ue5:${hasPhoto ? "photo" : "proc"}:${Math.round(hour * 1.5)}:${hasPhoto ? skyPhotoInfo.skyId : "g"}`;
     const cached = this.envBucketCache.get(bucket);
     if (cached) {
       this.scene.environment = cached.texture;
@@ -353,70 +354,27 @@ export class HuePbrMaterialLibrary {
     }
 
     try {
-      const envScene = new THREE.Scene();
-      let geo;
-      let domeMat;
-
-      if (hasPhoto) {
-        geo = new THREE.SphereGeometry(32, 32, 20);
-        domeMat = new THREE.MeshBasicMaterial({
-          map: skyPhotoInfo.texture,
-          color: skyPhotoInfo.tintColor ? skyPhotoInfo.tintColor.clone() : new THREE.Color(0xffffff),
-          side: THREE.BackSide,
-        });
-        const dome = new THREE.Mesh(geo, domeMat);
-        const sunAz = typeof skyPhotoInfo.sunAzimuth === "number" ? skyPhotoInfo.sunAzimuth : 0;
-        dome.rotation.y = -sunAz + Math.PI * 0.5;
-        envScene.add(dome);
-      } else {
-        geo = new THREE.SphereGeometry(32, 20, 14);
-        const pos = geo.attributes.position;
-        const colors = new Float32Array(pos.count * 3);
-        const gndCol = new THREE.Color(0x3b352c).lerp(horCol, 0.25);
-        const tmp = new THREE.Color();
-
-        for (let i = 0; i < pos.count; i++) {
-          const ny = pos.getY(i) / 32.0;
-          if (ny >= 0.24) {
-            tmp.copy(midCol).lerp(topCol, Math.min(1, (ny - 0.24) / 0.76));
-          } else if (ny >= 0) {
-            tmp.copy(horCol).lerp(midCol, ny / 0.24);
-          } else {
-            tmp.copy(horCol).lerp(gndCol, Math.min(1, Math.pow(-ny, 0.55) * 1.3));
-          }
-          colors[i * 3] = tmp.r;
-          colors[i * 3 + 1] = tmp.g;
-          colors[i * 3 + 2] = tmp.b;
-        }
-        geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-        domeMat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide });
-        envScene.add(new THREE.Mesh(geo, domeMat));
-      }
-
-      let sunMesh;
-      if (sunDir && sunDir.y > -0.08) {
-        sunMesh = new THREE.Mesh(
-          new THREE.SphereGeometry(2.6, 10, 8),
-          new THREE.MeshBasicMaterial({ color: sunCol.clone().multiplyScalar(hasPhoto ? 1.65 : 2.0) })
-        );
-        sunMesh.position.copy(sunDir).multiplyScalar(26);
-        envScene.add(sunMesh);
-      }
+      const built = buildUe5LumenEnvScene({
+        topCol,
+        midCol,
+        horCol,
+        sunCol,
+        sunDir,
+        hour,
+        skyPhotoInfo,
+      });
       try {
-        const rt = this.pmremGenerator.fromScene(envScene, sunMesh ? 0.035 : 0.04);
+        const rt = this.pmremGenerator.fromScene(built.envScene, sunDir && sunDir.y > -0.06 ? 0.032 : 0.04);
         this.envBucketCache.set(bucket, rt);
         this.scene.environment = rt.texture;
-        const limit = this.atmosphere.mobile ? 2 : 3;
+        const limit = this.atmosphere.mobile ? 2 : 5;
         if (this.envBucketCache.size > limit) {
           const oldest = this.envBucketCache.keys().next().value;
           this.envBucketCache.get(oldest).dispose();
           this.envBucketCache.delete(oldest);
         }
       } finally {
-        sunMesh?.geometry.dispose();
-        sunMesh?.material.dispose();
-        geo.dispose();
-        domeMat.dispose();
+        built.dispose();
       }
     } catch {
       // Giữ nguyên environment hiện hành nếu lỗi
@@ -424,7 +382,7 @@ export class HuePbrMaterialLibrary {
   }
 
   /**
-   * Tự động điều chỉnh mức chi tiết Normal & Anisotropy theo cấu hình đồ họa (Siêu mượt / Cân bằng / Cao)
+   * Tự động điều chỉnh mức chi tiết Normal & Anisotropy theo cấu hình đồ họa (Siêu mượt / Cân bằng / Cao / Điện ảnh / UE5)
    */
   applyQualityPreset(qualityKey) {
     this.atmosphere.setQuality(qualityKey);
@@ -432,6 +390,12 @@ export class HuePbrMaterialLibrary {
     if (qualityKey === "fast") {
       this.normalStrengthScale = 0.35;
       this.currentAniso = 1;
+    } else if (qualityKey === "ue5") {
+      this.normalStrengthScale = 1.24;
+      this.currentAniso = Math.min(this.hwMaxAniso, 16);
+    } else if (qualityKey === "cinematic") {
+      this.normalStrengthScale = 1.15;
+      this.currentAniso = Math.min(this.hwMaxAniso, 12);
     } else if (qualityKey === "high") {
       this.normalStrengthScale = 1.1;
       this.currentAniso = Math.min(this.hwMaxAniso, 8);
@@ -621,13 +585,13 @@ export class HuePbrMaterialLibrary {
     const c = srcColor ? srcColor.clone() : new THREE.Color(0xffffff);
     c.multiplyScalar(spec.colorBoost || 1.15);
     const lum = 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
-    const minLum = spec.minLum || 0.048;
+    const minLum = spec.minLum || 0.065;
     if (lum < minLum) {
       if (lum < 1e-4) {
         c.setScalar(minLum);
       } else {
-        const lift = (minLum + lum * 0.5) / lum;
-        c.multiplyScalar(Math.min(lift, 3.4));
+        const lift = (minLum + lum * 0.45) / lum;
+        c.multiplyScalar(Math.min(lift, 4.2));
       }
     }
     c.r = Math.min(c.r, 1.0);
@@ -642,22 +606,53 @@ export class HuePbrMaterialLibrary {
     const archetypeKey = this.classifyHueMaterial(mat);
     const isWater = archetypeKey === "water_ripple";
     if (isWater && (mat.map || mat.normalMap || mat.alphaMap)) {
+      mat.vertexColors = false;
       mat.normalMap = this.waterNormalMap;
       mat.metalness = 0;
       this.atmosphere.attach(mat, true);
       return { material: mat, tileScaleM: null };
     }
 
-    // Vật liệu đã có sẵn texture gốc hợp lệ trong GLB (hoành phi Thái Hòa, Pháp lam có ảnh, cửa bức bàn) -> giữ nguyên & tăng lọc nghiêng
+    // Vật liệu đã có sẵn texture gốc hợp lệ trong GLB (hoành phi Thái Hòa, Pháp lam có ảnh, cửa bức bàn, sân gạch/đá có ảnh)
     if ((mat.map && mat.map.image) || (mat.normalMap && mat.normalMap.image)) {
       if (mat.map) mat.map.anisotropy = this.currentAniso;
       if (mat.normalMap) mat.normalMap.anisotropy = this.currentAniso;
-      mat.envMapIntensity = mat.envMapIntensity != null ? mat.envMapIntensity : 0.85;
-      this.atmosphere.attach(mat);
-      return { material: mat, tileScaleM: null };
+      if (archetypeKey) {
+        // COLOR_0 nướng sẵn từ Blender đã được chuyển sang aHueOcc trong cloneNormalizedGeometry -> tắt vertexColors để không bị đen!
+        mat.vertexColors = false;
+        const spec = SURFACE_SPECS[archetypeKey];
+        if (spec) {
+          if (!mat.normalMap && spec.normal && !isWater) {
+            mat.normalMap = this.getTexture(spec.normal, false);
+            const nScale = spec.normalScale * 0.75;
+            mat.normalScale = new THREE.Vector2(
+              nScale * this.normalStrengthScale,
+              nScale * this.normalStrengthScale
+            );
+            mat.userData.baseNormalScale = nScale;
+          }
+          if (!mat.roughnessMap && spec.rough && !isWater) {
+            mat.roughnessMap = this.getTexture(spec.rough, false);
+          }
+          mat.envMapIntensity = spec.envIntensity;
+          mat.userData.huePbrArchetype = archetypeKey;
+          attachHueRealismShader(mat, archetypeKey);
+          if (!this.upgradedMaterials.includes(mat)) {
+            this.upgradedMaterials.push(mat);
+          }
+        } else {
+          mat.envMapIntensity = mat.envMapIntensity != null ? mat.envMapIntensity : 0.9;
+        }
+      } else {
+        mat.envMapIntensity = mat.envMapIntensity != null ? mat.envMapIntensity : 0.85;
+      }
+      this.atmosphere.attach(mat, false, null, archetypeKey === "stone_masonry");
+      mat.needsUpdate = true;
+      return { material: mat, tileScaleM: SURFACE_SPECS[archetypeKey]?.tileScaleM || null };
     }
 
     if (!isWater && mat.transparent && (typeof mat.opacity !== "number" || mat.opacity < 0.96)) {
+      if (archetypeKey) mat.vertexColors = false;
       mat.envMapIntensity = 1.25;
       this.atmosphere.attach(mat);
       return { material: mat, tileScaleM: null };
@@ -732,6 +727,7 @@ export class HuePbrMaterialLibrary {
       envMapIntensity: spec.envIntensity,
     });
     pbrMat.userData.baseNormalScale = spec.normalScale;
+    pbrMat.userData.huePbrArchetype = archetypeKey;
     pbrMat.userData.shared = true;
     if (!isWater) {
       attachHueRealismShader(pbrMat, archetypeKey);

@@ -78,19 +78,29 @@ vec3 hueSkyOverlays(vec3 col, vec3 dir, float az) {
   float sunAmt = max(dot(dir, sDir), 0.0);
   if (hueSkyFx.y > 0.01 && y > 0.012) {
     vec2 cPlane = dir.xz / (y + 0.25);
-    float c1 = hueCloudFbm(cPlane * 0.45 + vec2(hueSkyClock * 0.007, hueSkyClock * 0.0028));
-    float c2 = hueCloudFbm(cPlane * 0.88 - vec2(hueSkyClock * 0.004, -hueSkyClock * 0.005));
-    float wisps = smoothstep(0.50, 0.82, c1 * 0.65 + c2 * 0.35);
+    vec2 drift1 = vec2(hueSkyClock * 0.007, hueSkyClock * 0.0028);
+    vec2 drift2 = vec2(hueSkyClock * 0.004, -hueSkyClock * 0.005);
+    float c1 = hueCloudFbm(cPlane * 0.45 + drift1);
+    float c2 = hueCloudFbm(cPlane * 0.88 - drift2);
+    float dens = smoothstep(0.47, 0.84, c1 * 0.65 + c2 * 0.35);
+    // Lấy mẫu hướng Mặt trời (Beer-Lambert + Silver-Lining tán xạ thuận chuẩn UE5 Volumetric Cloud)
+    vec2 sunStep = sDir.xz * 0.16;
+    float cSun = hueCloudFbm((cPlane + sunStep) * 0.45 + drift1);
+    float densSun = smoothstep(0.47, 0.84, cSun);
+    float trans = exp(-densSun * 1.35);
+    float silver = pow(sunAmt, 5.0) * (1.0 - dens * 0.55) * 0.75;
     float cMask = smoothstep(0.012, 0.16, y) * (1.0 - smoothstep(0.75, 0.98, y) * 0.35);
-    float sunLit = 0.78 + 0.40 * pow(sunAmt, 3.0);
-    col = mix(col, hueCloudColor * sunLit, clamp(wisps * cMask * hueSkyFx.y, 0.0, 0.38));
+    vec3 cloudShadowCol = mix(hueSkyMid * 0.74, hueCloudColor * 0.76, 0.52);
+    vec3 cloudLitCol = hueCloudColor * (0.88 + 0.48 * pow(sunAmt, 2.2)) + hueSkySunColor * silver * 0.45;
+    vec3 finalCloud = mix(cloudShadowCol, cloudLitCol, clamp(trans * 0.85 + 0.15, 0.0, 1.0));
+    col = mix(col, finalCloud, clamp(dens * cMask * hueSkyFx.y, 0.0, 0.44));
   }
 
   // 4. Quầng nắng tán xạ Mie & đĩa Mặt trời (hòa mượt cùng ảnh 360°)
   float haloFactor = mix(1.0, 0.42, clamp(hasPhoto, 0.0, 1.0));
   float aboveH = smoothstep(-0.03, 0.05, y);
-  col += hueSkySunColor * pow(sunAmt, 12.0) * hueSkyFx.x * haloFactor * aboveH;
-  col += hueSkySunColor * pow(sunAmt, 220.0) * (hueSkyFx.x * 2.1 * mix(1.0, 0.6, clamp(hasPhoto, 0.0, 1.0))) * aboveH;
+  col += hueSkySunColor * pow(sunAmt, 10.0) * hueSkyFx.x * haloFactor * aboveH;
+  col += hueSkySunColor * pow(sunAmt, 220.0) * (hueSkyFx.x * 2.25 * mix(1.0, 0.6, clamp(hasPhoto, 0.0, 1.0))) * aboveH;
 
   // 5. Sao đêm dạng điểm tròn sắc nét trên Hoàng Thành khi về khuya
   if (hueSkyFx.z > 0.01 && y > 0.04) {
@@ -106,21 +116,23 @@ vec3 hueSkyOverlays(vec3 col, vec3 dir, float az) {
     }
   }
 
-  // 6. Rặng núi xa Trường Sơn / Ngự Bình mờ sương & hòa dải chân trời liền mạch với FogExp2
+  // 6. Rặng núi xa Trường Sơn / Ngự Bình mờ sương & tán xạ Mie chân trời liền mạch
+  float sunHorizonWarmth = pow(sunAmt, 3.0) * smoothstep(-0.06, 0.28, sDir.y);
+  vec3 mieAirCol = mix(hueAirColor, mix(hueAirColor, hueSkySunColor, 0.36), sunHorizonWarmth);
   float ridge1 = 0.018 + 0.011 * sin(az * 3.0 + 0.6) + 0.005 * sin(az * 7.0 - 1.1) + 0.0025 * sin(az * 17.0 + 2.3);
   float ridge2 = 0.009 + 0.006 * sin(az * 4.0 + 2.2) + 0.003 * sin(az * 11.0 + 0.4);
   float farPeak = (1.0 - smoothstep(ridge1 - 0.002, ridge1 + 0.004, y)) * step(-0.01, y);
   float nearPeak = (1.0 - smoothstep(ridge2 - 0.0015, ridge2 + 0.003, y)) * step(-0.01, y);
-  vec3 farRidgeCol = mix(hueMountainColor, hueAirColor, 0.65);
-  vec3 nearRidgeCol = mix(hueMountainColor * 0.78, hueAirColor, 0.48);
+  vec3 farRidgeCol = mix(hueMountainColor, mieAirCol, 0.65);
+  vec3 nearRidgeCol = mix(hueMountainColor * 0.78, mieAirCol, 0.48);
   col = mix(col, farRidgeCol, farPeak * 0.74);
   col = mix(col, nearRidgeCol, nearPeak * 0.86);
 
-  float hazeBand = exp(-max(y, 0.0) * 32.0) * 0.56;
+  float hazeBand = exp(-max(y, 0.0) * 36.0) * 0.46;
   if (y < 0.0) {
     hazeBand = max(hazeBand, (1.0 - smoothstep(-0.04, 0.0, y)) * 0.96);
   }
-  col = mix(col, hueAirColor, clamp(hazeBand, 0.0, 0.96));
+  col = mix(col, mieAirCol, clamp(hazeBand, 0.0, 0.96));
   return col;
 }
 
@@ -136,7 +148,7 @@ vec3 hueSkyRadiance(vec3 dir) {
   if (hueSkyBlend.y > 0.5 && hueSkyBlend.z > 0.0) b = texture2D(hueSkyB, uv).rgb * hueSkyTint;
   vec3 col = mix(a, b, hueSkyBlend.z);
   if (hueDetail > 1.5 && hueSkyFx.w > 0.5) return hueSkyOverlays(col, dir, az);
-  float haze = max(0.56 * exp(-32.0 * max(y, 0.0)), 0.96 * (1.0 - smoothstep(-0.04, 0.0, y)));
+  float haze = max(0.48 * exp(-36.0 * max(y, 0.0)), 0.96 * (1.0 - smoothstep(-0.04, 0.0, y)));
   return mix(col, hueAirColor, haze);
 }
 
@@ -179,7 +191,7 @@ const WATER_NORMAL = /* glsl */ `
   float shore = hueShoreDistance(vHueAirPos, shoreUv);
   float shallows = 1.0 - smoothstep(0.1, 9.5, shore);
   diffuseColor.rgb = mix(diffuseColor.rgb * vec3(0.60, 0.87, 0.84), vec3(0.045, 0.134, 0.113), shallows * 0.65);
-  roughnessFactor = mix(0.135, 0.24, 1.0 - distanceFade);
+  roughnessFactor = mix(0.088, 0.22, 1.0 - distanceFade);
 `;
 
 const WATER_LIGHT = /* glsl */ `
@@ -297,7 +309,7 @@ export class HueAtmosphereWater {
     this.quality = key;
     let detail = 1;
     if (this.qa || key === "fast" || (this.mobile && key === "balanced")) detail = 0;
-    else if (!this.mobile && (key === "high" || key === "cinematic")) detail = 2;
+    else if (!this.mobile && (key === "high" || key === "cinematic" || key === "ue5")) detail = 2;
     this.uniforms.hueDetail.value = detail;
   }
 
@@ -331,7 +343,10 @@ export class HueAtmosphereWater {
     const a = HOURS[i - 1], b = HOURS[i];
     const k = THREE.MathUtils.smoothstep(h, a[0], b[0]);
     u.hueMist.value.set(THREE.MathUtils.lerp(a[1], b[1], k), THREE.MathUtils.lerp(a[2], b[2], k));
-    if (this.renderer) this.renderer.toneMappingExposure = THREE.MathUtils.lerp(a[3], b[3], k);
+    if (this.renderer && !this.qa) {
+      const expGain = this.quality === "ue5" || this.quality === "cinematic" || this.quality === "high" ? 1.09 : 1.0;
+      this.renderer.toneMappingExposure = THREE.MathUtils.lerp(a[3], b[3], k) * expGain;
+    }
   }
 
   setAnchors(globes) {

@@ -34,8 +34,9 @@ Trên Google Drive tồn tại các thư mục cũ trùng tên. Mọi script `rc
 6. `hue_view_performance.js` bố trí nhãn theo kích thước màn hình, điều chỉnh mật độ điểm ảnh và làm ấm shader.
 7. `hue_atmosphere_water.js` đồng bộ mặt nước, sương và đèn lồng theo giờ. `hue_postfx.js` dùng các addon r170 và giấy phép trong `vendor/three/`. Khi thay phiên bản Three.js, đồng bộ những phụ thuộc này với `three.module.js`.
 8. `court_audio.js` (`assets/audio/*`), `heritage_voice.js` (`assets/voice/*`, `scripts/generate_ai_voices.py`) và `heritage_quests.js` (`assets/quests/quests_manifest.json`): Nhã nhạc cung đình 3D, tự động hạ nhạc nền (audio ducking) khi thuyết minh AI tiếng Việt miễn phí (`Hoài My` & `Nam Minh` Neural TTS + `Web Speech API` dự phòng) đang phát, cùng Chiến dịch 7 Chương Nhiệm vụ Tân Khoa Tiến Sĩ 1880 (NPC 3D, cột sáng dẫn đường, giải đố lịch sử nhận 7 Ấn triện Hoàng cung).
-9. Kiểm tra `?qa=1` với đường vẽ trực tiếp. Kiểm tra riêng bản công khai ở mức Cao và Điện ảnh để xác nhận chuỗi hậu kỳ thực sự dựng khung hình.
+9. Kiểm tra `?qa=1` với đường vẽ trực tiếp. Kiểm tra riêng bản công khai ở mức Cao, Điện ảnh và Unreal Engine 5 (`ue5`) để xác nhận chuỗi hậu kỳ thực sự dựng khung hình.
 10. `hue_graphics_physics.js` & `hue_imperial_court_npcs.js`: Thời tiết 3 chế độ (Nắng gió / Mưa Huế / Sương trầm), sân gạch ướt bóng, khói Đỉnh Đồng, cờ Đại Kỳ Kỳ Đài & Bến Ngự động theo gió, 64 Hoa Đăng nổi lực đẩy Archimedes trên Hồ Thái Dịch & Sông Hương, cùng 97 Thị vệ, Cấm binh tuần tiễu và Văn/Võ Bá Quan Triều Nguyễn 1880 chào lễ & hiển thị Radar (phím `G` hành lễ).
+11. `hue_ue5_engine.js` & mức đồ họa `ue5` (`#btn-ue5-toggle`): Ánh sáng gián tiếp đa nảy **UE5 Lumen** (bức xạ vòm trời HDR kép + dội ấm gạch Bát Tràng), **GTAO** nhuộm màu đa nảy, bóng tiếp xúc vi mô **SSCS**, phản xạ không gian màn hình **SSR** trên mặt nước & sân gạch ướt mưa, tia nắng thể tích **Volumetric God-Rays**, **AgX Filmic Tone Mapping** + phơi sáng mắt tự động (Auto-Exposure) và làm nét **AMD FidelityFX CAS** kết hợp bộ điều tốc DPR động mượt mà.
 
 ## 4. Quy Trình Đồng Bộ Trước & Sau Mỗi Phiên Làm Việc
 ```bash

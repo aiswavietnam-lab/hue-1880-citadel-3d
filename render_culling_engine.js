@@ -1055,6 +1055,10 @@ export class HueRenderCullingEngine {
       postProcessingActive: false,
       bloomActive: false,
       saoActive: false,
+      ue5Active: false,
+      gtaoActive: false,
+      ssrActive: false,
+      godRaysActive: false,
       iblActive: false,
       visibleTiles: 0,
       frustumCulledTiles: 0,
@@ -1157,9 +1161,10 @@ export class HueRenderCullingEngine {
       this.sunElevation = sunElevDeg;
       this.postFX?.setSunElevation(sunElevDeg);
     }
-    if (!this.iblEnvRT || !("environmentIntensity" in this.scene)) return;
-    const dayFactor = THREE.MathUtils.clamp((sunElevDeg + 4) / 26, 0.18, 1.0);
+    if (!("environmentIntensity" in this.scene)) return;
+    const dayFactor = THREE.MathUtils.clamp((sunElevDeg + 4) / 26, 0.22, 1.0);
     this.scene.environmentIntensity = Number((presetIbl * dayFactor).toFixed(3));
+    this.stats.iblActive = Boolean(this.scene.environment || this.iblEnvRT);
   }
 
   isCsmEligibleMaterial(mat) {
@@ -1253,6 +1258,8 @@ export class HueRenderCullingEngine {
     const maxFar = isGroundMode
       ? Number(preset.shadowFarGta || 520)
       : Number(preset.shadowFarBird || 1350);
+    const targetShadowBias = preset.ue5 ? -0.00024 : -0.00032;
+    const targetNormalBias = preset.ue5 ? 0.026 : 0.035;
 
     if (!this.csm) {
       const sunDirToGround = this.sunLight.target.position
@@ -1271,7 +1278,7 @@ export class HueRenderCullingEngine {
         maxFar,
         mode: "practical",
         shadowMapSize: shadowSize,
-        shadowBias: -0.00032,
+        shadowBias: targetShadowBias,
         lightNear: 1,
         lightFar: 3200,
         lightMargin: 280,
@@ -1280,7 +1287,8 @@ export class HueRenderCullingEngine {
       });
       this.csm.fade = true;
       for (const l of this.csm.lights) {
-        l.shadow.normalBias = 0.035;
+        l.shadow.bias = targetShadowBias;
+        l.shadow.normalBias = targetNormalBias;
         l.color.copy(this.sunLight.color);
         l.intensity = this.sunLight.intensity;
       }
@@ -1290,10 +1298,14 @@ export class HueRenderCullingEngine {
       this.sunLight.shadow.mapPass = null;
       this.setupObjectForCsm(this.scene);
       this.csm.updateFrustums();
-    } else if (this.csm.maxFar !== maxFar || this.csm.shadowMapSize !== shadowSize) {
+    } else {
+      const needFrustumUpdate = this.csm.maxFar !== maxFar || this.csm.shadowMapSize !== shadowSize;
       this.csm.maxFar = maxFar;
+      this.csm.shadowBias = targetShadowBias;
       for (const l of this.csm.lights) {
         l.castShadow = true;
+        l.shadow.bias = targetShadowBias;
+        l.shadow.normalBias = targetNormalBias;
         if (l.shadow.mapSize.x !== shadowSize) {
           l.shadow.mapSize.set(shadowSize, shadowSize);
           l.shadow.dispose();
@@ -1302,7 +1314,9 @@ export class HueRenderCullingEngine {
         }
       }
       this.csm.shadowMapSize = shadowSize;
-      this.csm.updateFrustums();
+      if (needFrustumUpdate) {
+        this.csm.updateFrustums();
+      }
     }
 
     this.sunLight.castShadow = false;
@@ -1359,29 +1373,47 @@ export class HueRenderCullingEngine {
     if (this.csm && this.stats.csmActive) {
       this.csm.updateFrustums();
       this.csm.update();
+      if (this.renderer.shadowMap.enabled) {
+        this.renderer.shadowMap.needsUpdate = true;
+      }
     }
+  }
+
+  _syncPostFxStats(targetKey) {
+    this.stats.postProcessingActive = true;
+    this.stats.bloomActive = true;
+    this.stats.fxaaActive = true;
+    this.stats.saoActive = targetKey === "cinematic" || targetKey === "ue5";
+    this.stats.ue5Active = targetKey === "ue5";
+    this.stats.gtaoActive = true;
+    this.stats.ssrActive = targetKey === "cinematic" || targetKey === "ue5";
+    this.stats.godRaysActive = true;
   }
 
   async ensurePostProcessing(preset, isQaMode) {
     const request = ++this.postFXRequest;
-    const cinematic = Boolean(preset.sao);
-    if (isQaMode || !(preset.bloom || cinematic)) {
+    const wantsPost = Boolean(preset.bloom || preset.sao || preset.ue5);
+    if (isQaMode || !wantsPost) {
       this.releasePostFX();
       return false;
     }
-    if (this.postFX?.cinematic === cinematic) return true;
-    this.releasePostFX();
+    const targetKey = preset.ue5 ? "ue5" : preset.sao ? "cinematic" : "high";
+    if (this.postFX) {
+      if (this.postFX.presetKey !== targetKey) {
+        this.postFX.setPreset(targetKey);
+      }
+      this.postFX.setSunElevation(this.sunElevation);
+      this._syncPostFxStats(targetKey);
+      return true;
+    }
     const extensions = this.renderer.extensions;
     if (!(extensions.has("EXT_color_buffer_float") || extensions.has("EXT_color_buffer_half_float"))) return false;
     try {
       const { HuePostFX } = await import("./hue_postfx.js");
       if (request !== this.postFXRequest) return false;
-      this.postFX = new HuePostFX(this.renderer, this.scene, this.camera, cinematic);
+      this.postFX = new HuePostFX(this.renderer, this.scene, this.camera, targetKey);
       this.postFX.setSunElevation(this.sunElevation);
-      this.stats.postProcessingActive = true;
-      this.stats.bloomActive = true;
-      this.stats.fxaaActive = true;
-      this.stats.saoActive = cinematic;
+      this._syncPostFxStats(targetKey);
       return true;
     } catch (error) {
       if (request === this.postFXRequest) {
@@ -1399,6 +1431,10 @@ export class HueRenderCullingEngine {
     this.stats.bloomActive = false;
     this.stats.fxaaActive = false;
     this.stats.saoActive = false;
+    this.stats.ue5Active = false;
+    this.stats.gtaoActive = false;
+    this.stats.ssrActive = false;
+    this.stats.godRaysActive = false;
   }
 
   resizePostProcessing(width, height, dpr = this.renderer.getPixelRatio()) {
@@ -1412,7 +1448,13 @@ export class HueRenderCullingEngine {
   }
 
   renderSceneFrame(nowMs = performance.now(), isQaMode = false, forceImmediate = false) {
-    if (this.csm && forceImmediate) this.csm.update();
+    if (this.csm && forceImmediate) {
+      this.camera.updateMatrixWorld();
+      this.csm.update();
+      if (this.renderer.shadowMap.enabled) {
+        this.renderer.shadowMap.needsUpdate = true;
+      }
+    }
     if (this.postFX && !isQaMode) {
       try {
         this.postFX.render();

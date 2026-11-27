@@ -3066,3 +3066,21 @@ body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-set
   display: none;
 }
 
+/* Nút chuyển nhanh Đồ họa Unreal Engine 5 Lumen trên thanh tiêu đề */
+.ue5-top-btn {
+  border-color: rgba(217, 189, 133, 0.42);
+  color: var(--imperial-gold-bright);
+  background: rgba(217, 189, 133, 0.08);
+}
+.ue5-top-btn:hover {
+  border-color: var(--imperial-gold-bright);
+  background: rgba(217, 189, 133, 0.18);
+}
+.ue5-top-btn.is-active {
+  background: linear-gradient(135deg, rgba(212, 160, 23, 0.28), rgba(44, 138, 119, 0.28));
+  border-color: #f4d37d;
+  color: #fff6dc;
+  box-shadow: 0 0 12px rgba(212, 160, 23, 0.26);
+}
+
+

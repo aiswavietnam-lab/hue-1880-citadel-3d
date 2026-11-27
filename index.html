@@ -74,6 +74,7 @@
         </svg>
         <span>Danh mục</span>
       </button>
+      <button id="btn-ue5-toggle" class="museum-btn ue5-top-btn" type="button" aria-label="Đồ họa Unreal Engine 5 Lumen" title="Bật / Tắt đồ họa Unreal Engine 5 (Lumen GI · GTAO · SSR · God Rays · AgX CAS)" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M12 2.5L14.4 9.6L21.5 12L14.4 14.4L12 21.5L9.6 14.4L2.5 12L9.6 9.6L12 2.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>UE5 Lumen</span></button>
       <button id="heritage-controls-toggle" class="museum-btn" type="button" aria-label="Điều khiển" title="Điều khiển" aria-controls="hud-bottombar" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-sliders"/></svg><span>Điều khiển</span></button>
       <button id="heritage-photo-toggle" class="museum-btn" type="button" aria-label="Ẩn giao diện (H)" title="Ẩn giao diện (H)" aria-pressed="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-frame"/></svg><span>Ẩn giao diện (H)</span></button>
       <button id="heritage-png" class="museum-btn" type="button" aria-label="Chụp PNG" title="Chụp PNG" ><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-photo"/></svg><span>Chụp PNG</span></button>
@@ -399,9 +400,10 @@
     <label class="quality-row" for="quality-select">Chất lượng hình ảnh
       <select id="quality-select" class="quality-select" aria-label="Mức đồ họa tối ưu hiệu năng" title="Chọn mức đồ họa phù hợp cấu hình máy">
         <option value="fast">Đồ họa: Siêu mượt</option>
-        <option value="balanced" selected>Đồ họa: Cân bằng (CSM 3 tầng)</option>
-        <option value="high">Đồ họa: Cao (CSM 1.5K · Bloom)</option>
-        <option value="cinematic">Đồ họa: Điện ảnh (CSM 2K · AO · Bloom)</option>
+        <option value="balanced">Đồ họa: Cân bằng (CSM 3 tầng)</option>
+        <option value="high">Đồ họa: Cao (CSM 1.5K · Bloom · AgX)</option>
+        <option value="cinematic">Đồ họa: Điện ảnh (CSM 2K · GTAO · SSR · Bloom)</option>
+        <option value="ue5" selected>Đồ họa: Unreal Engine 5 (Lumen · GTAO · SSR · God Rays)</option>
       </select>
     </label>
     <details class="model-details"><summary>Thông số hiển thị</summary>

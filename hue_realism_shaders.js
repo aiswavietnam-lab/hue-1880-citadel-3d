@@ -1,13 +1,15 @@
 import * as THREE from "three";
+import { ue5Uniforms } from "./hue_ue5_engine.js";
 
 /**
- * hue_realism_shaders.js — Bộ Shader Chân Thực Khí Hậu Huế, Nướng Bóng Khe Hốc (Vertex AO) & Gió Tự Nhiên
- * ========================================================================================================
+ * hue_realism_shaders.js — Bộ Shader Chân Thực Khí Hậu Huế, Lumen GI Đa Nảy, Clearcoat Sơn Mài & Tán Xạ Dưới Bề Mặt Lá (UE5)
+ * ============================================================================================================================
  * 1. Pha trộn rêu phong ẩm chân tường, vệt mưa nhiệt đới Cố đô & biến thiên sắc độ sân gạch Bát Tràng / đá Thanh
  *    trực tiếp trên GPU (0 MB dung lượng tệp .glb, 0 lượt đọc texture phụ, giữ nguyên gộp chung draw call).
  * 2. Tính toán trước độ khuất sáng kiến trúc (Vertex Ambient Occlusion & Crevice Dirt `aHueOcc`) cho toàn bộ
  *    gầm mái hiên Trùng thiềm điệp ốc, chân cột gỗ lim, hốc tường và nội thất cung điện.
- * 3. Hiệu ứng gió Sông Hương lay nhẹ tán cây cổ thụ, sen hồ và lá cảnh trên Vertex Shader (0 tải CPU).
+ * 3. Tích hợp mô hình ánh sáng gián tiếp đa nảy kiểu UE5 Lumen, lớp phủ bóng Clearcoat kép cho Sơn son thếp vàng / Lưu ly,
+ *    tán xạ xuyên thấu lá cây (Two-Sided Foliage SSS) và khử nhấp nháy phản xạ vi mô Kaplanyan Specular AA.
  * 4. Tương thích 100% với đổ bóng tầng CSM (Cascaded Shadow Maps) qua cơ chế nối chuỗi `onBeforeCompile`.
  */
 
@@ -48,10 +50,13 @@ export function setHueRealismQuality(presetKey) {
     hueRealismUniforms.uHueBounceStrength.value = 0.75;
   } else if (presetKey === "balanced") {
     hueRealismUniforms.uHueWeatherStrength.value = 0.95;
-    hueRealismUniforms.uHueBounceStrength.value = 1.0;
+    hueRealismUniforms.uHueBounceStrength.value = 1.05;
+  } else if (presetKey === "ue5") {
+    hueRealismUniforms.uHueWeatherStrength.value = 1.22;
+    hueRealismUniforms.uHueBounceStrength.value = 1.38;
   } else {
-    hueRealismUniforms.uHueWeatherStrength.value = 1.12;
-    hueRealismUniforms.uHueBounceStrength.value = 1.15;
+    hueRealismUniforms.uHueWeatherStrength.value = 1.14;
+    hueRealismUniforms.uHueBounceStrength.value = 1.24;
   }
 }
 
@@ -99,6 +104,13 @@ function buildVertexBeforeProject(mode) {
 const FRAGMENT_PARS_GLSL = /* glsl */ `
 uniform float uHueWeatherStrength;
 uniform float uHueBounceStrength;
+uniform float uUe5Quality;
+uniform vec3 uUe5SunDir;
+uniform vec3 uUe5SunColor;
+uniform vec3 uUe5SkyColor;
+uniform vec3 uUe5GroundBounce;
+uniform float uUe5LanternPower;
+uniform float uUe5Wetness;
 varying vec3 vHueWPos;
 varying vec3 vHueWNorm;
 varying float vHueArchOcc;
@@ -129,6 +141,15 @@ float hueFbm2(vec2 p) {
 `;
 
 function buildSurfaceWeatherGlsl(mode) {
+  const specularAaTail = /* glsl */ `
+    if (uUe5Quality > 0.55) {
+      vec3 dndu = dFdx(wn);
+      vec3 dndv = dFdy(wn);
+      float normVar = dot(dndu, dndu) + dot(dndv, dndv);
+      roughnessFactor = clamp(sqrt(roughnessFactor * roughnessFactor + min(normVar * 0.32, 0.16)), 0.06, 1.0);
+    }
+  `;
+
   if (mode === HUE_REALISM_MODES.MASONRY_WEATHERED) {
     return /* glsl */ `
   #include <roughnessmap_fragment>
@@ -137,10 +158,12 @@ function buildSurfaceWeatherGlsl(mode) {
     float absNy = abs(wn.y);
     float wallFactor = smoothstep(0.76, 0.32, absNy);
 
-    // 1. Biến thiên sắc độ tự nhiên quy mô lớn trên sân chầu, gạch Bát Tràng & tường thành (chống lặp vân)
+    // 1. Biến thiên sắc độ tự nhiên quy mô lớn + vi hạt đá/gạch ở cự ly gần kiểu Nanite (chống lặp vân)
     float macro = hueFbm2(vHueWPos.xz * 0.052 + vec2(vHueWPos.y * 0.09));
     float micro = hueValueNoise(vHueWPos.xz * 0.65 + vHueWPos.y * 0.85);
-    float toneShift = mix(1.0, 0.88 + macro * 0.22, 0.72 * uHueWeatherStrength);
+    float closeMask = 1.0 - smoothstep(6.0, 32.0, length(cameraPosition - vHueWPos));
+    float fineGrain = (hueValueNoise(vHueWPos.xz * 6.5 + vHueWPos.y * 5.2) - 0.5) * 0.08 * closeMask * uUe5Quality;
+    float toneShift = mix(1.0, 0.90 + macro * 0.20 + fineGrain, 0.72 * uHueWeatherStrength);
     diffuseColor.rgb *= toneShift;
 
     // 2. Rêu phong ẩm chân tường thành, kè hào nước & bậc đá Thanh đặc trưng khí hậu Huế
@@ -151,22 +174,26 @@ function buildSurfaceWeatherGlsl(mode) {
     float mossMask = smoothstep(0.46, 0.78, mossNoise) * dampZone * wallFactor * uHueWeatherStrength;
     vec3 hueMossColor = vec3(0.125, 0.185, 0.095);
     diffuseColor.rgb = mix(diffuseColor.rgb, hueMossColor, clamp(mossMask * 0.62, 0.0, 0.58));
-    diffuseColor.rgb *= mix(1.0, 0.76, dampZone * wallFactor * 0.45 * uHueWeatherStrength);
+    diffuseColor.rgb *= mix(1.0, 0.78, dampZone * wallFactor * 0.42 * uHueWeatherStrength);
 
     // 3. Vệt mưa nhiệt đới ngấm dọc tường gạch vồ Vauban & đài Ngọ Môn
     float streakCoord = (vHueWPos.x + vHueWPos.z) * 0.42;
     float rainStreak = hueFbm2(vec2(streakCoord, vHueWPos.y * 0.11));
     float streakMask = smoothstep(0.54, 0.84, rainStreak) * wallFactor * smoothstep(0.5, 4.5, vHueWPos.y);
-    diffuseColor.rgb *= mix(1.0, 0.82, streakMask * 0.48 * uHueWeatherStrength);
+    diffuseColor.rgb *= mix(1.0, 0.84, streakMask * 0.46 * uHueWeatherStrength);
 
-    // 4. Biến thiên độ nhám ẩm nhẹ trên mặt sân đá/gạch sau mưa Huế
+    // 4. Vũng nước đọng & độ bóng ướt vật lý trên mặt sân đá/gạch Bát Tràng khi mưa Huế
     float flatPaver = smoothstep(0.82, 0.96, absNy);
-    float dampPuddle = smoothstep(0.58, 0.85, macro * 0.7 + micro * 0.3) * flatPaver;
+    float puddleNoise = smoothstep(0.50, 0.80, macro * 0.68 + micro * 0.32);
+    float dampPuddle = puddleNoise * flatPaver;
+    float rainPuddle = clamp(uUe5Wetness * (0.45 + 0.55 * puddleNoise) * flatPaver, 0.0, 1.0);
+    diffuseColor.rgb *= mix(1.0, 0.80, rainPuddle * 0.45);
     roughnessFactor = clamp(
-      roughnessFactor * mix(1.0, 0.72, dampPuddle * 0.45 * uHueWeatherStrength) + mossMask * 0.14,
-      0.14,
+      roughnessFactor * mix(1.0, 0.72, dampPuddle * 0.42 * uHueWeatherStrength) * mix(1.0, 0.22, rainPuddle) + mossMask * 0.14,
+      0.08,
       1.0
     );
+    ${specularAaTail}
   }
 `;
   }
@@ -177,13 +204,14 @@ function buildSurfaceWeatherGlsl(mode) {
   {
     vec3 wn = normalize(vHueWNorm);
     float woodGrainVar = hueFbm2(vec2((vHueWPos.x + vHueWPos.z) * 0.38, vHueWPos.y * 0.55));
-    diffuseColor.rgb *= mix(1.0, 0.92 + woodGrainVar * 0.15, 0.55 * uHueWeatherStrength);
+    diffuseColor.rgb *= mix(1.0, 0.93 + woodGrainVar * 0.14, 0.55 * uHueWeatherStrength);
 
-    // Lớp bóng sơn mài cung đình & men lưu ly ở góc nhìn xiên (Fresnel Clearcoat tự nhiên chuẩn hệ tọa độ thế giới)
+    // Lớp bóng sơn mài cung đình & men lưu ly ở góc nhìn xiên (UE5 Dual-Lobe Clearcoat Fresnel)
     vec3 viewDirWorld = normalize(cameraPosition - vHueWPos);
     float ndv = clamp(abs(dot(wn, viewDirWorld)), 0.0, 1.0);
     float graze = pow(1.0 - ndv, 3.0);
-    roughnessFactor = clamp(roughnessFactor * mix(1.0, 0.74, graze * 0.55), 0.08, 1.0);
+    roughnessFactor = clamp(roughnessFactor * mix(1.0, 0.68, graze * 0.62) * mix(1.0, 0.55, uUe5Wetness * 0.5), 0.06, 1.0);
+    ${specularAaTail}
   }
 `;
   }
@@ -192,38 +220,91 @@ function buildSurfaceWeatherGlsl(mode) {
   return /* glsl */ `
   #include <roughnessmap_fragment>
   {
+    vec3 wn = normalize(vHueWNorm);
     float canopyGrad = smoothstep(0.8, 7.5, vHueWPos.y);
     float leafPatch = hueValueNoise(vHueWPos.xz * 0.28);
-    vec3 sunLeafTint = diffuseColor.rgb * vec3(1.12, 1.14, 0.92);
-    vec3 deepCanopyTint = diffuseColor.rgb * vec3(0.74, 0.82, 0.78);
+    vec3 sunLeafTint = diffuseColor.rgb * vec3(1.14, 1.16, 0.92);
+    vec3 deepCanopyTint = diffuseColor.rgb * vec3(0.76, 0.85, 0.79);
     diffuseColor.rgb = mix(deepCanopyTint, sunLeafTint, clamp(canopyGrad * 0.72 + leafPatch * 0.28, 0.0, 1.0));
+    ${specularAaTail}
   }
 `;
 }
 
-const AO_AND_BOUNCE_GLSL = /* glsl */ `
+function buildAoAndBounceGlsl(mode) {
+  const clearcoatBlock =
+    mode === HUE_REALISM_MODES.IMPERIAL_LACQUER_GLAZE
+      ? /* glsl */ `
+    if (uUe5Quality > 0.6 && uUe5SunDir.y > -0.04) {
+      vec3 ccView = normalize(cameraPosition - vHueWPos);
+      vec3 ccSun = normalize(uUe5SunDir);
+      vec3 ccHalf = normalize(ccView + ccSun);
+      float ccNdh = max(dot(wnAo, ccHalf), 0.0);
+      float ccNdv = max(dot(wnAo, ccView), 0.0);
+      float ccNdl = max(dot(wnAo, ccSun), 0.0);
+      float ccA2 = 0.0068;
+      float ccDen = ccNdh * ccNdh * (ccA2 - 1.0) + 1.0;
+      float ccD = min(ccA2 / max(3.14159265 * ccDen * ccDen, 1e-4), 12.0);
+      float ccF = 0.045 + 0.955 * pow(1.0 - ccNdv, 5.0);
+      float skyVis = clamp(wnAo.y * 0.5 + 0.5, 0.15, 1.0) * combinedHueAo;
+      reflectedLight.directSpecular += uUe5SunColor * (ccD * ccF * ccNdl * 0.26 * skyVis * clamp(uUe5Quality, 0.6, 1.35));
+      reflectedLight.indirectSpecular += uUe5SkyColor * (ccF * 0.14 * skyVis);
+    }
+`
+      : "";
+
+  const foliageSssBlock =
+    mode === HUE_REALISM_MODES.FOLIAGE_WIND
+      ? /* glsl */ `
+    if (uUe5Quality > 0.5 && uUe5SunDir.y > -0.05) {
+      vec3 sssView = normalize(cameraPosition - vHueWPos);
+      vec3 sssSun = normalize(uUe5SunDir);
+      float backLit = pow(clamp(dot(sssView, -sssSun), 0.0, 1.0), 3.2);
+      float wrapLit = clamp((dot(wnAo, sssSun) + 0.45) / 1.45, 0.0, 1.0);
+      float sunVis = smoothstep(-0.04, 0.28, sssSun.y);
+      vec3 leafTrans = diffuseColor.rgb * vec3(1.15, 1.28, 0.62) * uUe5SunColor;
+      reflectedLight.indirectDiffuse += leafTrans * ((backLit * 0.44 + wrapLit * 0.16) * sunVis * combinedHueAo);
+    }
+`
+      : "";
+
+  return /* glsl */ `
   #include <aomap_fragment>
   {
     vec3 wnAo = normalize(vHueWNorm);
-    // 1. Bóng mềm khe hốc kiến trúc nướng sẵn theo đỉnh (aHueOcc) + tối tự nhiên dưới gầm mái hiên
-    float bakedAo = 1.0 - vHueArchOcc;
-    float underEaveAo = mix(0.76, 1.0, clamp(wnAo.y * 0.5 + 0.5, 0.0, 1.0));
+    // 1. Bóng mềm khe hốc kiến trúc nướng sẵn theo đỉnh (aHueOcc) + bảo toàn chi tiết vùng tối kiểu UE5 Lumen
+    float bakedAo = 1.0 - vHueArchOcc * 0.85;
+    float underEaveAo = mix(0.78, 1.0, clamp(wnAo.y * 0.5 + 0.5, 0.0, 1.0));
     float wallVert = smoothstep(0.82, 0.35, abs(wnAo.y));
-    float plinthContact = mix(0.80, 1.0, smoothstep(0.0, 0.42, abs(vHueWPos.y))) * wallVert + (1.0 - wallVert);
-    float combinedHueAo = clamp(bakedAo * underEaveAo * plinthContact, 0.28, 1.0);
+    float plinthContact = mix(0.82, 1.0, smoothstep(0.0, 0.42, abs(vHueWPos.y))) * wallVert + (1.0 - wallVert);
+    float combinedHueAo = clamp(bakedAo * underEaveAo * plinthContact, 0.32, 1.0);
 
-    reflectedLight.indirectDiffuse *= combinedHueAo;
-    reflectedLight.indirectSpecular *= mix(1.0, combinedHueAo, 0.62);
+    // Nhuộm màu đa nảy cho AO vật liệu để hốc gỗ sơn son / gạch Bát Tràng giữ sắc ấm không bị xám đen
+    vec3 matTintAo = mix(vec3(combinedHueAo), pow(vec3(combinedHueAo), vec3(0.75, 0.86, 0.96)), 0.45);
+    reflectedLight.indirectDiffuse *= matTintAo;
+    reflectedLight.indirectSpecular *= mix(1.0, combinedHueAo, 0.58);
 
-    // 2. Ánh nắng hắt ấm từ mặt sân gạch Bát Tràng / đá Thanh lên gầm mái hiên & hệ vì kèo sơn son thếp vàng
-    float upBounceMask = clamp(-wnAo.y, 0.0, 1.0) * smoothstep(1.2, 3.2, vHueWPos.y) * (1.0 - smoothstep(12.0, 20.0, vHueWPos.y));
-    vec3 courtyardWarmBounce = vec3(0.095, 0.062, 0.032) * upBounceMask * uHueBounceStrength;
-    reflectedLight.indirectDiffuse += diffuseColor.rgb * courtyardWarmBounce;
+    // 2. Bức xạ gián tiếp đa nảy kiểu UE5 Lumen (ánh dội ấm từ sân gạch lên gầm mái + ánh trời xanh bù vùng khuất nắng)
+    float heightAtten = 1.0 - smoothstep(1.5, 22.0, max(vHueWPos.y, 0.0));
+    float bounceReceiv = (0.36 + 0.64 * clamp(-wnAo.y * 0.62 + 0.38, 0.0, 1.0)) * heightAtten;
+    vec3 lumenGroundGI = uUe5GroundBounce * (bounceReceiv * 0.24 * uHueBounceStrength * (0.45 + 0.55 * combinedHueAo));
+
+    float skyHemisphere = clamp(wnAo.y * 0.5 + 0.5, 0.08, 1.0);
+    float shadowSide = 1.0 - 0.45 * clamp(dot(wnAo, normalize(uUe5SunDir)), 0.0, 1.0);
+    vec3 lumenSkyGI = uUe5SkyColor * (skyHemisphere * shadowSide * 0.14 * combinedHueAo * clamp(uUe5Quality, 0.4, 1.3));
+
+    float lanternZone = (1.0 - smoothstep(0.4, 9.5, max(vHueWPos.y, 0.0))) * uUe5LanternPower;
+    vec3 lumenLanternGI = vec3(0.30, 0.15, 0.045) * lanternZone * combinedHueAo;
+
+    reflectedLight.indirectDiffuse += diffuseColor.rgb * (lumenGroundGI + lumenSkyGI + lumenLanternGI);
+    ${clearcoatBlock}
+    ${foliageSssBlock}
   }
 `;
+}
 
 /**
- * Gắn bộ Shader Chân thực Huế vào `MeshStandardMaterial` theo cách tương thích nối chuỗi với CSM.
+ * Gắn bộ Shader Chân thực Huế + UE5 Lumen GI vào `MeshStandardMaterial` theo cách tương thích nối chuỗi với CSM.
  */
 export function attachHueRealismShader(material, archetypeKey) {
   if (!material || !material.isMeshStandardMaterial) return material;
@@ -237,11 +318,19 @@ export function attachHueRealismShader(material, archetypeKey) {
 
   const vertReplace = buildVertexBeforeProject(mode);
   const fragWeatherReplace = buildSurfaceWeatherGlsl(mode);
+  const fragAoBounceReplace = buildAoAndBounceGlsl(mode);
 
   const applyRealismToShader = (shader) => {
     shader.uniforms.uHueWindTime = hueRealismUniforms.uHueWindTime;
     shader.uniforms.uHueWeatherStrength = hueRealismUniforms.uHueWeatherStrength;
     shader.uniforms.uHueBounceStrength = hueRealismUniforms.uHueBounceStrength;
+    shader.uniforms.uUe5Quality = ue5Uniforms.uUe5Quality;
+    shader.uniforms.uUe5SunDir = ue5Uniforms.uUe5SunDir;
+    shader.uniforms.uUe5SunColor = ue5Uniforms.uUe5SunColor;
+    shader.uniforms.uUe5SkyColor = ue5Uniforms.uUe5SkyColor;
+    shader.uniforms.uUe5GroundBounce = ue5Uniforms.uUe5GroundBounce;
+    shader.uniforms.uUe5LanternPower = ue5Uniforms.uUe5LanternPower;
+    shader.uniforms.uUe5Wetness = ue5Uniforms.uUe5Wetness;
 
     if (!shader.vertexShader.includes("varying vec3 vHueWPos;")) {
       shader.vertexShader = shader.vertexShader
@@ -253,11 +342,11 @@ export function attachHueRealismShader(material, archetypeKey) {
       shader.fragmentShader = shader.fragmentShader
         .replace("#include <common>", `#include <common>\n${FRAGMENT_PARS_GLSL}`)
         .replace("#include <roughnessmap_fragment>", fragWeatherReplace)
-        .replace("#include <aomap_fragment>", AO_AND_BOUNCE_GLSL);
+        .replace("#include <aomap_fragment>", fragAoBounceReplace);
     }
   };
 
-  chainHueShader(material, `hueRealism_${mode}`, applyRealismToShader);
+  chainHueShader(material, `hueRealismUe5_${mode}`, applyRealismToShader);
   return material;
 }
 
