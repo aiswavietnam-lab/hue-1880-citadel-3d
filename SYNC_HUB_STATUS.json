@@ -32,10 +32,10 @@
     "heritage_ui.js",
     "heritage_voice.js",
     "hue_atmosphere_water.js",
-    "hue_character_realistic.js",
+    "hue_character_realistic.js (1880 Nguyen Dynasty Continuous-Sculpted Head & Tailored Ao Ngu Than PBR Engine)",
     "hue_graphics_physics.js",
     "hue_imperial_court_npcs.js",
-    "hue_mobile_gyro360.js",
+    "hue_mobile_gyro360.js (Quaternion 360 Mobile Gyro Look & Compass HUD)",
     "hue_postfx.js",
     "hue_realism_shaders.js",
     "hue_touch_controls.js",
@@ -46,7 +46,7 @@
   "total_tiles": 30,
   "last_sync_backend": "cli",
   "last_sync_applied_files": 0,
-  "last_sync_utc": "2026-11-27T17:55:00+00:00",
+  "last_sync_utc": "2026-11-28T03:48:00+00:00",
   "tile_versions": {
     "T01": {
       "version": 30,

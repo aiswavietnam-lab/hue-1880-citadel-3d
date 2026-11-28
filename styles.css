@@ -3098,11 +3098,9 @@ body.hue-touch-ui :is(#heritage-card, #hud-bottombar, #tile-inspector, #move-set
   gap: 8px;
   padding: 5px 8px 5px 11px;
   border-radius: 999px;
-  background: rgba(18, 20, 17, 0.88);
-  border: 1px solid rgba(217, 189, 133, 0.48);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(18, 20, 17, 0.95);
+  border: 1px solid rgba(217, 189, 133, 0.54);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
   max-width: calc(100vw - 96px);
   transition: top 0.2s ease, opacity 0.18s ease;
 }
@@ -3253,31 +3251,52 @@ body:has(#hue-quest-tracker:not(.hidden)) .hue-roleplay-360-bar {
 @media (max-width: 820px) {
   .hue-roleplay-360-bar {
     top: calc(var(--header-bottom) + 48px);
-    left: 50%;
-    transform: translateX(-50%);
-    max-width: calc(100vw - 144px);
-    padding: 3px 6px 3px 8px;
-    gap: 5px;
+    left: 76px;
+    right: 52px;
+    transform: none;
+    margin: 0 auto;
+    width: max-content;
+    max-width: calc(100vw - 128px);
+    padding: 3px 6px 3px 7px;
+    gap: 4px;
+    overflow: hidden;
   }
   body:has(#hue-quest-tracker:not(.hidden)) .hue-roleplay-360-bar {
     top: calc(var(--header-bottom) + 80px);
   }
-  .hue-compass-tape {
-    width: 68px;
-    height: 19px;
+  .hue-compass-group {
+    flex: none;
+    gap: 4px;
   }
-  .hue-gyro-dir {
+  .hue-compass-tape {
+    width: 48px;
+    height: 18px;
+  }
+  #hue-gyro-deg {
+    font-size: 10.5px;
+  }
+  .hue-gyro-dir,
+  #btn-gyro-360 svg {
     display: none;
   }
+  .hue-gyro-actions {
+    gap: 4px;
+  }
   .gyro360-pill {
-    min-height: 25px;
-    padding: 2px 7px;
-    font-size: 10.5px;
+    min-height: 24px;
+    padding: 2px 6px;
+    font-size: 10px;
   }
   body:has(.heritage-sheet:not([hidden])) .hue-roleplay-360-bar,
   body.hue-sidebar-open .hue-roleplay-360-bar,
   body.hue-inspector-open .hue-roleplay-360-bar {
     display: none !important;
+  }
+}
+
+@media (max-width: 465px) {
+  .hue-compass-tape {
+    display: none;
   }
 }
 

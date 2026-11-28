@@ -1,130 +1,194 @@
 import * as THREE from "three";
 
 /* =========================================================================
- * HỆ THỐNG NHÂN VẬT CHÍNH ĐỒ HỌA CHUẨN AAA (RE ENGINE / UNREAL ENGINE 5)
- * - Điêu khắc giải phẫu người thật cao 1.70m (Mặt hướng -Z, Lưng +Z, Phải +X):
- *   + Hộp sọ & cơ mặt 3D (xương gò má, quai hàm góc cạnh, cằm, hốc mắt, sống mũi
- *     & cánh mũi 3D, môi trên/dưới, vành tai xoắn, cơ ức đòn chũm & xương quai xanh).
- *   + Đôi mắt 3D tách rời có giác mạc bóng (clearcoat 1.0), mống mắt sợi tia & mí mắt.
- *   + Mái tóc 3D xếp 32 lọn cong đa tầng (Layered Hair Locks) có sợi keratin & chân tóc.
- *   + Áo choàng da / gấm đa lớp: cổ dựng cao (popped collar), ve áo rộng đính khuy đồng,
- *     cầu vai khóa kim loại, áo lót cổ chữ V nhăn chéo tự nhiên, 4 tà áo bay lót gấm.
- *   + Ống tay xắn nếp gấp khuỷu tay, cẳng tay cơ bắp quấn băng vải, găng tay da hở ngón
- *     kèm 5 ngón tay 3D tách rời có đốt khớp tự nhiên.
- *   + Quần nhăn nếp 3D quanh đùi & gối, thắt lưng khóa chạm nổi, ủng da nhiều khóa cài,
- *     Đại Kiếm đeo chéo sau lưng nhô qua vai & Vũ khí đeo hông.
+ * HỆ THỐNG NHÂN VẬT LỊCH SỬ HUẾ 1880 — ĐIÊU KHẮC LIỀN KHỐI & PBR ĐỘ NÉT CAO
+ * - Giữ nguyên 100% bản sắc cổ phục Triều Nguyễn 1880 (Cẩm Y Thị Vệ, Quan Văn
+ *   Đại Triều, Hoàng Thân Quốc Thích, Tân Khoa Tiến Sĩ), hoàn toàn không dùng
+ *   trang phục/vũ khí ngoại lai, nhưng đẩy chất lượng hình học & vật liệu lên
+ *   chuẩn chân thực cao cấp:
+ *   1. Đầu & Cổ điêu khắc liền một khối lưới mịn 96x72 (13.824 tam giác, không
+ *      ghép khối cầu/viên nang rời): trán, cung mày, hốc mắt, mí trên/mí dưới,
+ *      sống mũi, đầu mũi, cánh mũi, nhân trung, môi trên/dưới, rãnh cười, cằm,
+ *      góc hàm, gò má, tai xoắn và cơ ức đòn chũm liền mạch C1/C2.
+ *   2. Bản đồ PBR 1024x1024 đồng bộ tuyệt đối tọa độ (u,v) với lưới 3D:
+ *      Albedo da thật + RGB Tangent-Space Normal Map (lỗ chân lông, sợi chân mày,
+ *      vân môi, nếp mí) + Roughness Map + Shader tán xạ dưới da (Subsurface Skin).
+ *   3. Thân Áo Ngũ Thân / Áo Đại Triều điêu khắc liền vai xuôi tự nhiên (bỏ hoàn
+ *      toàn cầu vai hình cầu & vòng nhẫn khuỷu tay thô), nếp nhăn vải rơi theo
+ *      trọng lực + Gấm dệt hoa văn Vân Mây - Đoàn Long - Chữ Thọ có Normal/Roughness
+ *      thật, nẹp tà phải 5 khuy đồng, Bổ Tử thêu nổi kim tuyến, Xà cạp hộ uyển,
+ *      Nón Dấu đan mây sơn mài, Mũ Cánh Chuồn Bác Sơn, Khăn Đống xếp nếp chữ Nhân,
+ *      Gươm trường vỏ đồi mồi chạm đồng & Hài Gia Định / Ủng chiến.
  * ========================================================================= */
 
 export const HERO_REALISTIC_OUTFITS = [
   {
-    name: "Hiệp Khách Hồng Y",
-    coat: 0x612027, // Da thuộc đỏ rượu vang trầm phong trần (Weathered Oxblood Leather)
-    coatLining: 0x260d10,
-    innerShirt: 0x161a22, // Áo lót cổ V xanh đen than sâu
-    sash: 0x241813, // Đai da nâu đen sẫm
-    trim: 0xc59b52, // Khuy & khóa đồng cổ
-    pants: 0x1c1b20, // Quần da/vải tối nhăn nếp tự nhiên
-    boots: 0x181413,
-    bootSole: 0x0f0e0e,
-    glove: 0x261d19,
-    wrap: 0xd4cfc6, // Băng vải lanh quấn cẳng tay
-    hair: 0xdde1ea, // Tóc bạch kim tro đa tầng
-    hairRoot: 0x525763,
-    brow: 0x484544,
-    coatRoughness: 0.54,
-    coatClearcoat: 0.16,
-    openFront: true,
-    hatMode: "none",
-    badgeMode: "none",
-    sleeveMode: "rolled", // Xắn tay lộ băng quấn & găng hở ngón
-    hasBackGreatsword: true,
-    hasHipSidearm: true,
-    hasImperialSaber: false,
+    name: "Cẩm Y Thị Vệ",
+    robe: 0x7c1b17, // Chiến bào gấm đỏ thẫm Cẩm Y Thị Vệ
+    skirt: 0x6e1713,
+    coatLining: 0x2d0b09,
+    collar: 0xf3ede0, // Cổ lót lụa trắng Giao Lĩnh
+    sash: 0x195e4f, // Đai lụa lục bảo trầm
+    trim: 0xd9ae48, // Đồng mạ vàng / kim tuyến cung đình
+    pants: 0x1e1a18, // Quần lụa đen sẫm gọn gàng
+    boots: 0x181412,
+    bootSole: 0xe6ded0,
+    wrap: 0x195e4f, // Xà cạp quấn cẳng tay lục bảo
+    robeRoughness: 0.50,
+    robeSheen: 0.42,
+    hatMode: "guard",
+    badgeMode: "guard",
+    sleeveMode: "bracer", // Tay chẽn gọn + xà cạp hộ uyển đồng chạm
+    hasSaber: true,
     hasJadePendant: false,
-    hasLapelStuds: true,
     hasCourtBootTrim: false,
   },
   {
-    name: "Cẩm Y Thị Vệ",
-    coat: 0x841d18, // Sơn son Cẩm Y Thị Vệ
-    coatLining: 0x380d0b,
-    innerShirt: 0xefe8d8,
-    sash: 0x1b6b5a, // Đai lục bảo
-    trim: 0xe2b646, // Thếp vàng cung đình
-    pants: 0x1e1a18,
-    boots: 0x181412,
-    bootSole: 0xe8e0d0,
-    glove: 0x2a1f1a,
-    wrap: 0x1b6b5a,
-    hair: 0x181412,
-    hairRoot: 0x0e0b0a,
-    brow: 0x1a1513,
-    coatRoughness: 0.48,
-    coatClearcoat: 0.18,
-    openFront: false,
-    hatMode: "guard",
-    badgeMode: "guard",
-    sleeveMode: "rolled",
-    hasBackGreatsword: false,
-    hasHipSidearm: false,
-    hasImperialSaber: true,
-    hasJadePendant: false,
-    hasLapelStuds: false,
-    hasCourtBootTrim: true,
-  },
-  {
     name: "Quan Văn Đại Triều",
-    coat: 0x194357, // Gấm Thanh lam Đại Triều
-    coatLining: 0x0f2836,
-    innerShirt: 0xf7f2e7,
-    sash: 0xd19d26,
-    trim: 0xe8c45c,
-    pants: 0xf0eadc,
-    boots: 0x171412,
-    bootSole: 0xf0eadc,
-    glove: 0xdab08c,
+    robe: 0x173e52, // Áo Đại Triều gấm Thanh lam Nhất phẩm
+    skirt: 0x133446,
+    coatLining: 0x0d2432,
+    collar: 0xf7f2e7,
+    sash: 0xc89624, // Đai ngọc thếp vàng
+    trim: 0xe4be58,
+    pants: 0xeee7d8, // Quần lụa ngà cung đình
+    boots: 0x171413,
+    bootSole: 0xf0e9dc,
     wrap: 0xf7f2e7,
-    hair: 0x181412,
-    hairRoot: 0x0e0b0a,
-    coatRoughness: 0.50,
-    coatClearcoat: 0.16,
+    robeRoughness: 0.46,
+    robeSheen: 0.55,
     hatMode: "mandarin",
     badgeMode: "mandarin",
-    sleeveMode: "ceremonial",
-    hasBackGreatsword: false,
-    hasHipSidearm: false,
-    hasImperialSaber: false,
+    sleeveMode: "ceremonial", // Tay áo rộng Đại Triều lộ lót lụa trắng
+    hasSaber: false,
     hasJadePendant: true,
-    hasLapelStuds: false,
     hasCourtBootTrim: true,
   },
   {
     name: "Hoàng Thân Quốc Thích",
-    coat: 0xb2771c, // Gấm Hoàng kim trầm
-    coatLining: 0x5c390b,
-    innerShirt: 0xfaf5eb,
-    sash: 0x8e1e1a,
-    trim: 0xf2d170,
+    robe: 0x9b6618, // Áo Ngũ Thân gấm Hoàng kim cổ điển
+    skirt: 0x8a5913,
+    coatLining: 0x452b08,
+    collar: 0xfaf5eb,
+    sash: 0x821b18, // Đai điều đỏ thẫm
+    trim: 0xecc965,
     pants: 0xf2ece0,
-    boots: 0x171412,
-    bootSole: 0xf0eadc,
-    glove: 0xdab08c,
-    wrap: 0x8e1e1a,
-    hair: 0x181412,
-    hairRoot: 0x0e0b0a,
-    coatRoughness: 0.48,
-    coatClearcoat: 0.18,
+    boots: 0x171413,
+    bootSole: 0xf0e9dc,
+    wrap: 0x821b18,
+    robeRoughness: 0.44,
+    robeSheen: 0.58,
     hatMode: "turban",
     badgeMode: "noble",
-    sleeveMode: "fitted",
-    hasBackGreatsword: false,
-    hasHipSidearm: false,
-    hasImperialSaber: true,
+    sleeveMode: "fitted", // Tay áo Ngũ Thân truyền thống
+    hasSaber: true,
     hasJadePendant: true,
-    hasLapelStuds: false,
+    hasCourtBootTrim: true,
+  },
+  {
+    name: "Tân Khoa Tiến Sĩ",
+    robe: 0x232946, // Áo Tấc gấm Lam tím Ân vinh Tân khoa 1880
+    skirt: 0x1d223b,
+    coatLining: 0x111426,
+    collar: 0xf8f4ec,
+    sash: 0x8b201c,
+    trim: 0xe2bc56,
+    pants: 0xf1ebde,
+    boots: 0x171413,
+    bootSole: 0xf0e9dc,
+    wrap: 0xf8f4ec,
+    robeRoughness: 0.48,
+    robeSheen: 0.52,
+    hatMode: "scholar",
+    badgeMode: "scholar",
+    sleeveMode: "ceremonial",
+    hasSaber: false,
+    hasJadePendant: true,
     hasCourtBootTrim: true,
   },
 ];
+
+// -------------------------------------------------------------------------
+// TIỆN ÍCH CHUYỂN TRƯỜNG ĐỘ CAO SANG BẢN ĐỒ PHÁP TUYẾN RGB TANGENT-SPACE THẬT
+// -------------------------------------------------------------------------
+function heightFieldToNormalTexture(heightField, w, h, strength = 2.5, wrap = true) {
+  const data = new Uint8Array(w * h * 4);
+  for (let y = 0; y < h; y++) {
+    const ym = y > 0 ? y - 1 : wrap ? h - 1 : 0;
+    const yp = y < h - 1 ? y + 1 : wrap ? 0 : h - 1;
+    for (let x = 0; x < w; x++) {
+      const xm = x > 0 ? x - 1 : wrap ? w - 1 : 0;
+      const xp = x < w - 1 ? x + 1 : wrap ? 0 : w - 1;
+
+      const hL = heightField[y * w + xm];
+      const hR = heightField[y * w + xp];
+      const hU = heightField[ym * w + x];
+      const hD = heightField[yp * w + x];
+
+      // Với flipY = true, hàng y = 0 nằm ở đỉnh v = 1 (+V hướng lên trên theo -y)
+      const dx = (hL - hR) * strength;
+      const dy = (hD - hU) * strength;
+      const dz = 1.0;
+      const invLen = 1.0 / Math.hypot(dx, dy, dz);
+
+      const idx = (y * w + x) * 4;
+      data[idx] = Math.round((dx * invLen * 0.5 + 0.5) * 255);
+      data[idx + 1] = Math.round((dy * invLen * 0.5 + 0.5) * 255);
+      data[idx + 2] = Math.round((dz * invLen * 0.5 + 0.5) * 255);
+      data[idx + 3] = 255;
+    }
+  }
+  const tex = new THREE.DataTexture(data, w, h, THREE.RGBAFormat);
+  tex.flipY = true;
+  tex.wrapS = tex.wrapT = wrap ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
+  tex.magFilter = THREE.LinearFilter;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.generateMipmaps = true;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+function scalarFieldToDataTexture(field, w, h, wrap = true) {
+  const data = new Uint8Array(w * h * 4);
+  for (let i = 0; i < w * h; i++) {
+    const v = Math.max(0, Math.min(255, Math.round(field[i] * 255)));
+    const idx = i * 4;
+    data[idx] = v;
+    data[idx + 1] = v;
+    data[idx + 2] = v;
+    data[idx + 3] = 255;
+  }
+  const tex = new THREE.DataTexture(data, w, h, THREE.RGBAFormat);
+  tex.flipY = true;
+  tex.wrapS = tex.wrapT = wrap ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
+  tex.magFilter = THREE.LinearFilter;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.generateMipmaps = true;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+// Tán xạ dưới bề mặt da người thật (Pre-Integrated Dermal Subsurface Scattering)
+function attachSubsurfaceSkinShader(mat) {
+  mat.onBeforeCompile = (shader) => {
+    shader.fragmentShader = shader.fragmentShader.replace(
+      "#include <lights_physical_pars_fragment>",
+      `#include <lights_physical_pars_fragment>
+      // Tán xạ máu ấm dưới lớp biểu bì da người khi ánh nắng chiếu xiên qua sống mũi, gò má, vành tai
+      void RE_Direct_Physical_SkinWrap( const in IncidentLight directLight, const in vec3 geometryPosition, const in vec3 geometryNormal, const in vec3 geometryViewDir, const in vec3 geometryClearcoatNormal, const in PhysicalMaterial material, inout ReflectedLight reflectedLight ) {
+        RE_Direct_Physical( directLight, geometryPosition, geometryNormal, geometryViewDir, geometryClearcoatNormal, material, reflectedLight );
+        float ndlRaw = dot( geometryNormal, directLight.direction );
+        float wrapBand = smoothstep( -0.48, 0.22, ndlRaw ) * ( 1.0 - smoothstep( 0.05, 0.62, ndlRaw ) );
+        vec3 dermalTint = vec3( 0.86, 0.28, 0.16 );
+        reflectedLight.directDiffuse += directLight.color * material.diffuseColor * dermalTint * ( wrapBand * 0.26 );
+      }
+      #undef RE_Direct
+      #define RE_Direct RE_Direct_Physical_SkinWrap`
+    );
+  };
+  mat.customProgramCacheKey = () => "hue_skin_sss_v2";
+  return mat;
+}
 
 function createSoftShadowTexture() {
   const c = document.createElement("canvas");
@@ -132,9 +196,9 @@ function createSoftShadowTexture() {
   c.height = 128;
   const ctx = c.getContext("2d");
   const grad = ctx.createRadialGradient(64, 64, 5, 64, 64, 60);
-  grad.addColorStop(0, "rgba(0, 0, 0, 0.68)");
-  grad.addColorStop(0.42, "rgba(0, 0, 0, 0.34)");
-  grad.addColorStop(0.78, "rgba(0, 0, 0, 0.11)");
+  grad.addColorStop(0, "rgba(0, 0, 0, 0.66)");
+  grad.addColorStop(0.42, "rgba(0, 0, 0, 0.32)");
+  grad.addColorStop(0.78, "rgba(0, 0, 0, 0.10)");
   grad.addColorStop(1, "rgba(0, 0, 0, 0.0)");
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 128, 128);
@@ -143,728 +207,1192 @@ function createSoftShadowTexture() {
   return tex;
 }
 
-// 1. Bản đồ PBR Da thuộc & Gấm dệt có nếp nhăn tự nhiên + đường chỉ khâu đôi (512x512)
-function createLeatherAndCreaseMaps() {
-  const size = 512;
+// =========================================================================
+// 1. ĐIÊU KHẮC ĐẦU & CỔ NGƯỜI VIỆT LIỀN MỘT KHỐI (96x72 = 13.824 TAM GIÁC)
+//    + BẢN ĐỒ DA PBR 1024x1024 ĐỒNG BỘ TUYỆT ĐỐI TỌA ĐỘ (u, v)
+// =========================================================================
+function gaussian(x, mu, sigma) {
+  const d = (x - mu) / sigma;
+  return Math.exp(-0.5 * d * d);
+}
+
+// Tọa độ chuẩn trên mặt tham số (u, v):
+// u = 0.5 -> phi = 0 (Chính diện mặt trước -Z)
+// phi > 0 (u > 0.5) -> Bên phải nhân vật (+X)
+// phi < 0 (u < 0.5) -> Bên trái nhân vật (-X)
+// v = 0.0 -> Đáy cổ (y = -0.014) ... v = 0.22 -> Chân cằm (y = +0.074) ... v = 1.0 -> Đỉnh sọ (y = +0.274)
+// Tỷ lệ vàng giải phẫu đầu nam giới trưởng thành cao 20.4cm:
+//   Đỉnh sọ (0.274) -> Mắt (0.1714) = 50% chiều cao đầu; Mũi (0.138) -> Miệng (0.112) -> Đáy cằm (0.070) = tỷ lệ 1:2!
+const EYE_PHI = 0.415; // Khoảng cách hai đồng tử chuẩn 61.5mm (±0.0308m)
+const EYE_V = 0.600;   // Mắt nằm đúng trung tuyến 50% chiều cao hộp sọ (y = 0.1714m)
+
+function createContinuousHumanHeadGeometry() {
+  const segU = 96;
+  const segV = 72;
+  const positions = new Float32Array((segU + 1) * (segV + 1) * 3);
+  const uvs = new Float32Array((segU + 1) * (segV + 1) * 2);
+  const indices = [];
+
+  let ptr = 0;
+  let uvPtr = 0;
+
+  for (let iv = 0; iv <= segV; iv++) {
+    const v = iv / segV;
+    // Phân bố tuyến tính không biến dạng tỷ lệ dọc mặt từ chân hàm (v = 0.22) lên đỉnh sọ (v = 1.00)
+    let y;
+    if (v < 0.22) {
+      y = -0.014 + (v / 0.22) * 0.088; // Cổ: -0.014 .. +0.074
+    } else {
+      const hv = (v - 0.22) / 0.78; // Đầu & mặt: 0 .. 1 (cao chuẩn 20.0cm + 0.4cm cằm = 20.4cm)
+      y = 0.074 + hv * 0.200;
+    }
+
+    for (let iu = 0; iu <= segU; iu++) {
+      const u = iu / segU;
+      const phi = (u - 0.5) * Math.PI * 2.0; // -PI .. +PI, 0 tại mặt trước (-Z)
+      const absPhi = Math.abs(phi);
+      const sinP = Math.sin(phi);
+      const cosP = Math.cos(phi);
+      const frontMask = THREE.MathUtils.smoothstep(cosP, -0.15, 0.92);
+
+      // 1. Bao hình chuyển tiếp mượt C2 giữa Cổ cơ bắp và Hộp sọ - Quai hàm
+      const headBlend = THREE.MathUtils.smoothstep(v, 0.17, 0.30);
+
+      // Bán kính cổ săn chắc có cơ thang gốc cổ & cơ ức đòn chũm
+      const neckFlare = gaussian(v, 0.0, 0.09) * 0.011;
+      const scmBump =
+        gaussian(absPhi, 0.50 - v * 0.85, 0.18) * THREE.MathUtils.smoothstep(v, 0.02, 0.20) * (1 - headBlend) * 0.0040;
+      const adamsApple = gaussian(absPhi, 0.0, 0.16) * gaussian(v, 0.13, 0.042) * 0.0040;
+      const neckRx = 0.051 + neckFlare + scmBump;
+      const neckRz = 0.055 + neckFlare * 0.8 + scmBump + adamsApple;
+
+      // Bao hình hộp sọ & xương hàm nam giới người Việt cân đối thanh tú:
+      const hv = THREE.MathUtils.clamp((v - 0.22) / 0.78, 0, 1);
+      let verticalEnvelope;
+      if (hv > 0.66) {
+        const ct = (hv - 0.66) / 0.34;
+        verticalEnvelope = Math.max(0.02, Math.cos(ct * Math.PI * 0.492));
+      } else {
+        const jt = hv / 0.66;
+        // Thon gọn tự nhiên từ gò má (1.00) xuống cằm (0.60) kết hợp góc hàm chữ V điền tự
+        verticalEnvelope = 0.60 + 0.40 * Math.sin(jt * Math.PI * 0.5);
+      }
+
+      const gonialWidth = gaussian(hv, 0.20, 0.11) * gaussian(absPhi, 0.82, 0.36) * 0.0075;
+      const chinRound = gaussian(hv, 0.06, 0.07) * gaussian(absPhi, 0.0, 0.38) * 0.0048;
+      const templeIndent = gaussian(hv, 0.56, 0.12) * gaussian(absPhi, 0.92, 0.26) * 0.0035;
+
+      const skullRx = 0.078 * verticalEnvelope + gonialWidth - templeIndent;
+      const skullRz = 0.091 * (0.74 + 0.26 * verticalEnvelope) + chinRound;
+
+      let x = THREE.MathUtils.lerp(neckRx, skullRx, headBlend) * sinP;
+      let z = -THREE.MathUtils.lerp(neckRz, skullRz, headBlend) * cosP;
+      let dy = 0;
+
+      // Đường viền cằm trước hạ nhẹ 4.5mm tạo góc hàm nghiêng sắc nét (y_cằm = 0.0695m)
+      const chinDrop = gaussian(absPhi, 0.0, 0.46) * gaussian(v, 0.24, 0.052) * frontMask;
+      dy -= chinDrop * 0.0045;
+
+      if (v > 0.19) {
+        // 2. Xương cằm (Mental protuberance) & Hõm dưới môi dưới (Mentolabial sulcus)
+        const chinProj = gaussian(absPhi, 0.0, 0.24) * gaussian(v, 0.272, 0.036);
+        z -= chinProj * 0.0082;
+
+        const mentoGroove = gaussian(absPhi, 0.0, 0.24) * gaussian(v, 0.315, 0.015);
+        z += mentoGroove * 0.0032;
+
+        // 3. Xương gò má (Zygomatic arch) thanh thoát nam tính (không hóp lõm gắt)
+        const cheekBone = gaussian(absPhi, 0.62, 0.24) * gaussian(v, 0.525, 0.072) * frontMask;
+        x += Math.sign(phi) * cheekBone * 0.0052;
+        z -= cheekBone * 0.0048;
+
+        const buccalSoft = gaussian(absPhi, 0.68, 0.24) * gaussian(v, 0.38, 0.065) * frontMask;
+        x -= Math.sign(phi) * buccalSoft * 0.0020;
+
+        // 4. Cung xương mày (Supraorbital ridge) & Ấn đường (Glabella) uy nghi
+        const browRidge =
+          gaussian(absPhi, 0.36, 0.25) * gaussian(v, 0.672, 0.026) * (1.0 - 0.30 * gaussian(absPhi, 0.0, 0.09));
+        z -= browRidge * 0.0068;
+
+        // 5. Hốc mắt lõm vừa vặn + Nếp mí trên & Bờ mí dưới ôm quanh nhãn cầu hạnh nhân 3D!
+        const dEyePhi = absPhi - EYE_PHI;
+        const dEyeV = v - EYE_V;
+        const socketBowl = Math.exp(-(Math.pow(dEyePhi / 0.195, 2) + Math.pow(dEyeV / 0.042, 2)));
+        z += socketBowl * 0.0056;
+
+        const upperEyelid =
+          Math.exp(-Math.pow(dEyePhi / 0.175, 2)) * gaussian(v, EYE_V + 0.025, 0.010);
+        z -= upperEyelid * 0.0044;
+
+        const lowerEyelid =
+          Math.exp(-Math.pow(dEyePhi / 0.165, 2)) * gaussian(v, EYE_V - 0.024, 0.009);
+        z -= lowerEyelid * 0.0028;
+
+        // 6. Sống mũi cao vừa chuẩn Á Đông, Chóp mũi, Hai cánh mũi & Lỗ mũi liền khối
+        const noseBridgeV =
+          THREE.MathUtils.smoothstep(v, 0.455, 0.615) * (1.0 - THREE.MathUtils.smoothstep(v, 0.590, 0.665));
+        const noseBridge = gaussian(absPhi, 0.0, 0.080) * noseBridgeV;
+        const noseTip = gaussian(absPhi, 0.0, 0.090) * gaussian(v, 0.474, 0.026);
+        const nostrilAlar = gaussian(absPhi, 0.138, 0.050) * gaussian(v, 0.460, 0.019);
+        const nostrilCavity = gaussian(absPhi, 0.092, 0.032) * gaussian(v, 0.446, 0.010);
+
+        z -= noseBridge * 0.0132 + noseTip * 0.0185 + nostrilAlar * 0.0082 - nostrilCavity * 0.0032;
+        x += Math.sign(phi) * nostrilAlar * 0.0030;
+        dy -= noseTip * 0.0018;
+
+        // 7. Nhân trung gọn (16mm) & Khuôn miệng nam tính rộng chuẩn 48mm (absPhi tới ±0.31 rad!)
+        const philtrumGroove = gaussian(absPhi, 0.0, 0.038) * gaussian(v, 0.422, 0.016);
+        const philtrumRidges = gaussian(absPhi, 0.052, 0.026) * gaussian(v, 0.420, 0.016);
+        z += philtrumGroove * 0.0016 - philtrumRidges * 0.0012;
+
+        // Môi trên dáng cánh cung rộng cân đối (48mm)
+        const mouthWidthMask = Math.exp(-Math.pow(absPhi / 0.305, 2.8));
+        const cupidsDip = 1.0 - 0.18 * gaussian(absPhi, 0.0, 0.045);
+        const upperLip = mouthWidthMask * gaussian(v, 0.388, 0.013) * cupidsDip;
+        // Khe khép hai môi (Stomion tại v = 0.368 -> y = 0.112m)
+        const mouthSlit = Math.exp(-Math.pow(absPhi / 0.315, 3.2)) * gaussian(v, 0.368, 0.0055);
+        // Môi dưới đầy đặn tự nhiên
+        const lowerLip = Math.exp(-Math.pow(absPhi / 0.275, 2.6)) * gaussian(v, 0.346, 0.014);
+        // Khóe miệng mở sang hai bên tự nhiên (tại ±0.315 rad)
+        const mouthCorner = gaussian(absPhi, 0.315, 0.048) * gaussian(v, 0.370, 0.016);
+
+        z -= upperLip * 0.0062 + lowerLip * 0.0060 - mouthSlit * 0.0038 - mouthCorner * 0.0020;
+
+        // Chuyển khối má - khóe miệng cực êm tỏa chéo từ cánh mũi (0.18) ra ngoài khóe miệng (0.37)
+        const nasolabial =
+          gaussian(absPhi, 0.18 + (0.46 - v) * 1.85, 0.072) *
+          THREE.MathUtils.smoothstep(v, 0.34, 0.45) *
+          (1.0 - THREE.MathUtils.smoothstep(v, 0.44, 0.48));
+        z += nasolabial * 0.0012;
+
+        // 8. Đôi tai người thật điêu khắc liền khối thái dương (nằm ngang tầm mắt - cánh mũi: v = 0.46..0.61)
+        const earPhiDist = absPhi - 1.52;
+        const earVDist = v - 0.535;
+        const earBody = Math.exp(-(Math.pow(earPhiDist / 0.13, 2) + Math.pow(earVDist / 0.082, 2)));
+        const earRim =
+          gaussian(Math.hypot(earPhiDist / 0.12, earVDist / 0.078), 0.85, 0.22) *
+          THREE.MathUtils.smoothstep(earPhiDist, -0.05, 0.12);
+        const earConcha = Math.exp(-(Math.pow((earPhiDist + 0.01) / 0.055, 2) + Math.pow(earVDist / 0.042, 2)));
+
+        x += Math.sign(phi) * (earBody * 0.0128 + earRim * 0.0045 - earConcha * 0.0038);
+        z += earBody * 0.0042 + earRim * 0.0022;
+      }
+
+      positions[ptr++] = x;
+      positions[ptr++] = y + dy;
+      positions[ptr++] = z;
+
+      uvs[uvPtr++] = u;
+      uvs[uvPtr++] = v;
+    }
+  }
+
+  // Đấu chỉ số tam giác ngược chiều kim đồng hồ nhìn từ ngoài vào (a, d, c, a, c, b) để pháp tuyến hướng 100% ra ngoài!
+  const rowStride = segU + 1;
+  for (let iv = 0; iv < segV; iv++) {
+    for (let iu = 0; iu < segU; iu++) {
+      const a = iv * rowStride + iu;
+      const b = a + 1;
+      const c = a + rowStride + 1;
+      const d = a + rowStride;
+      indices.push(a, d, c, a, c, b);
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+  geo.setIndex(indices);
+  geo.computeVertexNormals();
+  return geo;
+}
+
+// Điêu khắc Đôi Mắt Hạnh Nhân 3D Uốn Theo Hốc Mắt (lộ rõ lòng trắng hai khóe, con ngươi nâu hổ phách & đường chân mi 3D!)
+function createCurvedAlmondEyeGeo(side) {
+  const segU = 22;
+  const segV = 14;
+  const positions = new Float32Array((segU + 1) * (segV + 1) * 3);
+  const uvs = new Float32Array((segU + 1) * (segV + 1) * 2);
+  const indices = [];
+
+  let pPtr = 0;
+  let uPtr = 0;
+  for (let iv = 0; iv <= segV; iv++) {
+    const v = iv / segV;
+    const sv = v * 2.0 - 1.0; // -1 (bờ mi dưới) .. +1 (bờ mi trên)
+    for (let iu = 0; iu <= segU; iu++) {
+      const u = iu / segU;
+      const su = u * 2.0 - 1.0; // -1 .. +1 ngang bề rộng mắt 24.8mm
+      // Dáng mắt phượng / hạnh nhân Á Đông: nhọn thanh ở khóe trong & đuôi mắt ngoài hơi xếch nhẹ uy nghị
+      const almondEnv = Math.max(0.0, Math.cos(su * Math.PI * 0.495));
+      const upperArch = sv > 0 ? Math.pow(almondEnv, 0.78) : Math.pow(almondEnv, 0.92);
+      const halfH = 0.0056 * upperArch;
+      const canthalTilt = 0.00085 * su * side;
+
+      const lx = su * 0.0124;
+      const ly = sv * halfH + canthalTilt;
+      // Độ cong lồi 3D của giác mạc (-Z hướng ra trước) kết hợp ôm theo độ cong hốc mắt
+      const corneaDome = Math.max(0.0, Math.cos(su * 1.12)) * Math.max(0.0, Math.cos(sv * 0.92));
+      const lz = -0.0028 * corneaDome;
+
+      positions[pPtr++] = lx;
+      positions[pPtr++] = ly;
+      positions[pPtr++] = lz;
+
+      uvs[uPtr++] = u;
+      uvs[uPtr++] = v;
+    }
+  }
+
+  const stride = segU + 1;
+  for (let iv = 0; iv < segV; iv++) {
+    for (let iu = 0; iu < segU; iu++) {
+      const a = iv * stride + iu;
+      const b = a + 1;
+      const c = a + stride + 1;
+      const d = a + stride;
+      indices.push(a, d, c, a, c, b);
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+  geo.setIndex(indices);
+  geo.computeVertexNormals();
+  return geo;
+}
+
+function createUpperEyelashArchGeo(side) {
+  const pts = [];
+  for (let i = 0; i <= 16; i++) {
+    const su = (i / 16) * 2.04 - 1.02;
+    const clamped = THREE.MathUtils.clamp(su, -1, 1);
+    const almondEnv = Math.pow(Math.max(0.0, Math.cos(clamped * Math.PI * 0.495)), 0.78);
+    const lx = su * 0.0126;
+    const ly = 0.0057 * almondEnv + 0.00085 * su * side;
+    const corneaDome = Math.max(0.0, Math.cos(clamped * 1.12)) * 0.62;
+    const lz = -0.0028 * corneaDome - 0.0005;
+    pts.push(new THREE.Vector3(lx, ly, lz));
+  }
+  const curve = new THREE.CatmullRomCurve3(pts);
+  return new THREE.TubeGeometry(curve, 18, 0.00085, 6, false);
+}
+
+// Bản đồ Da Người Việt 1024x1024 (Albedo + Tangent Normal + Roughness) khớp 1:1 với (u, v) ở trên!
+function createHumanSkinPbrMaps() {
+  const w = 1024;
+  const h = 1024;
   const cCol = document.createElement("canvas");
-  const cBump = document.createElement("canvas");
-  const cRough = document.createElement("canvas");
-  cCol.width = cBump.width = cRough.width = size;
-  cCol.height = cBump.height = cRough.height = size;
+  cCol.width = w;
+  cCol.height = h;
+  const ctx = cCol.getContext("2d");
 
-  const ctxC = cCol.getContext("2d");
-  const ctxB = cBump.getContext("2d");
-  const ctxR = cRough.getContext("2d");
+  // Sắc da người Việt Nam ấm áp tự nhiên dưới nắng Cố đô
+  const baseGrad = ctx.createLinearGradient(0, 0, 0, h);
+  baseGrad.addColorStop(0.0, "#c99876"); // Đỉnh trán
+  baseGrad.addColorStop(0.34, "#d6a786"); // Vùng trán & thái dương
+  baseGrad.addColorStop(0.50, "#d3a281"); // Gò má & sống mũi
+  baseGrad.addColorStop(0.70, "#c89676"); // Quai hàm
+  baseGrad.addColorStop(1.0, "#bc8a6b"); // Vùng cổ
+  ctx.fillStyle = baseGrad;
+  ctx.fillRect(0, 0, w, h);
 
-  ctxC.fillStyle = "#e2dfe0";
-  ctxC.fillRect(0, 0, size, size);
-  ctxB.fillStyle = "#808080";
-  ctxB.fillRect(0, 0, size, size);
-  ctxR.fillStyle = "#8c8c8c";
-  ctxR.fillRect(0, 0, size, size);
+  // Tiện ích đổi (phi, v) sang pixel trên ảnh 1024x1024
+  const toPx = (phi) => (0.5 + phi / (Math.PI * 2.0)) * w;
+  const toPy = (v) => (1.0 - v) * h;
 
-  // Hạt da thuộc vi mô (Micro leather grain) & vân vải chéo
-  let seed = 1337;
-  const rand = () => {
+  // 1. Sắc ấm hồng hào vi mạch tự nhiên ở gò má, đầu mũi & vành tai
+  const noseWarm = ctx.createRadialGradient(toPx(0), toPy(0.472), 3, toPx(0), toPy(0.472), 34);
+  noseWarm.addColorStop(0, "rgba(182, 86, 68, 0.16)");
+  noseWarm.addColorStop(1, "rgba(182, 86, 68, 0)");
+  ctx.fillStyle = noseWarm;
+  ctx.fillRect(toPx(0) - 38, toPy(0.472) - 38, 76, 76);
+
+  // Sống mũi bắt sáng nhẹ thanh tú
+  const bridgeLight = ctx.createLinearGradient(0, toPy(0.62), 0, toPy(0.475));
+  bridgeLight.addColorStop(0, "rgba(255, 238, 220, 0.10)");
+  bridgeLight.addColorStop(0.5, "rgba(255, 238, 220, 0.18)");
+  bridgeLight.addColorStop(1, "rgba(255, 238, 220, 0.06)");
+  ctx.strokeStyle = bridgeLight;
+  ctx.lineWidth = 7;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(toPx(0), toPy(0.615));
+  ctx.lineTo(toPx(0), toPy(0.478));
+  ctx.stroke();
+
+  [-1, 1].forEach((s) => {
+    const cx = toPx(s * 0.62);
+    const cy = toPy(0.520);
+    const cheekWarm = ctx.createRadialGradient(cx, cy, 8, cx, cy, 72);
+    cheekWarm.addColorStop(0, "rgba(182, 84, 66, 0.17)");
+    cheekWarm.addColorStop(1, "rgba(182, 84, 66, 0)");
+    ctx.fillStyle = cheekWarm;
+    ctx.fillRect(cx - 76, cy - 76, 152, 152);
+
+    // Vành tai ửng ấm tự nhiên
+    const ex = toPx(s * 1.52);
+    const ey = toPy(0.535);
+    const earWarm = ctx.createRadialGradient(ex, ey, 4, ex, ey, 44);
+    earWarm.addColorStop(0, "rgba(176, 76, 58, 0.26)");
+    earWarm.addColorStop(1, "rgba(176, 76, 58, 0)");
+    ctx.fillStyle = earWarm;
+    ctx.fillRect(ex - 48, ey - 48, 96, 96);
+
+    // Bóng hốc mắt êm tự nhiên & nếp mí đôi sắc sảo quanh (EYE_PHI, EYE_V)
+    const eyeX = toPx(s * EYE_PHI);
+    const eyeY = toPy(EYE_V);
+    const sockAO = ctx.createRadialGradient(eyeX, eyeY - 3, 10, eyeX, eyeY - 3, 46);
+    sockAO.addColorStop(0.0, "rgba(74, 42, 32, 0.38)");
+    sockAO.addColorStop(0.60, "rgba(88, 52, 38, 0.16)");
+    sockAO.addColorStop(1.0, "rgba(88, 52, 38, 0)");
+    ctx.fillStyle = sockAO;
+    ctx.fillRect(eyeX - 52, eyeY - 52, 104, 104);
+
+    // Nếp mí mắt đôi (Supratarsal crease) thanh mảnh phía trên bờ mi
+    ctx.strokeStyle = "rgba(64, 36, 26, 0.52)";
+    ctx.lineWidth = 2.0;
+    ctx.beginPath();
+    ctx.moveTo(eyeX - s * 24, eyeY - 12);
+    ctx.quadraticCurveTo(eyeX, eyeY - 22, eyeX + s * 26, eyeY - 14);
+    ctx.stroke();
+
+    // 2. Chân mày kiếm nam tính người Việt gẩy từng sợi lông mày thật (tại v = 0.672 -> y = 0.190m)
+    const browStartX = toPx(s * 0.17);
+    const browPeakX = toPx(s * 0.46);
+    const browEndX = toPx(s * 0.68);
+    const browBaseY = toPy(0.672);
+
+    const browSoft = ctx.createLinearGradient(browStartX, browBaseY, browEndX, browBaseY);
+    browSoft.addColorStop(0, "rgba(28, 21, 18, 0.34)");
+    browSoft.addColorStop(0.55, "rgba(22, 17, 14, 0.54)");
+    browSoft.addColorStop(1, "rgba(22, 17, 14, 0.12)");
+    ctx.strokeStyle = browSoft;
+    ctx.lineWidth = 11.5;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(browStartX, browBaseY + 3);
+    ctx.quadraticCurveTo(browPeakX, browBaseY - 7, browEndX, browBaseY + 2);
+    ctx.stroke();
+
+    for (let b = 0; b < 74; b++) {
+      const t = b / 73;
+      const bx = (1 - t) * (1 - t) * browStartX + 2 * (1 - t) * t * browPeakX + t * t * browEndX;
+      const by =
+        (1 - t) * (1 - t) * (browBaseY + 3) +
+        2 * (1 - t) * t * (browBaseY - 7) +
+        t * t * (browBaseY + 2) +
+        ((b % 5) - 2) * 1.2;
+      const len = (1.0 - Math.abs(t - 0.38) * 0.50) * 10.2;
+      const tilt = s * (0.36 + t * 0.86);
+      ctx.strokeStyle = b % 3 === 0 ? "rgba(16, 12, 10, 0.86)" : "rgba(32, 24, 20, 0.72)";
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(bx, by + 3.5);
+      ctx.lineTo(bx + Math.sin(tilt) * len, by + 3.5 - Math.cos(Math.abs(tilt) * 0.6) * len * 0.76);
+      ctx.stroke();
+    }
+
+    // Bóng hốc lỗ mũi (Nostril ambient occlusion)
+    const nx = toPx(s * 0.092);
+    const ny = toPy(0.446);
+    const nostrilAO = ctx.createRadialGradient(nx, ny, 1.5, nx, ny, 8.5);
+    nostrilAO.addColorStop(0, "rgba(34, 18, 14, 0.78)");
+    nostrilAO.addColorStop(1, "rgba(34, 18, 14, 0)");
+    ctx.fillStyle = nostrilAO;
+    ctx.fillRect(nx - 10, ny - 10, 20, 20);
+  });
+
+  // 3. Khuôn môi nam tính rộng cân đối (±48px tương ứng ±0.305 rad = 48mm thực tế!)
+  const mouthCx = toPx(0);
+  const upperLipY = toPy(0.388);
+  const slitY = toPy(0.368);
+  const lowerLipY = toPy(0.346);
+
+  // Môi trên cánh cung trầm ấm
+  ctx.fillStyle = "rgba(146, 80, 68, 0.56)";
+  ctx.beginPath();
+  ctx.moveTo(mouthCx - 48, slitY + 1);
+  ctx.quadraticCurveTo(mouthCx - 20, upperLipY - 7, mouthCx - 6, upperLipY - 3);
+  ctx.quadraticCurveTo(mouthCx, upperLipY - 1, mouthCx + 6, upperLipY - 3);
+  ctx.quadraticCurveTo(mouthCx + 20, upperLipY - 7, mouthCx + 48, slitY + 1);
+  ctx.quadraticCurveTo(mouthCx, slitY + 2, mouthCx - 48, slitY + 1);
+  ctx.fill();
+
+  // Môi dưới đầy đặn bắt sáng tự nhiên
+  const lowerLipGrad = ctx.createRadialGradient(mouthCx, lowerLipY + 1, 4, mouthCx, lowerLipY + 1, 46);
+  lowerLipGrad.addColorStop(0, "rgba(168, 94, 80, 0.54)");
+  lowerLipGrad.addColorStop(0.72, "rgba(156, 86, 74, 0.28)");
+  lowerLipGrad.addColorStop(1, "rgba(156, 86, 74, 0)");
+  ctx.save();
+  ctx.translate(mouthCx, lowerLipY + 1);
+  ctx.scale(1.04, 0.34);
+  ctx.fillStyle = lowerLipGrad;
+  ctx.beginPath();
+  ctx.arc(0, 0, 44, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // Đường khép môi sắc nét thanh thoát
+  ctx.strokeStyle = "rgba(56, 26, 22, 0.74)";
+  ctx.lineWidth = 2.3;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(mouthCx - 47, slitY + 0.5);
+  ctx.quadraticCurveTo(mouthCx - 18, slitY - 1.4, mouthCx, slitY + 0.8);
+  ctx.quadraticCurveTo(mouthCx + 18, slitY - 1.4, mouthCx + 47, slitY + 0.5);
+  ctx.stroke();
+
+  // Ánh bóng chân râu nam tính cực nhẹ quanh cằm người trưởng thành
+  const jawShade = ctx.createRadialGradient(mouthCx, toPy(0.28), 10, mouthCx, toPy(0.28), 88);
+  jawShade.addColorStop(0, "rgba(66, 58, 52, 0.11)");
+  jawShade.addColorStop(0.7, "rgba(66, 58, 52, 0.05)");
+  jawShade.addColorStop(1, "rgba(66, 58, 52, 0)");
+  ctx.fillStyle = jawShade;
+  ctx.fillRect(mouthCx - 92, toPy(0.39), 184, 165);
+
+  // 4. Sinh trường độ cao vi mô 512x512 cho Lỗ chân lông da & Vân môi (khớp flipY = true!)
+  const nw = 512;
+  const nh = 512;
+  const hField = new Float32Array(nw * nh);
+  const rField = new Float32Array(nw * nh);
+  rField.fill(0.62);
+
+  let seed = 7331;
+  const rnd = () => {
     seed = (seed * 16807) % 2147483647;
     return (seed - 1) / 2147483646;
   };
 
-  for (let i = 0; i < 6500; i++) {
-    const x = rand() * size;
-    const y = rand() * size;
-    const r = 0.8 + rand() * 2.1;
-    const v = Math.floor(110 + rand() * 38);
-    ctxB.fillStyle = `rgb(${v},${v},${v})`;
-    ctxB.beginPath();
-    ctxB.arc(x, y, r, 0, Math.PI * 2);
-    ctxB.fill();
+  for (let y = 0; y < nh; y++) {
+    const v = 1.0 - y / nh;
+    for (let x = 0; x < nw; x++) {
+      const u = x / nw;
+      const phi = (u - 0.5) * Math.PI * 2.0;
+      const idx = y * nw + x;
 
-    const rv = Math.floor(115 + rand() * 55);
-    ctxR.fillStyle = `rgba(${rv},${rv},${rv},0.35)`;
-    ctxR.fillRect(x, y, r * 1.4, r * 1.4);
-  }
+      // Độ nhám da thật mịn tự nhiên (không bị bóng dầu như nhựa!)
+      const tZone =
+        gaussian(Math.abs(phi), 0.0, 0.30) * gaussian(v, 0.58, 0.14) +
+        gaussian(Math.abs(phi), 0.58, 0.22) * gaussian(v, 0.52, 0.06) * 0.5;
+      rField[idx] = THREE.MathUtils.clamp(0.64 - tZone * 0.10 + (rnd() - 0.5) * 0.03, 0.48, 0.74);
+      hField[idx] = (rnd() - 0.5) * 0.05;
 
-  // Các nếp nhăn vải / da căng chéo tự nhiên (Tension folds)
-  for (let k = 0; k < 26; k++) {
-    const y0 = 20 + (k * (size - 40)) / 26 + (rand() - 0.5) * 14;
-    const x0 = rand() * 90;
-    const x1 = size - rand() * 90;
-    const dy = (rand() - 0.5) * 46;
-
-    // Bóng âm dưới nếp gấp
-    ctxC.strokeStyle = "rgba(32, 18, 20, 0.14)";
-    ctxC.lineWidth = 5 + rand() * 5;
-    ctxC.beginPath();
-    ctxC.moveTo(x0, y0 + 2);
-    ctxC.quadraticCurveTo(size * 0.5, y0 + dy + 8, x1, y0 + dy * 0.4 + 2);
-    ctxC.stroke();
-
-    // Sống sáng trên đỉnh nếp gấp (worn leather highlight)
-    ctxC.strokeStyle = "rgba(255, 245, 242, 0.16)";
-    ctxC.lineWidth = 2.2;
-    ctxC.beginPath();
-    ctxC.moveTo(x0, y0 - 1);
-    ctxC.quadraticCurveTo(size * 0.5, y0 + dy + 4, x1, y0 + dy * 0.4 - 1);
-    ctxC.stroke();
-
-    ctxB.strokeStyle = "#b8b8b8";
-    ctxB.lineWidth = 3.6;
-    ctxB.beginPath();
-    ctxB.moveTo(x0, y0);
-    ctxB.quadraticCurveTo(size * 0.5, y0 + dy + 5, x1, y0 + dy * 0.4);
-    ctxB.stroke();
-
-    ctxB.strokeStyle = "#4d4d4d";
-    ctxB.lineWidth = 2.6;
-    ctxB.beginPath();
-    ctxB.moveTo(x0, y0 + 4);
-    ctxB.quadraticCurveTo(size * 0.5, y0 + dy + 9, x1, y0 + dy * 0.4 + 4);
-    ctxB.stroke();
-  }
-
-  // Đường may ráp mảnh dọc thân áo (Double-stitched tailoring seams)
-  [64, 192, 320, 448].forEach((sx) => {
-    ctxB.strokeStyle = "#424242";
-    ctxB.lineWidth = 2.2;
-    ctxB.beginPath();
-    ctxB.moveTo(sx, 0);
-    ctxB.lineTo(sx, size);
-    ctxB.stroke();
-
-    ctxC.strokeStyle = "rgba(255, 238, 215, 0.22)";
-    ctxC.setLineDash([5, 4]);
-    ctxC.lineWidth = 1.3;
-    ctxC.beginPath();
-    ctxC.moveTo(sx - 4, 0);
-    ctxC.lineTo(sx - 4, size);
-    ctxC.moveTo(sx + 4, 0);
-    ctxC.lineTo(sx + 4, size);
-    ctxC.stroke();
-    ctxC.setLineDash([]);
-  });
-
-  const colorMap = new THREE.CanvasTexture(cCol);
-  colorMap.wrapS = colorMap.wrapT = THREE.RepeatWrapping;
-  colorMap.repeat.set(1.6, 1.8);
-  colorMap.colorSpace = THREE.SRGBColorSpace;
-
-  const bumpMap = new THREE.CanvasTexture(cBump);
-  bumpMap.wrapS = bumpMap.wrapT = THREE.RepeatWrapping;
-  bumpMap.repeat.set(1.6, 1.8);
-
-  const roughnessMap = new THREE.CanvasTexture(cRough);
-  roughnessMap.wrapS = roughnessMap.wrapT = THREE.RepeatWrapping;
-  roughnessMap.repeat.set(1.6, 1.8);
-
-  return { colorMap, bumpMap, roughnessMap };
-}
-
-// 2. Bản đồ nếp gấp áo thun / lụa lót cổ chữ V (Diagonal Drape Folds)
-function createInnerShirtDrapeMaps() {
-  const size = 256;
-  const cCol = document.createElement("canvas");
-  const cBump = document.createElement("canvas");
-  cCol.width = cBump.width = size;
-  cCol.height = cBump.height = size;
-  const ctxC = cCol.getContext("2d");
-  const ctxB = cBump.getContext("2d");
-
-  ctxC.fillStyle = "#dcdcdc";
-  ctxC.fillRect(0, 0, size, size);
-  ctxB.fillStyle = "#808080";
-  ctxB.fillRect(0, 0, size, size);
-
-  // Các nếp vải kéo chéo từ thắt lưng lên ngực (giống hệt áo lót trong ảnh tham chiếu)
-  for (let i = 0; i < 14; i++) {
-    const yStart = 30 + i * 15;
-    const yEnd = yStart - 28 + (i % 3) * 9;
-    ctxC.strokeStyle = "rgba(0,0,0,0.22)";
-    ctxC.lineWidth = 6;
-    ctxC.beginPath();
-    ctxC.moveTo(12, yStart + 3);
-    ctxC.bezierCurveTo(95, yStart - 12, 165, yEnd + 14, 244, yEnd + 3);
-    ctxC.stroke();
-
-    ctxC.strokeStyle = "rgba(255,255,255,0.18)";
-    ctxC.lineWidth = 3;
-    ctxC.beginPath();
-    ctxC.moveTo(12, yStart);
-    ctxC.bezierCurveTo(95, yStart - 15, 165, yEnd + 11, 244, yEnd);
-    ctxC.stroke();
-
-    ctxB.strokeStyle = "#bcbcbc";
-    ctxB.lineWidth = 4;
-    ctxB.beginPath();
-    ctxB.moveTo(12, yStart);
-    ctxB.bezierCurveTo(95, yStart - 15, 165, yEnd + 11, 244, yEnd);
-    ctxB.stroke();
-  }
-
-  const colorMap = new THREE.CanvasTexture(cCol);
-  colorMap.wrapS = colorMap.wrapT = THREE.RepeatWrapping;
-  colorMap.colorSpace = THREE.SRGBColorSpace;
-  const bumpMap = new THREE.CanvasTexture(cBump);
-  bumpMap.wrapS = bumpMap.wrapT = THREE.RepeatWrapping;
-  return { colorMap, bumpMap };
-}
-
-// 3. Bản đồ băng vải quấn cẳng tay (Forearm Bandages)
-function createBandageWrapMaps() {
-  const size = 256;
-  const cCol = document.createElement("canvas");
-  const cBump = document.createElement("canvas");
-  cCol.width = cBump.width = size;
-  cCol.height = cBump.height = size;
-  const ctxC = cCol.getContext("2d");
-  const ctxB = cBump.getContext("2d");
-
-  ctxC.fillStyle = "#e8e3da";
-  ctxC.fillRect(0, 0, size, size);
-  ctxB.fillStyle = "#808080";
-  ctxB.fillRect(0, 0, size, size);
-
-  for (let y = 0; y < size; y += 22) {
-    ctxC.strokeStyle = "rgba(75, 62, 50, 0.34)";
-    ctxC.lineWidth = 3;
-    ctxC.beginPath();
-    ctxC.moveTo(0, y);
-    ctxC.lineTo(size, y + 9);
-    ctxC.stroke();
-
-    ctxC.strokeStyle = "rgba(255, 255, 255, 0.35)";
-    ctxC.lineWidth = 2;
-    ctxC.beginPath();
-    ctxC.moveTo(0, y + 3);
-    ctxC.lineTo(size, y + 12);
-    ctxC.stroke();
-
-    ctxB.strokeStyle = "#3a3a3a";
-    ctxB.lineWidth = 3;
-    ctxB.beginPath();
-    ctxB.moveTo(0, y);
-    ctxB.lineTo(size, y + 9);
-    ctxB.stroke();
-  }
-  // Vệt bụi phong trần nhẹ trên băng vải
-  const dirt = ctxC.createLinearGradient(0, 0, 0, size);
-  dirt.addColorStop(0, "rgba(120,105,92,0.12)");
-  dirt.addColorStop(0.5, "rgba(255,255,255,0)");
-  dirt.addColorStop(1, "rgba(95,80,68,0.20)");
-  ctxC.fillStyle = dirt;
-  ctxC.fillRect(0, 0, size, size);
-
-  const colorMap = new THREE.CanvasTexture(cCol);
-  colorMap.wrapS = colorMap.wrapT = THREE.RepeatWrapping;
-  colorMap.colorSpace = THREE.SRGBColorSpace;
-  const bumpMap = new THREE.CanvasTexture(cBump);
-  bumpMap.wrapS = bumpMap.wrapT = THREE.RepeatWrapping;
-  return { colorMap, bumpMap };
-}
-
-// 4. Bản đồ Sợi Tóc Đa Tầng Keratin (512x512)
-function createHairStrandMaps() {
-  const size = 512;
-  const cCol = document.createElement("canvas");
-  const cBump = document.createElement("canvas");
-  cCol.width = cBump.width = size;
-  cCol.height = cBump.height = size;
-  const ctxC = cCol.getContext("2d");
-  const ctxB = cBump.getContext("2d");
-
-  // Chuyển sắc tối nhẹ ở chân tóc (v=0) và sáng mượt ở thân/ngọn lọn tóc
-  const rootGrad = ctxC.createLinearGradient(0, 0, 0, size);
-  rootGrad.addColorStop(0.0, "#7a7d84");
-  rootGrad.addColorStop(0.22, "#cfd3db");
-  rootGrad.addColorStop(0.55, "#f2f4f8");
-  rootGrad.addColorStop(0.88, "#d8dce4");
-  rootGrad.addColorStop(1.0, "#adb2bc");
-  ctxC.fillStyle = rootGrad;
-  ctxC.fillRect(0, 0, size, size);
-
-  ctxB.fillStyle = "#808080";
-  ctxB.fillRect(0, 0, size, size);
-
-  let s = 4242;
-  const rnd = () => {
-    s = (s * 16807) % 2147483647;
-    return (s - 1) / 2147483646;
-  };
-  for (let i = 0; i < 950; i++) {
-    const x = rnd() * size;
-    const w = 0.7 + rnd() * 1.8;
-    const bright = rnd() > 0.48;
-    ctxC.strokeStyle = bright ? "rgba(255,255,255,0.28)" : "rgba(38,40,46,0.24)";
-    ctxC.lineWidth = w;
-    ctxC.beginPath();
-    ctxC.moveTo(x, 0);
-    ctxC.bezierCurveTo(x + (rnd() - 0.5) * 10, size * 0.35, x + (rnd() - 0.5) * 10, size * 0.7, x + (rnd() - 0.5) * 6, size);
-    ctxC.stroke();
-
-    ctxB.strokeStyle = bright ? "#c6c6c6" : "#484848";
-    ctxB.lineWidth = w;
-    ctxB.beginPath();
-    ctxB.moveTo(x, 0);
-    ctxB.lineTo(x + (rnd() - 0.5) * 6, size);
-    ctxB.stroke();
-  }
-
-  const colorMap = new THREE.CanvasTexture(cCol);
-  colorMap.wrapS = colorMap.wrapT = THREE.RepeatWrapping;
-  colorMap.colorSpace = THREE.SRGBColorSpace;
-  const bumpMap = new THREE.CanvasTexture(cBump);
-  bumpMap.wrapS = bumpMap.wrapT = THREE.RepeatWrapping;
-  return { colorMap, bumpMap };
-}
-
-// 5. Bản đồ Da Khuôn Mặt Người Thật 1024px: Khối Gò Má, Hốc Mắt, Lỗ Chân Lông & Râu Lún Phún Nam Tính
-function createRealisticSkinMaps() {
-  const w = 1024;
-  const h = 1024;
-  const cCol = document.createElement("canvas");
-  const cBump = document.createElement("canvas");
-  cCol.width = cBump.width = w;
-  cCol.height = cBump.height = h;
-  const ctx = cCol.getContext("2d");
-  const bctx = cBump.getContext("2d");
-
-  // Sắc da người thật ấm áp tự nhiên (tránh sắc búp bê sáp)
-  const base = ctx.createLinearGradient(0, 0, 0, h);
-  base.addColorStop(0.0, "#cfa285");
-  base.addColorStop(0.38, "#ddb396");
-  base.addColorStop(0.56, "#d3a486");
-  base.addColorStop(0.76, "#c29478");
-  base.addColorStop(1.0, "#b5866b");
-  ctx.fillStyle = base;
-  ctx.fillRect(0, 0, w, h);
-
-  bctx.fillStyle = "#808080";
-  bctx.fillRect(0, 0, w, h);
-
-  // Trên SphereGeometry đã xoay +PI/2 quanh trục Y: tâm mặt trước (-Z) nằm ở u = 0.5 (x = 512)
-  [-1, 1].forEach((side) => {
-    // 1. Hốc mắt sâu dưới cung mày (Supraorbital & Eye Socket AO)
-    const sockX = 512 + side * 66;
-    const sockY = 472;
-    const eyeSock = ctx.createRadialGradient(sockX, sockY, 6, sockX, sockY, 54);
-    eyeSock.addColorStop(0.0, "rgba(74, 44, 34, 0.56)");
-    eyeSock.addColorStop(0.55, "rgba(96, 58, 46, 0.30)");
-    eyeSock.addColorStop(1.0, "rgba(96, 58, 46, 0.0)");
-    ctx.fillStyle = eyeSock;
-    ctx.fillRect(sockX - 60, sockY - 60, 120, 120);
-
-    // 2. Đỉnh xương gò má bắt sáng nhẹ + Hõm má dưới gò má (Buccal Cheek Hollow — chuẩn mặt góc cạnh DMC5)
-    const cheekHi = ctx.createRadialGradient(512 + side * 92, 535, 6, 512 + side * 92, 535, 52);
-    cheekHi.addColorStop(0, "rgba(255, 232, 214, 0.22)");
-    cheekHi.addColorStop(1, "rgba(255, 232, 214, 0)");
-    ctx.fillStyle = cheekHi;
-    ctx.fillRect(512 + side * 92 - 55, 480, 110, 110);
-
-    const cheekHollow = ctx.createRadialGradient(512 + side * 102, 625, 10, 512 + side * 102, 625, 68);
-    cheekHollow.addColorStop(0, "rgba(88, 56, 46, 0.34)");
-    cheekHollow.addColorStop(1, "rgba(88, 56, 46, 0)");
-    ctx.fillStyle = cheekHollow;
-    ctx.fillRect(512 + side * 102 - 72, 555, 144, 144);
-
-    // Sắc hồng vi mạch dưới da quanh gò má
-    const blush = ctx.createRadialGradient(512 + side * 80, 560, 8, 512 + side * 80, 560, 58);
-    blush.addColorStop(0, "rgba(186, 92, 74, 0.20)");
-    blush.addColorStop(1, "rgba(186, 92, 74, 0)");
-    ctx.fillStyle = blush;
-    ctx.fillRect(512 + side * 80 - 60, 500, 120, 120);
-  });
-
-  // Sống mũi sáng & hai bên sống mũi đổ bóng dọc sắc nét
-  const noseBridgeHi = ctx.createLinearGradient(500, 455, 524, 455);
-  noseBridgeHi.addColorStop(0, "rgba(102, 64, 50, 0.25)");
-  noseBridgeHi.addColorStop(0.5, "rgba(255, 238, 224, 0.30)");
-  noseBridgeHi.addColorStop(1, "rgba(102, 64, 50, 0.25)");
-  ctx.fillStyle = noseBridgeHi;
-  ctx.fillRect(492, 458, 40, 108);
-
-  // Vùng râu cằm, ria mép & quai hàm lún phún bạc tro nam tính (5-o'clock Silver-Ash Stubble)
-  const jawShadow = ctx.createRadialGradient(512, 705, 18, 512, 705, 165);
-  jawShadow.addColorStop(0.0, "rgba(82, 74, 72, 0.30)");
-  jawShadow.addColorStop(0.58, "rgba(88, 78, 74, 0.22)");
-  jawShadow.addColorStop(1.0, "rgba(88, 78, 74, 0.0)");
-  ctx.fillStyle = jawShadow;
-  ctx.fillRect(330, 565, 364, 285);
-
-  const mustacheShadow = ctx.createRadialGradient(512, 608, 6, 512, 608, 58);
-  mustacheShadow.addColorStop(0.0, "rgba(78, 68, 66, 0.28)");
-  mustacheShadow.addColorStop(1.0, "rgba(78, 68, 66, 0.0)");
-  ctx.fillStyle = mustacheShadow;
-  ctx.fillRect(448, 575, 128, 66);
-
-  // Nếp nhăn trán nhẹ, rãnh mũi-má (Nasolabial fold) & rãnh cằm tạo thần thái phong trần
-  ctx.strokeStyle = "rgba(104, 64, 50, 0.36)";
-  ctx.lineWidth = 3.4;
-  [-1, 1].forEach((side) => {
-    ctx.beginPath();
-    ctx.moveTo(512 + side * 34, 572);
-    ctx.quadraticCurveTo(512 + side * 62, 622, 512 + side * 50, 676);
-    ctx.stroke();
-
-    // Nếp cau mày nhẹ giữa ấn đường
-    ctx.beginPath();
-    ctx.moveTo(512 + side * 14, 426);
-    ctx.lineTo(512 + side * 18, 456);
-    ctx.stroke();
-  });
-
-  // Hõm bóng dưới môi dưới & đường chẻ cằm nhẹ
-  const chinDimple = ctx.createRadialGradient(512, 682, 3, 512, 682, 24);
-  chinDimple.addColorStop(0, "rgba(82, 48, 38, 0.42)");
-  chinDimple.addColorStop(1, "rgba(82, 48, 38, 0)");
-  ctx.fillStyle = chinDimple;
-  ctx.fillRect(486, 658, 52, 48);
-
-  // Lỗ chân lông vi mô & hàng nghìn sợi râu lún phún quanh hàm/cằm/mép trên cả Albedo & Bump
-  let s = 9001;
-  const rnd = () => {
-    s = (s * 16807) % 2147483647;
-    return (s - 1) / 2147483646;
-  };
-  for (let i = 0; i < 9000; i++) {
-    const px = rnd() * w;
-    const py = rnd() * h;
-    const v = Math.floor(116 + rnd() * 24);
-    bctx.fillStyle = `rgb(${v},${v},${v})`;
-    bctx.fillRect(px, py, 1.8, 1.8);
-  }
-  for (let i = 0; i < 2600; i++) {
-    const gx = 370 + rnd() * 284;
-    const gy = 582 + rnd() * 220;
-    const distCenter = Math.hypot((gx - 512) * 0.85, gy - 690);
-    // Chừa vùng môi trung tâm
-    const inLips = Math.abs(gx - 512) < 42 && gy > 620 && gy < 662;
-    if (distCenter < 148 && !inLips) {
-      const isSilver = rnd() > 0.55;
-      ctx.strokeStyle = isSilver ? "rgba(218, 220, 226, 0.26)" : "rgba(62, 52, 48, 0.28)";
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.moveTo(gx, gy);
-      ctx.lineTo(gx + (gx - 512) * 0.015, gy + 3.4);
-      ctx.stroke();
-
-      bctx.fillStyle = isSilver ? "#a6a6a6" : "#585858";
-      bctx.fillRect(gx, gy, 1.6, 2.8);
+      // Vân môi dọc tinh tế đúng vùng môi [0.335 .. 0.398]
+      if (Math.abs(phi) < 0.29 && v > 0.335 && v < 0.398) {
+        hField[idx] += Math.sin(phi * 210.0) * 0.08;
+        rField[idx] = 0.42;
+      }
     }
   }
 
+  for (let p = 0; p < 4800; p++) {
+    const px = Math.floor(rnd() * nw);
+    const py = Math.floor(rnd() * nh);
+    hField[py * nw + px] -= 0.10 + rnd() * 0.08;
+  }
+
   const colorMap = new THREE.CanvasTexture(cCol);
   colorMap.colorSpace = THREE.SRGBColorSpace;
-  const bumpMap = new THREE.CanvasTexture(cBump);
-  return { colorMap, bumpMap };
+  colorMap.anisotropy = 4;
+
+  const normalMap = heightFieldToNormalTexture(hField, nw, nh, 1.5, false);
+  const roughnessMap = scalarFieldToDataTexture(rField, nw, nh, false);
+
+  return { colorMap, normalMap, roughnessMap };
 }
 
-// 6. Bản đồ Mống Mắt Sâu Sắc Nét (Iris Fibers + Upper Eyelid Shadow AO + Catchlight)
-function createEyeIrisTexture() {
+// Bản đồ Mắt Hạnh Nhân 512x256 Độ Nét Cao (lòng trắng ngà hai bên + khóe mắt hồng + con ngươi nâu hổ phách + phản quang giác mạc)
+function createVietnameseEyeIrisTexture(side = 1) {
+  const w = 512;
+  const h = 256;
   const c = document.createElement("canvas");
-  c.width = 256;
-  c.height = 256;
+  c.width = w;
+  c.height = h;
   const ctx = c.getContext("2d");
 
-  // Tròng trắng ngà tự nhiên kèm bóng đổ mí trên (tránh mắt trợn trắng)
-  const scleraGrad = ctx.createLinearGradient(0, 0, 0, 256);
-  scleraGrad.addColorStop(0.0, "#8d7b73");
-  scleraGrad.addColorStop(0.34, "#cfc6be");
-  scleraGrad.addColorStop(0.52, "#ece6df");
-  scleraGrad.addColorStop(0.75, "#dfd7cf");
-  scleraGrad.addColorStop(1.0, "#b8a89e");
-  ctx.fillStyle = scleraGrad;
-  ctx.fillRect(0, 0, 256, 256);
+  // Lòng trắng mắt (Sclera) sắc trắng ngà ấm tự nhiên có chiều sâu cầu mắt hai khóe
+  const scleraV = ctx.createLinearGradient(0, 0, 0, h);
+  scleraV.addColorStop(0.0, "#b8a89e");
+  scleraV.addColorStop(0.24, "#ece6df");
+  scleraV.addColorStop(0.55, "#f7f3ed");
+  scleraV.addColorStop(0.84, "#eae2d9");
+  scleraV.addColorStop(1.0, "#cabcb2");
+  ctx.fillStyle = scleraV;
+  ctx.fillRect(0, 0, w, h);
 
-  const cx = 128;
-  const cy = 128;
-  const rIris = 78;
-  const irisGrad = ctx.createRadialGradient(cx, cy, 16, cx, cy, rIris);
-  irisGrad.addColorStop(0.0, "#1c2833");
-  irisGrad.addColorStop(0.42, "#4a6c82");
-  irisGrad.addColorStop(0.78, "#2e4657");
-  irisGrad.addColorStop(1.0, "#121b24");
+  const scleraH = ctx.createLinearGradient(0, 0, w, 0);
+  scleraH.addColorStop(0.0, "rgba(138, 102, 92, 0.34)");
+  scleraH.addColorStop(0.16, "rgba(138, 102, 92, 0.0)");
+  scleraH.addColorStop(0.84, "rgba(138, 102, 92, 0.0)");
+  scleraH.addColorStop(1.0, "rgba(128, 96, 86, 0.34)");
+  ctx.fillStyle = scleraH;
+  ctx.fillRect(0, 0, w, h);
+
+  // Khóe lệ đạo trong (Medial caruncle) hồng ấm tự nhiên ở phía gần sống mũi
+  const caruncleX = side > 0 ? 28 : w - 28;
+  const caruncleGrad = ctx.createRadialGradient(caruncleX, h * 0.54, 2, caruncleX, h * 0.54, 34);
+  caruncleGrad.addColorStop(0.0, "rgba(192, 94, 84, 0.78)");
+  caruncleGrad.addColorStop(0.6, "rgba(192, 94, 84, 0.28)");
+  caruncleGrad.addColorStop(1.0, "rgba(192, 94, 84, 0.0)");
+  ctx.fillStyle = caruncleGrad;
+  ctx.fillRect(caruncleX - 36, h * 0.54 - 36, 72, 72);
+
+  // Con ngươi (Iris) chiếm ~41% bề ngang mắt hạnh nhân -> lộ rõ lòng trắng trong trẻo hai bên!
+  const cx = w * 0.5 - side * 8;
+  const cy = h * 0.48;
+  const rIris = 104;
+
+  const irisGrad = ctx.createRadialGradient(cx, cy, 18, cx, cy, rIris);
+  irisGrad.addColorStop(0.0, "#140c08");
+  irisGrad.addColorStop(0.36, "#54321e"); // Nâu hổ phách trầm ấm người Việt
+  irisGrad.addColorStop(0.74, "#341d11");
+  irisGrad.addColorStop(0.92, "#190e09");
+  irisGrad.addColorStop(1.0, "#0e0806"); // Vòng Limbal ring sắc nét tạo thần thái có hồn
   ctx.fillStyle = irisGrad;
   ctx.beginPath();
   ctx.arc(cx, cy, rIris, 0, Math.PI * 2);
   ctx.fill();
 
-  ctx.strokeStyle = "rgba(186, 218, 238, 0.30)";
+  // Thớ tia mống mắt (Iris stroma fibers)
+  ctx.strokeStyle = "rgba(178, 118, 72, 0.26)";
   ctx.lineWidth = 1.6;
-  for (let k = 0; k < 48; k++) {
-    const a = (k * Math.PI * 2) / 48;
+  for (let k = 0; k < 56; k++) {
+    const a = (k * Math.PI * 2) / 56;
     ctx.beginPath();
-    ctx.moveTo(cx + Math.cos(a) * 24, cy + Math.sin(a) * 24);
-    ctx.lineTo(cx + Math.cos(a) * (rIris - 5), cy + Math.sin(a) * (rIris - 5));
+    ctx.moveTo(cx + Math.cos(a) * 34, cy + Math.sin(a) * 34);
+    ctx.lineTo(cx + Math.cos(a) * (rIris - 8), cy + Math.sin(a) * (rIris - 8));
     ctx.stroke();
   }
 
-  // Con ngươi đen sâu
-  ctx.fillStyle = "#07090c";
+  // Đồng tử đen sâu (Pupil)
+  ctx.fillStyle = "#050404";
   ctx.beginPath();
-  ctx.arc(cx, cy, 27, 0, Math.PI * 2);
+  ctx.arc(cx, cy, 38, 0, Math.PI * 2);
   ctx.fill();
 
-  // Bóng râm hàng lông mi trên đổ ngang nửa trên mống mắt (tạo ánh nhìn điềm tĩnh sắc lạnh!)
-  const lidShadow = ctx.createLinearGradient(0, cy - rIris, 0, cy + 8);
-  lidShadow.addColorStop(0.0, "rgba(18, 14, 14, 0.72)");
-  lidShadow.addColorStop(0.55, "rgba(18, 14, 14, 0.28)");
-  lidShadow.addColorStop(1.0, "rgba(18, 14, 14, 0.0)");
-  ctx.fillStyle = lidShadow;
-  ctx.fillRect(0, 0, 256, cy + 8);
+  // Bóng râm mí mắt trên phủ dịu xuống 22% trên của cầu mắt
+  const lidAO = ctx.createLinearGradient(0, 0, 0, h * 0.42);
+  lidAO.addColorStop(0.0, "rgba(14, 9, 7, 0.72)");
+  lidAO.addColorStop(0.45, "rgba(18, 11, 9, 0.26)");
+  lidAO.addColorStop(1.0, "rgba(18, 11, 9, 0.0)");
+  ctx.fillStyle = lidAO;
+  ctx.fillRect(0, 0, w, h * 0.42);
 
-  // Đốm phản quang giác mạc sắc nét
-  ctx.fillStyle = "#ffffff";
+  // Viền bờ mi dưới mảnh tự nhiên
+  ctx.strokeStyle = "rgba(96, 56, 46, 0.48)";
+  ctx.lineWidth = 7;
   ctx.beginPath();
-  ctx.arc(cx - 18, cy - 14, 8.5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "rgba(255,255,255,0.65)";
-  ctx.beginPath();
-  ctx.arc(cx + 20, cy + 16, 4.2, 0, Math.PI * 2);
-  ctx.fill();
-
-  const tex = new THREE.CanvasTexture(c);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
-}
-
-function createRankBadgeTexture(mode = "guard") {
-  const c = document.createElement("canvas");
-  c.width = 256;
-  c.height = 256;
-  const ctx = c.getContext("2d");
-  ctx.fillStyle = mode === "guard" ? "#261210" : mode === "mandarin" ? "#10212e" : "#2b1b0e";
-  ctx.fillRect(0, 0, 256, 256);
-
-  ctx.strokeStyle = "#ecc556";
-  ctx.lineWidth = 10;
-  ctx.strokeRect(10, 10, 236, 236);
-  ctx.strokeStyle = "#9c741c";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(22, 22, 212, 212);
-
-  ctx.strokeStyle = "#4fa49a";
-  ctx.lineWidth = 4;
-  for (let row = 0; row < 3; row++) {
-    const y = 216 - row * 14;
-    ctx.beginPath();
-    for (let x = 26; x <= 230; x += 34) {
-      ctx.arc(x + 17, y, 17, Math.PI, 0, false);
-    }
-    ctx.stroke();
-  }
-
-  ctx.fillStyle = "#d93b2b";
-  ctx.beginPath();
-  ctx.arc(128, 54, 16, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = "#f7dc7c";
-  ctx.lineWidth = 2.5;
+  ctx.moveTo(0, h - 2);
+  ctx.lineTo(w, h - 2);
   ctx.stroke();
 
-  ctx.save();
-  ctx.translate(128, 132);
-  if (mode === "mandarin") {
-    ctx.fillStyle = "#f7f3e6";
-    ctx.strokeStyle = "#e4b949";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.ellipse(0, 4, 24, 16, -0.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(-8, -2);
-    ctx.quadraticCurveTo(-58, -42, -66, 6);
-    ctx.quadraticCurveTo(-36, 14, -8, 6);
-    ctx.moveTo(8, -2);
-    ctx.quadraticCurveTo(58, -42, 66, 6);
-    ctx.quadraticCurveTo(36, 14, 8, 6);
-    ctx.fill();
-    ctx.stroke();
-  } else {
-    ctx.fillStyle = "#efc75e";
-    ctx.strokeStyle = "#916311";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(0, 0, 38, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = "#261210";
-    ctx.beginPath();
-    ctx.arc(-13, -8, 5, 0, Math.PI * 2);
-    ctx.arc(13, -8, 5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.restore();
+  // Đốm phản quang bầu trời Cố đô trên giác mạc ướt (Catchlights)
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath();
+  ctx.ellipse(cx - 26, cy - 22, 14, 11, -0.25, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "rgba(255, 248, 235, 0.70)";
+  ctx.beginPath();
+  ctx.arc(cx + 28, cy + 24, 6.5, 0, Math.PI * 2);
+  ctx.fill();
 
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
   return tex;
 }
 
-function createGuardHatTexture() {
-  const c = document.createElement("canvas");
-  c.width = 256;
-  c.height = 256;
-  const ctx = c.getContext("2d");
-  ctx.fillStyle = "#201713";
-  ctx.fillRect(0, 0, 256, 256);
-  ctx.strokeStyle = "rgba(92, 66, 44, 0.58)";
-  ctx.lineWidth = 2;
-  for (let r = 14; r < 126; r += 9) {
-    ctx.beginPath();
-    ctx.arc(128, 128, r, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-  const tex = new THREE.CanvasTexture(c);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
-}
+// =========================================================================
+// 2. BẢN ĐỒ GẤM DỆT VÂN MÂY - ĐOÀN LONG & NẾP NHĂN VẢI (TANGENT NORMAL + ROUGHNESS)
+// =========================================================================
+function createImperialBrocadePbrMaps() {
+  const size = 512;
+  const cCol = document.createElement("canvas");
+  cCol.width = cCol.height = size;
+  const ctx = cCol.getContext("2d");
 
-// Điêu khắc hộp sọ góc cạnh nam tính (Lean Chiseled Masculine Cranium, Square Jaw, Brow Ridge & Chin)
-function createSculptedHeadGeometry() {
-  const geo = new THREE.SphereGeometry(0.106, 48, 38);
-  geo.rotateY(Math.PI / 2);
-  const pos = geo.attributes.position;
+  ctx.fillStyle = "#e6e2dc";
+  ctx.fillRect(0, 0, size, size);
 
-  for (let i = 0; i < pos.count; i++) {
-    let x = pos.getX(i);
-    let y = pos.getY(i);
-    let z = pos.getZ(i);
+  const hField = new Float32Array(size * size);
+  const rField = new Float32Array(size * size);
 
-    const ny = y / 0.106; // -1..+1
-    const frontMask = THREE.MathUtils.smoothstep(-z, -0.015, 0.082);
+  // 1. Dệt sợi dọc - sợi ngang lụa tơ tằm vi mô + Nếp nhăn vải chéo mềm mại
+  for (let y = 0; y < size; y++) {
+    const vy = (y / size) * Math.PI * 2;
+    for (let x = 0; x < size; x++) {
+      const vx = (x / size) * Math.PI * 2;
+      const idx = y * size + x;
 
-    // 1. Tỉ lệ khuôn mặt nam giới trưởng thành: cân đối góc cạnh, xương hàm rõ nét
-    x *= 0.87;
-    y *= 1.10;
-    z *= 0.96;
+      // Sợi tơ dệt mịn (micro-twill weave)
+      const weave = Math.sin(x * 1.35 + y * 0.45) * 0.045 + Math.cos(y * 1.45 - x * 0.35) * 0.045;
 
-    // 2. Xương hàm vuông góc cạnh (Gonial Jaw Angle) thu về cằm vuông nam tính
-    if (ny < 0.06) {
-      const jawT = THREE.MathUtils.clamp((-ny + 0.06) / 0.94, 0, 1);
-      // Giữ độ rộng quai hàm ở vùng ny = -0.35 rồi mới thu mạnh về cằm ở ny < -0.55
-      const chinNarrow = Math.pow(jawT, 1.55) * 0.34;
-      const gonialFlare = Math.exp(-Math.pow((ny + 0.36) / 0.20, 2)) * 0.06 * frontMask;
-      x *= 1.0 - chinNarrow + gonialFlare;
+      // Nếp gấp vải tự nhiên đa tần số (không kẻ sọc cứng)
+      const drape1 = Math.sin(vy * 3.0 + Math.sin(vx * 2.0) * 0.85) * 0.22;
+      const drape2 = Math.sin(vx * 2.0 - vy * 2.0 + 1.1) * 0.16;
+      const fineCrease = Math.pow(Math.max(0, Math.sin(vy * 7.0 + vx * 3.0)), 3.0) * 0.18;
 
-      // Hóp nhẹ hai bên má dưới (Buccal hollow)
-      const hollow =
-        Math.exp(-Math.pow((Math.abs(x) - 0.056) / 0.022, 2)) *
-        Math.exp(-Math.pow((ny + 0.22) / 0.20, 2)) *
-        frontMask;
-      x -= Math.sign(x) * hollow * 0.0055;
-
-      if (z < 0) {
-        const chinFocus = Math.exp(-Math.pow(x / 0.032, 2)) * Math.exp(-Math.pow((ny + 0.72) / 0.24, 2));
-        z -= chinFocus * 0.015;
-      } else {
-        z *= 1.0 - jawT * 0.24;
-      }
+      hField[idx] = weave + drape1 + drape2 + fineCrease;
+      rField[idx] = 0.58 - fineCrease * 0.22;
     }
-
-    // 3. Xương gò má cao sắc nét
-    const cheekFocus =
-      Math.exp(-Math.pow((Math.abs(x) - 0.052) / 0.024, 2)) *
-      Math.exp(-Math.pow((ny + 0.02) / 0.18, 2)) *
-      frontMask;
-    x += Math.sign(x) * cheekFocus * 0.0065;
-    z -= cheekFocus * 0.0065;
-
-    // 4. Cung xương mày nhô rõ & hốc mắt sâu nam tính
-    const browFocus =
-      Math.exp(-Math.pow(x / 0.058, 2)) *
-      Math.exp(-Math.pow((ny - 0.20) / 0.11, 2)) *
-      frontMask;
-    z -= browFocus * 0.0105;
-
-    const socketFocus =
-      Math.exp(-Math.pow((Math.abs(x) - 0.029) / 0.018, 2)) *
-      Math.exp(-Math.pow((ny - 0.08) / 0.10, 2)) *
-      frontMask;
-    z += socketFocus * 0.011;
-
-    pos.setXYZ(i, x, y, z);
   }
 
-  geo.computeVertexNormals();
-  return geo;
+  // 2. Hoa văn Gấm Dệt Đoàn Long - Vân Mây chìm (Satin Damask Jacquard Sheen!)
+  // Trên gấm thật: hoa văn dệt satin bóng hơn nền trơn và hơi nổi khối nhẹ
+  const motifCanvas = document.createElement("canvas");
+  motifCanvas.width = motifCanvas.height = size;
+  const mctx = motifCanvas.getContext("2d");
+  mctx.fillStyle = "#000000";
+  mctx.fillRect(0, 0, size, size);
+  mctx.strokeStyle = "#ffffff";
+  mctx.fillStyle = "#ffffff";
+
+  const step = 128;
+  for (let gy = 0; gy < size; gy += step) {
+    for (let gx = 0; gx < size; gx += step) {
+      const ox = gx + ((gy / step) % 2 === 0 ? 32 : 96);
+      const oy = gy + 64;
+      // Hoa văn Đoàn Thọ / Đoàn Vân tròn cổ điển Triều Nguyễn
+      mctx.lineWidth = 3.2;
+      mctx.beginPath();
+      mctx.arc(ox % size, oy, 24, 0, Math.PI * 2);
+      mctx.stroke();
+      mctx.lineWidth = 1.8;
+      mctx.beginPath();
+      mctx.arc(ox % size, oy, 16, 0, Math.PI * 2);
+      mctx.stroke();
+      for (let k = 0; k < 4; k++) {
+        const a = (k * Math.PI) / 2 + Math.PI / 4;
+        mctx.beginPath();
+        mctx.arc((ox + Math.cos(a) * 20) % size, oy + Math.sin(a) * 20, 7, 0, Math.PI * 2);
+        mctx.stroke();
+      }
+      // Mây ngũ sắc uốn lượn nối giữa các đoàn hoa
+      mctx.beginPath();
+      mctx.arc((ox + 56) % size, (oy + 44) % size, 12, Math.PI, 0, false);
+      mctx.arc((ox + 74) % size, (oy + 44) % size, 9, Math.PI, 0, false);
+      mctx.stroke();
+    }
+  }
+
+  const mData = mctx.getImageData(0, 0, size, size).data;
+  const colImg = ctx.getImageData(0, 0, size, size);
+  const cData = colImg.data;
+  for (let i = 0; i < size * size; i++) {
+    const jacquard = mData[i * 4] / 255.0;
+    const hVal = hField[i];
+    // Đổ bóng AO nhẹ trong lòng nếp gấp vải & sáng nhẹ trên hoa văn gấm dệt
+    const shade = THREE.MathUtils.clamp(0.88 + hVal * 0.16 + jacquard * 0.11, 0.62, 1.0);
+    cData[i * 4] = Math.round(shade * 255);
+    cData[i * 4 + 1] = Math.round(shade * 252);
+    cData[i * 4 + 2] = Math.round(shade * 246);
+
+    hField[i] += jacquard * 0.24;
+    // Hoa văn satin bóng mượt (roughness ~0.26) nổi bật trên nền lụa mờ (0.58)
+    rField[i] = THREE.MathUtils.lerp(rField[i], 0.25, jacquard * 0.85);
+  }
+  ctx.putImageData(colImg, 0, 0);
+
+  const colorMap = new THREE.CanvasTexture(cCol);
+  colorMap.wrapS = colorMap.wrapT = THREE.RepeatWrapping;
+  colorMap.repeat.set(2.2, 2.4);
+  colorMap.colorSpace = THREE.SRGBColorSpace;
+
+  const normalMap = heightFieldToNormalTexture(hField, size, size, 2.6, true);
+  normalMap.repeat.set(2.2, 2.4);
+
+  const roughnessMap = scalarFieldToDataTexture(rField, size, size, true);
+  roughnessMap.repeat.set(2.2, 2.4);
+
+  return { colorMap, normalMap, roughnessMap };
 }
 
-// Tạo một lọn tóc 3D uốn cong thuôn nhọn có tiết diện nổi khối (không bị mỏng dẹt khi nhìn nghiêng)
-function createHairLockMesh(points, width, thickness, mat) {
-  const curve = new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(p[0], p[1], p[2])));
-  const segs = 14;
-  const frames = curve.computeFrenetFrames(segs, false);
-  const verts = [];
-  const uvs = [];
+// Bản đồ Lụa Lót Cổ & Quần Có Nếp Gấp Mềm + Sợi Dệt (256x256)
+function createSilkDrapeMaps() {
+  const size = 256;
+  const hField = new Float32Array(size * size);
+  const rField = new Float32Array(size * size);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const idx = y * size + x;
+      const vx = (x / size) * Math.PI * 2;
+      const vy = (y / size) * Math.PI * 2;
+      const fold = Math.sin(vx * 3.0 + vy * 2.0) * 0.24 + Math.sin(vy * 5.0 - vx) * 0.14;
+      const weave = Math.sin(x * 1.8) * 0.03 + Math.cos(y * 1.8) * 0.03;
+      hField[idx] = fold + weave;
+      rField[idx] = 0.52 - fold * 0.12;
+    }
+  }
+  const normalMap = heightFieldToNormalTexture(hField, size, size, 2.0, true);
+  normalMap.repeat.set(1.8, 2.2);
+  const roughnessMap = scalarFieldToDataTexture(rField, size, size, true);
+  roughnessMap.repeat.set(1.8, 2.2);
+  return { normalMap, roughnessMap };
+}
+
+// Bản đồ Xà Cạp Quấn Tay & Đai Da Chạm Nổi (256x256)
+function createWovenWrapNormalMap() {
+  const size = 256;
+  const hField = new Float32Array(size * size);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      // Các dải băng vải quấn chồng mí tự nhiên + vân dệt chéo xương cá
+      const band = ((y + x * 0.18) % 28) / 28;
+      const overlap = Math.sin(band * Math.PI) * 0.42;
+      const herring = Math.sin((x + (y % 8 < 4 ? y : -y)) * 1.2) * 0.08;
+      hField[y * size + x] = overlap + herring;
+    }
+  }
+  const normalMap = heightFieldToNormalTexture(hField, size, size, 2.8, true);
+  normalMap.repeat.set(1.5, 1.5);
+  return normalMap;
+}
+
+// Bản đồ Nón Dấu Đan Mây Tre Sơn Mài Cẩm Y Thị Vệ (512x512 Albedo + Normal)
+function createRattanConicalHatMaps() {
+  const size = 512;
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const ctx = c.getContext("2d");
+  const hField = new Float32Array(size * size);
+
+  ctx.fillStyle = "#221611";
+  ctx.fillRect(0, 0, size, size);
+
+  // Vòng nan mây đồng tâm & nan tre tỏa tia sơn cánh gián thẫm
+  const cx = 256;
+  const cy = 256;
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const dx = x - cx;
+      const dy = y - cy;
+      const r = Math.hypot(dx, dy);
+      const ang = Math.atan2(dy, dx);
+      const ringWave = Math.sin(r * 0.75);
+      const ribWave = Math.cos(ang * 48.0);
+      const weave = ringWave * 0.32 + ribWave * 0.22 * (ringWave > 0 ? 1 : -0.6);
+      hField[y * size + x] = weave;
+    }
+  }
+
+  for (let r = 12; r < 252; r += 8) {
+    ctx.strokeStyle = r % 24 === 0 ? "rgba(156, 108, 52, 0.55)" : "rgba(78, 52, 34, 0.55)";
+    ctx.lineWidth = r % 24 === 0 ? 2.4 : 1.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  const colorMap = new THREE.CanvasTexture(c);
+  colorMap.colorSpace = THREE.SRGBColorSpace;
+  const normalMap = heightFieldToNormalTexture(hField, size, size, 2.5, false);
+  return { colorMap, normalMap };
+}
+
+// Bản đồ Bổ Tử Thêu Nổi Chỉ Vàng Kim Tuyến (512x512 Albedo + Normal + Metalness)
+function createEmbroideredBadgePbr(mode = "guard") {
+  const size = 512;
+  const cCol = document.createElement("canvas");
+  const cHeight = document.createElement("canvas");
+  cCol.width = cCol.height = size;
+  cHeight.width = cHeight.height = size;
+
+  const ctx = cCol.getContext("2d");
+  const hctx = cHeight.getContext("2d");
+
+  ctx.fillStyle =
+    mode === "guard"
+      ? "#1f0e0d"
+      : mode === "mandarin"
+        ? "#0e1d29"
+        : mode === "scholar"
+          ? "#151930"
+          : "#24160a";
+  ctx.fillRect(0, 0, size, size);
+
+  hctx.fillStyle = "#202020";
+  hctx.fillRect(0, 0, size, size);
+
+  const drawGoldStroke = (fn, width, col = "#ecc65a", hCol = "#e8e8e8") => {
+    ctx.strokeStyle = col;
+    ctx.lineWidth = width;
+    fn(ctx);
+    ctx.stroke();
+
+    hctx.strokeStyle = hCol;
+    hctx.lineWidth = width + 2;
+    fn(hctx);
+    hctx.stroke();
+  };
+
+  // Khung gấm thêu kim tuyến Vạn Tự & đường diềm đôi
+  drawGoldStroke((g) => {
+    g.beginPath();
+    g.rect(18, 18, 476, 476);
+  }, 16, "#e6bd50");
+  drawGoldStroke((g) => {
+    g.beginPath();
+    g.rect(42, 42, 428, 428);
+  }, 5, "#b38728", "#b0b0b0");
+
+  // Thủy ba (sóng biển Thọ Sơn Hải Phúc dưới chân Bổ Tử)
+  for (let row = 0; row < 4; row++) {
+    const y = 446 - row * 26;
+    drawGoldStroke(
+      (g) => {
+        g.beginPath();
+        for (let x = 48; x <= 440; x += 56) {
+          g.arc(x + 28, y, 28, Math.PI, 0, false);
+        }
+      },
+      7,
+      row % 2 === 0 ? "#4ca89b" : "#ecc65a",
+      "#d6d6d6"
+    );
+  }
+
+  // Mặt trời đỏ thêu chỉ đào ở đỉnh Bổ Tử
+  ctx.fillStyle = "#cf3325";
+  ctx.beginPath();
+  ctx.arc(256, 102, 30, 0, Math.PI * 2);
+  ctx.fill();
+  hctx.fillStyle = "#d8d8d8";
+  hctx.beginPath();
+  hctx.arc(256, 102, 30, 0, Math.PI * 2);
+  hctx.fill();
+  drawGoldStroke((g) => {
+    g.beginPath();
+    g.arc(256, 102, 31, 0, Math.PI * 2);
+  }, 4.5, "#f5d878");
+
+  // Linh vật trung tâm theo phẩm hàm Triều Nguyễn 1880
+  const paintMotif = (g, isHeight) => {
+    g.save();
+    g.translate(256, 258);
+    if (mode === "mandarin" || mode === "scholar") {
+      // Tiên Hạc / Vân Nhạn tung cánh ngậm cành chi
+      g.fillStyle = isHeight ? "#f2f2f2" : "#f7f3e8";
+      g.strokeStyle = isHeight ? "#ffffff" : "#e5bc4e";
+      g.lineWidth = 6;
+      g.beginPath();
+      g.ellipse(0, 8, 46, 30, -0.15, 0, Math.PI * 2);
+      g.fill();
+      g.stroke();
+      // Đôi cánh sải rộng có lông vũ xếp lớp
+      [-1, 1].forEach((s) => {
+        g.beginPath();
+        g.moveTo(s * 14, -4);
+        g.quadraticCurveTo(s * 116, -86, s * 136, 12);
+        g.quadraticCurveTo(s * 74, 34, s * 14, 14);
+        g.fill();
+        g.stroke();
+        for (let f = 1; f <= 4; f++) {
+          g.beginPath();
+          g.moveTo(s * (26 + f * 20), -10);
+          g.lineTo(s * (40 + f * 22), 18);
+          g.stroke();
+        }
+      });
+      // Cổ hạc vươn cao hướng mặt trời
+      g.beginPath();
+      g.moveTo(8, -14);
+      g.quadraticCurveTo(38, -68, 12, -96);
+      g.stroke();
+    } else if (mode === "noble") {
+      // Đoàn Long cuộn vân mây chầu Hỏa Châu (Hoàng Thân Quốc Thích)
+      g.strokeStyle = isHeight ? "#ffffff" : "#f2ce68";
+      g.fillStyle = isHeight ? "#f6f6f6" : "#ecc354";
+      g.lineCap = "round";
+      g.lineWidth = 18;
+      g.beginPath();
+      g.arc(0, 4, 78, -Math.PI * 0.72, Math.PI * 0.88);
+      g.stroke();
+      g.lineWidth = 11;
+      g.beginPath();
+      g.arc(0, 4, 48, Math.PI * 0.15, Math.PI * 1.45);
+      g.stroke();
+      // Vảy rồng thêu kim tuyến dọc thân
+      g.lineWidth = 3.5;
+      g.strokeStyle = isHeight ? "#d0d0d0" : "#9e6e14";
+      for (let k = 0; k < 12; k++) {
+        const a = -2.1 + k * 0.42;
+        g.beginPath();
+        g.arc(Math.cos(a) * 78, 4 + Math.sin(a) * 78, 8, a - 1.1, a + 1.1);
+        g.stroke();
+      }
+      // Đầu rồng chính diện uy nghiêm & Sừng hươu + Râu rồng
+      g.fillStyle = isHeight ? "#ffffff" : "#f6d97a";
+      g.beginPath();
+      g.ellipse(0, -18, 28, 32, 0, 0, Math.PI * 2);
+      g.fill();
+      g.strokeStyle = isHeight ? "#ffffff" : "#f6d97a";
+      g.lineWidth = 6;
+      [-1, 1].forEach((s) => {
+        g.beginPath();
+        g.moveTo(s * 12, -42);
+        g.quadraticCurveTo(s * 34, -74, s * 22, -88);
+        g.moveTo(s * 18, -10);
+        g.quadraticCurveTo(s * 58, -18, s * 76, -4);
+        g.stroke();
+      });
+    } else {
+      // Kỳ Lân Võ Quan & Cẩm Y Thị Vệ vươn mình trên mây lửa
+      g.fillStyle = isHeight ? "#f4f4f4" : "#efc758";
+      g.strokeStyle = isHeight ? "#ffffff" : "#a87416";
+      g.lineCap = "round";
+      g.lineJoin = "round";
+      // Thân Kỳ Lân uốn chữ S săn chắc + Bờm lửa & Đuôi vân mây
+      g.lineWidth = 6;
+      g.beginPath();
+      g.ellipse(-6, 18, 56, 36, -0.24, 0, Math.PI * 2);
+      g.fill();
+      g.stroke();
+      // Cổ & Đầu Kỳ Lân ngẩng cao hướng mặt trời + Sừng Linh Thú
+      g.beginPath();
+      g.moveTo(22, 2);
+      g.quadraticCurveTo(56, -42, 24, -74);
+      g.quadraticCurveTo(-8, -76, -6, -42);
+      g.closePath();
+      g.fill();
+      g.stroke();
+      g.strokeStyle = isHeight ? "#ffffff" : "#f7dc82";
+      g.lineWidth = 7;
+      g.beginPath();
+      g.moveTo(16, -72);
+      g.quadraticCurveTo(-12, -102, -26, -90);
+      // Đuôi lửa Kỳ Lân uốn lượn bên trái
+      g.moveTo(-56, 22);
+      g.quadraticCurveTo(-108, -18, -86, -58);
+      g.moveTo(-52, 30);
+      g.quadraticCurveTo(-98, 12, -104, -22);
+      // Tứ túc đạp mây vàng
+      g.moveTo(-34, 46);
+      g.lineTo(-54, 82);
+      g.moveTo(26, 42);
+      g.lineTo(52, 78);
+      g.stroke();
+      // Vân mây cát tường hai bên vai Kỳ Lân
+      g.lineWidth = 4.5;
+      g.strokeStyle = isHeight ? "#eaeaea" : "#58b8a8";
+      [-1, 1].forEach((s) => {
+        g.beginPath();
+        g.arc(s * 96, -34, 18, Math.PI * 0.2, Math.PI * 1.6);
+        g.stroke();
+      });
+    }
+    g.restore();
+  };
+  paintMotif(ctx, false);
+  paintMotif(hctx, true);
+
+  // Chuyển ảnh độ cao thêu nổi sang trường số thực có vân mũi chỉ thêu ngang (Embroidery stitch ridges)
+  const hImg = hctx.getImageData(0, 0, size, size).data;
+  const hField = new Float32Array(size * size);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const i = y * size + x;
+      const mask = hImg[i * 4] / 255.0;
+      const stitch = mask > 0.25 ? Math.sin(x * 1.9 + y * 0.6) * 0.18 : Math.sin(x * 1.4) * 0.03;
+      hField[i] = mask * 0.75 + stitch;
+    }
+  }
+
+  const colorMap = new THREE.CanvasTexture(cCol);
+  colorMap.colorSpace = THREE.SRGBColorSpace;
+  const normalMap = heightFieldToNormalTexture(hField, size, size, 3.0, false);
+  return { colorMap, normalMap };
+}
+
+// =========================================================================
+// 3. ĐIÊU KHẮC THÂN ÁO NGŨ THÂN LIỀN VAI XUÔI & CHI CÓ NẾP VẢI TRỌNG LỰC
+// =========================================================================
+function createTailoredAoNguThanTorsoGeo() {
+  const segU = 64;
+  const segV = 40;
+  const positions = new Float32Array((segU + 1) * (segV + 1) * 3);
+  const uvs = new Float32Array((segU + 1) * (segV + 1) * 2);
   const indices = [];
 
-  // Tiết diện lăng trụ vát 4 đỉnh tạo sóng tóc bắt sáng đa hướng
-  const profile = [
-    [-0.5, 0.0],
-    [0.0, 0.55],
-    [0.5, 0.0],
-    [0.0, -0.35],
-  ];
+  // Biên dạng giải phẫu thân nam giới 1.70m mặc Áo Ngũ Thân:
+  // Eo gọn tại v=0.10, ngực nở tại v=0.68, vai xuôi mềm tự nhiên từ v=0.78..1.00 vào chân cổ!
+  let pPtr = 0;
+  let uPtr = 0;
+  for (let iv = 0; iv <= segV; iv++) {
+    const v = iv / segV;
+    const y = v * 0.562;
 
-  const pt = new THREE.Vector3();
-  const vPos = new THREE.Vector3();
-  for (let i = 0; i <= segs; i++) {
-    const t = i / segs;
-    curve.getPointAt(t, pt);
-    // Phồng tự nhiên ở thân lọn tóc và vuốt nhọn sắc sảo ở đuôi tóc
-    const taper = Math.sin(Math.min(1, t * 2.8) * Math.PI * 0.5) * Math.pow(1.0 - t * 0.92, 0.72);
-    const w = Math.max(0.0025, width * taper);
-    const th = Math.max(0.0018, thickness * taper);
+    let rx;
+    let rz;
+    if (v < 0.82) {
+      const t = v / 0.82;
+      const waistDip = gaussian(v, 0.16, 0.11) * 0.014;
+      const chestFull = gaussian(v, 0.62, 0.18) * 0.020;
+      rx = 0.166 - waistDip + chestFull + t * 0.036; // Đạt độ rộng bờ vai 0.214m tự nhiên ở v=0.82
+      rz = 0.124 - waistDip * 0.75 + chestFull * 0.82 + t * 0.006;
+    } else {
+      // Bờ vai ngang hơi xuôi mềm tự nhiên từ đầu vai (v=0.82) vào chân cổ (v=1.00)
+      const st = THREE.MathUtils.clamp((v - 0.82) / 0.18, 0, 1);
+      const smoothCurve = Math.max(0, Math.cos(st * Math.PI * 0.5));
+      rx = 0.072 + (0.214 - 0.072) * Math.pow(smoothCurve, 0.72);
+      rz = 0.074 + (0.142 - 0.074) * Math.pow(smoothCurve, 0.82);
+    }
 
-    const N = frames.normals[i];
-    const B = frames.binormals[i];
-    for (let k = 0; k < 4; k++) {
-      const [px, py] = profile[k];
-      vPos.copy(pt).addScaledVector(B, px * w).addScaledVector(N, py * th);
-      verts.push(vPos.x, vPos.y, vPos.z);
-      uvs.push(k / 4, t);
+    for (let iu = 0; iu <= segU; iu++) {
+      const u = iu / segU;
+      const phi = (u - 0.5) * Math.PI * 2.0; // 0 tại mặt trước (-Z)
+      const sinP = Math.sin(phi);
+      const cosP = Math.cos(phi);
+
+      const beltGather =
+        gaussian(v, 0.15, 0.085) *
+        (Math.sin(phi * 9.0 + v * 6.0) * 0.0038 + Math.cos(phi * 5.0 - v * 8.0) * 0.0028);
+      const lapelOverlapRidge =
+        gaussian(phi, 0.42 - v * 0.48, 0.055) *
+        THREE.MathUtils.smoothstep(v, 0.12, 0.86) *
+        THREE.MathUtils.smoothstep(cosP, 0.2, 0.9) *
+        0.0038;
+
+      const curRx = rx + beltGather + lapelOverlapRidge;
+      const curRz = rz + beltGather + lapelOverlapRidge;
+
+      const shoulderDrop = Math.pow(Math.abs(sinP), 2.4) * THREE.MathUtils.smoothstep(v, 0.76, 0.98) * 0.016;
+
+      positions[pPtr++] = curRx * sinP;
+      positions[pPtr++] = y - shoulderDrop;
+      positions[pPtr++] = -curRz * cosP;
+
+      uvs[uPtr++] = u;
+      uvs[uPtr++] = v;
     }
   }
 
-  for (let i = 0; i < segs; i++) {
-    const base = i * 4;
-    for (let k = 0; k < 4; k++) {
-      const kNext = (k + 1) % 4;
-      const a = base + k;
-      const b = base + kNext;
-      const c = base + 4 + kNext;
-      const d = base + 4 + k;
-      indices.push(a, b, c, a, c, d);
+  const stride = segU + 1;
+  for (let iv = 0; iv < segV; iv++) {
+    for (let iu = 0; iu < segU; iu++) {
+      const a = iv * stride + iu;
+      const b = a + 1;
+      const c = a + stride + 1;
+      const d = a + stride;
+      indices.push(a, d, c, a, c, b);
     }
   }
 
   const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
-  geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
   geo.setIndex(indices);
   geo.computeVertexNormals();
-  return new THREE.Mesh(geo, mat);
+  return geo;
 }
 
-// Tạo ống quần điêu khắc nếp nhăn 3D quanh háng, đùi và sau khoeo gối
-function createCreasedLimbGeometry(rTop, rBot, height, radialSegs = 22, heightSegs = 14, creaseAmp = 0.0045) {
-  const geo = new THREE.CylinderGeometry(rTop, rBot, height, radialSegs, heightSegs, false);
+// Điêu khắc Tà Áo Ngũ Thân có sóng nếp rủ dọc tự nhiên theo trọng lực (Draped Robe Panel)
+function createDrapedRobePanelGeo(rTop, rBot, height, thetaStart, thetaLength, pleats = 5) {
+  const geo = new THREE.CylinderGeometry(rTop, rBot, height, 28, 16, true, thetaStart, thetaLength);
   const pos = geo.attributes.position;
   for (let i = 0; i < pos.count; i++) {
     let x = pos.getX(i);
     let y = pos.getY(i);
     let z = pos.getZ(i);
-    const v = (y + height * 0.5) / height; // 0 (bottom) .. 1 (top)
-    const ang = Math.atan2(z, x);
-    // Nếp gấp ngang tập trung ở đầu trên, khoeo gối và cổ chân
-    const foldWave =
-      Math.sin(v * Math.PI * 9.0 + Math.sin(ang * 2.0) * 1.4) * creaseAmp * (0.45 + 0.55 * Math.sin(v * Math.PI));
-    // Hơi dẹt mặt cắt ngang tự nhiên của đùi/bắp chân
-    x *= 0.96 + foldWave * 8.0;
-    z *= 1.04 + foldWave * 8.0;
+    const tDown = THREE.MathUtils.clamp(0.5 - y / height, 0, 1); // 0 ở thắt lưng -> 1 ở gấu áo (chặn âm vi mô gây NaN!)
+    const ang = Math.atan2(x, z);
+    const pleat = Math.sin(ang * pleats * 2.4 + tDown * 1.2) * 0.0065 * Math.pow(tDown, 0.85);
+    const rad = Math.hypot(x, z);
+    if (rad > 1e-4) {
+      const scale = (rad + pleat) / rad;
+      x *= scale * 1.13;
+      z *= scale * 0.83;
+    }
     pos.setXYZ(i, x, y, z);
   }
+  geo.computeVertexNormals();
+  return geo;
+}
+
+// Điêu khắc Ống Tay Áo & Ống Quần Liền Khối Có Nếp Gấp Khớp Khuỷu / Khoeo Gối Tự Nhiên (Không Vòng Donut!)
+function createOrganicClothLimbGeo(rTop, rBot, length, isUpperArm = false, creaseAmp = 0.0038) {
+  const segR = 26;
+  const segY = 20;
+  const geo = new THREE.CylinderGeometry(rTop, rBot, length, segR, segY, false);
+  const pos = geo.attributes.position;
+
+  for (let i = 0; i < pos.count; i++) {
+    let x = pos.getX(i);
+    let y = pos.getY(i);
+    let z = pos.getZ(i);
+    const v = (y + length * 0.5) / length; // 0 (dưới) .. 1 (trên)
+    const ang = Math.atan2(z, x);
+
+    if (isUpperArm && v > 0.78) {
+      const capT = (v - 0.78) / 0.22;
+      const domeScale = Math.cos(capT * Math.PI * 0.44);
+      x *= domeScale;
+      z *= domeScale;
+    }
+
+    const jointZone = gaussian(v, 0.20, 0.14) + gaussian(v, 0.80, 0.12) * 0.75;
+    const fold =
+      Math.sin(v * Math.PI * 11.0 + Math.sin(ang * 2.0) * 1.6) *
+      creaseAmp *
+      (0.32 + 0.68 * jointZone);
+
+    x *= 0.97 + fold * 7.5;
+    z *= 1.03 + fold * 7.5;
+    pos.setXYZ(i, x, y, z);
+  }
+  geo.computeVertexNormals();
+  return geo;
+}
+
+// Điêu khắc Khăn Đống Huế 7 Nếp Xếp Chữ Nhân Đan Chéo Tự Nhiên (Không Xếp Bánh Donut Rời!)
+function createPleatedHueTurbanGeometry() {
+  const segU = 64;
+  const segV = 28;
+  const positions = new Float32Array((segU + 1) * (segV + 1) * 3);
+  const uvs = new Float32Array((segU + 1) * (segV + 1) * 2);
+  const indices = [];
+
+  let pPtr = 0;
+  let uPtr = 0;
+  for (let iv = 0; iv <= segV; iv++) {
+    const v = iv / segV;
+    for (let iu = 0; iu <= segU; iu++) {
+      const u = iu / segU;
+      const phi = (u - 0.5) * Math.PI * 2.0;
+      const absPhi = Math.abs(phi);
+
+      const frontV = gaussian(absPhi, 0.0, 0.55) * (0.012 - absPhi * 0.016);
+      const pleatPhase = v * 7.0 + (phi > 0 ? absPhi : -absPhi) * 0.45;
+      const pleatRidge = Math.sin(pleatPhase * Math.PI * 2.0) * 0.0028 * Math.sin(v * Math.PI);
+
+      const radX = (0.088 + v * 0.010 + pleatRidge) * (1.0 - gaussian(v, 1.0, 0.12) * 0.10);
+      const radZ = (0.104 + v * 0.009 + pleatRidge) * (1.0 - gaussian(v, 1.0, 0.12) * 0.08);
+      const y = v * 0.076 + frontV * (1.0 - v * 0.65) - Math.cos(phi) * 0.008;
+
+      positions[pPtr++] = radX * Math.sin(phi);
+      positions[pPtr++] = y;
+      positions[pPtr++] = -radZ * Math.cos(phi);
+
+      uvs[uPtr++] = u * 3.0;
+      uvs[uPtr++] = v * 2.0;
+    }
+  }
+
+  const stride = segU + 1;
+  for (let iv = 0; iv < segV; iv++) {
+    for (let iu = 0; iu < segU; iu++) {
+      const a = iv * stride + iu;
+      const b = a + 1;
+      const c = a + stride + 1;
+      const d = a + stride;
+      indices.push(a, d, c, a, c, b);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute("uv", new THREE.BufferAttribute(uvs, 2));
+  geo.setIndex(indices);
   geo.computeVertexNormals();
   return geo;
 }
@@ -874,213 +1402,223 @@ export function buildRealisticHeroRig({ scene }) {
   root.name = "GTA_PLAYER_170M";
   root.visible = false;
 
-  const leatherMaps = createLeatherAndCreaseMaps();
-  const shirtMaps = createInnerShirtDrapeMaps();
-  const bandageMaps = createBandageWrapMaps();
-  const hairMaps = createHairStrandMaps();
-  const skinMaps = createRealisticSkinMaps();
-  const eyeIrisTex = createEyeIrisTexture();
-  const guardHatTex = createGuardHatTexture();
+  const skinMaps = createHumanSkinPbrMaps();
+  const eyeIrisTexL = createVietnameseEyeIrisTexture(-1);
+  const eyeIrisTexR = createVietnameseEyeIrisTexture(1);
+  const brocadeMaps = createImperialBrocadePbrMaps();
+  const silkMaps = createSilkDrapeMaps();
+  const wrapNormalMap = createWovenWrapNormalMap();
+  const rattanHatMaps = createRattanConicalHatMaps();
 
-  const badgeTextures = {
-    guard: createRankBadgeTexture("guard"),
-    mandarin: createRankBadgeTexture("mandarin"),
-    noble: createRankBadgeTexture("noble"),
+  const badgePbr = {
+    guard: createEmbroideredBadgePbr("guard"),
+    mandarin: createEmbroideredBadgePbr("mandarin"),
+    noble: createEmbroideredBadgePbr("noble"),
+    scholar: createEmbroideredBadgePbr("scholar"),
   };
 
   const def = HERO_REALISTIC_OUTFITS[0];
 
   const mats = {
-    // Giữ nguyên khóa mats.robe / skirt / sash / trim / collar / pants để tương thích 100% API cũ
     robe: new THREE.MeshPhysicalMaterial({
-      color: def.coat,
-      map: leatherMaps.colorMap,
-      bumpMap: leatherMaps.bumpMap,
-      bumpScale: 0.015,
-      roughnessMap: leatherMaps.roughnessMap,
-      roughness: def.coatRoughness,
-      metalness: 0.05,
-      clearcoat: def.coatClearcoat,
-      clearcoatRoughness: 0.46,
-      sheen: 0.24,
-      sheenRoughness: 0.68,
-      sheenColor: new THREE.Color(0x9e5860),
+      color: def.robe,
+      map: brocadeMaps.colorMap,
+      normalMap: brocadeMaps.normalMap,
+      normalScale: new THREE.Vector2(0.82, 0.82),
+      roughnessMap: brocadeMaps.roughnessMap,
+      roughness: def.robeRoughness + 0.06,
+      metalness: 0.02,
+      sheen: def.robeSheen,
+      sheenRoughness: 0.38,
+      sheenColor: new THREE.Color(0xf6dfba),
+      clearcoat: 0.0,
       side: THREE.DoubleSide,
     }),
     skirt: new THREE.MeshPhysicalMaterial({
-      color: def.coat,
-      map: leatherMaps.colorMap,
-      bumpMap: leatherMaps.bumpMap,
-      bumpScale: 0.012,
-      roughnessMap: leatherMaps.roughnessMap,
-      roughness: def.coatRoughness + 0.04,
-      metalness: 0.05,
-      clearcoat: def.coatClearcoat * 0.85,
-      clearcoatRoughness: 0.46,
+      color: def.skirt,
+      map: brocadeMaps.colorMap,
+      normalMap: brocadeMaps.normalMap,
+      normalScale: new THREE.Vector2(0.80, 0.80),
+      roughnessMap: brocadeMaps.roughnessMap,
+      roughness: def.robeRoughness + 0.08,
+      metalness: 0.02,
+      sheen: def.robeSheen * 0.9,
+      sheenRoughness: 0.42,
+      sheenColor: new THREE.Color(0xf6dfba),
       side: THREE.DoubleSide,
     }),
     coatLining: new THREE.MeshStandardMaterial({
       color: def.coatLining,
+      normalMap: silkMaps.normalMap,
+      normalScale: new THREE.Vector2(0.45, 0.45),
       roughness: 0.62,
-      metalness: 0.04,
       side: THREE.DoubleSide,
     }),
-    collar: new THREE.MeshStandardMaterial({
-      color: def.innerShirt,
-      map: shirtMaps.colorMap,
-      bumpMap: shirtMaps.bumpMap,
-      bumpScale: 0.011,
-      roughness: 0.66,
-      metalness: 0.03,
+    collar: new THREE.MeshPhysicalMaterial({
+      color: def.collar,
+      normalMap: silkMaps.normalMap,
+      normalScale: new THREE.Vector2(0.55, 0.55),
+      roughnessMap: silkMaps.roughnessMap,
+      roughness: 0.52,
+      sheen: 0.35,
+      sheenRoughness: 0.5,
+      sheenColor: new THREE.Color(0xffffff),
     }),
-    sash: new THREE.MeshStandardMaterial({
+    sash: new THREE.MeshPhysicalMaterial({
       color: def.sash,
-      bumpMap: leatherMaps.bumpMap,
-      bumpScale: 0.008,
-      roughness: 0.38,
-      metalness: 0.14,
+      normalMap: wrapNormalMap,
+      normalScale: new THREE.Vector2(0.65, 0.65),
+      roughness: 0.42,
+      metalness: 0.06,
+      sheen: 0.40,
+      sheenColor: new THREE.Color(0xeee2c4),
     }),
     trim: new THREE.MeshStandardMaterial({
       color: def.trim,
       roughness: 0.24,
-      metalness: 0.82,
+      metalness: 0.86,
     }),
     badge: new THREE.MeshStandardMaterial({
-      map: badgeTextures.guard,
-      roughness: 0.34,
-      metalness: 0.26,
+      map: badgePbr.guard.colorMap,
+      normalMap: badgePbr.guard.normalMap,
+      normalScale: new THREE.Vector2(1.1, 1.1),
+      roughness: 0.32,
+      metalness: 0.38,
       polygonOffset: true,
       polygonOffsetFactor: -2,
     }),
     pants: new THREE.MeshPhysicalMaterial({
       color: def.pants,
-      map: leatherMaps.colorMap,
-      bumpMap: leatherMaps.bumpMap,
-      bumpScale: 0.012,
-      roughnessMap: leatherMaps.roughnessMap,
-      roughness: 0.56,
-      metalness: 0.05,
-      clearcoat: 0.10,
-      clearcoatRoughness: 0.58,
+      normalMap: silkMaps.normalMap,
+      normalScale: new THREE.Vector2(0.70, 0.70),
+      roughnessMap: silkMaps.roughnessMap,
+      roughness: 0.54,
+      sheen: 0.30,
+      sheenRoughness: 0.55,
     }),
     boots: new THREE.MeshPhysicalMaterial({
       color: def.boots,
-      bumpMap: leatherMaps.bumpMap,
-      bumpScale: 0.009,
-      roughness: 0.34,
-      metalness: 0.12,
-      clearcoat: 0.24,
+      normalMap: silkMaps.normalMap,
+      normalScale: new THREE.Vector2(0.40, 0.40),
+      roughness: 0.36,
+      metalness: 0.08,
+      clearcoat: 0.22,
       clearcoatRoughness: 0.38,
     }),
     bootSole: new THREE.MeshStandardMaterial({
       color: def.bootSole,
-      roughness: 0.76,
-      metalness: 0.04,
-    }),
-    glove: new THREE.MeshPhysicalMaterial({
-      color: def.glove,
-      bumpMap: leatherMaps.bumpMap,
-      bumpScale: 0.010,
-      roughness: 0.40,
-      metalness: 0.10,
-      clearcoat: 0.18,
-    }),
-    wrap: new THREE.MeshStandardMaterial({
-      color: def.wrap,
-      map: bandageMaps.colorMap,
-      bumpMap: bandageMaps.bumpMap,
-      bumpScale: 0.012,
-      roughness: 0.78,
+      roughness: 0.72,
       metalness: 0.02,
     }),
-    skin: new THREE.MeshPhysicalMaterial({
-      color: 0xffffff,
-      map: skinMaps.colorMap,
-      bumpMap: skinMaps.bumpMap,
-      bumpScale: 0.0038,
-      roughness: 0.56,
-      metalness: 0.01,
-      clearcoat: 0.06,
-      clearcoatRoughness: 0.58,
-      sheen: 0.28,
-      sheenRoughness: 0.70,
-      sheenColor: new THREE.Color(0xc9644c),
+    wrap: new THREE.MeshPhysicalMaterial({
+      color: def.wrap,
+      normalMap: wrapNormalMap,
+      normalScale: new THREE.Vector2(0.85, 0.85),
+      roughness: 0.58,
+      sheen: 0.25,
     }),
-    skinLimb: new THREE.MeshPhysicalMaterial({
-      color: 0xd5a788,
-      bumpMap: skinMaps.bumpMap,
-      bumpScale: 0.0030,
-      roughness: 0.56,
-      metalness: 0.01,
-      sheen: 0.24,
-      sheenColor: new THREE.Color(0xc9644c),
-    }),
-    lips: new THREE.MeshPhysicalMaterial({
-      color: 0x9c6254,
-      roughness: 0.48,
-      clearcoat: 0.12,
-      clearcoatRoughness: 0.45,
-    }),
-    eyeCornea: new THREE.MeshPhysicalMaterial({
-      map: eyeIrisTex,
-      roughness: 0.06,
+    skinHead: attachSubsurfaceSkinShader(
+      new THREE.MeshPhysicalMaterial({
+        color: 0xffffff,
+        map: skinMaps.colorMap,
+        normalMap: skinMaps.normalMap,
+        normalScale: new THREE.Vector2(0.28, 0.28),
+        roughnessMap: skinMaps.roughnessMap,
+        roughness: 0.62,
+        metalness: 0.0,
+        clearcoat: 0.0,
+        sheen: 0.16,
+        sheenRoughness: 0.76,
+        sheenColor: new THREE.Color(0xd86b4e),
+      })
+    ),
+    skinLimb: attachSubsurfaceSkinShader(
+      new THREE.MeshPhysicalMaterial({
+        color: 0xcf9e7c,
+        normalMap: skinMaps.normalMap,
+        normalScale: new THREE.Vector2(0.24, 0.24),
+        roughness: 0.62,
+        metalness: 0.0,
+        clearcoat: 0.0,
+        sheen: 0.16,
+        sheenRoughness: 0.76,
+        sheenColor: new THREE.Color(0xd86b4e),
+      })
+    ),
+    eyeCorneaL: new THREE.MeshPhysicalMaterial({
+      map: eyeIrisTexL,
+      roughness: 0.04,
       metalness: 0.0,
       clearcoat: 1.0,
-      clearcoatRoughness: 0.04,
+      clearcoatRoughness: 0.03,
     }),
-    hair: new THREE.MeshPhysicalMaterial({
-      color: def.hair,
-      map: hairMaps.colorMap,
-      bumpMap: hairMaps.bumpMap,
-      bumpScale: 0.012,
-      roughness: 0.36,
-      metalness: 0.05,
-      sheen: 0.58,
-      sheenRoughness: 0.30,
-      sheenColor: new THREE.Color(0xffffff),
+    eyeCorneaR: new THREE.MeshPhysicalMaterial({
+      map: eyeIrisTexR,
+      roughness: 0.04,
+      metalness: 0.0,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.03,
     }),
-    hairDark: new THREE.MeshStandardMaterial({
-      color: def.brow || 0x484544,
-      roughness: 0.52,
+    eyelashDark: new THREE.MeshStandardMaterial({
+      color: 0x160f0d,
+      roughness: 0.65,
+      metalness: 0.0,
     }),
-    hatLacquer: new THREE.MeshStandardMaterial({
+    hairBlack: new THREE.MeshPhysicalMaterial({
+      color: 0x161210,
+      normalMap: wrapNormalMap,
+      normalScale: new THREE.Vector2(0.55, 0.55),
+      roughness: 0.42,
+      sheen: 0.45,
+      sheenRoughness: 0.35,
+      sheenColor: new THREE.Color(0x463d38),
+    }),
+    hatRattan: new THREE.MeshPhysicalMaterial({
       color: 0xffffff,
-      map: guardHatTex,
+      map: rattanHatMaps.colorMap,
+      normalMap: rattanHatMaps.normalMap,
+      normalScale: new THREE.Vector2(0.95, 0.95),
       roughness: 0.28,
-      metalness: 0.16,
+      metalness: 0.08,
+      clearcoat: 0.42,
+      clearcoatRoughness: 0.28,
       side: THREE.DoubleSide,
     }),
-    hatDark: new THREE.MeshStandardMaterial({
-      color: 0x1b1614,
-      roughness: 0.36,
-      metalness: 0.10,
+    hatHorsehair: new THREE.MeshPhysicalMaterial({
+      color: 0x191513,
+      normalMap: wrapNormalMap,
+      normalScale: new THREE.Vector2(0.70, 0.70),
+      roughness: 0.38,
+      metalness: 0.08,
+      sheen: 0.30,
+      side: THREE.DoubleSide,
     }),
     jade: new THREE.MeshPhysicalMaterial({
-      color: 0x2ca582,
-      roughness: 0.16,
-      metalness: 0.1,
+      color: 0x2a9e7c,
+      roughness: 0.14,
+      metalness: 0.05,
+      clearcoat: 0.78,
+      clearcoatRoughness: 0.12,
+    }),
+    tortoiseScabbard: new THREE.MeshPhysicalMaterial({
+      color: 0x24130d,
+      normalMap: silkMaps.normalMap,
+      normalScale: new THREE.Vector2(0.3, 0.3),
+      roughness: 0.20,
+      metalness: 0.12,
       clearcoat: 0.65,
+      clearcoatRoughness: 0.18,
     }),
-    steel: new THREE.MeshStandardMaterial({
-      color: 0xd4dce4,
-      roughness: 0.18,
-      metalness: 0.90,
-    }),
-    darkGunmetal: new THREE.MeshStandardMaterial({
-      color: 0x2b3038,
-      roughness: 0.28,
-      metalness: 0.84,
-    }),
-    scabbard: new THREE.MeshStandardMaterial({
-      color: 0x191311,
-      roughness: 0.28,
-      metalness: 0.22,
+    crimsonTassel: new THREE.MeshStandardMaterial({
+      color: 0x9e1c18,
+      normalMap: wrapNormalMap,
+      roughness: 0.58,
     }),
   };
 
-  // Bóng mềm dưới bàn chân kết hợp CSM 2048px
+  // Bóng tiếp đất mềm dưới chân kết hợp CSM 2048px
   const blobShadow = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.18, 1.18),
+    new THREE.PlaneGeometry(1.16, 1.16),
     new THREE.MeshBasicMaterial({
       map: createSoftShadowTexture(),
       transparent: true,
@@ -1093,976 +1631,598 @@ export function buildRealisticHeroRig({ scene }) {
   blobShadow.position.y = 0.025;
   root.add(blobShadow);
 
-  // Đèn Key/Rim chếch 45° tôn góc cạnh gò má, quai hàm, sợi tóc & nếp nhăn áo khoác da
-  const charFillLight = new THREE.PointLight(0xffebd2, 0.38, 4.6, 1.6);
-  charFillLight.position.set(0.46, 1.56, -0.58);
+  // Đèn Key dịu góc 42° làm nổi bật chi tiết gấm thêu, sóng mũi & ánh mắt dưới bóng râm mũ nón
+  const charFillLight = new THREE.PointLight(0xffecd4, 0.36, 4.4, 1.6);
+  charFillLight.position.set(0.42, 1.52, -0.56);
   root.add(charFillLight);
 
   // =========================================================================
-  // 1. KHUNG CHẬU & THÂN TRÊN ĐA LỚP (HIPS -> TORSO)
+  // 1. KHUNG CHẬU & THÂN ÁO NGŨ THÂN / ĐẠI TRIỀU ĐIÊU KHẮC LIỀN VAI (TORSO)
   // =========================================================================
   const hips = new THREE.Group();
   hips.position.y = 0.86;
   root.add(hips);
 
-  const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.152, 0.144, 0.15, 24), mats.pants);
+  const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(0.150, 0.142, 0.15, 26), mats.pants);
   pelvis.position.y = -0.025;
-  pelvis.scale.set(1.14, 1.0, 0.78);
+  pelvis.scale.set(1.12, 1.0, 0.78);
   hips.add(pelvis);
 
   const torso = new THREE.Group();
   hips.add(torso);
 
-  // 1a. Lớp trong: Áo lót cổ chữ V xanh đen than ôm cơ ngực & cơ bụng có nếp nhăn chéo (Inner V-Neck Shirt)
-  const innerProfile = [
-    new THREE.Vector2(0.01, 0.0),
-    new THREE.Vector2(0.146, 0.02),
-    new THREE.Vector2(0.140, 0.15),
-    new THREE.Vector2(0.160, 0.31),
-    new THREE.Vector2(0.178, 0.45),
-    new THREE.Vector2(0.146, 0.53),
-    new THREE.Vector2(0.062, 0.562),
-  ];
-  const innerShirtMesh = new THREE.Mesh(new THREE.LatheGeometry(innerProfile, 28), mats.collar);
-  innerShirtMesh.scale.set(1.11, 1.0, 0.74);
-  torso.add(innerShirtMesh);
+  // Thân áo Ngũ Thân liền khối vai xuôi mượt mà (không cầu vai giả!)
+  const torsoMesh = new THREE.Mesh(createTailoredAoNguThanTorsoGeo(), mats.robe);
+  torso.add(torsoMesh);
 
-  // Mảng ngực trên lộ da tự nhiên ở khe cổ chữ V + Xương quai xanh (Clavicles — chuẩn ảnh mẫu!)
-  const vNeckSkinPatch = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.064, 0.018, 0.155, 16, 1, false, Math.PI - 0.48, 0.96),
-    mats.skinLimb
+  // Cổ lót lụa trắng Giao Lĩnh bên trong + Cổ đứng Áo Ngũ Thân bên ngoài (2 lớp tinh xảo chuẩn 1880!)
+  const innerWhiteCollar = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.068, 0.075, 0.056, 28, 1, true),
+    mats.collar
   );
-  vNeckSkinPatch.position.set(0, 0.492, -0.056);
-  vNeckSkinPatch.scale.set(1.06, 1.0, 0.78);
-  torso.add(vNeckSkinPatch);
+  innerWhiteCollar.position.set(0, 0.564, 0.002);
+  innerWhiteCollar.scale.set(0.96, 1.0, 1.04);
+  torso.add(innerWhiteCollar);
 
-  [-1, 1].forEach((s) => {
-    const clavicle = new THREE.Mesh(new THREE.CapsuleGeometry(0.0082, 0.068, 4, 8), mats.skinLimb);
-    clavicle.position.set(s * 0.046, 0.538, -0.088);
-    clavicle.rotation.z = Math.PI / 2 - s * 0.22;
-    clavicle.rotation.y = s * 0.18;
-    torso.add(clavicle);
+  const outerStandCollar = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.074, 0.081, 0.044, 28, 1, true, -Math.PI + 0.16, Math.PI * 2 - 0.32),
+    mats.robe
+  );
+  outerStandCollar.position.set(0, 0.556, 0.002);
+  outerStandCollar.scale.set(0.97, 1.0, 1.05);
+  torso.add(outerStandCollar);
 
-    // Nẹp viền cổ áo lót chữ V mở tự nhiên
-    const vPlacket = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.165, 0.012), mats.collar);
-    vPlacket.position.set(s * 0.032, 0.468, -0.118);
-    vPlacket.rotation.z = -s * 0.24;
-    vPlacket.rotation.x = 0.14;
-    torso.add(vPlacket);
+  // Đường nẹp vạt áo cài bên phải + 5 Hạt Khuy Đồng Chạm Hoa (Ngũ Thường: Nhân - Nghĩa - Lễ - Trí - Tín!)
+  const frogButtons = [
+    [0.012, 0.548, -0.082], // Khuy cổ chính diện
+    [0.068, 0.506, -0.106], // Khuy xương đòn phải
+    [0.128, 0.438, -0.114], // Khuy dưới nách phải 1
+    [0.148, 0.332, -0.108], // Khuy sườn phải 2
+    [0.146, 0.215, -0.104], // Khuy eo phải 3
+  ];
+  frogButtons.forEach(([bx, by, bz]) => {
+    const knot = new THREE.Mesh(new THREE.SphereGeometry(0.0068, 12, 10), mats.trim);
+    knot.position.set(bx, by, bz);
+    torso.add(knot);
   });
 
-  // 1b. Lớp ngoài: Áo khoác da măng-tô MỞ RỘNG VẠT TRƯỚC (-Z) lộ rõ áo lót cổ V & cơ ngực!
-  // Lưu ý Three.js LatheGeometry: phi = 0 là Lưng (+Z), phi = ±PI là Ngực trước (-Z).
-  // Không xoay Y để khe mở [-PI .. -PI+0.56] U [PI-0.56 .. PI] hướng thẳng ra mặt trước (-Z)!
-  const coatProfile = [
-    new THREE.Vector2(0.158, 0.01),
-    new THREE.Vector2(0.152, 0.14),
-    new THREE.Vector2(0.174, 0.30),
-    new THREE.Vector2(0.194, 0.46),
-    new THREE.Vector2(0.166, 0.532),
-    new THREE.Vector2(0.088, 0.560),
-  ];
-  const outerCoatShell = new THREE.Mesh(
-    new THREE.LatheGeometry(coatProfile, 32, -Math.PI + 0.56, Math.PI * 2 - 1.12),
-    mats.robe
-  );
-  outerCoatShell.scale.set(1.14, 1.0, 0.79);
-  torso.add(outerCoatShell);
-
-  // Lớp lót da sẫm bên trong hai vạt áo mở
-  const innerCoatLiningShell = new THREE.Mesh(
-    new THREE.LatheGeometry(
-      coatProfile.map((v) => new THREE.Vector2(v.x - 0.003, v.y)),
-      28,
-      -Math.PI + 0.57,
-      Math.PI * 2 - 1.14
-    ),
-    mats.coatLining
-  );
-  innerCoatLiningShell.scale.set(1.135, 1.0, 0.785);
-  torso.add(innerCoatLiningShell);
-
-  // Tấm yếm ngực & cổ đứng khép kín dành riêng cho trang phục Cung đình (Thị Vệ / Quan Văn / Hoàng Thân)
-  const closedCourtChest = new THREE.Group();
-  closedCourtChest.visible = false;
-  torso.add(closedCourtChest);
-
-  const closedChestPanel = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.184, 0.154, 0.53, 18, 1, true, Math.PI - 0.62, 1.24),
-    mats.robe
-  );
-  closedChestPanel.position.set(0, 0.28, 0);
-  closedChestPanel.scale.set(1.145, 1.0, 0.795);
-  closedCourtChest.add(closedChestPanel);
-
-  const closedCourtCollar = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.082, 0.088, 0.056, 24),
-    mats.robe
-  );
-  closedCourtCollar.position.set(0, 0.565, 0.004);
-  closedCourtChest.add(closedCourtCollar);
-
-  const closedCollarGold = new THREE.Mesh(
-    new THREE.TorusGeometry(0.084, 0.0045, 8, 24),
-    mats.trim
-  );
-  closedCollarGold.rotation.x = Math.PI / 2;
-  closedCollarGold.position.set(0, 0.592, 0.004);
-  closedCourtChest.add(closedCollarGold);
-
-  // 1c. Cổ áo da dựng cao MỞ PHÍA TRƯỚC (-Z) tôn trọn vùng cổ cơ bắp & quai hàm góc cạnh!
-  const lapelStudGroup = new THREE.Group();
-  torso.add(lapelStudGroup);
-
-  const poppedCollar = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.100, 0.086, 0.072, 24, 1, true, -Math.PI + 0.62, Math.PI * 2 - 1.24),
-    mats.robe
-  );
-  poppedCollar.position.set(0, 0.572, 0.006);
-  poppedCollar.scale.set(1.04, 1.0, 0.96);
-  lapelStudGroup.add(poppedCollar);
-
-  [-1, 1].forEach((s) => {
-    // Hai đầu cổ dựng bẻ vát ra ngoài hai bên cổ (giống hệt cổ áo dựng trong ảnh mẫu!)
-    const collarWing = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.068, 0.010), mats.robe);
-    collarWing.position.set(s * 0.068, 0.570, -0.064);
-    collarWing.rotation.set(-0.12, -s * 0.55, -s * 0.16);
-    lapelStudGroup.add(collarWing);
-
-    // Ve áo da bẻ rộng xếp lớp 3D (Wide Notched Leather Coat Lapels)
-    const upperLapel = new THREE.Mesh(new THREE.BoxGeometry(0.066, 0.155, 0.014), mats.robe);
-    upperLapel.position.set(s * 0.118, 0.468, -0.118);
-    upperLapel.rotation.set(0.14, -s * 0.34, -s * 0.14);
-    lapelStudGroup.add(upperLapel);
-
-    const lowerLapel = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.305, 0.013), mats.robe);
-    lowerLapel.position.set(s * 0.106, 0.258, -0.122);
-    lowerLapel.rotation.set(0.05, -s * 0.28, s * 0.04);
-    lapelStudGroup.add(lowerLapel);
-
-    // Đường nẹp da đôi chạy dọc mép vạt áo mở
-    const edgeWelt = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 0.48, 8), mats.coatLining);
-    edgeWelt.position.set(s * 0.084, 0.285, -0.126);
-    edgeWelt.rotation.z = s * 0.03;
-    lapelStudGroup.add(edgeWelt);
-
-    // Đai khóa túi ngực bên sườn áo da
-    const chestFlap = new THREE.Mesh(new THREE.BoxGeometry(0.056, 0.028, 0.013), mats.robe);
-    chestFlap.position.set(s * 0.152, 0.365, -0.104);
-    chestFlap.rotation.set(0.08, -s * 0.48, -s * 0.14);
-    lapelStudGroup.add(chestFlap);
-
-    // Khuy đồng cổ đôi đính trên ve áo da (Double Brass Lapel Studs)
-    [
-      [s * 0.106, 0.510, -0.124],
-      [s * 0.128, 0.498, -0.118],
-      [s * 0.114, 0.442, -0.127],
-      [s * 0.136, 0.432, -0.120],
-    ].forEach(([bx, by, bz]) => {
-      const stud = new THREE.Mesh(new THREE.CylinderGeometry(0.0068, 0.0068, 0.006, 12), mats.trim);
-      stud.rotation.x = Math.PI / 2;
-      stud.position.set(bx, by, bz);
-      lapelStudGroup.add(stud);
-    });
-
-    // Cầu vai áo may đo gọn gàng liền mạch vào bắp tay (không phồng tròn thô) + Đai cầu vai khóa đồng
-    const shoulderPad = new THREE.Mesh(new THREE.SphereGeometry(0.062, 16, 12), mats.robe);
-    shoulderPad.position.set(s * 0.212, 0.486, 0);
-    shoulderPad.scale.set(0.95, 0.72, 0.92);
-    torso.add(shoulderPad);
-
-    const epauletteStrap = new THREE.Mesh(new THREE.BoxGeometry(0.102, 0.010, 0.032), mats.robe);
-    epauletteStrap.position.set(s * 0.165, 0.526, -0.004);
-    epauletteStrap.rotation.z = -s * 0.16;
-    torso.add(epauletteStrap);
-
-    const epBuckle = new THREE.Mesh(new THREE.TorusGeometry(0.012, 0.0028, 6, 14), mats.trim);
-    epBuckle.position.set(s * 0.195, 0.522, -0.004);
-    epBuckle.rotation.x = Math.PI / 2;
-    epBuckle.rotation.y = -s * 0.18;
-    torso.add(epBuckle);
-  });
-
-  // Dây đai da đeo CHÉO VAI PHẢI XUỐNG HÔNG TRÁI giữ Đại Kiếm (True Diagonal Leather Baldric)
-  const baldricStrap = new THREE.Group();
-  torso.add(baldricStrap);
-
-  const frontBaldric = createHairLockMesh(
-    [
-      [0.128, 0.542, 0.015],
-      [0.068, 0.432, -0.124],
-      [-0.018, 0.292, -0.126],
-      [-0.108, 0.155, -0.105],
-      [-0.172, 0.055, -0.010],
-    ],
-    0.032,
-    0.010,
-    mats.sash
-  );
-  baldricStrap.add(frontBaldric);
-
-  const backBaldric = createHairLockMesh(
-    [
-      [0.128, 0.542, 0.015],
-      [0.072, 0.425, 0.142],
-      [-0.012, 0.285, 0.146],
-      [-0.105, 0.155, 0.118],
-      [-0.172, 0.055, -0.010],
-    ],
-    0.034,
-    0.011,
-    mats.sash
-  );
-  baldricStrap.add(backBaldric);
-
-  const chestBaldricBuckle = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.030, 0.012), mats.trim);
-  chestBaldricBuckle.position.set(0.022, 0.358, -0.127);
-  chestBaldricBuckle.rotation.z = -0.62;
-  baldricStrap.add(chestBaldricBuckle);
-
-  // Bổ Tử thêu kim tuyến ngực & lưng (hiện cho Cẩm Y Thị Vệ / Quan Văn / Hoàng Thân)
-  const badgeGroup = new THREE.Group();
-  badgeGroup.visible = false;
-  torso.add(badgeGroup);
-
+  // Bổ Tử thêu kim tuyến nổi khối ngực & lưng (tự động đổi linh vật theo chức tước)
   const frontBadge = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.192, 0.170, 0.156, 18, 1, true, Math.PI - 0.40, 0.80),
+    new THREE.CylinderGeometry(0.182, 0.170, 0.162, 24, 4, true, Math.PI - 0.42, 0.84),
     mats.badge
   );
-  frontBadge.position.set(0, 0.365, 0);
-  frontBadge.scale.set(1.17, 1.0, 0.81);
-  badgeGroup.add(frontBadge);
+  frontBadge.position.set(0, 0.348, -0.004);
+  frontBadge.scale.set(1.06, 1.0, 0.90);
+  torso.add(frontBadge);
 
   const backBadge = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.192, 0.170, 0.152, 18, 1, true, -0.38, 0.76),
+    new THREE.CylinderGeometry(0.182, 0.170, 0.158, 24, 4, true, -0.40, 0.80),
     mats.badge
   );
-  backBadge.position.set(0, 0.368, 0);
-  backBadge.scale.set(1.17, 1.0, 0.81);
-  badgeGroup.add(backBadge);
+  backBadge.position.set(0, 0.352, 0.004);
+  backBadge.scale.set(1.06, 1.0, 0.90);
+  torso.add(backBadge);
 
-  // 1d. Thắt lưng da chạm nổi + Mặt khóa kim loại tinh xảo (Waist Belt & Ornate Buckle)
-  const belt = new THREE.Mesh(new THREE.CylinderGeometry(0.158, 0.164, 0.064, 28), mats.sash);
-  belt.position.y = 0.042;
-  belt.scale.set(1.15, 1.0, 0.79);
-  torso.add(belt);
+  // Đai Lụa & Đai Ngọc Khảm Kim Bản (Court Belt with Gilt Plaques & Jade Cabochons)
+  const silkSash = new THREE.Mesh(new THREE.CylinderGeometry(0.162, 0.166, 0.068, 32), mats.sash);
+  silkSash.position.y = 0.048;
+  silkSash.scale.set(1.06, 1.0, 0.79);
+  torso.add(silkSash);
 
-  const buckleOuter = new THREE.Mesh(new THREE.BoxGeometry(0.068, 0.048, 0.018), mats.trim);
-  buckleOuter.position.set(0, 0.044, -0.132);
-  torso.add(buckleOuter);
-
-  const buckleDarkCore = new THREE.Mesh(new THREE.BoxGeometry(0.050, 0.034, 0.020), mats.darkGunmetal);
-  buckleDarkCore.position.set(0, 0.044, -0.133);
-  torso.add(buckleDarkCore);
-
-  const buckleInner = new THREE.Mesh(new THREE.SphereGeometry(0.018, 14, 12), mats.jade);
-  buckleInner.position.set(0, 0.044, -0.142);
-  buckleInner.scale.set(1.2, 0.9, 0.45);
-  buckleInner.visible = false;
-  torso.add(buckleInner);
-
-  const buckleProng = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, 0.042, 8), mats.steel);
-  buckleProng.position.set(0.012, 0.044, -0.144);
-  buckleProng.rotation.z = 0.18;
-  torso.add(buckleProng);
-
-  // 1e. Tà áo choàng dài xẻ vạt bay lượn (Front Coat Quarters + Long Split Coat Tails)
-  const makeFrontCoatQuarter = (side) => {
-    const pivot = new THREE.Group();
-    pivot.position.set(0, 0.025, 0);
-    torso.add(pivot);
-
-    // Chừa khe mở trung tâm phía trước (-Z) giống áo măng-tô da dài mở tà
-    const thetaStart = side < 0 ? Math.PI + 0.18 : Math.PI - 0.90;
-    const panel = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.164, 0.206, 0.44, 16, 4, true, thetaStart, 0.72),
-      mats.skirt
-    );
-    panel.position.set(0, -0.22, 0);
-    panel.scale.set(1.17, 1.0, 0.84);
-    pivot.add(panel);
-
-    const innerLining = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.161, 0.203, 0.435, 14, 1, true, thetaStart, 0.70),
-      mats.coatLining
-    );
-    innerLining.position.set(0, -0.22, 0);
-    innerLining.scale.set(1.16, 1.0, 0.83);
-    pivot.add(innerLining);
-
-    const hemTrim = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.207, 0.210, 0.018, 16, 1, true, thetaStart, 0.72),
+  // Các thẻ kim bản đính ngọc quanh đai lưng chuẩn Đại Triều Triều Nguyễn
+  [-0.52, 0, 0.52, Math.PI].forEach((ang, idx) => {
+    const px = Math.sin(ang) * 0.172;
+    const pz = -Math.cos(ang) * 0.132;
+    const plaque = new THREE.Mesh(
+      new THREE.BoxGeometry(idx === 1 ? 0.064 : 0.042, 0.044, 0.014),
       mats.trim
     );
-    hemTrim.position.set(0, -0.435, 0);
-    hemTrim.scale.set(1.17, 1.0, 0.845);
-    pivot.add(hemTrim);
+    plaque.position.set(px, 0.048, pz);
+    plaque.rotation.y = -ang;
+    torso.add(plaque);
+
+    if (idx === 1) {
+      const centerJade = new THREE.Mesh(new THREE.SphereGeometry(0.016, 14, 12), mats.jade);
+      centerJade.position.set(0, 0.048, pz - 0.008);
+      centerJade.scale.set(1.25, 0.92, 0.42);
+      torso.add(centerJade);
+    }
+  });
+
+  // Tà Áo Ngũ Thân 5 Thân Rủ Sóng Vải Tự Nhiên (Tà trước, Tà bên & Tà sau lót lụa)
+  const makeDrapedSkirtFlap = (thetaStart, thetaLength, lengthY = 0.50) => {
+    const pivot = new THREE.Group();
+    pivot.position.set(0, 0.022, 0);
+    const outer = new THREE.Mesh(
+      createDrapedRobePanelGeo(0.156, 0.204, lengthY, thetaStart, thetaLength, 5),
+      mats.skirt
+    );
+    outer.position.y = -lengthY * 0.5;
+    pivot.add(outer);
+
+    const lining = new THREE.Mesh(
+      createDrapedRobePanelGeo(0.153, 0.200, lengthY - 0.006, thetaStart + 0.01, thetaLength - 0.02, 5),
+      mats.coatLining
+    );
+    lining.position.y = -lengthY * 0.5;
+    pivot.add(lining);
+
     return pivot;
   };
-  const frontFlapL = makeFrontCoatQuarter(-1);
-  const frontFlapR = makeFrontCoatQuarter(1);
 
-  [-1, 1].forEach((side) => {
-    const sideStart = side > 0 ? Math.PI * 0.28 : -Math.PI * 0.68;
-    const sidePanel = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.164, 0.208, 0.48, 12, 3, true, sideStart, 0.62),
-      mats.skirt
-    );
-    sidePanel.position.set(0, -0.225, 0);
-    sidePanel.scale.set(1.17, 1.0, 0.84);
-    torso.add(sidePanel);
-  });
+  // Tà trước chia đôi nhẹ ở bước chân để không bao giờ xuyên đùi khi chạy/nhảy
+  const frontFlapL = makeDrapedSkirtFlap(Math.PI + 0.03, 0.88, 0.50);
+  const frontFlapR = makeDrapedSkirtFlap(Math.PI - 0.91, 0.88, 0.50);
+  torso.add(frontFlapL);
+  torso.add(frontFlapR);
 
-  // Đuôi áo choàng dài tới bắp chân xẻ đôi phía sau (+Z) giống hệt phom trenchcoat trong ảnh mẫu
-  const coatTailPivot = new THREE.Group();
-  coatTailPivot.position.set(0, 0.025, 0.02);
-  torso.add(coatTailPivot);
-
-  [-1, 1].forEach((side) => {
-    const backStart = side > 0 ? 0.04 : -0.90;
-    const backPanel = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.164, 0.228, 0.56, 16, 4, true, backStart, 0.86),
-      mats.skirt
-    );
-    backPanel.position.set(0, -0.28, -0.02);
-    backPanel.scale.set(1.17, 1.0, 0.85);
-    coatTailPivot.add(backPanel);
-
-    const backLining = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.161, 0.224, 0.555, 14, 1, true, backStart, 0.84),
-      mats.coatLining
-    );
-    backLining.position.set(0, -0.28, -0.02);
-    backLining.scale.set(1.16, 1.0, 0.84);
-    coatTailPivot.add(backLining);
-
-    const backHem = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.229, 0.232, 0.020, 16, 1, true, backStart, 0.86),
-      mats.trim
-    );
-    backHem.position.set(0, -0.552, -0.02);
-    backHem.scale.set(1.17, 1.0, 0.855);
-    coatTailPivot.add(backHem);
-  });
-
-  // =========================================================================
-  // 2. VŨ KHÍ BIỂU TƯỢNG: ĐẠI KIẾM ĐEO LƯNG, VŨ KHÍ HÔNG & BỘI ĐAO CUNG ĐÌNH
-  // =========================================================================
-  // 2a. Đại Kiếm / Trọng Đao đeo chéo sau lưng nhô đốc kiếm chạm trổ qua vai phải (+X/+Y)
-  const backSwordGroup = new THREE.Group();
-  backSwordGroup.position.set(0.02, 0.34, 0.148);
-  backSwordGroup.rotation.z = -0.54; // Chéo từ vai phải (+X/+Y) xuống hông trái (-X/-Y) — chuẩn góc ảnh mẫu!
-  backSwordGroup.rotation.x = 0.08;
-  torso.add(backSwordGroup);
-
-  // Thân lưỡi Đại Kiếm có rãnh máu (Fuller) & sống thép sáng
-  const greatBlade = new THREE.Mesh(new THREE.BoxGeometry(0.068, 0.88, 0.014), mats.steel);
-  greatBlade.position.set(0, -0.26, 0);
-  backSwordGroup.add(greatBlade);
-
-  const bladeTip = new THREE.Mesh(new THREE.ConeGeometry(0.048, 0.16, 4), mats.steel);
-  bladeTip.position.set(0, -0.78, 0);
-  bladeTip.rotation.y = Math.PI / 4;
-  bladeTip.rotation.x = Math.PI;
-  bladeTip.scale.set(1.0, 1.0, 0.22);
-  backSwordGroup.add(bladeTip);
-
-  const bladeFuller = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.72, 0.017), mats.darkGunmetal);
-  bladeFuller.position.set(0, -0.22, 0);
-  backSwordGroup.add(bladeFuller);
-
-  // Chắn tay cánh rồng / xương sọ điêu khắc (Sculpted Crossguard)
-  const crossCore = new THREE.Mesh(new THREE.SphereGeometry(0.036, 14, 12), mats.darkGunmetal);
-  crossCore.position.set(0, 0.20, 0);
-  crossCore.scale.set(1.25, 0.95, 0.65);
-  backSwordGroup.add(crossCore);
-
+  // Đôi dải đai lụa buông mềm trước tà áo
   [-1, 1].forEach((s) => {
-    const wingGuard = new THREE.Mesh(new THREE.ConeGeometry(0.022, 0.115, 8), mats.darkGunmetal);
-    wingGuard.position.set(s * 0.062, 0.215, 0);
-    wingGuard.rotation.z = -s * 1.22;
-    backSwordGroup.add(wingGuard);
+    const ribbon = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.34, 0.006), mats.sash);
+    ribbon.position.set(s * 0.042, -0.15, -0.145);
+    ribbon.rotation.z = s * 0.04;
+    s < 0 ? frontFlapL.add(ribbon) : frontFlapR.add(ribbon);
   });
 
-  // Chuôi cầm dài quấn gân xoắn (Ribbed Two-Handed Hilt)
-  const greatHilt = new THREE.Mesh(new THREE.CylinderGeometry(0.016, 0.020, 0.23, 14), mats.darkGunmetal);
-  greatHilt.position.set(0, 0.33, 0);
-  backSwordGroup.add(greatHilt);
+  const coatTailPivot = new THREE.Group();
+  coatTailPivot.position.set(0, 0.022, 0);
+  torso.add(coatTailPivot);
+  const backPanel = new THREE.Mesh(
+    createDrapedRobePanelGeo(0.156, 0.212, 0.54, -1.05, 2.10, 6),
+    mats.skirt
+  );
+  backPanel.position.y = -0.27;
+  coatTailPivot.add(backPanel);
 
-  for (let r = 0; r < 6; r++) {
-    const gripRing = new THREE.Mesh(new THREE.TorusGeometry(0.0185, 0.0032, 6, 14), mats.trim);
-    gripRing.rotation.x = Math.PI / 2;
-    gripRing.position.set(0, 0.245 + r * 0.034, 0);
-    backSwordGroup.add(gripRing);
-  }
-
-  // Đốc kiếm vương miện / vuốt nhọn nhô cao trên vai (Crown Claw Pommel)
-  const pommelCrown = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.018, 0.038, 12), mats.darkGunmetal);
-  pommelCrown.position.set(0, 0.46, 0);
-  backSwordGroup.add(pommelCrown);
-
-  [-0.38, 0, 0.38].forEach((ang) => {
-    const spike = new THREE.Mesh(new THREE.ConeGeometry(0.008, 0.048, 6), mats.steel);
-    spike.position.set(Math.sin(ang) * 0.018, 0.496, 0);
-    spike.rotation.z = -ang * 0.85;
-    backSwordGroup.add(spike);
-  });
-
-  // 2b. Vũ khí kim loại đeo hông phải (Hip Tactical Sidearm / Ornate Pistol)
-  const hipSidearmGroup = new THREE.Group();
-  hipSidearmGroup.position.set(0.198, -0.05, -0.05);
-  hipSidearmGroup.rotation.x = 0.28;
-  hipSidearmGroup.rotation.z = -0.08;
-  torso.add(hipSidearmGroup);
-
-  const holsterStrap = new THREE.Mesh(new THREE.BoxGeometry(0.032, 0.14, 0.052), mats.sash);
-  holsterStrap.position.set(-0.01, -0.02, 0);
-  hipSidearmGroup.add(holsterStrap);
-
-  const barrelSlide = new THREE.Mesh(new THREE.BoxGeometry(0.028, 0.24, 0.044), mats.darkGunmetal);
-  barrelSlide.position.set(0.006, -0.11, -0.02);
-  hipSidearmGroup.add(barrelSlide);
-
-  const barrelAccent = new THREE.Mesh(new THREE.BoxGeometry(0.030, 0.19, 0.014), mats.steel);
-  barrelAccent.position.set(0.006, -0.12, -0.036);
-  hipSidearmGroup.add(barrelAccent);
-
-  const sidearmGrip = new THREE.Mesh(new THREE.BoxGeometry(0.026, 0.095, 0.038), mats.boots);
-  sidearmGrip.position.set(0.006, 0.01, 0.022);
-  sidearmGrip.rotation.x = -0.45;
-  hipSidearmGroup.add(sidearmGrip);
-
-  // 2c. Bội Đao Cẩm Y Thị Vệ bên hông trái
+  // =========================================================================
+  // 2. GƯƠM TRƯỜNG CẨM Y THỊ VỆ VỎ ĐỒI MỒI BỌC ĐỒNG & BỘI NGỌC QUAN VĂN
+  // =========================================================================
   const saberPivot = new THREE.Group();
-  saberPivot.position.set(-0.205, 0.03, -0.02);
-  saberPivot.rotation.z = 0.14;
+  saberPivot.position.set(-0.188, 0.035, -0.015);
+  saberPivot.rotation.z = 0.12;
   saberPivot.rotation.x = -0.58;
   torso.add(saberPivot);
 
-  const scabbardBody = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.017, 0.56, 14), mats.scabbard);
-  scabbardBody.position.set(0, -0.18, 0);
-  scabbardBody.scale.set(0.65, 1.0, 1.35);
-  saberPivot.add(scabbardBody);
+  const scabbardCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0.08, 0),
+    new THREE.Vector3(0, -0.12, 0.012),
+    new THREE.Vector3(0, -0.34, 0.036),
+    new THREE.Vector3(0, -0.54, 0.072),
+  ]);
+  const scabbardGeo = new THREE.TubeGeometry(scabbardCurve, 20, 0.017, 12, false);
+  scabbardGeo.scale(0.62, 1.0, 1.38);
+  const scabbardMesh = new THREE.Mesh(scabbardGeo, mats.tortoiseScabbard);
+  saberPivot.add(scabbardMesh);
 
-  [-0.02, -0.20, -0.44].forEach((sy) => {
-    const band = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.023, 0.028, 14), mats.trim);
-    band.position.set(0, sy, 0);
-    band.scale.set(0.7, 1.0, 1.4);
-    saberPivot.add(band);
+  [0.05, 0.28, 0.62, 0.96].forEach((t) => {
+    const pt = scabbardCurve.getPointAt(t);
+    const tangent = scabbardCurve.getTangentAt(t);
+    const fitting = new THREE.Mesh(new THREE.CylinderGeometry(0.019, 0.018, 0.032, 14), mats.trim);
+    fitting.position.copy(pt);
+    fitting.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), tangent);
+    fitting.scale.set(0.68, 1.0, 1.44);
+    saberPivot.add(fitting);
   });
 
-  const handGuard = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.014, 18), mats.trim);
-  handGuard.position.set(0, 0.105, 0);
-  handGuard.scale.set(0.78, 1.0, 1.15);
-  saberPivot.add(handGuard);
+  const guardDisc = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.012, 18), mats.trim);
+  guardDisc.position.set(0, 0.088, -0.002);
+  guardDisc.scale.set(0.72, 1.0, 1.18);
+  saberPivot.add(guardDisc);
 
-  const saberGrip = new THREE.Mesh(new THREE.CylinderGeometry(0.017, 0.019, 0.135, 12), mats.sash);
-  saberGrip.position.set(0, 0.178, -0.006);
-  saberGrip.rotation.x = 0.08;
-  saberPivot.add(saberGrip);
+  const hiltGrip = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.017, 0.125, 14), mats.sash);
+  hiltGrip.position.set(0, 0.155, -0.008);
+  hiltGrip.rotation.x = -0.08;
+  saberPivot.add(hiltGrip);
 
-  // 2d. Bội Ngọc Quan Văn / Hoàng Thân
+  const pommelDragon = new THREE.Mesh(new THREE.SphereGeometry(0.020, 14, 12), mats.trim);
+  pommelDragon.position.set(0, 0.222, -0.014);
+  pommelDragon.scale.set(0.85, 1.15, 1.1);
+  saberPivot.add(pommelDragon);
+
+  const swordTassel = new THREE.Mesh(new THREE.ConeGeometry(0.015, 0.095, 12), mats.crimsonTassel);
+  swordTassel.position.set(0, 0.165, 0.028);
+  swordTassel.rotation.x = 0.25;
+  saberPivot.add(swordTassel);
+
   const jadePendantPivot = new THREE.Group();
-  jadePendantPivot.position.set(0.188, 0.02, -0.03);
+  jadePendantPivot.position.set(0.175, 0.025, -0.025);
   jadePendantPivot.visible = false;
   torso.add(jadePendantPivot);
 
-  const jadeDisc = new THREE.Mesh(new THREE.TorusGeometry(0.028, 0.008, 10, 20), mats.jade);
-  jadeDisc.rotation.y = Math.PI / 2;
-  jadeDisc.position.set(0, -0.09, 0);
-  jadePendantPivot.add(jadeDisc);
+  const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.003, 0.003, 0.09, 8), mats.crimsonTassel);
+  cord.position.y = -0.045;
+  jadePendantPivot.add(cord);
 
-  const silkTassel = new THREE.Mesh(new THREE.ConeGeometry(0.018, 0.12, 12), mats.trim);
-  silkTassel.position.set(0, -0.18, 0);
-  jadePendantPivot.add(silkTassel);
+  const jadeBi = new THREE.Mesh(new THREE.TorusGeometry(0.026, 0.0075, 12, 24), mats.jade);
+  jadeBi.rotation.y = Math.PI / 2;
+  jadeBi.position.y = -0.095;
+  jadePendantPivot.add(jadeBi);
+
+  const pendantTassel = new THREE.Mesh(new THREE.ConeGeometry(0.016, 0.11, 14), mats.crimsonTassel);
+  pendantTassel.position.y = -0.175;
+  jadePendantPivot.add(pendantTassel);
 
   // =========================================================================
-  // 3. ĐẦU, CỔ CƠ THANG NAM TÍNH & MÁI TÓC 52 LỌN ĐA TẦNG (HEAD GROUP)
+  // 3. ĐẦU ĐIÊU KHẮC LIỀN KHỐI, MẮT ƯỚT 3D, TÓC BÚI TÓ & MŨ MÃO TRIỀU NGUYỄN
   // =========================================================================
-  // Cơ thang vai-cổ (Trapezius slopes) nối cổ liền khối tự nhiên vào hai bờ vai
-  [-1, 1].forEach((s) => {
-    const trapMuscle = new THREE.Mesh(new THREE.CapsuleGeometry(0.026, 0.075, 4, 10), mats.skinLimb);
-    trapMuscle.position.set(s * 0.068, 0.556, -0.012);
-    trapMuscle.rotation.z = s * 1.12;
-    torso.add(trapMuscle);
-  });
-
   const headGroup = new THREE.Group();
   headGroup.position.set(0, 0.542, 0);
   torso.add(headGroup);
 
-  // Cổ cơ bắp vừa vặn tỉ lệ giải phẫu 1.70m, gân cơ ức đòn chũm & yết hầu
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.054, 0.064, 0.082, 22), mats.skinLimb);
-  neck.position.set(0, 0.028, 0.004);
-  headGroup.add(neck);
-
-  const adamsApple = new THREE.Mesh(new THREE.SphereGeometry(0.012, 10, 8), mats.skinLimb);
-  adamsApple.position.set(0, 0.032, -0.050);
-  adamsApple.scale.set(0.85, 1.15, 0.85);
-  headGroup.add(adamsApple);
+  const sculptedHead = new THREE.Mesh(createContinuousHumanHeadGeometry(), mats.skinHead);
+  headGroup.add(sculptedHead);
 
   [-1, 1].forEach((s) => {
-    const scmTendon = new THREE.Mesh(new THREE.CapsuleGeometry(0.011, 0.066, 4, 8), mats.skinLimb);
-    scmTendon.position.set(s * 0.026, 0.024, -0.044);
-    scmTendon.rotation.z = s * 0.26;
-    scmTendon.rotation.x = -0.18;
-    headGroup.add(scmTendon);
+    const eyeUnit = new THREE.Group();
+    eyeUnit.position.set(s * 0.0305, 0.1714, -0.0802);
+    eyeUnit.rotation.y = -s * 0.475;
+    headGroup.add(eyeUnit);
+
+    const eyeball = new THREE.Mesh(
+      createCurvedAlmondEyeGeo(s),
+      s < 0 ? mats.eyeCorneaL : mats.eyeCorneaR
+    );
+    eyeUnit.add(eyeball);
+
+    const lashArch = new THREE.Mesh(createUpperEyelashArchGeo(s), mats.eyelashDark);
+    eyeUnit.add(lashArch);
   });
 
-  // Hộp sọ & cơ mặt góc cạnh điêu khắc 3D
-  const cranium = new THREE.Mesh(createSculptedHeadGeometry(), mats.skin);
-  cranium.position.set(0, 0.136, 0);
-  headGroup.add(cranium);
+  // Tóc đen truyền thống người Việt năm 1880 (nghiêng ôm ra phía sau sọ, để lộ 100% vầng trán & chân mày!)
+  const hairCapGroup = new THREE.Group();
+  headGroup.add(hairCapGroup);
 
-  // Đôi mắt hạnh nhân mí sụp nam tính (cự ly đồng tử chuẩn giải phẫu ±0.0315m)
-  [-1, 1].forEach((s) => {
-    const eyeball = new THREE.Mesh(new THREE.SphereGeometry(0.0135, 18, 14), mats.eyeCornea);
-    eyeball.position.set(s * 0.0315, 0.144, -0.086);
-    eyeball.rotation.y = Math.PI / 2 - s * 0.04;
-    eyeball.scale.set(1.08, 0.86, 0.72);
-    headGroup.add(eyeball);
-
-    const upperLidHood = new THREE.Mesh(new THREE.CapsuleGeometry(0.0046, 0.019, 4, 10), mats.skinLimb);
-    upperLidHood.position.set(s * 0.0315, 0.1502, -0.0925);
-    upperLidHood.rotation.z = Math.PI / 2 - s * 0.05;
-    upperLidHood.scale.set(0.95, 1.0, 0.88);
-    headGroup.add(upperLidHood);
-
-    const lashLine = new THREE.Mesh(new THREE.CapsuleGeometry(0.0018, 0.020, 4, 8), mats.hairDark);
-    lashLine.position.set(s * 0.0315, 0.1472, -0.0958);
-    lashLine.rotation.z = Math.PI / 2 - s * 0.05;
-    headGroup.add(lashLine);
-
-    const lowerLidRim = new THREE.Mesh(new THREE.CapsuleGeometry(0.0032, 0.018, 4, 10), mats.skinLimb);
-    lowerLidRim.position.set(s * 0.0315, 0.1382, -0.0922);
-    lowerLidRim.rotation.z = Math.PI / 2 + s * 0.04;
-    headGroup.add(lowerLidRim);
-
-    const browInner = new THREE.Mesh(new THREE.CapsuleGeometry(0.0046, 0.021, 4, 8), mats.hairDark);
-    browInner.position.set(s * 0.023, 0.1575, -0.099);
-    browInner.rotation.z = Math.PI / 2 - s * 0.10;
-    browInner.rotation.y = -s * 0.16;
-    headGroup.add(browInner);
-
-    const browOuter = new THREE.Mesh(new THREE.ConeGeometry(0.0045, 0.022, 8), mats.hairDark);
-    browOuter.position.set(s * 0.043, 0.1585, -0.092);
-    browOuter.rotation.z = -s * (Math.PI / 2 + 0.12);
-    browOuter.rotation.y = -s * 0.34;
-    headGroup.add(browOuter);
-
-    const earGroup = new THREE.Group();
-    earGroup.position.set(s * 0.092, 0.134, -0.002);
-    earGroup.rotation.y = -s * 0.18;
-    headGroup.add(earGroup);
-
-    const earBase = new THREE.Mesh(new THREE.SphereGeometry(0.021, 12, 10), mats.skinLimb);
-    earBase.scale.set(0.34, 1.02, 0.64);
-    earGroup.add(earBase);
-
-    const earHelix = new THREE.Mesh(new THREE.TorusGeometry(0.014, 0.0034, 6, 14, Math.PI * 1.25), mats.skinLimb);
-    earHelix.rotation.y = Math.PI / 2;
-    earHelix.rotation.x = -0.4;
-    earHelix.scale.set(0.8, 1.25, 1.0);
-    earGroup.add(earHelix);
-  });
-
-  // Sống mũi cao thẳng, chóp mũi góc cạnh & hai cánh mũi 3D
-  const noseBridge = new THREE.Mesh(new THREE.CapsuleGeometry(0.0068, 0.034, 6, 10), mats.skin);
-  noseBridge.position.set(0, 0.134, -0.101);
-  noseBridge.rotation.x = -0.28;
-  noseBridge.scale.set(0.82, 1.0, 0.95);
-  headGroup.add(noseBridge);
-
-  const noseTip = new THREE.Mesh(new THREE.SphereGeometry(0.0094, 14, 12), mats.skin);
-  noseTip.position.set(0, 0.116, -0.111);
-  noseTip.scale.set(0.92, 0.86, 1.02);
-  headGroup.add(noseTip);
-
-  [-1, 1].forEach((s) => {
-    const nostrilWing = new THREE.Mesh(new THREE.SphereGeometry(0.0066, 10, 8), mats.skinLimb);
-    nostrilWing.position.set(s * 0.0095, 0.114, -0.103);
-    nostrilWing.scale.set(0.88, 0.76, 0.90);
-    headGroup.add(nostrilWing);
-  });
-
-  // Khuôn miệng nam tính điềm tĩnh: khe môi mảnh sắc nét + môi trên/dưới mỏng tự nhiên
-  const mouthCrease = new THREE.Mesh(new THREE.CapsuleGeometry(0.0016, 0.030, 4, 8), mats.hairDark);
-  mouthCrease.position.set(0, 0.094, -0.1005);
-  mouthCrease.rotation.z = Math.PI / 2;
-  headGroup.add(mouthCrease);
-
-  const upperLip = new THREE.Mesh(new THREE.CapsuleGeometry(0.0034, 0.027, 4, 10), mats.lips);
-  upperLip.position.set(0, 0.0962, -0.0995);
-  upperLip.rotation.z = Math.PI / 2;
-  upperLip.scale.set(0.72, 1.0, 0.82);
-  headGroup.add(upperLip);
-
-  const lowerLip = new THREE.Mesh(new THREE.CapsuleGeometry(0.0040, 0.023, 4, 10), mats.lips);
-  lowerLip.position.set(0, 0.0908, -0.0985);
-  lowerLip.rotation.z = Math.PI / 2;
-  lowerLip.scale.set(0.76, 1.0, 0.88);
-  headGroup.add(lowerLip);
-
-  // 3b. Mái tóc Bạch Kim Tro 52 lọn xếp lớp dày bồng bềnh rẽ ngôi phong trần (chuẩn ảnh mẫu DMC5!)
-  const flowingHairGroup = new THREE.Group();
-  flowingHairGroup.position.y = -0.010;
-  headGroup.add(flowingHairGroup);
-
-  // Lớp nền chân tóc sẫm dưới cùng để không bao giờ lộ da đầu dưới mọi góc xoay 360°
-  const underHairCap = new THREE.Mesh(
-    new THREE.SphereGeometry(0.098, 24, 18, 0, Math.PI * 2, 0, Math.PI * 0.68),
-    mats.hair
+  const cranialHair = new THREE.Mesh(
+    new THREE.SphereGeometry(0.081, 32, 20, 0, Math.PI * 2, 0, Math.PI * 0.50),
+    mats.hairBlack
   );
-  underHairCap.position.set(0, 0.158, 0.004);
-  underHairCap.scale.set(0.89, 1.12, 1.02);
-  flowingHairGroup.add(underHairCap);
+  cranialHair.position.set(0, 0.194, 0.022);
+  cranialHair.rotation.x = -0.68;
+  cranialHair.scale.set(0.97, 1.04, 1.07);
+  hairCapGroup.add(cranialHair);
 
-  // Ngôi tóc hơi lệch nhẹ sang trái (-0.008) với tầng mái dày ôm hai bên trán, thái dương & quai hàm
-  const lockSpecs = [
-    // Tầng mái trước rủ chéo bên trái (-X) ôm sát thái dương & gò má
-    { pts: [[-0.008, 0.258, -0.048], [-0.032, 0.238, -0.098], [-0.056, 0.184, -0.106], [-0.068, 0.126, -0.088]], w: 0.044, th: 0.020 },
-    { pts: [[-0.010, 0.262, -0.034], [-0.052, 0.236, -0.088], [-0.082, 0.172, -0.092], [-0.088, 0.098, -0.068]], w: 0.048, th: 0.022 },
-    { pts: [[-0.014, 0.264, -0.016], [-0.072, 0.230, -0.068], [-0.096, 0.158, -0.068], [-0.096, 0.082, -0.044]], w: 0.050, th: 0.022 },
-    { pts: [[-0.006, 0.254, -0.058], [-0.022, 0.232, -0.104], [-0.038, 0.192, -0.110], [-0.046, 0.156, -0.102]], w: 0.032, th: 0.015 },
-    // Tầng mái trước rủ chéo bên phải (+X) ôm sát thái dương & gò má
-    { pts: [[-0.004, 0.258, -0.048], [0.030, 0.240, -0.098], [0.056, 0.186, -0.105], [0.070, 0.124, -0.086]], w: 0.046, th: 0.020 },
-    { pts: [[0.002, 0.262, -0.032], [0.052, 0.238, -0.086], [0.084, 0.172, -0.090], [0.090, 0.096, -0.066]], w: 0.050, th: 0.022 },
-    { pts: [[0.008, 0.264, -0.014], [0.072, 0.230, -0.066], [0.098, 0.158, -0.066], [0.098, 0.080, -0.042]], w: 0.052, th: 0.022 },
-    { pts: [[-0.002, 0.254, -0.058], [0.018, 0.234, -0.104], [0.034, 0.194, -0.109], [0.042, 0.160, -0.101]], w: 0.030, th: 0.014 },
-  ];
+  [-1, 1].forEach((s) => {
+    const sideburn = new THREE.Mesh(new THREE.CapsuleGeometry(0.0050, 0.030, 4, 8), mats.hairBlack);
+    sideburn.position.set(s * 0.075, 0.162, -0.015);
+    sideburn.rotation.x = 0.22;
+    sideburn.rotation.z = -s * 0.08;
+    sideburn.scale.set(0.42, 1.0, 1.1);
+    hairCapGroup.add(sideburn);
+  });
 
-  // 28 lọn tóc dày ôm hai bên tai & phủ gáy đa lớp 360°
-  for (let k = 0; k < 28; k++) {
-    const frac = k / 27;
-    const ang = -Math.PI * 0.56 + frac * Math.PI * 1.12; // bao phủ từ má trái vòng qua sau gáy sang má phải
-    const sx = Math.sin(ang);
-    const cz = Math.cos(ang);
-    const layerOut = k % 2 === 0 ? 1.05 : 0.96;
-    lockSpecs.push({
-      pts: [
-        [sx * 0.018, 0.265, cz * 0.018],
-        [sx * 0.086 * layerOut, 0.228, cz * 0.094 * layerOut],
-        [sx * 0.100 * layerOut, 0.154, cz * 0.112 * layerOut],
-        [sx * 0.096 * layerOut, 0.074 - (k % 3) * 0.012, cz * 0.114 * layerOut],
-      ],
-      w: 0.048,
-      th: 0.021,
-    });
-  }
+  const topknotBun = new THREE.Mesh(new THREE.SphereGeometry(0.042, 18, 14), mats.hairBlack);
+  topknotBun.position.set(0, 0.198, 0.084);
+  topknotBun.scale.set(0.95, 0.88, 1.05);
+  hairCapGroup.add(topknotBun);
 
-  // 16 lọn tóc tỉa layer phồng lớp trên đỉnh đầu & vương nhẹ ra ngoài (Feathered Crown Volume)
-  for (let c = 0; c < 16; c++) {
-    const a = -Math.PI * 0.78 + (c / 15) * Math.PI * 1.56;
-    const sx = Math.sin(a);
-    const cz = Math.cos(a);
-    lockSpecs.push({
-      pts: [
-        [-0.005, 0.268, -0.008],
-        [sx * 0.064, 0.252, cz * 0.068],
-        [sx * 0.098, 0.194, cz * 0.104],
-        [sx * 0.104, 0.132 - (c % 2) * 0.018, cz * 0.108],
-      ],
-      w: 0.040,
-      th: 0.018,
-    });
-  }
+  const hairpin = new THREE.Mesh(new THREE.CylinderGeometry(0.0032, 0.0032, 0.105, 10), mats.trim);
+  hairpin.rotation.z = Math.PI / 2;
+  hairpin.position.set(0, 0.200, 0.096);
+  hairCapGroup.add(hairpin);
 
-  for (const sp of lockSpecs) {
-    flowingHairGroup.add(createHairLockMesh(sp.pts, sp.w, sp.th, mats.hair));
-  }
-
-  // Nền tóc búi gọn khi đội mũ mão cung đình Triều Nguyễn
-  const courtHairCap = new THREE.Group();
-  courtHairCap.visible = false;
-  const courtScalp = new THREE.Mesh(new THREE.SphereGeometry(0.101, 20, 16), mats.hairDark);
-  courtScalp.position.set(0, 0.155, 0.010);
-  courtScalp.scale.set(0.91, 1.02, 0.96);
-  courtHairCap.add(courtScalp);
-  const hairBun = new THREE.Mesh(new THREE.SphereGeometry(0.052, 16, 12), mats.hairDark);
-  hairBun.position.set(0, 0.145, 0.105);
-  courtHairCap.add(hairBun);
-  const hairPin = new THREE.Mesh(new THREE.CylinderGeometry(0.0042, 0.0042, 0.13, 10), mats.trim);
-  hairPin.rotation.z = Math.PI / 2;
-  hairPin.position.set(0, 0.148, 0.118);
-  courtHairCap.add(hairPin);
-  headGroup.add(courtHairCap);
-
-  // 3c. Ba loại mũ mão Triều Nguyễn (Nón Dấu / Mũ Cánh Chuồn / Khăn Đống)
+  // 3a. Nón Dấu Đan Mây Sơn Mài Đỉnh Đồng (Cẩm Y Thị Vệ — vành nón cao 24mm trên chân mày!)
   const guardHat = new THREE.Group();
-  guardHat.position.set(0, 0.198, 0);
-  guardHat.visible = false;
-  const hatCone = new THREE.Mesh(new THREE.ConeGeometry(0.238, 0.142, 32, 2, true), mats.hatLacquer);
-  hatCone.position.y = 0.066;
-  guardHat.add(hatCone);
-  const hatRim = new THREE.Mesh(new THREE.TorusGeometry(0.238, 0.009, 10, 32), mats.trim);
-  hatRim.rotation.x = Math.PI / 2;
-  hatRim.position.y = -0.004;
-  guardHat.add(hatRim);
-  const hatBoss = new THREE.Mesh(new THREE.ConeGeometry(0.048, 0.036, 18), mats.trim);
-  hatBoss.position.y = 0.128;
-  guardHat.add(hatBoss);
-  const hatSpire = new THREE.Mesh(new THREE.ConeGeometry(0.011, 0.048, 12), mats.trim);
-  hatSpire.position.y = 0.172;
-  guardHat.add(hatSpire);
+  guardHat.position.set(0, 0.214, 0);
   headGroup.add(guardHat);
 
+  const hatCone = new THREE.Mesh(new THREE.ConeGeometry(0.236, 0.138, 40, 4, true), mats.hatRattan);
+  hatCone.position.y = 0.064;
+  guardHat.add(hatCone);
+
+  const hatBrassRim = new THREE.Mesh(new THREE.TorusGeometry(0.236, 0.0065, 10, 40), mats.trim);
+  hatBrassRim.rotation.x = Math.PI / 2;
+  hatBrassRim.position.y = -0.004;
+  guardHat.add(hatBrassRim);
+
+  const hatLotusSocket = new THREE.Mesh(new THREE.ConeGeometry(0.044, 0.034, 20), mats.trim);
+  hatLotusSocket.position.y = 0.124;
+  guardHat.add(hatLotusSocket);
+
+  const hatFlameFinial = new THREE.Mesh(new THREE.ConeGeometry(0.0095, 0.046, 14), mats.trim);
+  hatFlameFinial.position.y = 0.166;
+  guardHat.add(hatFlameFinial);
+
+  const chinStrap = new THREE.Mesh(
+    new THREE.TorusGeometry(0.081, 0.0028, 6, 24, Math.PI * 0.92),
+    mats.crimsonTassel
+  );
+  chinStrap.rotation.z = Math.PI + 0.14;
+  chinStrap.position.set(0, -0.058, -0.017);
+  chinStrap.scale.set(0.92, 1.42, 1.0);
+  guardHat.add(chinStrap);
+
+  // 3b. Mũ Cánh Chuồn Bác Sơn Đính Kim Hoa (Quan Văn Đại Triều & Tân Khoa Tiến Sĩ)
   const mandarinHat = new THREE.Group();
-  mandarinHat.position.set(0, 0.194, 0);
+  mandarinHat.position.set(0, 0.212, 0.004);
   mandarinHat.visible = false;
-  const frontCapTier = new THREE.Mesh(new THREE.CylinderGeometry(0.104, 0.112, 0.075, 22), mats.hatDark);
-  frontCapTier.position.set(0, 0.032, -0.006);
-  mandarinHat.add(frontCapTier);
-  const rearCapTier = new THREE.Mesh(new THREE.CylinderGeometry(0.092, 0.102, 0.135, 22), mats.hatDark);
-  rearCapTier.position.set(0, 0.072, 0.026);
-  mandarinHat.add(rearCapTier);
-  const capGoldBand = new THREE.Mesh(new THREE.CylinderGeometry(0.114, 0.114, 0.022, 24), mats.trim);
-  capGoldBand.position.set(0, 0.006, -0.004);
-  mandarinHat.add(capGoldBand);
-  const foreheadJade = new THREE.Mesh(new THREE.SphereGeometry(0.016, 14, 12), mats.jade);
-  foreheadJade.position.set(0, 0.024, -0.118);
-  foreheadJade.scale.set(1.2, 0.9, 0.5);
-  mandarinHat.add(foreheadJade);
-  [-1, 1].forEach((s) => {
-    const wing = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.052, 0.01), mats.hatDark);
-    wing.position.set(s * 0.195, 0.048, 0.042);
-    wing.rotation.y = s * -0.16;
-    wing.rotation.z = s * 0.05;
-    mandarinHat.add(wing);
-    const wingGold = new THREE.Mesh(new THREE.BoxGeometry(0.242, 0.009, 0.013), mats.trim);
-    wingGold.position.set(s * 0.195, 0.074, 0.042);
-    wingGold.rotation.y = s * -0.16;
-    wingGold.rotation.z = s * 0.05;
-    mandarinHat.add(wingGold);
-  });
   headGroup.add(mandarinHat);
 
+  const frontCrown = new THREE.Mesh(new THREE.CylinderGeometry(0.090, 0.095, 0.072, 28), mats.hatHorsehair);
+  frontCrown.position.set(0, 0.030, -0.006);
+  frontCrown.scale.set(0.94, 1.0, 1.08);
+  mandarinHat.add(frontCrown);
+
+  const rearCrown = new THREE.Mesh(new THREE.CylinderGeometry(0.080, 0.088, 0.132, 28), mats.hatHorsehair);
+  rearCrown.position.set(0, 0.068, 0.026);
+  rearCrown.scale.set(0.92, 1.0, 1.04);
+  mandarinHat.add(rearCrown);
+
+  const crownGoldBand = new THREE.Mesh(new THREE.CylinderGeometry(0.097, 0.097, 0.018, 28), mats.trim);
+  crownGoldBand.position.set(0, 0.002, -0.004);
+  crownGoldBand.scale.set(0.95, 1.0, 1.09);
+  mandarinHat.add(crownGoldBand);
+
+  const foreheadPlaque = new THREE.Mesh(new THREE.BoxGeometry(0.034, 0.042, 0.010), mats.trim);
+  foreheadPlaque.position.set(0, 0.034, -0.103);
+  mandarinHat.add(foreheadPlaque);
+
+  const foreheadJade = new THREE.Mesh(new THREE.SphereGeometry(0.0105, 14, 12), mats.jade);
+  foreheadJade.position.set(0, 0.034, -0.109);
+  foreheadJade.scale.set(1.1, 1.25, 0.45);
+  mandarinHat.add(foreheadJade);
+
+  const scholarFlowersGroup = new THREE.Group();
+  scholarFlowersGroup.visible = false;
+  mandarinHat.add(scholarFlowersGroup);
+
+  [-1, 1].forEach((s) => {
+    const wing = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.006, 22), mats.hatHorsehair);
+    wing.rotation.x = Math.PI / 2;
+    wing.scale.set(4.1, 1.0, 0.88);
+    wing.position.set(s * 0.185, 0.052, 0.042);
+    wing.rotation.y = -s * 0.14;
+    wing.rotation.z = s * 0.06;
+    mandarinHat.add(wing);
+
+    const wingRim = new THREE.Mesh(new THREE.TorusGeometry(0.028, 0.0024, 6, 24), mats.trim);
+    wingRim.scale.set(4.1, 0.88, 1.0);
+    wingRim.position.set(s * 0.185, 0.052, 0.042);
+    wingRim.rotation.y = -s * 0.14;
+    wingRim.rotation.z = s * 0.06;
+    mandarinHat.add(wingRim);
+
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.0022, 0.0022, 0.12, 8), mats.trim);
+    stem.position.set(s * 0.095, 0.105, 0.005);
+    stem.rotation.z = -s * 0.38;
+    scholarFlowersGroup.add(stem);
+
+    const blossom = new THREE.Mesh(new THREE.DodecahedronGeometry(0.016, 1), mats.trim);
+    blossom.position.set(s * 0.122, 0.158, 0.005);
+    scholarFlowersGroup.add(blossom);
+  });
+
+  // 3c. Khăn Đống Lụa Đen 7 Nếp Xếp Chữ Nhân (Hoàng Thân Quốc Thích — nằm trên trán cao y = 0.210, lộ rõ 100% chân mày!)
   const turbanHat = new THREE.Group();
-  turbanHat.position.set(0, 0.174, 0);
+  turbanHat.position.set(0, 0.210, 0.002);
   turbanHat.visible = false;
-  for (let ring = 0; ring < 5; ring++) {
-    const tRing = new THREE.Mesh(
-      new THREE.TorusGeometry(0.104 + ring * 0.003, 0.016, 10, 26),
-      ring === 2 ? mats.trim : mats.hatDark
-    );
-    tRing.rotation.x = Math.PI / 2 + 0.08;
-    tRing.position.set(0, ring * 0.016, 0.004);
-    tRing.scale.set(0.95, 1.04, 1.0);
-    turbanHat.add(tRing);
-  }
+  const turbanMesh = new THREE.Mesh(createPleatedHueTurbanGeometry(), mats.hatHorsehair);
+  turbanMesh.scale.set(0.95, 1.0, 0.96);
+  turbanHat.add(turbanMesh);
+  const turbanBrooch = new THREE.Mesh(new THREE.BoxGeometry(0.022, 0.018, 0.008), mats.trim);
+  turbanBrooch.position.set(0, 0.036, -0.101);
+  turbanHat.add(turbanBrooch);
   headGroup.add(turbanHat);
 
   // =========================================================================
-  // 4. ĐÔI TAY XẮN NẾP KHUỶU, BĂNG QUẤN CẲNG TAY, GĂNG DA HỞ NGÓN & 5 NGÓN TAY 3D
+  // 4. ĐÔI TAY ÁO NGŨ THÂN LIỀN MẠCH, XÀ CẠP HỘ UYỂN & BÀN TAY 5 NGÓN NGƯỜI THẬT
   // =========================================================================
-  const rolledArmGroups = [];
-  const fullSleeveGroups = [];
+  const bracerArmGroups = [];
+  const wideCeremonialSleeves = [];
+  const fittedSleeves = [];
 
   const makeArm = (side) => {
     const shoulder = new THREE.Group();
-    shoulder.position.set(side * 0.228, 0.482, 0);
-    shoulder.rotation.z = side * 0.07;
+    shoulder.position.set(side * 0.176, 0.478, 0);
+    shoulder.rotation.z = side * 0.05;
     torso.add(shoulder);
 
-    // Ống tay trên có nếp nhăn bắp tay
-    const upper = new THREE.Mesh(createCreasedLimbGeometry(0.062, 0.054, 0.275, 18, 10, 0.0035), mats.robe);
-    upper.position.y = -0.132;
-    shoulder.add(upper);
-
-    // 4 nếp vải xắn chùn ở khuỷu tay (Pushed-up Accordion Sleeve Cuff)
-    const elbowFoldsGroup = new THREE.Group();
-    shoulder.add(elbowFoldsGroup);
-    for (let f = 0; f < 4; f++) {
-      const foldRing = new THREE.Mesh(
-        new THREE.TorusGeometry(0.055 + (f % 2) * 0.003, 0.0125, 10, 20),
-        mats.robe
-      );
-      foldRing.rotation.x = Math.PI / 2 + (f - 1.5) * 0.05;
-      foldRing.position.y = -0.225 - f * 0.016;
-      elbowFoldsGroup.add(foldRing);
-    }
-    const innerCuffBand = new THREE.Mesh(new THREE.TorusGeometry(0.052, 0.008, 8, 18), mats.collar);
-    innerCuffBand.rotation.x = Math.PI / 2;
-    innerCuffBand.position.y = -0.282;
-    elbowFoldsGroup.add(innerCuffBand);
+    const upperArm = new THREE.Mesh(
+      createOrganicClothLimbGeo(0.058, 0.049, 0.275, true, 0.0034),
+      mats.robe
+    );
+    upperArm.position.y = -0.122;
+    shoulder.add(upperArm);
 
     const elbow = new THREE.Group();
-    elbow.position.set(0, -0.275, 0);
+    elbow.position.set(0, -0.258, 0);
     shoulder.add(elbow);
 
-    // Chế độ 1: Cẳng tay trần cơ bắp + Băng vải quấn + Găng tay da hở ngón có đai khóa (chuẩn ảnh mẫu!)
-    const rolledForearmGrp = new THREE.Group();
-    elbow.add(rolledForearmGrp);
-    rolledArmGroups.push(rolledForearmGrp);
+    // Chế độ A (Cẩm Y Thị Vệ): Tay chẽn gọn + Xà cạp quấn cẳng tay + Hộ uyển đồng chạm nổi
+    const bracerGrp = new THREE.Group();
+    elbow.add(bracerGrp);
+    bracerArmGroups.push(bracerGrp);
 
-    const bareForearm = new THREE.Mesh(new THREE.CylinderGeometry(0.047, 0.036, 0.225, 18), mats.skinLimb);
-    bareForearm.position.y = -0.112;
-    bareForearm.scale.set(0.95, 1.0, 1.06);
-    rolledForearmGrp.add(bareForearm);
+    const forearmSleeve = new THREE.Mesh(
+      createOrganicClothLimbGeo(0.048, 0.040, 0.125, false, 0.0030),
+      mats.robe
+    );
+    forearmSleeve.position.y = -0.058;
+    bracerGrp.add(forearmSleeve);
 
-    const forearmWrap = new THREE.Mesh(
-      createCreasedLimbGeometry(0.044, 0.039, 0.105, 18, 8, 0.0022),
+    const clothBracer = new THREE.Mesh(
+      createOrganicClothLimbGeo(0.043, 0.035, 0.128, false, 0.0020),
       mats.wrap
     );
-    forearmWrap.position.y = -0.168;
-    rolledForearmGrp.add(forearmWrap);
+    clothBracer.position.y = -0.168;
+    bracerGrp.add(clothBracer);
 
-    const wristStrap = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.040, 0.028, 18), mats.glove);
-    wristStrap.position.y = -0.224;
-    rolledForearmGrp.add(wristStrap);
+    // Tấm hộ uyển đồng mạ vàng ôm mặt ngoài cẳng tay Cẩm Y Thị Vệ
+    const guardPlate = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.044, 0.037, 0.092, 14, 1, true, side > 0 ? Math.PI * 0.15 : -Math.PI * 0.85, Math.PI * 0.7),
+      mats.trim
+    );
+    guardPlate.position.y = -0.168;
+    bracerGrp.add(guardPlate);
 
-    const wristBuckle = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.022, 0.012), mats.trim);
-    wristBuckle.position.set(side * 0.036, -0.224, -0.012);
-    rolledForearmGrp.add(wristBuckle);
+    [-0.125, -0.212].forEach((ry) => {
+      const strap = new THREE.Mesh(new THREE.CylinderGeometry(0.0445, 0.0385, 0.012, 18), mats.boots);
+      strap.position.y = ry;
+      bracerGrp.add(strap);
+    });
 
-    // Chế độ 2: Tay áo dài phủ cổ tay cho Quan Văn / Hoàng Thân
-    const sleeve = new THREE.Mesh(createCreasedLimbGeometry(0.055, 0.068, 0.24, 18, 8, 0.003), mats.robe);
-    sleeve.position.y = -0.118;
-    sleeve.visible = false;
-    elbow.add(sleeve);
-    fullSleeveGroups.push(sleeve);
+    // Chế độ B (Hoàng Thân): Tay áo Ngũ Thân suông vừa phủ cổ tay lộ viền lụa trắng
+    const fittedGrp = new THREE.Group();
+    fittedGrp.visible = false;
+    elbow.add(fittedGrp);
+    fittedSleeves.push(fittedGrp);
 
-    // Bàn tay đeo găng da hở ngón + 5 ngón tay điêu khắc tách rời (Articulated 5-Finger Hand)
+    const fittedMesh = new THREE.Mesh(
+      createOrganicClothLimbGeo(0.050, 0.056, 0.235, false, 0.0035),
+      mats.robe
+    );
+    fittedMesh.position.y = -0.115;
+    fittedGrp.add(fittedMesh);
+
+    const fittedWhiteCuff = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.052, 0.054, 0.028, 20, 1, true),
+      mats.collar
+    );
+    fittedWhiteCuff.position.y = -0.228;
+    fittedGrp.add(fittedWhiteCuff);
+
+    // Chế độ C (Quan Văn / Tân Khoa): Tay áo rộng Đại Triều rủ sóng vải + Lót lụa trắng rộng
+    const wideSleeveGrp = new THREE.Group();
+    wideSleeveGrp.visible = false;
+    elbow.add(wideSleeveGrp);
+    wideCeremonialSleeves.push(wideSleeveGrp);
+
+    const wideOuter = new THREE.Mesh(
+      createOrganicClothLimbGeo(0.052, 0.088, 0.248, false, 0.0052),
+      mats.robe
+    );
+    wideOuter.position.y = -0.120;
+    wideOuter.scale.set(0.88, 1.0, 1.18);
+    wideSleeveGrp.add(wideOuter);
+
+    const wideInnerSilk = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.048, 0.080, 0.045, 22, 1, true),
+      mats.collar
+    );
+    wideInnerSilk.position.y = -0.228;
+    wideInnerSilk.scale.set(0.86, 1.0, 1.15);
+    wideSleeveGrp.add(wideInnerSilk);
+
+    // Bàn tay người thật 5 ngón điêu khắc giải phẫu (Cổ tay -> Lòng bàn tay -> Khớp đốt & Móng tay)
     const handRoot = new THREE.Group();
-    handRoot.position.set(0, -0.258, -0.004);
+    handRoot.position.set(0, -0.242, -0.002);
     elbow.add(handRoot);
 
-    const glovePalm = new THREE.Mesh(new THREE.BoxGeometry(0.036, 0.056, 0.062), mats.glove);
-    glovePalm.position.set(0, -0.008, -0.004);
-    handRoot.add(glovePalm);
+    const wrist = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.026, 0.026, 16), mats.skinLimb);
+    wrist.scale.set(0.78, 1.0, 1.12);
+    handRoot.add(wrist);
 
-    // Gù bảo vệ khớp mu bàn tay (Knuckle ridges)
-    for (let k = 0; k < 4; k++) {
-      const zOff = -0.024 + k * 0.016;
-      const knuckle = new THREE.Mesh(new THREE.SphereGeometry(0.0068, 8, 8), mats.glove);
-      knuckle.position.set(side * 0.016, -0.032, zOff);
-      handRoot.add(knuckle);
+    const palm = new THREE.Mesh(new THREE.SphereGeometry(0.032, 16, 14), mats.skinLimb);
+    palm.position.set(0, -0.032, -0.004);
+    palm.scale.set(0.52, 1.12, 0.96);
+    handRoot.add(palm);
 
-      // Đốt ngón tay bọc găng nửa trên + đầu ngón tay da thật lộ ra (Fingerless Glove + Bare Fingertips!)
-      const fLen = k === 1 ? 0.022 : k === 2 ? 0.020 : k === 0 ? 0.018 : 0.015;
-      const proxPhalanx = new THREE.Mesh(new THREE.CapsuleGeometry(0.0056, 0.014, 4, 8), mats.glove);
-      proxPhalanx.position.set(side * 0.010, -0.044, zOff);
-      proxPhalanx.rotation.z = -side * 0.16;
-      handRoot.add(proxPhalanx);
+    // 4 ngón tay thon dần tự nhiên có 2 đốt gập nhẹ thoải mái
+    const fingerSpecs = [
+      { z: -0.021, len1: 0.022, len2: 0.018, r: 0.0052 }, // Ngón trỏ
+      { z: -0.007, len1: 0.025, len2: 0.020, r: 0.0055 }, // Ngón giữa
+      { z: 0.007, len1: 0.023, len2: 0.018, r: 0.0052 }, // Ngón áp út
+      { z: 0.020, len1: 0.018, len2: 0.015, r: 0.0046 }, // Ngón út
+    ];
+    fingerSpecs.forEach((f) => {
+      const seg1 = new THREE.Mesh(new THREE.CapsuleGeometry(f.r, f.len1, 4, 8), mats.skinLimb);
+      seg1.position.set(side * 0.004, -0.064, f.z);
+      seg1.rotation.z = -side * 0.14;
+      handRoot.add(seg1);
 
-      const fingerTip = new THREE.Mesh(new THREE.CapsuleGeometry(0.0050, fLen, 4, 8), mats.skinLimb);
-      fingerTip.position.set(side * 0.002, -0.064 - fLen * 0.3, zOff);
-      fingerTip.rotation.z = -side * 0.38;
-      handRoot.add(fingerTip);
-    }
+      const seg2 = new THREE.Mesh(new THREE.CapsuleGeometry(f.r * 0.86, f.len2, 4, 8), mats.skinLimb);
+      seg2.position.set(-side * 0.001, -0.064 - f.len1 * 0.82, f.z);
+      seg2.rotation.z = -side * 0.34;
+      handRoot.add(seg2);
+    });
 
-    // Ngón cái hướng về phía trước (-Z)
-    const thumbBase = new THREE.Mesh(new THREE.CapsuleGeometry(0.0068, 0.018, 4, 8), mats.glove);
-    thumbBase.position.set(-side * 0.006, -0.020, -0.034);
-    thumbBase.rotation.x = 0.62;
-    handRoot.add(thumbBase);
+    // Mô cái & Ngón cái tự nhiên hướng về trước (-Z)
+    const thumbMetacarpal = new THREE.Mesh(new THREE.CapsuleGeometry(0.0068, 0.020, 4, 8), mats.skinLimb);
+    thumbMetacarpal.position.set(-side * 0.005, -0.034, -0.028);
+    thumbMetacarpal.rotation.x = 0.58;
+    handRoot.add(thumbMetacarpal);
 
-    const thumbTip = new THREE.Mesh(new THREE.CapsuleGeometry(0.0056, 0.016, 4, 8), mats.skinLimb);
-    thumbTip.position.set(-side * 0.008, -0.034, -0.048);
-    thumbTip.rotation.x = 0.42;
-    handRoot.add(thumbTip);
+    const thumbDistal = new THREE.Mesh(new THREE.CapsuleGeometry(0.0056, 0.016, 4, 8), mats.skinLimb);
+    thumbDistal.position.set(-side * 0.007, -0.050, -0.041);
+    thumbDistal.rotation.x = 0.36;
+    handRoot.add(thumbDistal);
 
-    return { shoulder, elbow, sleeve };
+    return { shoulder, elbow, sleeve: wideOuter };
   };
 
   const leftArm = makeArm(-1);
   const rightArm = makeArm(1);
 
   // =========================================================================
-  // 5. ĐÔI CHÂN QUẦN NHĂN NẾP 3D & ỦNG DA NHIỀU KHÓA CÀI (LEGS & BOOTS)
+  // 5. ĐÔI CHÂN QUẦN LỤA CÓ NẾP GẤP & HÀI GIA ĐỊNH / ỦNG CHIẾN CẨM Y VỆ
   // =========================================================================
   const courtBootTrims = [];
+  const guardLegWraps = [];
 
   const makeLeg = (side) => {
     const hip = new THREE.Group();
-    hip.position.set(side * 0.104, -0.02, 0);
+    hip.position.set(side * 0.100, -0.02, 0);
     hips.add(hip);
 
-    const thigh = new THREE.Mesh(createCreasedLimbGeometry(0.082, 0.066, 0.415, 22, 14, 0.0048), mats.pants);
+    const thigh = new THREE.Mesh(
+      createOrganicClothLimbGeo(0.080, 0.064, 0.415, false, 0.0042),
+      mats.pants
+    );
     thigh.position.y = -0.20;
     hip.add(thigh);
-
-    // Đai da buộc đùi phải giữ bao vũ khí (giống chi tiết quần chiến thuật trong ảnh mẫu)
-    if (side === 1) {
-      const thighStrap = new THREE.Mesh(new THREE.CylinderGeometry(0.077, 0.074, 0.026, 20), mats.sash);
-      thighStrap.position.y = -0.135;
-      hip.add(thighStrap);
-    }
-
-    const kneeCap = new THREE.Mesh(new THREE.SphereGeometry(0.064, 16, 12), mats.pants);
-    kneeCap.position.set(0, -0.405, -0.008);
-    kneeCap.scale.set(0.95, 0.92, 1.05);
-    hip.add(kneeCap);
 
     const knee = new THREE.Group();
     knee.position.set(0, -0.41, 0);
     hip.add(knee);
 
-    const calf = new THREE.Mesh(createCreasedLimbGeometry(0.065, 0.052, 0.37, 20, 12, 0.0045), mats.pants);
-    calf.position.y = -0.185;
+    const calf = new THREE.Mesh(
+      createOrganicClothLimbGeo(0.063, 0.048, 0.365, false, 0.0038),
+      mats.pants
+    );
+    calf.position.y = -0.182;
     knee.add(calf);
 
-    // Cổ ủng da cao ôm bắp chân dưới + 2 dây đai khóa kim loại
-    const bootShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.051, 0.16, 18), mats.boots);
-    bootShaft.position.y = -0.305;
+    // Xà cạp quấn bắp chân gọn gàng cho Cẩm Y Thị Vệ
+    const shinWrap = new THREE.Mesh(
+      createOrganicClothLimbGeo(0.054, 0.047, 0.165, false, 0.0022),
+      mats.wrap
+    );
+    shinWrap.position.y = -0.295;
+    knee.add(shinWrap);
+    guardLegWraps.push(shinWrap);
+
+    // Cổ ủng lụa đen cao của Hài/Ủng Đại Triều
+    const bootShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.048, 0.145, 20), mats.boots);
+    bootShaft.position.y = -0.312;
     knee.add(bootShaft);
-
-    [-0.255, -0.335].forEach((by) => {
-      const bStrap = new THREE.Mesh(new THREE.TorusGeometry(0.055, 0.0055, 6, 18), mats.sash);
-      bStrap.rotation.x = Math.PI / 2;
-      bStrap.position.y = by;
-      knee.add(bStrap);
-
-      const bBuckle = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.018, 0.012), mats.trim);
-      bBuckle.position.set(side * 0.054, by, -0.012);
-      knee.add(bBuckle);
-    });
 
     const ankle = new THREE.Group();
     ankle.position.set(0, -0.39, 0);
     knee.add(ankle);
 
-    // Đế ủng đúc dày có gót tách khối (cao độ đáy -0.04m => chạm chuẩn mặt sàn y=0.00m)
-    const soleFront = new THREE.Mesh(new THREE.BoxGeometry(0.098, 0.022, 0.165), mats.bootSole);
-    soleFront.position.set(0, -0.029, -0.082);
-    ankle.add(soleFront);
+    // Đế hài trắng nhiều lớp truyền thống Triều Nguyễn (chạm chuẩn cao độ sàn y = 0.00m)
+    const thickFeltSole = new THREE.Mesh(new THREE.BoxGeometry(0.092, 0.024, 0.232), mats.bootSole);
+    thickFeltSole.position.set(0, -0.028, -0.038);
+    ankle.add(thickFeltSole);
 
-    const heelBlock = new THREE.Mesh(new THREE.BoxGeometry(0.094, 0.030, 0.075), mats.bootSole);
-    heelBlock.position.set(0, -0.025, 0.042);
-    ankle.add(heelBlock);
+    const bootUpper = new THREE.Mesh(new THREE.BoxGeometry(0.088, 0.046, 0.180), mats.boots);
+    bootUpper.position.set(0, 0.006, -0.026);
+    ankle.add(bootUpper);
 
-    // Viền chỉ khâu đế ủng (Welt rim)
-    const bootWelt = new THREE.Mesh(new THREE.BoxGeometry(0.101, 0.007, 0.246), mats.sash);
-    bootWelt.position.set(0, -0.016, -0.042);
-    ankle.add(bootWelt);
+    const roundedToe = new THREE.Mesh(new THREE.SphereGeometry(0.044, 16, 12), mats.boots);
+    roundedToe.position.set(0, -0.002, -0.122);
+    roundedToe.scale.set(0.96, 0.72, 1.15);
+    ankle.add(roundedToe);
 
-    // Thân bàn chân & Mũi ủng bo tròn cứng cáp hướng về phía trước (-Z)
-    const bootVamp = new THREE.Mesh(new THREE.BoxGeometry(0.092, 0.052, 0.175), mats.boots);
-    bootVamp.position.set(0, 0.008, -0.028);
-    ankle.add(bootVamp);
-
-    const toeCap = new THREE.Mesh(new THREE.SphereGeometry(0.047, 16, 12), mats.boots);
-    toeCap.position.set(0, -0.002, -0.125);
-    toeCap.scale.set(0.98, 0.72, 1.18);
-    ankle.add(toeCap);
-
-    // Dây buộc ngang cổ bàn chân (Boot Laces)
-    for (let l = 0; l < 4; l++) {
-      const lace = new THREE.Mesh(new THREE.CylinderGeometry(0.0028, 0.0028, 0.052, 6), mats.trim);
-      lace.rotation.z = Math.PI / 2;
-      lace.position.set(0, 0.032 + l * 0.012, -0.058 + l * 0.014);
-      ankle.add(lace);
-    }
-
-    // Mũi hài hếch trang sức dành cho trang phục Cung đình (ẩn khi mặc Hiệp Khách Hồng Y)
+    // Mũi hài Gia Định uốn cong trang nhã cho Quan Văn / Hoàng Thân / Tân Khoa
     const courtToe = new THREE.Group();
     courtToe.visible = false;
-    const upturned = new THREE.Mesh(new THREE.ConeGeometry(0.038, 0.056, 14), mats.boots);
-    upturned.position.set(0, 0.020, -0.164);
+    const upturned = new THREE.Mesh(new THREE.ConeGeometry(0.034, 0.050, 16), mats.boots);
+    upturned.position.set(0, 0.016, -0.156);
     upturned.rotation.x = -Math.PI * 0.34;
     courtToe.add(upturned);
-    const toeGold = new THREE.Mesh(new THREE.SphereGeometry(0.011, 10, 8), mats.trim);
-    toeGold.position.set(0, 0.038, -0.182);
-    courtToe.add(toeGold);
+    const toeEmbroidery = new THREE.Mesh(new THREE.SphereGeometry(0.009, 10, 8), mats.trim);
+    toeEmbroidery.position.set(0, 0.032, -0.172);
+    courtToe.add(toeEmbroidery);
     ankle.add(courtToe);
     courtBootTrims.push(courtToe);
 
@@ -2093,28 +2253,21 @@ export function buildRealisticHeroRig({ scene }) {
     coatTailPivot,
     saberPivot,
     jadePendantPivot,
-    backSwordGroup,
-    hipSidearmGroup,
-    baldricStrap,
-    closedCourtChest,
-    badgeGroup,
-    lapelStudGroup,
-    buckleInner,
-    flowingHairGroup,
-    courtHairCap,
     guardHat,
     mandarinHat,
+    scholarFlowersGroup,
     turbanHat,
-    rolledArmGroups,
-    fullSleeveGroups,
-    elbowFoldsGroups: [leftArm.shoulder, rightArm.shoulder],
+    bracerArmGroups,
+    wideCeremonialSleeves,
+    fittedSleeves,
+    guardLegWraps,
     courtBootTrims,
     leftArm,
     rightArm,
     leftLeg,
     rightLeg,
     mats,
-    badgeTextures,
+    badgePbr,
   };
 }
 
@@ -2125,62 +2278,48 @@ export function applyRealisticHeroOutfit(rig, outfitIdx) {
     HERO_REALISTIC_OUTFITS.length;
   const o = HERO_REALISTIC_OUTFITS[normIdx];
 
-  rig.mats.robe.color.setHex(o.coat);
-  rig.mats.robe.roughness = o.coatRoughness;
-  rig.mats.robe.clearcoat = o.coatClearcoat;
+  rig.mats.robe.color.setHex(o.robe);
+  rig.mats.robe.roughness = o.robeRoughness + 0.06;
+  rig.mats.robe.sheen = o.robeSheen;
 
-  rig.mats.skirt.color.setHex(o.coat);
-  rig.mats.skirt.roughness = o.coatRoughness + 0.04;
-  rig.mats.skirt.clearcoat = o.coatClearcoat * 0.85;
+  rig.mats.skirt.color.setHex(o.skirt);
+  rig.mats.skirt.roughness = o.robeRoughness + 0.08;
+  rig.mats.skirt.sheen = o.robeSheen * 0.9;
 
   rig.mats.coatLining.color.setHex(o.coatLining);
-  rig.mats.collar.color.setHex(o.innerShirt);
+  rig.mats.collar.color.setHex(o.collar);
   rig.mats.sash.color.setHex(o.sash);
   rig.mats.trim.color.setHex(o.trim);
   rig.mats.pants.color.setHex(o.pants);
   rig.mats.boots.color.setHex(o.boots);
   rig.mats.bootSole.color.setHex(o.bootSole);
-  rig.mats.glove.color.setHex(o.glove);
   rig.mats.wrap.color.setHex(o.wrap);
-  rig.mats.hair.color.setHex(o.hair);
-  rig.mats.hairDark.color.setHex(o.brow || 0x1e1816);
 
-  if (o.badgeMode !== "none") {
-    rig.mats.badge.map = rig.badgeTextures[o.badgeMode] || rig.badgeTextures.guard;
-    rig.mats.badge.needsUpdate = true;
-    rig.badgeGroup.visible = true;
-    rig.closedCourtChest.visible = true;
-    if (rig.buckleInner) rig.buckleInner.visible = true;
-  } else {
-    rig.badgeGroup.visible = false;
-    rig.closedCourtChest.visible = false;
-    if (rig.buckleInner) rig.buckleInner.visible = false;
-  }
+  const bp = rig.badgePbr[o.badgeMode] || rig.badgePbr.guard;
+  rig.mats.badge.map = bp.colorMap;
+  rig.mats.badge.normalMap = bp.normalMap;
+  rig.mats.badge.needsUpdate = true;
 
-  const hasHat = o.hatMode !== "none";
-  rig.flowingHairGroup.visible = !hasHat;
-  rig.courtHairCap.visible = hasHat;
   rig.guardHat.visible = o.hatMode === "guard";
-  rig.mandarinHat.visible = o.hatMode === "mandarin";
+  rig.mandarinHat.visible = o.hatMode === "mandarin" || o.hatMode === "scholar";
+  rig.scholarFlowersGroup.visible = o.hatMode === "scholar";
   rig.turbanHat.visible = o.hatMode === "turban";
 
-  rig.backSwordGroup.visible = Boolean(o.hasBackGreatsword);
-  rig.baldricStrap.visible = Boolean(o.hasBackGreatsword);
-  rig.hipSidearmGroup.visible = Boolean(o.hasHipSidearm);
-  rig.saberPivot.visible = Boolean(o.hasImperialSaber);
+  rig.saberPivot.visible = Boolean(o.hasSaber);
   rig.jadePendantPivot.visible = Boolean(o.hasJadePendant);
-  rig.lapelStudGroup.visible = Boolean(o.hasLapelStuds);
 
-  const isRolled = o.sleeveMode === "rolled";
-  rig.rolledArmGroups.forEach((g) => {
-    g.visible = isRolled;
+  rig.bracerArmGroups.forEach((g) => {
+    g.visible = o.sleeveMode === "bracer";
   });
-  rig.fullSleeveGroups.forEach((s) => {
-    s.visible = !isRolled;
-    const sc = o.sleeveMode === "ceremonial" ? 1.32 : 1.04;
-    s.scale.set(sc, 1.0, sc);
+  rig.fittedSleeves.forEach((g) => {
+    g.visible = o.sleeveMode === "fitted";
   });
-
+  rig.wideCeremonialSleeves.forEach((g) => {
+    g.visible = o.sleeveMode === "ceremonial";
+  });
+  rig.guardLegWraps.forEach((w) => {
+    w.visible = o.sleeveMode === "bracer";
+  });
   rig.courtBootTrims.forEach((t) => {
     t.visible = Boolean(o.hasCourtBootTrim);
   });
